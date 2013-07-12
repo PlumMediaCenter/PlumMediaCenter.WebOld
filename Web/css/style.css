@@ -1,0 +1,50 @@
+/* 
+    Document   : style
+    Created on : Jul 3, 2013, 3:17:58 PM
+    Author     : bplumb
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.brand{
+    color:purple
+}
+
+body{
+    padding-top:50px;
+    padding-left:20px;
+    padding-right:20px;
+}
+
+.tile{
+    display:inline-block;
+    width:210px;
+    height:315px;
+    border:1px solid black;
+    margin: 10px;
+}
+
+.tile img{
+    width:100%;
+    cursor:pointer;
+    border:2px solid white;
+}
+.tile img:hover{
+    border:2px solid black;
+}
+
+.radio{
+    padding-left:0px;
+}
+
+th.headerSortUp { 
+    background-image: url(../img/tablesort/asc.png); 
+} 
+th.headerSortDown { 
+    background-image: url(../img/tablesort/desc.png); 
+} 
+th{
+    cursor:pointer;
+    background-image: url(../img/tablesort/bg.png); 
+    padding-left:30px !important;
+}
