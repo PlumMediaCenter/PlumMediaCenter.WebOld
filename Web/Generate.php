@@ -1,11 +1,11 @@
 <?php
 
 include("code/Page.class.php");
-include("Code/Video.class.php");
-include("Code/Movie.class.php");
-include("Code/TvShow.class.php");
-include("Code/TvEpisode.class.php");
-include("Code/Enumerations.class.php");
+include("code/Video.class.php");
+include("code/Movie.class.php");
+include("code/TvShow.class.php");
+include("code/TvEpisode.class.php");
+include("code/Enumerations.class.php");
 
 
 //let this script run for up to an hour. Hopefully this doesn't take more than a minute!
