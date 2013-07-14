@@ -29,9 +29,9 @@ if (generateButtonPressed() == true) {
     $videoList["movies"] = getMovies($baseMoviesUrl, $baseMoviesPath);
     $videoList["tvShows"] = getTvShows($baseTvShowsUrl, $baseTvShowsPath);
     $videoList = json_encode($videoList, JSON_PRETTY_PRINT);
-    echo "<pre>" . str_replace("\\", "", $videoList) . "</pre>";
+   
     $success = file_put_contents("videos.json", $videoList);
-    echo $success ? "Updated videos.json" : "Failed to write data to videos.json";
+    echo $success ? color("Generated videos.json", "green") : color("Failed to write data to videos.json", "red");
 }
 
 
@@ -99,5 +99,5 @@ function getTvShows($baseUrl, $basePath) {
  * @return boolean -- true if generate button was pressed, false if it was not
  */
 function generateButtonPressed() {
-    return isset($_GET["generate"]) && strtolower($_GET["generate"]) == "true";
+    return isset($_GET["generate"]);
 }
