@@ -1,5 +1,5 @@
 <?php
-
+include_once("Video.class.php");
 class TvEpisode extends Video {
 
     const EpisodeSdImageWidth = 140; //140x94
@@ -10,7 +10,7 @@ class TvEpisode extends Video {
 
     function __construct($baseUrl, $basePath, $fullPath) {
         parent::__construct($baseUrl, $basePath, $fullPath);
-        $this->mediaType = Video::MediaType_TvEpisode;
+        $this->mediaType = Enumerations::MediaType_TvEpisode;
         $this->seasonNumber = $this->getSeasonNumber();
         $this->episodeNumber = $this->getEpisodeNumber();
         //load all of the information from the metadata file, if it exists

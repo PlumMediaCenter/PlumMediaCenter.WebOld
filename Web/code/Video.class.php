@@ -1,18 +1,16 @@
 <?php
 
-include("SimpleImage.class.php");
+include_once("SimpleImage.class.php");
+include_once("Enumerations.class.php");
 
 class Video {
 
-    const MediaType_Movie = "movie";
-    const MediaType_TvSeries = "TvSeries";
-    const MediaType_TvEpisode = "TvEpisode";
     const SdImageWidth = 110; //110x150
     const HdImageWidth = 210; // 210x270
 
-    protected $baseUrl;
-    protected $basePath;
-    protected $fullPath;
+    public $baseUrl;
+    public $basePath;
+    public $fullPath;
     protected $mediaType;
     protected $metadata;
     public $title;
@@ -20,13 +18,11 @@ class Video {
     public $year;
     public $url;
     public $sdPosterUrl;
-    public $sdPosterExists = false;
     public $hdPosterUrl;
-    public $hdPosterExists = false;
     public $mpaa = "N/A";
     public $actorList = [];
     public $generatePosterMethod;
-
+    
     function __construct($baseUrl, $basePath, $fullPath) {
         //save the important stuff
         $this->baseUrl = $baseUrl;
@@ -37,12 +33,26 @@ class Video {
         $this->url = $this->encodeUrl($this->getUrl());
         $this->sdPosterUrl = $this->encodeUrl($this->getSdPosterUrl());
         $this->hdPosterUrl = $this->encodeUrl($this->getHdPosterUrl());
-        $this->sdPosterExists = $this->getSdPosterExists();
-        $this->hdPosterExists = $this->getHdPosterExists();
 
         $this->title = $this->getVideoName();
-        $this->generatePosterMethod = $_GET["generatePosters"];
+        $this->generatePosterMethod = $this->getGeneratePosterMethod();
         $this->generatePosters();
+    }
+
+    public function update() {
+        //__construct($this->baseUrl, $this->basePath, $this->fullPath);
+    }
+
+    function getGeneratePosterMethod() {
+        if (isset($_GET["generatePosters"])) {
+            return $_GET["generatePosters"];
+        } else {
+            return Enumerations::GeneratePosters_None;
+        }
+    }
+
+    function getMediaType() {
+        return $this->mediaType;
     }
 
     /**
@@ -68,6 +78,14 @@ class Video {
                 $this->generateHdPoster();
                 break;
         }
+    }
+
+    /**
+     * Determine if there is a poster for this video
+     * @return boolean - true if the poster exists, false if it does not
+     */
+    public function posterExists() {
+        return file_exists($this->getPosterPath());
     }
 
     private function getVideoName() {
@@ -106,6 +124,17 @@ class Video {
         return $nfoPath;
     }
 
+    public function hasMetadata() {
+        //get the path to the nfo file
+        $nfoPath = $this->getNfoPath();
+        //verify that the file exists
+        if (file_exists($nfoPath) === false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
     protected function loadMetadata() {
         //get the path to the nfo file
         $nfoPath = $this->getNfoPath();
@@ -130,7 +159,7 @@ class Video {
         //if the title is empty, use the filename like defined in the constructor
         $this->title = strlen($t) > 0 ? $t : $this->title;
         $this->plot = $m->getElementsByTagName("plot")->item(0)->nodeValue;
-        if ($this->mediaType == Video::MediaType_Movie) {
+        if ($this->mediaType == Enumerations::MediaType_Movie) {
             $this->year = $m->getElementsByTagName("year")->item(0)->nodeValue;
         } else {
             $y = $m->getElementsByTagName("premiered")->item(0);
@@ -213,7 +242,7 @@ class Video {
      * @return boolean - true if successful, false if file doesn't exist or failure
 
      */
-    function generateSdPoster($width = Video::SdImageWidth) {
+    public function generateSdPoster($width = Video::SdImageWidth) {
         $posterPath = $this->getPosterPath();
         if (file_exists($posterPath)) {
             $image = new SimpleImage();
@@ -265,4 +294,5 @@ class Video {
     }
 
 }
+
 ?>

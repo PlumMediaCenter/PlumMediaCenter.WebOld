@@ -1,19 +1,53 @@
 <?php
 
+include_once("Video.class.php");
+
 class TvShow extends Video {
 
-    public $seasons;
+    public $seasons = [];
+    //holds each episode in a list instead of grouped by seasons
+    private $episodes = [];
     public $episodeCount = 0;
 
     function __construct($baseUrl, $basePath, $fullPath) {
         parent::__construct($baseUrl, $basePath, $fullPath);
-        $this->mediaType = Video::MediaType_TvSeries;
-        //generate all tv episode items
-        $this->seasons = $this->getSeasonList();
-
+        $this->mediaType = Enumerations::MediaType_TvShow;
 
         //load all of the information from the metadata file, if it exists
         $this->loadMetadata();
+    }
+
+    /**
+     * Scan all subdirectories for episodes for this show. 
+     */
+    function getTvEpisodes() {
+        //generate all tv episode items
+        $this->seasons = $this->getSeasonList();
+    }
+    
+    /**
+     *  Get the array of all tv episodes
+     * @return type
+     */
+    function getEpisodes(){
+        return $this->episodes;
+    }
+
+    /**
+     * Set the list of tv episodes for this show based on
+     * @param array of objects - $seasons - arrays of episodes grouped  into seasons
+     */
+    function setSeasons($seasons) {
+        foreach ($seasons as $season) {
+            $s = [];
+            //look at each episode in this season
+            foreach ($season as $episode) {
+                $e = new TvEpisode($episode->baseUrl, $episode->basePath, $episode->fullPath);
+                $s[$episode->episodeNumber] = $e;
+                $this->episodes[] = $e;
+            }
+            $this->seasons[$episode->seasonNumber] = $s;
+        }
     }
 
     /**
@@ -36,7 +70,7 @@ class TvShow extends Video {
         //spin through every folder in the source location
         foreach ($videosList as $fullPathToFile) {
             //create a new Episode object
-            $episode = new TvEpisode($this->baseUrl, $this->basePath, $fullPathToFile, Video::MediaType_Movie);
+            $episode = new TvEpisode($this->baseUrl, $this->basePath, $fullPathToFile, Enumerations::MediaType_Movie);
 
             //if the season that this episode is in does not yet exist, create it
             if (isset($seasonList[$episode->seasonNumber]) == false) {

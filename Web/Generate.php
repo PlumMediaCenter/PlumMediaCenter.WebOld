@@ -1,11 +1,11 @@
 <?php
 
-include("code/Page.class.php");
-include("code/Video.class.php");
-include("code/Movie.class.php");
-include("code/TvShow.class.php");
-include("code/TvEpisode.class.php");
-include("code/Enumerations.class.php");
+include_once(dirname(__FILE__) . "/code/Page.class.php");
+include_once(dirname(__FILE__) . "/code/Video.class.php");
+include_once(dirname(__FILE__) . "/code/Movie.class.php");
+include_once(dirname(__FILE__) . "/code/TvShow.class.php");
+include_once(dirname(__FILE__) . "/code/TvEpisode.class.php");
+include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
 
 
 //let this script run for up to an hour. Hopefully this doesn't take more than a minute!
@@ -28,8 +28,8 @@ if (generateButtonPressed() == true) {
     $videoList = [];
     $videoList["movies"] = getMovies($baseMoviesUrl, $baseMoviesPath);
     $videoList["tvShows"] = getTvShows($baseTvShowsUrl, $baseTvShowsPath);
-    echo "<pre>" . str_replace("\\", "", json_encode($videoList, JSON_PRETTY_PRINT)) . "</pre>";
     $videoList = json_encode($videoList, JSON_PRETTY_PRINT);
+    echo "<pre>" . str_replace("\\", "", $videoList) . "</pre>";
     $success = file_put_contents("videos.json", $videoList);
     echo $success ? "Updated videos.json" : "Failed to write data to videos.json";
 }
@@ -81,7 +81,9 @@ function getTvShows($baseUrl, $basePath) {
         //if the current file is a video file that we can add to our library
         //create a new Movie object
         $video = new TvShow($baseUrl, $basePath, $fullPathToFile);
-        //add the movie object to the list of all movies
+        //tell the tv show to scan subdirectories for tv episodes
+        $video->getTvEpisodes();
+        //add the tv show object to the list of all tv shows
         for ($i = 0; $i < dupNum(); $i++) {
             //if this tv show has at least one season (which means it has at least one episode), then add it to the list
             if (count($video->seasons) > 0) {
@@ -97,5 +99,5 @@ function getTvShows($baseUrl, $basePath) {
  * @return boolean -- true if generate button was pressed, false if it was not
  */
 function generateButtonPressed() {
-    return isset($_GET["generate"]);
+    return isset($_GET["generate"]) && strtolower($_GET["generate"]) == "true";
 }

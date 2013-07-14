@@ -1,10 +1,10 @@
 <?php
-
+include_once("Video.class.php");
 class Movie extends Video {
 
     function __construct($baseUrl, $basePath, $fullPath) {
         parent::__construct($baseUrl, $basePath, $fullPath);
-        $this->mediaType = Video::MediaType_Movie;
+        $this->mediaType = Enumerations::MediaType_Movie;
         $this->loadMetadata();
     }
 
