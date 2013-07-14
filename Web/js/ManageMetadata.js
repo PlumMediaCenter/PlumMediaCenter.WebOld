@@ -8,7 +8,7 @@ function action(action) {
     if ($r.length === 0) {
         return;
     }
-    $.getJSON("Ajax/MetadataManager.php",
+    $.getJSON("ajax/MetadataManager.php",
             {
                 baseUrl: $r.attr("baseurl"),
                 basePath: $r.attr("basepath"),
