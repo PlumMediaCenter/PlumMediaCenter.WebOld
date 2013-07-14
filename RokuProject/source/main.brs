@@ -1,16 +1,4 @@
 
-Sub LoadLibraryFromJson()
-    'the url pointing to the json file on the server containing the list of videos
-    videoListUrl = "http://192.168.1.109:8080/LanVideoPlayer/Web/videos.json"
-    
-    'get the list of videos from the server
-    searchRequest = CreateObject("roUrlTransfer")
-    searchRequest.SetURL(videoListUrl)
-    lib = ParseJson(searchRequest.GetToString())
-    m.lib = lib
-
-End Sub
-
 Function Main()
 
     'load the library from the remote json file
@@ -19,9 +7,10 @@ Function Main()
     port = CreateObject("roMessagePort")
     grid = CreateObject("roGridScreen")
     grid.SetMessagePort(port) 
-    rowTitles = CreateObject("roArray", 2, true)
-    rowTitles.Push("Tv Shows ")
+    rowTitles = CreateObject("roArray", 3, true)
+    rowTitles.Push("Tv Shows")
     rowTitles.Push("Movies")
+    rowTitles.Push("Settings")
     grid.SetupLists(rowTitles.Count())
     grid.SetListNames(rowTitles) 
     
@@ -29,12 +18,10 @@ Function Main()
     gridList = []
     gridList.push(m.lib.tvShows)
     gridList.Push(m.lib.movies)
-
     
-     'Add Tv Shows
+    'Add Tv Shows
     tvShowList = []
-    'Add movies
-     For Each show in m.lib.tvShows
+    For Each show in m.lib.tvShows
         o = CreateObject("roAssociativeArray")
         o.ContentType = "series"
         o.Title = show.title
@@ -57,10 +44,9 @@ Function Main()
     End For
     grid.SetContentList(0, tvShowList) 
 
-    movieList = []
     'Add movies
-     For Each mov in m.lib.movies
-
+    movieList = []
+    For Each mov in m.lib.movies
         o = CreateObject("roAssociativeArray")
         o.ContentType = "movie"
         o.Title = mov.title
@@ -83,14 +69,28 @@ Function Main()
     End For
     grid.SetContentList(1, movieList) 
     
-   
-    
+    settingsList = []
+    'settings menu items
+    'set video.json
+    s = CreateObject("roAssociativeArray")
+    s.ContentType = "movie"
+    s.Title = "Set video.json Url"
+    s.Description = "Set the video.json url for this application"
+    settingsList.push(s)
+    'refresh list
+    s = CreateObject("roAssociativeArray")
+    s.ContentType = "movie"
+    s.Title = "Refresh videos"
+    s.Description = "Refresh the page with the latest videos from the server"
+    settingsList.push(s)
+    grid.SetContentList(2, settingsList)
+
     grid.Show() 
     while true
         msg = wait(0, port)
-        if type(msg) = "roGridScreenEvent" then
-            if msg.isScreenClosed() then
-                return -1
+        If type(msg) = "roGridScreenEvent" Then
+            If msg.isScreenClosed() Then
+                Return -1
             Else If msg.isListItemFocused()
                 print "Focused msg: ";msg.GetMessage();"row: ";msg.GetIndex();
                 print " col: ";msg.GetData()
@@ -99,21 +99,76 @@ Function Main()
                 print " col: ";msg.GetData()
                 row = msg.GetIndex()
                 col = msg.GetData()
-                video = gridList[row][col]
-                If row = 0 Then 
-                    If video.episodeCount < 1 Then
-                        ShowMessage("", "This show has no episodes")
-                    Else
-                       ShowTvShowEpisodesGrid(col)
-                    End if
+                'if the settings item was selected
+                If row = 2 Then
+                    ShowSettings(col)
                 Else
-      
-                    PlayVideo(video)
-              End if
+                    video = gridList[row][col]
+                    If row = 0 Then 
+                        If video.episodeCount < 1 Then
+                            ShowMessage("", "This show has no episodes")
+                        Else
+                           ShowTvShowEpisodesGrid(col)
+                        End if
+                    Else
+                        PlayVideo(video)
+                    End if
+                End if
             End if
         End if
     End While
 End Function
+
+
+Sub LoadLibraryFromJson()
+    'the url pointing to the json file on the server containing the list of videos
+    videoListUrl = GetVideoJsonUrl()
+    print "videoListUrl: "; videoListUrl 
+    'if the video list is null, create an empty list of videos and movies
+    If (videoListUrl = invalid) Then
+        print "video list is invalid"
+        m.lib = {
+            movies: [], 
+            tvShows: []
+        }
+    Else
+        print "video list is VALID"
+        'get the list of videos from the server
+        searchRequest = CreateObject("roUrlTransfer") 
+        searchRequest.SetURL(videoListUrl)
+        lib = ParseJson(searchRequest.GetToString())
+        m.lib = lib
+    End if
+End Sub
+
+Function GetVideoJsonUrlFromUser() as Dynamic
+    screen = CreateObject("roKeyboardScreen")
+    port = CreateObject("roMessagePort") 
+     screen.SetMessagePort(port)
+     screen.SetTitle("Enter URL to video.json file")
+     screen.SetText("http://192.168.1.109:8080/PlumVideoPlayer/Web/videos.json")
+     screen.SetDisplayText("Enter the url to the video.json file on server.")
+     screen.SetMaxLength(8)
+     screen.AddButton(1, "Ok")
+     screen.AddButton(2, "Cancel")
+     screen.Show() 
+  
+     while true
+         msg = wait(0, screen.GetMessagePort()) 
+         print "message received"
+         If type(msg) = "roKeyboardScreenEvent"
+             If msg.isScreenClosed()
+                 Return invalid
+             Else If msg.isButtonPressed() then
+                 If msg.GetIndex() = 1
+                     Return screen.GetText()
+                 End If
+             End If
+         End If
+     End While 
+     Return invalid
+ End Function
+
 
 
 Function ShowTvShowEpisodesGrid(showIndex as integer)
@@ -174,7 +229,7 @@ Function ShowTvShowEpisodesGrid(showIndex as integer)
         msg = wait(0, port)
         if type(msg) = "roGridScreenEvent" then
             if msg.isScreenClosed() then
-                return -1
+                Return -1
             Else If msg.isListItemFocused()
                 print "Focused msg: ";msg.GetMessage();"row: ";msg.GetIndex();
                 print " col: ";msg.GetData()
@@ -212,9 +267,17 @@ Sub ShowMessage(messageTitle as String, message as String)
                 exit while
             End If
         End If
-    End While 
+    End While
+End Sub
 
-
+Sub ShowSettings(n)
+    If (n = 0) Then
+        SetVideoJsonUrl(GetVideoJsonUrlFromUser())
+    Else If (n = 1) Then
+        print "Refresh media list"
+        Main()
+        
+    End If
 End Sub
 
 Function PlayVideo(video)
@@ -249,7 +312,7 @@ Function PlayVideo(video)
     screen.SetMessagePort(port)
     screen.Show() 
    ' Wait in a loop on the message port for events to be received.  
-   ' We will just quit the loop and return to the calling function 
+   ' We will just quit the loop and Return to the calling function 
    ' when the users terminates playback, but there are other things 
    ' you could do here like monitor playback position and see events 
    ' from the streaming player.  Look for status messages from the video 
