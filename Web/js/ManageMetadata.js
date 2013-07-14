@@ -4,6 +4,10 @@ function fetchMetadata() {
 
 function action(action) {
     var $r = $(".warning");
+    //if no row was selected, stop executing
+    if ($r.length === 0) {
+        return;
+    }
     $.getJSON("Ajax/MetadataManager.php",
             {
                 baseUrl: $r.attr("baseurl"),

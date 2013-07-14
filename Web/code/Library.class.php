@@ -61,7 +61,7 @@ class Library {
      */
     public function flush() {
         $videoList = json_encode($this, JSON_PRETTY_PRINT);
-        file_put_contents("videos.json", $videoList);
+        file_put_contents(dirname(__FILE__) . "/../videos.json", $videoList);
     }
 
     function videoIndexof($fullPath) {

@@ -6,11 +6,11 @@
         <li><a href="#tvShowsPane" data-toggle="tab">Tv Shows</a></li>
         <li><a href="#tvEpisodesPane" data-toggle="tab">Tv Episodes</a></li>
     </ul>
-    <div class="buttonArea">
-        <a class="btn" onclick="action('<?php echo Enumerations::MetadataManagerAction_FetchMetadata;?>');">Fetch Metadata</a>
-        <a class="btn" onclick="action('<?php echo Enumerations::MetadataManagerAction_ReloadMetadata;?>');">Reload Metadata</a>
-        <a class="btn" onclick="action('<?php echo Enumerations::MetadataManagerAction_FetchPoster;?>');">Fetch Poster</a>
-        <a class="btn" onclick="action('<?php echo Enumerations::MetadataManagerAction_GeneratePosters;?>');">Generate SD and HD Posters</a>
+    <div class="buttonArea" style="height:20px;">
+        <a class="btn action " onclick="action('<?php echo Enumerations::MetadataManagerAction_FetchMetadata;?>');">Fetch Metadata</a>
+        <a class="btn action " onclick="action('<?php echo Enumerations::MetadataManagerAction_ReloadMetadata;?>');">Reload Metadata</a>
+        <a class="btn action " onclick="action('<?php echo Enumerations::MetadataManagerAction_FetchPoster;?>');">Fetch Poster</a>
+        <a class="btn action " onclick="action('<?php echo Enumerations::MetadataManagerAction_GeneratePosters;?>');">Generate SD and HD Posters</a>
     </div>
     <div class="tab-content">
         <div id="moviesPane" class="tab-pane active">
@@ -67,7 +67,7 @@ function printVideoTable($videoList) { ?>
         <thead>
             <tr title="sort">
                 <th>Title</th>
-                <th>Has Metadata</th>
+                <th>nfo file exists</th>
                 <th>Poster Exists</th>
                 <th>Has SD Poster</th>
                 <th>Has HD Poster</th>
@@ -87,9 +87,9 @@ function printVideoTable($videoList) { ?>
 function printVideoRow($v) {
     $vSuccess = $v->getSdPosterExists() && $v->getHdPosterExists();
     ?>
-    <tr class="<?php echo $vSuccess ? "success" : "error"; ?>" mediatype="<?php echo $v->getMediaType(); ?>" baseurl="<?php echo htmlspecialchars($v->baseUrl); ?>" basepath="<?php echo htmlspecialchars($v->basePath); ?>" fullpath="<?php echo htmlspecialchars($v->fullPath); ?>">
+    <tr style="cursor:pointer;" class="<?php echo $vSuccess ? "success" : "error"; ?>" mediatype="<?php echo $v->getMediaType(); ?>" baseurl="<?php echo htmlspecialchars($v->baseUrl); ?>" basepath="<?php echo htmlspecialchars($v->basePath); ?>" fullpath="<?php echo htmlspecialchars($v->fullPath); ?>">
         <td><?php echo $v->title; ?></td>
-        <td><?php echo $v->getHdPosterExists() ? color("Yes", "green") : color("No", "red"); ?></td>
+        <td><?php echo $v->hasMetadata() ? color("Yes", "green") : color("No", "red"); ?></td>
         <td><?php echo $v->posterExists() ? color("Yes", "green") : color("No", "red"); ?></td>
         <td><?php echo $v->getSdPosterExists() ? color("Yes", "green") : color("No", "red"); ?> </td>
         <td><?php echo $v->getHdPosterExists() ? color("Yes", "green") : color("No", "red"); ?> </td>
