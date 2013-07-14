@@ -5,7 +5,7 @@
     </ul>
     <div class="tab-content">
         <div id="moviesPane" class="tab-pane active">
-            <h2>Movies</h2>
+            <h2>Movies</h2> 
             <?php
             foreach ($movies as $movie) {
                 ?>
