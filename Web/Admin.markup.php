@@ -3,7 +3,7 @@
 <a href='Generate.php' class="btn">Generate library</a>
 <br/>
 <br/>
-<a href='ManageMetadata.php' class="btn">Manage Metadata</a>
+<a href='MetadataManager.php' class="btn">Manage Metadata</a>
 <br/>
 <br/><a href="#videosJsonModal" class="btn" role="button" data-toggle="modal" onclick="getVideosJson();">View videos.json</a>
 <div id="videosJsonModal" class="modal hide">

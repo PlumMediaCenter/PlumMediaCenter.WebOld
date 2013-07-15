@@ -16,7 +16,7 @@ class Library {
         
     }
 
-    function loadShallowFromJson() {
+    static function getJson() {
         //load the json file into memory
         $json = $string = file_get_contents(dirname(__FILE__) . "/../videos.json");
         $lib = json_decode($json);
@@ -24,7 +24,7 @@ class Library {
     }
 
     function loadFullFromJson() {
-        $lib = $this->loadShallowFromJson();
+        $lib = getJson();
         //spin through the movies, load an actual movie object from each
         foreach ($lib->movies as $movie) {
             $v = new Movie($movie->baseUrl, $movie->basePath, $movie->fullPath);

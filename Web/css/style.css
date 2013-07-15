@@ -48,3 +48,7 @@ th{
     background-image: url(../img/tablesort/bg.png); 
     padding-left:30px !important;
 }
+
+.videoRow img{
+    height: 100px;
+}

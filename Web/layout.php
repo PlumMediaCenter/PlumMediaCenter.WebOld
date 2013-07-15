@@ -10,7 +10,7 @@
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
-                    <a class="brand" href="index.php">Roku LAN Video Player</a>
+                    <a class="brand" href="index.php">Plum Video Player</a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li id="homeNav" ><a href="index.php">Home</a></li>

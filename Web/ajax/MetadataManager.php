@@ -23,17 +23,11 @@ switch ($_GET["action"]) {
     case Enumerations::MetadataManagerAction_ReloadMetadata:
         break;
 }
-
-
-
-
-
-
-//update the library 
-$l = new Library();
-$l->loadFullFromJson();
-$l->update($fullPath);
-$l->flush();
+////update the library 
+//$l = new Library();
+//$l->loadFullFromJson();
+//$l->update($fullPath);
+//$l->flush();
 //return the result
 echo json_encode($success);
 ?>

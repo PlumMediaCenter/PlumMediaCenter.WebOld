@@ -11,7 +11,7 @@ class Video {
     public $baseUrl;
     public $basePath;
     public $fullPath;
-    protected $mediaType;
+    public $mediaType;
     protected $metadata;
     public $title;
     public $plot = "";
