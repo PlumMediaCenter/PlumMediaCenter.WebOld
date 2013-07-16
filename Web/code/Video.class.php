@@ -2,6 +2,9 @@
 
 include_once("SimpleImage.class.php");
 include_once("Enumerations.class.php");
+include_once(dirname(__FILE__) . "/../config.php");
+include_once(dirname(__FILE__) . "/functions.php");
+
 
 class Video {
 
@@ -12,7 +15,6 @@ class Video {
     public $basePath;
     public $fullPath;
     public $mediaType;
-    protected $metadata;
     public $title;
     public $plot = "";
     public $year;
@@ -22,7 +24,10 @@ class Video {
     public $mpaa = "N/A";
     public $actorList = [];
     public $generatePosterMethod;
-    
+    protected $metadata;
+    protected $onlineMovieDatabaseId;
+    protected $metadataFetcher;
+
     function __construct($baseUrl, $basePath, $fullPath) {
         //save the important stuff
         $this->baseUrl = $baseUrl;
@@ -53,6 +58,21 @@ class Video {
 
     function getMediaType() {
         return $this->mediaType;
+    }
+
+    /**
+     * Given the url of an image, this function will pull down that poster and save it to the poster file path
+     * @param type $posterUrl
+     * @return boolean
+     */
+    function downloadPoster($posterUrl) {
+        $posterImagePath = $this->getPosterPath();
+        $success = saveImageFromUrl($posterUrl, $posterImagePath);
+        if ($success === true) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -88,7 +108,7 @@ class Video {
         return file_exists($this->getPosterPath());
     }
 
-    private function getVideoName() {
+    public function getVideoName() {
         //For now, just return the filename without the extension.
         return pathinfo($this->fullPath, PATHINFO_FILENAME);
     }
@@ -134,7 +154,7 @@ class Video {
             return true;
         }
     }
-    
+
     protected function loadMetadata() {
         //get the path to the nfo file
         $nfoPath = $this->getNfoPath();

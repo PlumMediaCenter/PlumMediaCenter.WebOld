@@ -19,8 +19,15 @@ switch ($_GET["action"]) {
     case Enumerations::MetadataManagerAction_FetchMetadata:
         break;
     case Enumerations::MetadataManagerAction_FetchPoster:
+        $success = $v->fetchPoster();
         break;
     case Enumerations::MetadataManagerAction_ReloadMetadata:
+        break;
+    case Enumerations::MetadataManagerAction_FetchAndGeneratePosters:
+        $success = $v->fetchPoster();
+         //generate the posters
+        $success = $success && $v->generateSdPoster();
+        $success = $success && $v->generateHdPoster();
         break;
 }
 ////update the library 

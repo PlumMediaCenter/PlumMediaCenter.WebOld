@@ -15,6 +15,7 @@ class Enumerations {
     const MetadataManagerAction_ReloadMetadata = "ReloadMetadata";
     const MetadataManagerAction_FetchMetadata = "FetchMetadata";
     const MetadataManagerAction_FetchPoster = "FetchPoster";
+    const MetadataManagerAction_FetchAndGeneratePosters = "FetchAndGeneratePosters";
 
 }
 

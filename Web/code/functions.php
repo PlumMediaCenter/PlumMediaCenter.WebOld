@@ -1,7 +1,6 @@
 <?php
 
-function handleError($errno, $errstr, $errfile, $errline, array $errcontext)
-{
+function handleError($errno, $errstr, $errfile, $errline, array $errcontext) {
     // error was suppressed with the @-operator
     if (0 === error_reporting()) {
         return false;
@@ -9,6 +8,7 @@ function handleError($errno, $errstr, $errfile, $errline, array $errcontext)
 
     throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 }
+
 //declare a custom error handler so we can try catch warnings 
 set_error_handler('handleError');
 
@@ -102,8 +102,36 @@ function fileIsValidVideo($file) {
     } return false;
 }
 
-function color($text, $color){
+function color($text, $color) {
     return "<span style='color: $color;'>$text</span>";
+}
+
+function saveImageFromUrl($imageUrl, $imageDest) {
+    //if there was no image url, return false
+    if ($imageUrl == null) {
+        return false;
+    }
+    //if there was no image url, return false
+    if (strlen($imageUrl) < 1) {
+        return false;
+    }
+    //open the poster file from tvdb
+    $ch = curl_init($imageUrl);
+    //delete the image if it already exists
+    if (file_exists($imageDest)) {
+        unlink($imageDest);
+    }
+    $fp = fopen($imageDest, 'wb');
+    curl_setopt($ch, CURLOPT_FILE, $fp);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_exec($ch);
+    curl_close($ch);
+    $success = fclose($fp);
+    //if the file was not successfully saved, delete any file we opened.
+    if ($success === false) {
+        unlink($imageDest);
+    }
+    return $success;
 }
 
 ?>
