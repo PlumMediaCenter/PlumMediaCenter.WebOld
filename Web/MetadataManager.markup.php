@@ -1,6 +1,6 @@
 <script type="text/javascript" src="js/jquery.tablesorter.min.js"></script>
 <script type="text/javascript" src="js/ManageMetadata.js"></script>
-<div class="tabbable">
+<div class="tabbable" style="padding-top:50px;">
     <ul class=" nav nav-tabs">
         <li <?php echo $selectedTab == Enumerations::MediaType_Movie ? " class='active' " : ""; ?>><a href="#moviesPane" data-toggle="tab">Movies</a></li>
         <li <?php echo $selectedTab == Enumerations::MediaType_TvShow ? " class='active' " : ""; ?>><a href="#tvShowsPane" data-toggle="tab">Tv Shows</a></li>
@@ -13,7 +13,7 @@
         <a class="btn action " onclick="action('<?php echo Enumerations::MetadataManagerAction_GeneratePosters; ?>');">Generate SD and HD Posters</a>
         <a class="btn action " onclick="action('<?php echo Enumerations::MetadataManagerAction_FetchAndGeneratePosters; ?>');">Fetch and Generate Sd and HD Poster</a>
     </div>
-    <div class="tab-content">
+    <div id="tablesArea" class="tab-content" style="border:1px solid black; min-height: 300px; overflow:auto;">
         <div id="moviesPane" class="tab-pane  <?php echo $selectedTab == Enumerations::MediaType_Movie ? "active" : ""; ?>">
             <h2>Movies</h2>
             <?php printVideoTable($movies); ?>
@@ -26,7 +26,7 @@
             ?>
         </div>
         <div id="tvEpisodesPane" class="tab-pane  <?php echo $selectedTab == Enumerations::MediaType_TvEpisode ? "active" : ""; ?>">
-            <h2>Tv Episodes</h2>
+            <h2 style="position:relative;">Tv Episodes</h2>
 
             <?php
             $tvEpisodes = [];
@@ -44,6 +44,8 @@
     </div>
 </div>
 
+
+
 <script type="text/javascript">
             $(document).ready(function() {
                 $(".table-sort").tablesorter();
@@ -58,30 +60,42 @@
                     $("tr.warning").removeClass("warning");
                     $(this).addClass("warning").addClass("warning");
                 });
+                //resize the video grids to fill vertical space
+                $(window).resize(resize);
+                resize();
             });
+
+            function resize() {
+                var height = $(window).height() - 150;
+                $("#tablesArea").height(height + "px");
+                var newHeight = $("#tablesArea").height() - 70;
+                $(".tableScrollArea").height(newHeight + "px");
+            }
 </script>
 
 <?php
 
 function printVideoTable($videoList) { ?>
-    <table class="table table-hover table-sort">
-        <thead>
-            <tr title="sort">
-                <th>Title</th>
-                <th>nfo file exists</th>
-                <th>Poster Exists</th>
-                <th>SD Poster</th>
-                <th>HD Poster</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            foreach ($videoList as $v) {
-                printVideoRow($v);
-            }
-            ?>
-        </tbody>
-    </table>
+    <div class="tableScrollArea">
+        <table class="table table-hover table-sort">
+            <thead>
+                <tr title="sort">
+                    <th>Title</th>
+                    <th>nfo file exists</th>
+                    <th>Poster Exists</th>
+                    <th>SD Poster</th>
+                    <th>HD Poster</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($videoList as $v) {
+                    printVideoRow($v);
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
     <?php
 }
 

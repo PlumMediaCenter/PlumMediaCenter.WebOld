@@ -5,15 +5,15 @@
     Description:
         Purpose of the stylesheet follows.
 */
-
+html, body{
+    height:100%;
+}
 .brand{
     color:purple
 }
 
 body{
-    padding-top:50px;
-    padding-left:20px;
-    padding-right:20px;
+    padding: 0px;
 }
 
 .tile{
@@ -51,4 +51,9 @@ th{
 
 .videoRow img{
     height: 100px;
+}
+
+.tableScrollArea{
+    overflow:auto; 
+    height: 100%;
 }
