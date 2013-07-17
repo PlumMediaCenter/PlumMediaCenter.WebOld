@@ -5,7 +5,11 @@
 <br/>
 <a href='MetadataManager.php' class="btn">Manage Metadata</a>
 <br/>
-<br/><a href="#videosJsonModal" class="btn" role="button" data-toggle="modal" onclick="getVideosJson();">View videos.json</a>
+<br/>
+<a href="#videosJsonModal" class="btn" role="button" data-toggle="modal" onclick="getVideosJson();">View videos.json</a>
+<br/>
+<br/>
+<a href='Log.php' class="btn">View Log</a>
 <div id="videosJsonModal" class="modal hide">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>

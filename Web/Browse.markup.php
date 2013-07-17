@@ -10,7 +10,8 @@
             foreach ($movies as $movie) {
                 ?>
                 <div class="tile">
-                    <img style="width:100%;" src="<?php echo $movie->hdPosterUrl; ?>"/>
+                    <span><?php echo $movie->title; ?></span>
+                    <img src="<?php echo $movie->hdPosterUrl; ?>"/>
                 </div>
                 <?php
             }

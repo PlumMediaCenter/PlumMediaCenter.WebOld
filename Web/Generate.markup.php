@@ -39,11 +39,16 @@
     </div>
 </form>
 <script type="text/javascript">
-    $("input").click(generateUrl).keypress(generateUrl);
+    $("input").click(generateUrl).keyup(generateUrl);
     function generateUrl() {
         var url = "Generate.php?" + $("#formGenerate").serialize() + "&generate=true";
         $("#url").attr("href", url).html(url);
     }
     //generate the url at page load
     generateUrl();
+    
+    $("input").keyup(function(){
+        //don't let the user enter windows slashes....automatically change them to unix slashes
+        $(this).val($(this).val().replace(/\\/g, '/'));
+    })
 </script>

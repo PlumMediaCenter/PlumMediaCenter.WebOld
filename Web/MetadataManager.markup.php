@@ -1,6 +1,7 @@
 <script type="text/javascript" src="js/jquery.tablesorter.min.js"></script>
 <script type="text/javascript" src="js/ManageMetadata.js"></script>
-<div class="tabbable" style="padding-top:50px;">
+
+<div class="tabbable" >
     <ul class=" nav nav-tabs">
         <li <?php echo $selectedTab == Enumerations::MediaType_Movie ? " class='active' " : ""; ?>><a href="#moviesPane" data-toggle="tab">Movies</a></li>
         <li <?php echo $selectedTab == Enumerations::MediaType_TvShow ? " class='active' " : ""; ?>><a href="#tvShowsPane" data-toggle="tab">Tv Shows</a></li>
@@ -80,8 +81,11 @@ function printVideoTable($videoList) { ?>
         <table class="table table-hover table-sort">
             <thead>
                 <tr title="sort">
+                    <?php if (isset($videoList[0]) && $videoList[0]->mediaType == Enumerations::MediaType_TvEpisode) { ?>
+                        <th>Series</th>
+                    <?php } ?>
                     <th>Title</th>
-                    <th>nfo file exists</th>
+                    <th>nfo exists</th>
                     <th>Poster Exists</th>
                     <th>SD Poster</th>
                     <th>HD Poster</th>
@@ -103,11 +107,14 @@ function printVideoRow($v) {
     $vSuccess = true;
     ?>
     <tr style="cursor:pointer;" class="videoRow <?php echo $vSuccess ? "success" : "error"; ?>" mediatype="<?php echo $v->mediaType; ?>" baseurl="<?php echo htmlspecialchars($v->baseUrl); ?>" basepath="<?php echo htmlspecialchars($v->basePath); ?>" fullpath="<?php echo htmlspecialchars($v->fullPath); ?>">
+        <?php if ($v->mediaType == Enumerations::MediaType_TvEpisode) { ?>
+            <td><?php echo $v->showName; ?></td>
+        <?php } ?>
         <td><?php echo $v->title; ?></td>
         <td><?php echo false ? color("Yes", "green") : color("No", "red"); ?></td>
-        <td><?php echo true ? color("Yes", "green") : color("No", "red"); ?></td>
-        <td><img src='<?php echo $v->sdPosterUrl; ?>'/> </td>
-        <td><img src='<?php echo $v->hdPosterUrl; ?>'/></td>
+        <td><?php echo $v->posterExists ? color("Yes", "green") : color("No", "red"); ?></td>
+        <td><img class="sd" src="<?php echo $v->sdPosterUrl; ?>"/> </td>
+        <td><img class="hd" src="<?php echo $v->hdPosterUrl; ?>"/></td>
 
     </tr>
     <?php

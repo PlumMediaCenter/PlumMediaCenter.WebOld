@@ -1,7 +1,7 @@
 <?php
 
-include("code/functions.php");
-include("code/Model.class.php");
+include_once("code/functions.php");
+include_once("code/Model.class.php");
 
 class Page {
 

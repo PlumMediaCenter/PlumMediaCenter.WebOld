@@ -1,5 +1,7 @@
 <?php
+
 include_once("Video.class.php");
+
 class TvEpisode extends Video {
 
     const EpisodeSdImageWidth = 140; //140x94
@@ -7,6 +9,7 @@ class TvEpisode extends Video {
 
     public $seasonNumber;
     public $episodeNumber;
+    public $showName;
 
     function __construct($baseUrl, $basePath, $fullPath) {
         parent::__construct($baseUrl, $basePath, $fullPath);
@@ -15,6 +18,13 @@ class TvEpisode extends Video {
         $this->episodeNumber = $this->getEpisodeNumber();
         //load all of the information from the metadata file, if it exists
         $this->loadMetadata();
+        $this->showName = $this->getShowName();
+    }
+
+    function getShowName() {
+        $str = str_replace($this->basePath, "", $this->fullPath);
+        $arr = explode("/", $str);
+        return $arr[0];
     }
 
     /**

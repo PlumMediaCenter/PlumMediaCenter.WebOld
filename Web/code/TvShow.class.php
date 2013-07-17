@@ -24,12 +24,12 @@ class TvShow extends Video {
         //generate all tv episode items
         $this->seasons = $this->getSeasonList();
     }
-    
+
     /**
      *  Get the array of all tv episodes
      * @return type
      */
-    function getEpisodes(){
+    function getEpisodes() {
         return $this->episodes;
     }
 

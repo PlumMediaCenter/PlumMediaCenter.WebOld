@@ -19,6 +19,7 @@ class Video {
     public $plot = "";
     public $year;
     public $url;
+    public $posterExists;
     public $sdPosterUrl;
     public $hdPosterUrl;
     public $mpaa = "N/A";
@@ -38,7 +39,7 @@ class Video {
         $this->url = $this->encodeUrl($this->getUrl());
         $this->sdPosterUrl = $this->encodeUrl($this->getSdPosterUrl());
         $this->hdPosterUrl = $this->encodeUrl($this->getHdPosterUrl());
-
+        $this->posterExists = $this->posterExists();
         $this->title = $this->getVideoName();
         $this->generatePosterMethod = $this->getGeneratePosterMethod();
         $this->generatePosters();
@@ -266,9 +267,6 @@ class Video {
         $posterPath = $this->getPosterPath();
         if (file_exists($posterPath)) {
             $image = new SimpleImage();
-            if (strpos($posterPath, "Jwoww") > 0) {
-                $i = 0;
-            }
             //load the image
             try {
                 $success = $image->load($posterPath);

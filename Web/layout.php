@@ -7,24 +7,26 @@
 
     </head>
     <body>
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="brand" href="index.php">Plum Video Player</a>
-                    <div class="nav-collapse collapse">
-                        <ul class="nav">
-                            <li id="homeNav" ><a href="index.php">Home</a></li>
-                            <li id="browseNav"><a href="Browse.php">Browse</a></li>
-                            <li id="adminNav"><a href="Admin.php">Admin</a></li>
-                        </ul>
+        <div class="content">
+            <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="navbar-inner">
+                    <div class="container">
+                        <a class="brand" href="index.php">Plum Video Player</a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav">
+                                <li id="homeNav" ><a href="index.php">Home</a></li>
+                                <li id="browseNav"><a href="Browse.php">Browse</a></li>
+                                <li id="adminNav"><a href="Admin.php">Admin</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div style=""class="container">
-            <?php
-            echo isset($body) ? $body : "";
-            ?>
+            <div class="container">
+                <?php
+                echo isset($body) ? $body : "";
+                ?>
+            </div>
         </div>
     </body>
 </html>

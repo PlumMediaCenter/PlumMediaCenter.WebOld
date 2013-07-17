@@ -38,6 +38,7 @@ if (generateButtonPressed() == true) {
 //show the page
 $p = new Page(__FILE__);
 $m = $p->getModel();
+$m->title = "Generate Library - Plum Video Player";
 $p->show();
 
 /**
@@ -55,11 +56,13 @@ function getMovies($baseUrl, $basePath) {
     //spin through every folder in the source location
     foreach ($listOfAllFilesInSource as $fullPathToFile) {
         //create a new Movie object
+        writeToLog("New Movie: $fullPathToFile");
         $video = new Movie($baseUrl, $basePath, $fullPathToFile);
         //add the movie object to the list of all movies
         for ($i = 0; $i < dupNum(); $i++) {
             $movieList[] = $video;
         }
+        writeToLog("Finished $fullPathToFile");
     }
     return $movieList;
 }

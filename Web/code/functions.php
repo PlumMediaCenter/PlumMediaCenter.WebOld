@@ -134,4 +134,27 @@ function saveImageFromUrl($imageUrl, $imageDest) {
     return $success;
 }
 
+function writeToLog($message) {
+    $logPath = dirname(__FILE__) . "/../log.txt";
+    //get current time
+    $t = date("Y-m-d H:i:s");
+    //get time since last log
+    $microtime = microtime(true);
+    global $microtimeOfLastLog;
+    if ($microtimeOfLastLog == null) {
+        $microtimeOfLastLog = $microtime;
+    }
+    $secondsSinceLastLog = round(($microtime - $microtimeOfLastLog), 4);
+    //set the last log time to right now
+    $microtimeOfLastLog = $microtime;
+    $message = "$t -- $secondsSinceLastLog -- $message\n";
+    error_log($message, 3, $logPath);
+}
+
+function clearLog() {
+    $logPath = dirname(__FILE__) . "/../log.txt";
+    file_put_contents($logPath, "");
+    writeToLog("Logfile cleared");
+}
+
 ?>
