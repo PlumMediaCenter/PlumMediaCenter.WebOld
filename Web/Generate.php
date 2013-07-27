@@ -32,6 +32,7 @@ if (generateButtonPressed() == true) {
    
     $success = file_put_contents("videos.json", $videoList);
     echo $success ? color("Generated videos.json", "green") : color("Failed to write data to videos.json", "red");
+    return;
 }
 
 
