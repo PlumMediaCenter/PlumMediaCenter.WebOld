@@ -13,9 +13,16 @@ function handleError($errno, $errstr, $errfile, $errline, array $errcontext) {
 set_error_handler('handleError');
 
 function getLibrary() {
-    //load the json file into memory
-    $json = $string = file_get_contents("videos.json");
-    $lib = json_decode($json);
+    if(file_exists("videos.json") === true){
+        //load the json file into memory
+        $json = $string = file_get_contents("videos.json");
+        $lib = json_decode($json);
+    }else{
+        $lib = [];
+        $lib["movies"] = [];
+        $lib["tvShows"] = [];
+        $lib = (object) $lib;
+    }
     return $lib;
 }
 

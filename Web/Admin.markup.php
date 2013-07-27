@@ -10,7 +10,7 @@
 <br/>
 <br/>
 <a href='Log.php' class="btn">View Log</a>
-<div id="videosJsonModal" class="modal hide">
+<div id="videosJsonModal" class="modal hide" style="width: 1000px; margin-left: -500px;">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
         <h3 id="myModalLabel"></h3>
@@ -19,6 +19,8 @@
 </div>
 <script type="text/javascript">
     function getVideosJson() {
-        $("#videosJsonModalContent").html("<pre>hello</pre>");
+        $.getJSON("videos.json", function(json) {
+            $("#videosJsonModalContent").html("<pre>" + JSON.stringify(json, undefined, 2) + "</pre>");
+        });
     }
 </script>
