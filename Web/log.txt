@@ -155,3 +155,15 @@
 2013-07-27 01:57:06 -- 0.0008 -- Finished C:/Videos/Movies/Billy Madison/Billy Madison.mp4
 2013-07-27 01:57:06 -- 0.0011 -- New Movie: C:/Videos/Movies/Face Off (1997)/FaceOff.mp4
 2013-07-27 01:57:06 -- 0.0009 -- Finished C:/Videos/Movies/Face Off (1997)/FaceOff.mp4
+2013-07-27 02:19:18 -- 0 -- New Movie: C:/Videos/Movies/Aladdin/Aladdin.mp4
+2013-07-27 02:19:18 -- 0.0011 -- Finished C:/Videos/Movies/Aladdin/Aladdin.mp4
+2013-07-27 02:19:18 -- 0.0003 -- New Movie: C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4
+2013-07-27 02:19:18 -- 0.0008 -- Finished C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4
+2013-07-27 02:19:18 -- 0.0002 -- New Movie: C:/Videos/Movies/Bambi/Bambi.mp4
+2013-07-27 02:19:18 -- 0.0008 -- Finished C:/Videos/Movies/Bambi/Bambi.mp4
+2013-07-27 02:19:18 -- 0.0002 -- New Movie: C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4
+2013-07-27 02:19:18 -- 0.0008 -- Finished C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4
+2013-07-27 02:19:18 -- 0.0002 -- New Movie: C:/Videos/Movies/Billy Madison/Billy Madison.mp4
+2013-07-27 02:19:18 -- 0.0008 -- Finished C:/Videos/Movies/Billy Madison/Billy Madison.mp4
+2013-07-27 02:19:18 -- 0.0003 -- New Movie: C:/Videos/Movies/Face Off (1997)/FaceOff.mp4
+2013-07-27 02:19:18 -- 0.0009 -- Finished C:/Videos/Movies/Face Off (1997)/FaceOff.mp4
