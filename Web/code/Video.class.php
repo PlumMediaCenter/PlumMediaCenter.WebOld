@@ -1,10 +1,9 @@
 <?php
-
+include_once("database/Queries.class.php");
 include_once("SimpleImage.class.php");
 include_once("Enumerations.class.php");
 include_once(dirname(__FILE__) . "/../config.php");
 include_once(dirname(__FILE__) . "/functions.php");
-
 
 class Video {
 
@@ -309,6 +308,14 @@ class Video {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Writes this video to the database
+     */
+    public function writeToDb() {
+        $filetype = strtolower(pathinfo($this->fullPath, PATHINFO_EXTENSION));
+        Queries::insertVideo($this->title, $this->fullPath, $filetype, $this->mediaType);
     }
 
 }

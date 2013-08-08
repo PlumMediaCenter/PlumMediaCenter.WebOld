@@ -1,12 +1,13 @@
 <?php
 
 include_once("Video.class.php");
+include_once("TvEpisode.class.php");
 
 class TvShow extends Video {
 
     public $seasons = [];
     //holds each episode in a list instead of grouped by seasons
-    private $episodes = [];
+    public $episodes = [];
     public $episodeCount = 0;
 
     function __construct($baseUrl, $basePath, $fullPath) {
@@ -78,6 +79,8 @@ class TvShow extends Video {
             }
             //add this episode to the season array 
             $seasonList[$episode->seasonNumber][$episode->episodeNumber] = $episode;
+            //add this episode to the episode list array
+            $this->episodes[] = $episode;
         }
 
         //short the season list ascending
