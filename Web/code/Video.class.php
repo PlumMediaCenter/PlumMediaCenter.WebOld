@@ -1,4 +1,5 @@
 <?php
+
 include_once("database/Queries.class.php");
 include_once("SimpleImage.class.php");
 include_once("Enumerations.class.php");
@@ -7,6 +8,7 @@ include_once(dirname(__FILE__) . "/functions.php");
 
 class Video {
 
+    const NoMetadata = "0000-00-00 00:00:00"; //this will never be a valid date, so use it for invalid metadata dates
     const SdImageWidth = 110; //110x150
     const HdImageWidth = 210; // 210x270
 
@@ -27,6 +29,8 @@ class Video {
     protected $metadata;
     protected $onlineMovieDatabaseId;
     protected $metadataFetcher;
+    protected $filetype = null;
+    protected $metadataLoaded = false;
 
     function __construct($baseUrl, $basePath, $fullPath) {
         //save the important stuff
@@ -155,58 +159,67 @@ class Video {
         }
     }
 
-    protected function loadMetadata() {
-        //get the path to the nfo file
-        $nfoPath = $this->getNfoPath();
-        //verify that the file exists
-        if (file_exists($nfoPath) === false) {
-            return false;
-        }
-        //load the nfo file as an xml file 
-        //hide any xml errors that may pop up
-        // $current_error_reporting = error_reporting();
-        // error_reporting(0);
-        //open the nfo file
-        $m = new DOMDocument();
-        $success = $m->load($nfoPath);
-        if ($success == false) {
-            //fail gracefully, since we will just use dummy information
-            return false;
-        }
+    /**
+     * Loads pertinent metadata from the nfo file into this class
+     * @param bool $force -- optional. forces metadata to be loaded, even if it has already been loaded
+     * @return boolean
+     */
+    protected function loadMetadata($force = false) {
+        //if the metadata hasn't been loaded yet, or force is true (saying do it anyway), load the metadata
+        if ($this->metadataLoaded === false || $force === true) {
+            //get the path to the nfo file
+            $nfoPath = $this->getNfoPath();
+            //verify that the file exists
+            if (file_exists($nfoPath) === false) {
+                return false;
+            }
+            //load the nfo file as an xml file 
+            //hide any xml errors that may pop up
+            // $current_error_reporting = error_reporting();
+            // error_reporting(0);
+            //open the nfo file
+            $m = new DOMDocument();
+            $success = $m->load($nfoPath);
+            if ($success == false) {
+                //fail gracefully, since we will just use dummy information
+                return false;
+            }
 
-        //parse the nfo file
-        $t = $m->getElementsByTagName("title")->item(0)->nodeValue;
-        //if the title is empty, use the filename like defined in the constructor
-        $this->title = strlen($t) > 0 ? $t : $this->title;
-        $this->plot = $m->getElementsByTagName("plot")->item(0)->nodeValue;
-        if ($this->mediaType == Enumerations::MediaType_Movie) {
-            $this->year = $m->getElementsByTagName("year")->item(0)->nodeValue;
-        } else {
-            $y = $m->getElementsByTagName("premiered")->item(0);
-            if ($y != null) {
-                $this->year = $y->nodeValue;
+            //parse the nfo file
+            $t = $m->getElementsByTagName("title")->item(0)->nodeValue;
+            //if the title is empty, use the filename like defined in the constructor
+            $this->title = strlen($t) > 0 ? $t : $this->title;
+            $this->plot = $m->getElementsByTagName("plot")->item(0)->nodeValue;
+            if ($this->mediaType == Enumerations::MediaType_Movie) {
+                $this->year = $m->getElementsByTagName("year")->item(0)->nodeValue;
+            } else {
+                $y = $m->getElementsByTagName("premiered")->item(0);
+                if ($y != null) {
+                    $this->year = $y->nodeValue;
+                }
             }
-        }
-        $this->mpaa = $m->getElementsByTagName("mpaa")->item(0)->nodeValue;
+            $this->mpaa = $m->getElementsByTagName("mpaa")->item(0)->nodeValue;
 
-        //specify a maximum number of actors to include
-        $maxActorNumber = 4;
-        $actorNodeList = $m->getElementsByTagName("actor");
-        foreach ($actorNodeList as $actorNode) {
-            if (count($this->actorList) > $maxActorNumber) {
-                break;
-            }
-            $actor = [];
-            $nameItem = $actorNode->getElementsByTagName("name")->item(0);
-            $actor["name"] = $nameItem != null ? $nameItem->nodeValue : "";
-            $roleItem = $actorNode->getElementsByTagName("role")->item(0);
-            $actor["role"] = $roleItem != null ? $roleItem->nodeValue : "";
-            //if we have either an actor name or role, add this actor
-            if ($actor["name"] != "" || $actor["role"] != "") {
-                $this->actorList[] = $actor;
+            //specify a maximum number of actors to include
+            $maxActorNumber = 4;
+            $actorNodeList = $m->getElementsByTagName("actor");
+            foreach ($actorNodeList as $actorNode) {
+                if (count($this->actorList) > $maxActorNumber) {
+                    break;
+                }
+                $actor = [];
+                $nameItem = $actorNode->getElementsByTagName("name")->item(0);
+                $actor["name"] = $nameItem != null ? $nameItem->nodeValue : "";
+                $roleItem = $actorNode->getElementsByTagName("role")->item(0);
+                $actor["role"] = $roleItem != null ? $roleItem->nodeValue : "";
+                //if we have either an actor name or role, add this actor
+                if ($actor["name"] != "" || $actor["role"] != "") {
+                    $this->actorList[] = $actor;
+                }
             }
         }
-        //error_reporting($current_error_reporting);
+        //if made it to here, all is good. return true
+        return true;
     }
 
     function getPosterPath() {
@@ -311,11 +324,84 @@ class Video {
     }
 
     /**
-     * Writes this video to the database
+     *  Returns the filetype of the video based on the extension of the file
+     * @return string - the filetype of the video based on its extension
+     */
+    public function getFiletype() {
+        //if the filetype has not yet been determined, determine it
+        if ($this->filetype === null) {
+            $this->filetype = strtolower(pathinfo($this->fullPath, PATHINFO_EXTENSION));
+        }
+        return $this->filetype;
+    }
+
+    /**
+     * Writes this video to the database. If it has not yet been added to the database, an insert is performed.
+     * If it already exists, an update is performed.
      */
     public function writeToDb() {
-        $filetype = strtolower(pathinfo($this->fullPath, PATHINFO_EXTENSION));
-        Queries::insertVideo($this->title, $this->fullPath, $filetype, $this->mediaType);
+        //make sure this video has the latest metadata loaded
+        $this->loadMetadata();
+        $videoId = $this->getVideoId();
+        //if this is a video that does not yet exist in the database, create a new video
+        if ($videoId === -1) {
+            Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate());
+        } else {
+            //this is an existing video that needs to be updated. update it
+            Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate());
+        }
+    }
+
+    /**
+     * Modifies the public variables in this class in order to only write the necessary variables to the json file. 
+     */
+    public function prepForJsonification() {
+        unset($this->baseUrl);
+        unset($this->basePath);
+        unset($this->fullPath);
+        unset($this->mediaType);
+        unset($this->posterExists);
+        unset($this->generatePosterMethod);
+    }
+
+    /**
+     * Compares the last modified time of the metadata file currently attached to this video with the 
+     * last modified time of the metadata that was added to the db. 
+     * @return boolean - true if the metadata dates of the db and the file are equal, false if they are not
+     */
+    public function metadataInDatabaseIsUpToDate() {
+        $nfoLastModifiedTime = $this->getNfoLastModifiedDate();
+
+        $videoId = $this->getVideoId();
+        //if the videoId is invalid, this is a new video and therefore the metadata in the db is out of date since it has not been added yet
+        if ($videoId == -1) {
+            //there is no info about this video in the db. obviously, the metadata is NOT up to date
+            return false;
+        } else {
+            $dbLastModifiedNfoDate = Queries::getVideoMetadataLastModifiedDate($videoId);
+            //if the two metadata modified dates are equal, then the metadata is up to date
+            if (strcmp($nfoLastModifiedTime, $dbLastModifiedNfoDate) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getVideoId() {
+        return Queries::getVideoIdByPath($this->fullPath);
+    }
+
+    protected function getNfoLastModifiedDate() {
+        //if this movie has metadata
+        if ($this->hasMetadata()) {
+            //get the path to the metadata
+            $metadataPath = $this->getNfoPath();
+
+            $modifiedDate = date("Y-m-d H:i:s", filemtime($metadataPath));
+            return $modifiedDate;
+        } else {
+            return Video::NoMetadata;
+        }
     }
 
 }

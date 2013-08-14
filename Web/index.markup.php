@@ -14,6 +14,9 @@
 <div class="row">
     <div class="span2">Tv Show Count:</div><div class="span2">  <?php echo $tvShowCount; ?></div>
 </div>
+<div class="row">
+    <div class="span2">Tv Episode Count:</div><div class="span2">  <?php echo $tvEpisodeCount; ?></div>
+</div>
 <script type="text/javascript">
     $("#homeNav").addClass("active");
 </script>

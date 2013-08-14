@@ -16,6 +16,8 @@ class Enumerations {
     const MetadataManagerAction_FetchMetadata = "FetchMetadata";
     const MetadataManagerAction_FetchPoster = "FetchPoster";
     const MetadataManagerAction_FetchAndGeneratePosters = "FetchAndGeneratePosters";
+    const SecurityType_Public = "Public";
+    const SecurityType_LoginRequired = "LoginRequired";
 
 }
 

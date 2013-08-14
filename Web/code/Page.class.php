@@ -21,16 +21,21 @@ class Page {
     }
 
     function getModel() {
-        //if the model has not been imported yet, import it and instantiate an instance of the model.
-        if ($this->modelIsImported == false) {
-            $this->modelIsImported = true;
-            include($this->modelPath);
-            $modelName = str_replace(".model", "", pathinfo($this->modelPath, PATHINFO_FILENAME)) . "Model";
-            if (class_exists($modelName)) {
-                $this->model = new $modelName();
-            } else {
-                $this->model = (object)[];
+        if (file_exists($this->modelPath)) {
+            //if the model has not been imported yet, import it and instantiate an instance of the model.
+            if ($this->modelIsImported == false) {
+                $this->modelIsImported = true;
+
+                include($this->modelPath);
+                $modelName = str_replace(".model", "", pathinfo($this->modelPath, PATHINFO_FILENAME)) . "Model";
+                if (class_exists($modelName)) {
+                    $this->model = new $modelName();
+                } else {
+                    $this->model = (object) [];
+                }
             }
+        } else {
+            $this->model = (object) [];
         }
         return $this->model;
     }

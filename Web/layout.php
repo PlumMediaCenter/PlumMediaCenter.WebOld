@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html>
     <head><title><?php echo $title != null ? $title : ""; ?></title>
         <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>

@@ -71,9 +71,7 @@ body{
 .tableScrollArea{
 
 }
-.table{
-    height:400px;
-}
+
 .table th{
     white-space: nowrap;
 }

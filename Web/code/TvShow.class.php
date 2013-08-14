@@ -120,34 +120,43 @@ class TvShow extends Video {
         return $nfoPath;
     }
 
-    protected function loadMetadata() {
-        //get the path to the nfo file
-        $nfoPath = $this->getNfoPath();
-        //verify that the file exists
-        if (file_exists($nfoPath) === false) {
-            return false;
-        }
-        //load the nfo file as an xml file 
-        //hide any xml errors that may pop up
-        // $current_error_reporting = error_reporting();
-        // error_reporting(0);
-        //open the nfo file
-        $m = new DOMDocument();
-        $success = $m->load($nfoPath);
-        if ($success == false) {
-            //fail gracefully, since we will just use dummy information
-            return false;
-        }
+    protected function loadMetadata($force = false) {
+        if ($this->metadataLoaded === false || $force === true) {
+            //get the path to the nfo file
+            $nfoPath = $this->getNfoPath();
+            //verify that the file exists
+            if (file_exists($nfoPath) === false) {
+                return false;
+            }
+            //load the nfo file as an xml file 
+            //hide any xml errors that may pop up
+            // $current_error_reporting = error_reporting();
+            // error_reporting(0);
+            //open the nfo file
+            $m = new DOMDocument();
+            $success = $m->load($nfoPath);
+            if ($success == false) {
+                //fail gracefully, since we will just use dummy information
+                return false;
+            }
 
-        //parse the nfo file
-        $t = $m->getElementsByTagName("title")->item(0)->nodeValue;
-        //if the title is empty, use the filename like defined in the constructor
-        $this->title = strlen($t) > 0 ? $t : $this->title;
-        $this->plot = $m->getElementsByTagName("plot")->item(0)->nodeValue;
-        $this->year = $m->getElementsByTagName("year")->item(0)->nodeValue;
-        $this->mpaa = $m->getElementsByTagName("mpaa")->item(0)->nodeValue;
+            //parse the nfo file
+            $t = $m->getElementsByTagName("title")->item(0)->nodeValue;
+            //if the title is empty, use the filename like defined in the constructor
+            $this->title = strlen($t) > 0 ? $t : $this->title;
+            $this->plot = $m->getElementsByTagName("plot")->item(0)->nodeValue;
+            $this->year = $m->getElementsByTagName("year")->item(0)->nodeValue;
+            $this->mpaa = $m->getElementsByTagName("mpaa")->item(0)->nodeValue;
 
-        //error_reporting($current_error_reporting);
+            //error_reporting($current_error_reporting);
+        }
+    }
+
+    function prepForJsonification() {
+        parent::prepForJsonification();
+        foreach ($this->episodes as $episode) {
+            $episode->prepForJsonification();
+        }
     }
 
 }

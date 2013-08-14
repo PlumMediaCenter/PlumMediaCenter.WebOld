@@ -9,7 +9,7 @@
         <?php
         foreach ($logLines as $line) {
             $line = explode("--", $line);
-            echo "<tr><td>$line[0]</td>";
+            echo "<tr><td style='width:150px;'>$line[0]</td>";
             //echo "<td>" . number_format(doubleval($line[1]), 4, ".", ",") . "</td>";
             echo "<td>" . $line[1] . "</td>";
             echo "<td>$line[2]</td></tr>";
