@@ -1,6 +1,6 @@
 <?php ?>
 
-<a href='Generate.php' class="btn">Generate library</a>
+<a href='UpdateLibrary.php' class="btn">Generate/Update library</a>
 <br/>
 <br/>
 <a href='VideoSources.php' class="btn">Add/Remove Video Sources</a>

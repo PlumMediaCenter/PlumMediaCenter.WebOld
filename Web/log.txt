@@ -96,3 +96,142 @@
 2013-08-12 18:47:58 -- 0.0041 -- End generating videos.json
 2013-08-12 18:47:58 -- 0.0009 -- Generate Library Summary: 6 Movies. 7 Tv Shows. 23 Tv Episodes.
 2013-08-12 18:47:58 -- 0.0007 -- End Generate Library
+2013-08-18 19:05:31 -- 0 -- Begin update library
+2013-08-18 19:06:50 -- 0 -- Begin update library
+2013-08-18 19:06:57 -- 0 -- Begin update library
+2013-08-18 19:06:57 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:06:57 -- 0.001 -- Finished update library.
+2013-08-18 19:07:29 -- 0 -- Begin update library
+2013-08-18 19:07:29 -- 0.002 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:07:29 -- 0 -- Finished update library.
+2013-08-18 19:41:00 -- 0 -- Begin update library
+2013-08-18 19:41:00 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:41:00 -- 0.001 -- Finished update library.
+2013-08-18 19:42:07 -- 0 -- Begin update library
+2013-08-18 19:42:07 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:42:07 -- 0.002 -- Finished update library.
+2013-08-18 19:42:22 -- 0 -- Begin update library
+2013-08-18 19:42:22 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:42:22 -- 0.002 -- Finished update library.
+2013-08-18 19:43:22 -- 0 -- Begin update library
+2013-08-18 19:43:22 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:43:22 -- 0.002 -- Finished update library.
+2013-08-18 19:49:46 -- 0 -- Begin update library
+2013-08-18 19:49:46 -- 0.003 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:49:46 -- 0.001 -- Finished update library.
+2013-08-18 19:51:10 -- 0 -- Begin update library
+2013-08-18 19:51:10 -- 0.003 -- Begin generating videos.json
+2013-08-18 19:51:10 -- 0.004 -- End generating videos.json
+2013-08-18 19:51:10 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:51:10 -- 0 -- Finished update library.
+2013-08-18 19:51:41 -- 0 -- Begin update library
+2013-08-18 19:51:41 -- 0.001 -- Begin generating videos.json
+2013-08-18 19:51:41 -- 0.008 -- End generating videos.json
+2013-08-18 19:51:41 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:51:41 -- 0 -- Finished update library.
+2013-08-18 19:51:47 -- 0 -- Begin update library
+2013-08-18 19:51:47 -- 0.002 -- Begin generating videos.json
+2013-08-18 19:51:47 -- 0.004 -- End generating videos.json
+2013-08-18 19:51:47 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:51:47 -- 0 -- Finished update library.
+2013-08-18 19:52:02 -- 0 -- Begin update library
+2013-08-18 19:52:25 -- 23.1453 -- Begin generating videos.json
+2013-08-18 19:52:25 -- 0.003 -- End generating videos.json
+2013-08-18 19:52:25 -- 0.002 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:52:25 -- 0.001 -- Finished update library.
+2013-08-18 19:52:26 -- 0 -- Begin update library
+2013-08-18 19:52:30 -- 3.2302 -- Begin generating videos.json
+2013-08-18 19:52:30 -- 0.002 -- End generating videos.json
+2013-08-18 19:52:30 -- 0.002 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:52:30 -- 0.001 -- Finished update library.
+2013-08-18 19:52:31 -- 0 -- Begin update library
+2013-08-18 19:52:31 -- 0.002 -- Begin generating videos.json
+2013-08-18 19:52:31 -- 0.001 -- End generating videos.json
+2013-08-18 19:52:31 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:52:31 -- 0.001 -- Finished update library.
+2013-08-18 19:52:33 -- 0 -- Begin update library
+2013-08-18 19:52:33 -- 0.001 -- Begin generating videos.json
+2013-08-18 19:52:33 -- 0.001 -- End generating videos.json
+2013-08-18 19:52:33 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:52:33 -- 0 -- Finished update library.
+2013-08-18 19:52:34 -- 0 -- Begin update library
+2013-08-18 19:52:34 -- 0.002 -- Begin generating videos.json
+2013-08-18 19:52:34 -- 0.002 -- End generating videos.json
+2013-08-18 19:52:34 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:52:34 -- 0 -- Finished update library.
+2013-08-18 19:53:31 -- 0 -- Begin update library
+2013-08-18 19:53:31 -- 0.003 -- Begin generating videos.json
+2013-08-18 19:53:31 -- 0.023 -- End generating videos.json
+2013-08-18 19:53:31 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:53:31 -- 0.001 -- Finished update library.
+2013-08-18 19:53:34 -- 0 -- Begin update library
+2013-08-18 19:53:35 -- 0.002 -- Begin generating videos.json
+2013-08-18 19:53:35 -- 0.003 -- End generating videos.json
+2013-08-18 19:53:35 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:53:35 -- 0.001 -- Finished update library.
+2013-08-18 19:54:53 -- 0 -- Begin update library
+2013-08-18 19:54:53 -- 0.003 -- Begin generating videos.json
+2013-08-18 19:54:53 -- 0.006 -- End generating videos.json
+2013-08-18 19:54:53 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:54:53 -- 0 -- Finished update library.
+2013-08-18 19:57:28 -- 0 -- Begin update library
+2013-08-18 19:57:28 -- 0.002 -- Begin generating videos.json
+2013-08-18 19:57:28 -- 0.003 -- End generating videos.json
+2013-08-18 19:57:28 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:57:28 -- 0.001 -- Finished update library.
+2013-08-18 19:58:09 -- 0 -- Begin update library
+2013-08-18 19:58:10 -- 0.613 -- Added new Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' to library
+2013-08-18 19:58:10 -- 0.095 -- Added new Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' to library
+2013-08-18 19:58:10 -- 0.03 -- Added new Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4' to library
+2013-08-18 19:58:10 -- 0.032 -- Added new Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' to library
+2013-08-18 19:58:10 -- 0.026 -- Added new Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' to library
+2013-08-18 19:58:10 -- 0.029 -- Added new Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' to library
+2013-08-18 19:58:10 -- 0.001 -- Begin generating videos.json
+2013-08-18 19:58:10 -- 0.004 -- End generating videos.json
+2013-08-18 19:58:10 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 6 new. 
+2013-08-18 19:58:10 -- 0.001 -- Finished update library.
+2013-08-18 19:58:33 -- 0 -- Begin update library
+2013-08-18 19:58:33 -- 0.019 -- Begin generating videos.json
+2013-08-18 19:58:33 -- 0.001 -- End generating videos.json
+2013-08-18 19:58:33 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:58:33 -- 0 -- Finished update library.
+2013-08-18 19:58:41 -- 0 -- Begin update library
+2013-08-18 19:58:41 -- 0.019 -- Begin generating videos.json
+2013-08-18 19:58:41 -- 0.002 -- End generating videos.json
+2013-08-18 19:58:41 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 19:58:41 -- 0 -- Finished update library.
+2013-08-18 20:00:10 -- 0 -- Begin update library
+2013-08-18 20:00:11 -- 1.1931 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-18 20:00:11 -- 0.031 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-18 20:00:11 -- 0.035 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-18 20:00:11 -- 0.043 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-18 20:00:11 -- 0.049 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4' to library
+2013-08-18 20:00:11 -- 0.041 -- Added new TvShow: 'C:/Videos/Tv Shows/Dexter/' to library
+2013-08-18 20:00:11 -- 0.026 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4' to library
+2013-08-18 20:00:11 -- 0.049 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4' to library
+2013-08-18 20:00:11 -- 0.026 -- Added new TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' to library
+2013-08-18 20:00:11 -- 0.041 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4' to library
+2013-08-18 20:00:12 -- 0.034 -- Added new TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/' to library
+2013-08-18 20:00:12 -- 0.024 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4' to library
+2013-08-18 20:00:12 -- 0.043 -- Added new TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/' to library
+2013-08-18 20:00:12 -- 0.032 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4' to library
+2013-08-18 20:00:12 -- 0.043 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4' to library
+2013-08-18 20:00:12 -- 0.049 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4' to library
+2013-08-18 20:00:12 -- 0.146 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4' to library
+2013-08-18 20:00:12 -- 0.037 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4' to library
+2013-08-18 20:00:12 -- 0.043 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4' to library
+2013-08-18 20:00:12 -- 0.049 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4' to library
+2013-08-18 20:00:12 -- 0.026 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4' to library
+2013-08-18 20:00:12 -- 0.04 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4' to library
+2013-08-18 20:00:12 -- 0.035 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4' to library
+2013-08-18 20:00:12 -- 0.098 -- Added new TvShow: 'C:/Videos/Tv Shows/The Walking Dead/' to library
+2013-08-18 20:00:12 -- 0.069 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4' to library
+2013-08-18 20:00:12 -- 0.048 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4' to library
+2013-08-18 20:00:12 -- 0.027 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4' to library
+2013-08-18 20:00:12 -- 0.04 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4' to library
+2013-08-18 20:00:12 -- 0.043 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4' to library
+2013-08-18 20:00:12 -- 0.032 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4' to library
+2013-08-18 20:00:12 -- 0.001 -- Begin generating videos.json
+2013-08-18 20:00:12 -- 0.007 -- End generating videos.json
+2013-08-18 20:00:12 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 30 new. 
+2013-08-18 20:00:12 -- 0 -- Finished update library.

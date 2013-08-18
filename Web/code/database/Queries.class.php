@@ -41,7 +41,7 @@ class Queries {
 
     private static function fetchAllSingleColumn($stmt, $colName) {
         $result = [];
-        $list = DbManager::fetchAll($stmt);
+        $list = DbManager::fetchAllAssociative($stmt);
         foreach ($list as $item) {
             $result[] = $item[$colName];
         }
@@ -50,7 +50,7 @@ class Queries {
 
     private static function fetchAllKeyValuePair($stmt, $keyColName, $valueColName) {
         $result = [];
-        $list = DbManager::fetchAll($stmt);
+        $list = DbManager::fetchAllAssociative($stmt);
         foreach ($list as $item) {
             $result[$item[$keyColName]] = $item[$valueColName];
         }
@@ -201,8 +201,12 @@ class Queries {
      * Gets an associative array of the video sources
      * @return associative array of video sources
      */
-    public static function getVideoSources() {
-        $sources = DbManager::query("select location, base_url,  media_type, security_type from video_source");
+    public static function getVideoSources($type = null) {
+        $sql = "select location, base_url,  media_type, security_type from video_source";
+        if($type != null){
+            $sql .= " where media_type = '$type'";
+        }
+        $sources = DbManager::query($sql);
         return $sources;
     }
 

@@ -86,7 +86,7 @@ class DbManager {
      * @param obj $stmt - the pdo handler
      * @return array of arrays
      */
-    private static function fetchAllAssociative($stmt) {
+    public static function fetchAllAssociative($stmt) {
         $result = [];
         $val = $stmt->fetch(PDO::FETCH_ASSOC);
         while ($val != null) {

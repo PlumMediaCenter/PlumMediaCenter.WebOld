@@ -21,6 +21,10 @@ class Page {
     }
 
     function getModel() {
+        //if the model was already created, return it
+        if ($this->model != null) {
+            return $this->model;
+        }
         if (file_exists($this->modelPath)) {
             //if the model has not been imported yet, import it and instantiate an instance of the model.
             if ($this->modelIsImported == false) {
