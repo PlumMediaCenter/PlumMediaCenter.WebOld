@@ -12,6 +12,7 @@ class Queries {
     private static $stmtUpdateVideo = null;
     private static $stmtVideoCount = null;
     private static $stmtAddVideoSource = null;
+    private static $stmtUpdateVideoSource = null;
 
     /**
      * Retrieves the list of all video file paths currently in the database
@@ -203,7 +204,7 @@ class Queries {
      */
     public static function getVideoSources($type = null) {
         $sql = "select location, base_url,  media_type, security_type from video_source";
-        if($type != null){
+        if ($type != null) {
             $sql .= " where media_type = '$type'";
         }
         $sources = DbManager::query($sql);
@@ -228,6 +229,32 @@ class Queries {
             $stmt->bindParam(":baseUrl", $baseUrl);
             $stmt->bindParam(":mediaType", $mediaType);
             $stmt->bindParam(":securityType", $securityType);
+            $success = $stmt->execute();
+            return $success;
+        }
+        return false;
+    }
+
+    /**
+     * Adds a new video source to the vide_source table
+     */
+    public static function updateVideoSource($originalLocation, $newLocation, $baseUrl, $mediaType, $securityType) {
+
+        if ($originalLocation != null && $newLocation != null && $baseUrl != null && $mediaType != null && $securityType != null) {
+            $pdo = DbManager::getPdo();
+            if (Queries::$stmtUpdateVideoSource == null) {
+                $sql = "update video_source set location=:location, base_url=:baseUrl, media_type=:mediaType, security_type=:securityType
+                    where location=:originalLocation";
+                $stmt = $pdo->prepare($sql);
+                Queries::$stmtUpdateVideoSource = $stmt;
+            }
+            $stmt = Queries::$stmtUpdateVideoSource;
+            $stmt->bindParam(":location", $newLocation);
+            $stmt->bindParam(":baseUrl", $baseUrl);
+            $stmt->bindParam(":mediaType", $mediaType);
+            $stmt->bindParam(":securityType", $securityType);
+            $stmt->bindParam(":originalLocation", $originalLocation);
+
             $success = $stmt->execute();
             return $success;
         }
@@ -271,4 +298,5 @@ class Queries {
     }
 
 }
+
 ?>

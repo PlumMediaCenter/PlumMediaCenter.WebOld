@@ -9,12 +9,22 @@ if (isset($_GET["deleteSource"]) && strlen($_GET["deleteSource"]) > 0) {
 }
 
 //if the add/edit source button was pressed, add/edit this video source
-if (isset($_GET["addEditSource"])) {
+if (isset($_GET["addSource"])) {
     $location = $_GET["location"];
     $baseUrl = $_GET["baseUrl"];
     $mediaType = $_GET["mediaType"];
     $securityType = $_GET["securityType"];
     Queries::addVideoSource($location, $baseUrl, $mediaType, $securityType);
+}
+
+//if the add/edit source button was pressed, add/edit this video source
+if (isset($_GET["editSource"])) {
+    $originalLocation = $_GET["originalLocation"];
+    $location = $_GET["location"];
+    $baseUrl = $_GET["baseUrl"];
+    $mediaType = $_GET["mediaType"];
+    $securityType = $_GET["securityType"];
+    Queries::updateVideoSource($originalLocation, $location, $baseUrl, $mediaType, $securityType);
 }
 $p = new Page(__FILE__);
 $m = $p->getModel();

@@ -1,5 +1,5 @@
 <form>
-    <a  href="#newSourceModal" class="btn" role="button" data-toggle="modal" onclick="openAddEdit();">Add New Source</a>
+    <a  href="#newSourceModal" class="btn" role="button" onclick="openAdd();">Add New Source</a>
     <br/>    <br/>
 
     <table class="table table-hover">
@@ -8,14 +8,17 @@
             <th>Media Type</th>
             <th>Security Type</th>
             <th>Base URL</th>
+            <th></th>
+            <th></th>
         </tr>
-        <?php foreach ($videoSources as $videoSource) { ?>
+        <?php foreach ($videoSources as $src) { ?>
             <tr>
-                <td> <?php echo $videoSource->location; ?></td>
-                <td><?php echo $videoSource->media_type; ?></td>
-                <td><?php echo $videoSource->security_type; ?></td>
-                <td><?php echo $videoSource->base_url; ?></td>
-                <td><button type="button" class="close" onclick="deleteVideoSource('<?php echo $videoSource->location; ?>');" aria-hidden="true">&times;</button></td>
+                <td> <?php echo $src->location; ?></td>
+                <td><?php echo $src->media_type; ?></td>
+                <td><?php echo $src->security_type; ?></td>
+                <td><?php echo $src->base_url; ?></td>
+                <td><a href="javascript:openEdit('<?php echo $src->location; ?>','<?php echo $src->base_url; ?>','<?php echo $src->media_type; ?>','<?php echo $src->security_type; ?>');">edit</a></td>
+                <td><button type="button" class="close" onclick="deleteVideoSource('<?php echo $src->location; ?>');" aria-hidden="true">&times;</button></td>
             </tr>
         <?php } ?>
     </table>
@@ -29,6 +32,8 @@
                 <div class="span2">Base File Path: </div>
                 <div class="span3">                  
                     <input type="text" style="width:100%;margin-bottom:0px;" name="location" placeholder="ex: c:/videos/Movies/"/>
+                    <?php //this input is used as reference in the edit action....so we can find the correct row in the db to update. ?>
+                    <input type="hidden" name="originalLocation"/>
                     <div style="color: red;margin-bottom:10px;">*Please Include trailing slash</div>
                 </div>
             </div>
@@ -62,7 +67,9 @@
         <div class="modal-footer">
             <span style="color:red; float:left;" id="addEditMessage"></span>
             <a href="#" class="btn"  data-dismiss="modal" >Close</a>
-            <input id="addEditSourceBtn" type="submit" class="btn btn-primary" name="addEditSource" value="Save" onclick="return validateAddEdit();">
+            <input id="addSourceBtn" type="submit" class="btn btn-primary" name="addSource" value="Save New" onclick="return validateAddEdit();">
+            <input id="editSourceBtn" type="submit" class="btn btn-primary" name="editSource" value="Save Edit" onclick="return validateAddEdit();">
+
         </div>
     </div>
     <div style="display:none;">
@@ -72,9 +79,36 @@
 
 <script type="text/javascript">
 
-        function openAddEdit() {
+        function openAdd() {
+            $("#addSourceBtn").show();
+            $("#editSourceBtn").hide();
+            openAddEdit();
+        }
+
+        function openEdit(baseFilePath, baseUrl, mediaType, securityType) {
+            $("#addSourceBtn").hide();
+            $("#editSourceBtn").show();
+            openAddEdit(baseFilePath, baseUrl, mediaType, securityType);
+
+        }
+
+        function openAddEdit(baseFilePath, baseUrl, mediaType, securityType) {
+            //if parameters were not provided, clear the inputs
+            if (baseFilePath == undefined || baseUrl == undefined || mediaType == undefined || securityType == undefined) {
+                baseFilePath = "";
+                baseUrl = "";
+                mediaType = "";
+                securityType = "";
+            }
+            $("input[name=originalLocation]").val(baseFilePath);
+            $("input[name=location]").val(baseFilePath);
+            $("input[name=baseUrl]").val(baseUrl);
+            $("input[name=mediaType]").val(baseUrl);
+            $("input[name=securityType]").val(baseUrl);
+
             //clear the message 
             $("#addEditMessage").html("");
+            $("#newSourceModal").modal();
         }
 
         function validateAddEdit() {
