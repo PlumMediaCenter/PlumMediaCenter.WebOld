@@ -186,19 +186,16 @@ class Video {
             }
 
             //parse the nfo file
-            $t = $m->getElementsByTagName("title")->item(0)->nodeValue;
+            $t = getXmlTagValue($m, "title");
             //if the title is empty, use the filename like defined in the constructor
             $this->title = strlen($t) > 0 ? $t : $this->title;
-            $this->plot = $m->getElementsByTagName("plot")->item(0)->nodeValue;
+            $this->plot = getXmlTagValue($m, "plot");
             if ($this->mediaType == Enumerations::MediaType_Movie) {
-                $this->year = $m->getElementsByTagName("year")->item(0)->nodeValue;
+                $this->year = getXmlTagValue($m, "year");
             } else {
-                $y = $m->getElementsByTagName("premiered")->item(0);
-                if ($y != null) {
-                    $this->year = $y->nodeValue;
-                }
+                $this->year = getXmlTagValue($m, "premiered");
             }
-            $this->mpaa = $m->getElementsByTagName("mpaa")->item(0)->nodeValue;
+            $this->mpaa = getXmlTagValue($m, "mpaa");
 
             //specify a maximum number of actors to include
             $maxActorNumber = 4;

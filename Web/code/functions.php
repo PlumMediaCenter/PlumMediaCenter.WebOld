@@ -166,4 +166,25 @@ function clearLog() {
     writeToLog("Logfile cleared");
 }
 
+/**
+ * Returns the first element's value found with the specified tag name
+ * @param type $doc
+ * @param type $tagName
+ * @return - the value in the provided tag, or an empty string if the tag was not found
+ */
+function getXmlTagValue($node, $tagName) {
+    $elements = $node->getElementsByTagName($tagName);
+    if ($elements != null) {
+        $item = $elements->item(0);
+        if ($item != null) {
+            $val = $item->nodeValue;
+            if ($val != null) {
+                return $val;
+            } else {
+                return "";
+            }
+        }
+    }
+}
+
 ?>
