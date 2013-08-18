@@ -3,7 +3,7 @@
 <a href='Generate.php' class="btn">Generate library</a>
 <br/>
 <br/>
-<a href='VideoSources.php' class="btn">Addd/Remove Video Sources</a>
+<a href='VideoSources.php' class="btn">Add/Remove Video Sources</a>
 <br/>
 <br/>
 <a href='MetadataManager.php' class="btn">Manage Metadata</a>
