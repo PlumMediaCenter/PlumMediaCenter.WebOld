@@ -16,7 +16,7 @@
                 <td> <?php echo $src->location; ?></td>
                 <td><?php echo $src->media_type; ?></td>
                 <td><?php echo $src->security_type; ?></td>
-                <td><?php echo $src->base_url; ?></td>
+                <td><a href='<?php echo $src->base_url; ?>'><?php echo $src->base_url; ?></a></td>
                 <td><a href="javascript:openEdit('<?php echo $src->location; ?>','<?php echo $src->base_url; ?>','<?php echo $src->media_type; ?>','<?php echo $src->security_type; ?>');">edit</a></td>
                 <td><button type="button" class="close" onclick="deleteVideoSource('<?php echo $src->location; ?>');" aria-hidden="true">&times;</button></td>
             </tr>
@@ -38,6 +38,15 @@
                 </div>
             </div>
             <div class="row">
+                <div class="span2">Security Type: </div>
+                <div class="span2">
+                    <select id="securityType" name="securityType">
+                        <option value="<?php echo Enumerations::SecurityType_Public; ?>">Public</option>
+                        <option value="<?php echo Enumerations::SecurityType_LoginRequired; ?>">Login Required</option>
+                    </select>
+                </div>
+            </div>
+            <div id="baseUrlRow" class="row">
                 <div class="span2">Base URL: </div>
                 <div class="span3">                  
                     <input type="text" style="width:100%;margin-bottom:0px;" name="baseUrl" placeholder="ex: http://localhost/videos/movies/"/>
@@ -53,15 +62,7 @@
                     </select>
                 </div>
             </div>
-            <div class="row">
-                <div class="span2">Security Type: </div>
-                <div class="span2">
-                    <select name="securityType">
-                        <option value="<?php echo Enumerations::SecurityType_Public; ?>">Public</option>
-                        <option value="<?php echo Enumerations::SecurityType_LoginRequired; ?>">Login Required</option>
-                    </select>
-                </div>
-            </div>
+
 
         </div>
         <div class="modal-footer">
@@ -78,6 +79,20 @@
 </form>
 
 <script type="text/javascript">
+
+        $(document).ready(function() {
+            //show/hide the public url input based on the security type selected    
+            $("#securityType").change(setBaseUrlVisibility);
+        });
+
+        function setBaseUrlVisibility() {
+            if ($("#securityType").val() == "<?php echo Enumerations::SecurityType_Public; ?>") {
+                $("#baseUrlRow").show();
+            } else {
+                $("#baseUrlRow").hide();
+            }
+        }
+
 
         function openAdd() {
             $("#addSourceBtn").show();
@@ -103,11 +118,13 @@
             $("input[name=originalLocation]").val(baseFilePath);
             $("input[name=location]").val(baseFilePath);
             $("input[name=baseUrl]").val(baseUrl);
-            $("input[name=mediaType]").val(baseUrl);
-            $("input[name=securityType]").val(baseUrl);
+            $("input[name=mediaType]").val(mediaType);
+            $("#securityType").val(securityType);
 
             //clear the message 
             $("#addEditMessage").html("");
+            setBaseUrlVisibility();
+            //show the add/edit window
             $("#newSourceModal").modal();
         }
 

@@ -76,7 +76,7 @@ class CreateDatabase {
             location char(200),
             base_url char(200),
             media_type char(10),
-            security_type char(10),
+            security_type char(20),
             primary key(location)
         );";
         DbManager::nonQuery($sql);
