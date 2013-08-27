@@ -23,6 +23,7 @@ class CreateDatabase {
         //create all tables
         $this->table_video();
         $this->table_video_source();
+        $this->table_watch_video();
     }
 
     private function createVideoDatabase($rootUsername, $rootPassword, $host) {
@@ -69,6 +70,20 @@ class CreateDatabase {
         DbManager::nonQuery($sql);
     }
 
+    private function table_tv_episode() {
+        DbManager::nonQuery("drop table tv_episode");
+        $sql = "   
+            create table tv_episode(
+                video_id int not null,
+                tv_show_video_id int not null,
+                season_number int,
+                episode_number int,
+                writer char(50),
+                director char(50)  
+            );";
+        DbManager::nonQuery($sql);
+    }
+
     private function table_video_source() {
         DbManager::nonQuery("drop table video_source");
         $sql = "
@@ -77,8 +92,23 @@ class CreateDatabase {
             base_url char(200),
             media_type char(10),
             security_type char(20),
+            refresh_videos int(1) default 0,
             primary key(location)
         );";
+        DbManager::nonQuery($sql);
+    }
+
+    private function table_watch_video() {
+        DbManager::nonQuery("drop table watch_video");
+        $sql = "
+            create table watch_video(
+                username char(128),
+                video_id int not null,
+                time_in_seconds int(10),
+                position_in_bytes int(100),
+                date_watched datetime,
+                primary key (username, video_id)
+            ); ";
         DbManager::nonQuery($sql);
     }
 

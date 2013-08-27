@@ -11,7 +11,7 @@
                 ?>
                 <div class="tile">
                     <span><?php echo $movie->title; ?></span>
-                    <a href="Play.php?videoUrl=<?php echo $movie->url;?>&posterUrl=<?php echo $movie->hdPosterUrl;?>"><img src="<?php echo $movie->hdPosterUrl; ?>"/></a>
+                    <a href="Play.php?videoUrl=<?php echo $movie->url; ?>&posterUrl=<?php echo $movie->hdPosterUrl; ?>"><img src="<?php echo $movie->hdPosterUrl; ?>"/></a>
                 </div>
                 <?php
             }
@@ -24,9 +24,10 @@
                 $modalId = "modal-" . md5($tvShow->title);
                 ?>
                 <a class="tile" href="#<?php echo $modalId; ?>" role="button" data-toggle="modal">
+                     <span><?php echo $tvShow->title; ?></span>
                     <img src="<?php echo $tvShow->hdPosterUrl; ?>"/>
                 </a>
-                <div id="<?php echo $modalId; ?>" class="modal hide">
+                <div id="<?php echo $modalId; ?>" class="modal hide fade">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
                         <h3 id="myModalLabel"><?php echo $tvShow->title; ?></h3>
@@ -34,7 +35,14 @@
                     <div class="modal-body">
                         <?php
                         foreach ($tvShow->seasons as $key => $season) {
-                            $seasonNum = $key + 1;
+                            $seasonNum = -1;
+                            //get the season number
+                            if (count($season) > 0) {
+                                foreach ($season as $episode) {
+                                    $seasonNum = $episode->seasonNumber;
+                                    break;
+                                }
+                            }
                             ?>
                             <h2><?php echo "Season $seasonNum";
                             ?> </h2>
@@ -43,7 +51,7 @@
                                 ?>
                                 <div class="tile">
                                     <span style='font-size: 20px;'><?php echo "$episode->episodeNumber. $episode->title"; ?></span>
-                                     <a href="Play.php?videoUrl=<?php echo $episode->url;?>&posterUrl=<?php echo $episode->hdPosterUrl;?>"><img src="<?php echo $episode->hdPosterUrl; ?>"/></a>
+                                    <a href="Play.php?videoUrl=<?php echo $episode->url; ?>&posterUrl=<?php echo $episode->hdPosterUrl; ?>"><img src="<?php echo $episode->hdPosterUrl; ?>"/></a>
                                 </div>
                                 <?php
                             }

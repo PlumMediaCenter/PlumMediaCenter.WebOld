@@ -26,11 +26,14 @@ class Video {
     public $mpaa = "N/A";
     public $actorList = [];
     public $generatePosterMethod;
+    //if this is set to true, you should refresh the video in the db when being updated
+    public $refreshVideo;
     protected $metadata;
     protected $onlineMovieDatabaseId;
     protected $metadataFetcher;
     protected $filetype = null;
     protected $metadataLoaded = false;
+    protected $videoId = null;
 
     function __construct($baseUrl, $basePath, $fullPath) {
         //save the important stuff
@@ -347,6 +350,7 @@ class Video {
             //this is an existing video that needs to be updated. update it
             Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate());
         }
+        $this->videoId = $this->getVideoId(true);
     }
 
     /**
@@ -384,8 +388,11 @@ class Video {
         return false;
     }
 
-    public function getVideoId() {
-        return Queries::getVideoIdByPath($this->fullPath);
+    public function getVideoId($bForce = false) {
+        if ($this->videoId === null || $bForce === true) {
+            $this->videoId = Queries::getVideoIdByPath($this->fullPath);
+        }
+        return $this->videoId;
     }
 
     protected function getNfoLastModifiedDate() {

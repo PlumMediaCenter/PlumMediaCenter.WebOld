@@ -13,6 +13,7 @@ class Queries {
     private static $stmtVideoCount = null;
     private static $stmtAddVideoSource = null;
     private static $stmtUpdateVideoSource = null;
+    private static $stmtInsertTvEpisode = null;
 
     /**
      * Retrieves the list of all video file paths currently in the database
@@ -120,6 +121,24 @@ class Queries {
         $stmt->execute();
     }
 
+    public static function insertTvEpisode($videoId, $tvShowVideoId, $seasonNumber, $episodeNumber, $writer = "", $director = "") {
+        $pdo = DbManager::getPdo();
+        if (Queries::$stmtInsertTvEpisode == null) {
+            $sql = "insert into tv_episode(video_id, tv_show_video_id, season_number, episode_number, writer, director)" .
+                    " values(:videoId, :tvShowVideoId, :seasonNumber, :episodeNumber, :writer, :director);";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtInsertTvEpisode = $stmt;
+        }
+        $stmt = Queries::$stmtInsertTvEpisode;
+        $stmt->bindParam(":videoId", $videoId);
+        $stmt->bindParam(":tvShowVideoId", $tvShowVideoId);
+        $stmt->bindParam(":seasonNumber", $seasonNumber);
+        $stmt->bindParam(":episodeNumber", $episodeNumber);
+        $stmt->bindParam(":writer", $writer);
+        $stmt->bindParam(":director", $director);
+        $stmt->execute();
+    }
+
     /**
      * deletes all videos from the video table. 
      */
@@ -203,7 +222,7 @@ class Queries {
      * @return associative array of video sources
      */
     public static function getVideoSources($type = null) {
-        $sql = "select location, base_url,  media_type, security_type from video_source";
+        $sql = "select location, base_url,  media_type, security_type, refresh_videos from video_source";
         if ($type != null) {
             $sql .= " where media_type = '$type'";
         }
@@ -219,8 +238,8 @@ class Queries {
         if ($location != null && $baseUrl != null && $mediaType != null && $securityType != null) {
             $pdo = DbManager::getPdo();
             if (Queries::$stmtAddVideoSource == null) {
-                $sql = "insert into video_source(location, base_url, media_type, security_type) 
-                values(:location, :baseUrl, :mediaType, :securityType)";
+                $sql = "insert into video_source(location, base_url, media_type, security_type, refresh_videos) 
+                values(:location, :baseUrl, :mediaType, :securityType, 1)";
                 $stmt = $pdo->prepare($sql);
                 Queries::$stmtAddVideoSource = $stmt;
             }
@@ -236,14 +255,13 @@ class Queries {
     }
 
     /**
-     * Adds a new video source to the vide_source table
+     * Updates an existing video source in the database
      */
-    public static function updateVideoSource($originalLocation, $newLocation, $baseUrl, $mediaType, $securityType) {
-
+    public static function updateVideoSource($originalLocation, $newLocation, $baseUrl, $mediaType, $securityType, $refreshVideos = 1) {
         if ($originalLocation != null && $newLocation != null && $baseUrl != null && $mediaType != null && $securityType != null) {
             $pdo = DbManager::getPdo();
             if (Queries::$stmtUpdateVideoSource == null) {
-                $sql = "update video_source set location=:location, base_url=:baseUrl, media_type=:mediaType, security_type=:securityType
+                $sql = "update video_source set location=:location, base_url=:baseUrl, media_type=:mediaType, security_type=:securityType, refresh_videos=:refreshVideos
                     where location=:originalLocation";
                 $stmt = $pdo->prepare($sql);
                 Queries::$stmtUpdateVideoSource = $stmt;
@@ -254,6 +272,7 @@ class Queries {
             $stmt->bindParam(":mediaType", $mediaType);
             $stmt->bindParam(":securityType", $securityType);
             $stmt->bindParam(":originalLocation", $originalLocation);
+            $stmt->bindParam(":refreshVideos", $refreshVideos);
 
             $success = $stmt->execute();
             return $success;
@@ -261,6 +280,25 @@ class Queries {
         return false;
     }
 
+    /**
+     * Updates the refresh_videos column in the video_source table. This is usually done once all videos have been refreshed for that video source
+     * @param string $location - the location of the video source used as the primary key for the table
+     * @param boolean $refreshVideos - the flag to be set to either true or false 
+     * @return boolean - true if successful, false if failure
+     */
+    public static function updateVideoSourceRefreshVideos() {
+        $pdo = DbManager::getPdo();
+        $sql = "update video_source set refresh_videos=0";
+        $stmt = $pdo->prepare($sql);
+        $success = $stmt->execute();
+        return $success;
+    }
+
+    /**
+     * Deletes a video source from the video_source table
+     * @param string $location - the location used as the primary key to identify the video source to delete
+     * @return boolean - true if successful, false if failure
+     */
     public static function deleteVideoSource($location) {
         $success = DbManager::nonQuery("delete from video_source where location = '$location'");
         return $success;
@@ -295,6 +333,22 @@ class Queries {
 
         $counts = (object) array("movieCount" => $movieCount, "tvShowCount" => $tvShowCount, "tvEpisodeCount" => $tvEpisodeCount);
         return $counts;
+    }
+
+    public static function insertWatchVideo($username = 'user', $videoId, $timeInSeconds, $positionInBytes) {
+        $dateWatched = date("Y-m-d H:i:s");
+        $pdo = DbManager::getPdo();
+        $sql = "insert into watch_video (username, video_id, time_in_seconds, position_in_bytes, date_watched)
+            values(:username, :videoId, :timeInSeconds, :positionInBytes, :dateWatched) 
+            on duplicate key update time_in_seconds=:timeInSeconds, position_in_bytes=:positionInBytes, date_watched=:dateWatched";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":videoId", $videoId);
+        $stmt->bindParam(":timeInSeconds", $timeInSeconds);
+        $stmt->bindParam(":positionInBytes", $positionInBytes);
+        $stmt->bindParam(":dateWatched", $dateWatched);
+        $success = $stmt->execute();
+        return $success;
     }
 
 }

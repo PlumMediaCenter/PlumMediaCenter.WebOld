@@ -6,10 +6,8 @@ include_once("database/Queries.class.php");
 
 class LibraryGenerator {
 
-    private $moviesFilePathList = [];
-    private $moviesBaseUrlList = [];
-    private $tvShowsFilePathList = [];
-    private $tvShowsBaseUrlList = [];
+    private $movieSources;
+    private $tvShowSources;
     private $movies = [];
     private $tvShows = [];
     private $movieCount = 0;
@@ -23,16 +21,10 @@ class LibraryGenerator {
 //        $this->tvShowsBaseUrlList = $tvShowsBaseUrlList;
     function __construct() {
         $movieSources = Queries::getVideoSources(Enumerations::MediaType_Movie);
-        foreach ($movieSources as $source) {
-            $this->moviesFilePathList[] = $source->location;
-            $this->moviesBaseUrlList[] = $source->base_url;
-        }
+        $this->movieSources = $movieSources;
 
         $tvShowSources = Queries::getVideoSources(Enumerations::MediaType_TvShow);
-        foreach ($tvShowSources as $source) {
-            $this->tvShowsFilePathList[] = $source->location;
-            $this->tvShowsBaseUrlList[] = $source->base_url;
-        }
+        $this->tvShowSources = $tvShowSources;
     }
 
     function generateLibrary() {
@@ -74,7 +66,7 @@ class LibraryGenerator {
         //it has been marked as 'present' in this role call
         foreach ($this->movies as $movie) {
             //if this video needs updated and it is not a new video, add it to the update list
-            if ($movie->metadataInDatabaseIsUpToDate() === false && $movie->getVideoId() != -1) {
+            if (($movie->metadataInDatabaseIsUpToDate() === false && $movie->getVideoId() == -1) || $movie->refreshVideo == true) {
                 $videosToUpdate[] = $movie;
             }
             //if this movie is in the list of videos in the db, remove it from the list of movies from the db...items
@@ -92,7 +84,7 @@ class LibraryGenerator {
 
         foreach ($this->tvShows as $tvShow) {
             //if this video needs updated and it is not a new video, add it to the update list
-            if ($tvShow->metadataInDatabaseIsUpToDate() === false && $tvShow->getVideoId() != -1) {
+            if (($tvShow->metadataInDatabaseIsUpToDate() === false && $tvShow->getVideoId() != -1) || $tvShow->refreshVideo == true) {
                 $videosToUpdate[] = $tvShow;
             }
             //if this tv show path is in the list from the db, remove it fro mthe list of videos to delete.
@@ -107,7 +99,7 @@ class LibraryGenerator {
             //now process every tv episode in the tv show
             foreach ($tvShow->episodes as $tvEpisode) {
                 //if this video needs updated and it is not a new video, add it to the update list
-                if ($tvEpisode->metadataInDatabaseIsUpToDate() === false && $tvEpisode->getVideoId() != -1) {
+                if (($tvEpisode->metadataInDatabaseIsUpToDate() === false || $tvEpisode->getVideoId()) != -1 || $tvEpisode->refreshVideo == true) {
                     $videosToUpdate[] = $tvEpisode;
                 }
                 $key = array_search($tvEpisode->fullPath, $videosToDelete);
@@ -153,6 +145,8 @@ class LibraryGenerator {
         $numNew = count($newVideos);
         writeToLog("Update Library Summary: Deleted $numDeleted. Updated $numUpdated. Added $numNew new. ");
         writeToLog("Finished update library.");
+        //the update has finished. update the video_source table to indicate that its changes have been flushed to each video
+        Queries::updateVideoSourceRefreshVideos();
         return true;
     }
 
@@ -196,10 +190,10 @@ class LibraryGenerator {
 
     function generateMovies() {
         //for every movie file location, get all movies from that location
-        for ($i = 0; $i < count($this->moviesFilePathList); $i++) {
-            $basePath = $this->moviesFilePathList[$i];
-            $baseUrl = $this->moviesBaseUrlList[$i];
-
+        foreach ($this->movieSources as $source) {
+            $basePath = $source->location;
+            $baseUrl = $source->base_url;
+            $refreshVideos = $source->refresh_videos;
             //get a list of each video in this movies folder
             $listOfAllFilesInSource = getVideosFromDir($basePath);
 
@@ -207,49 +201,24 @@ class LibraryGenerator {
                 //writeToLog("New Movie: $fullPathToFile");
                 //create a new Movie object
                 $video = new Movie($baseUrl, $basePath, $fullPathToFile);
+                $video->refreshVideo = $refreshVideos;
                 $this->movies[] = $video;
                 $this->movieCount++;
             }
         }
     }
 
-    /**
-     * Returns an array of all movies found
-     * @param type $baseUrl - the base url to be associated with this collection of videos
-     * @param type $basePath -- the base path to start looking for videos at 
-     * @return \Movie
-     */
-    function getMovies($baseUrl, $basePath) {
-        $movieList = [];
-        //get a list of each video in the movies folder
-        //get a list of every file in the current video source directory
-        $listOfAllFilesInSource = getVideosFromDir($basePath);
-
-        //spin through every folder in the source location
-        foreach ($listOfAllFilesInSource as $fullPathToFile) {
-            //create a new Movie object
-            writeToLog("Added New Movie: $fullPathToFile");
-            $video = new Movie($baseUrl, $basePath, $fullPathToFile);
-            $video->writeToDb();
-            //add the movie object to the list of all movies
-            for ($i = 0; $i < dupNum(); $i++) {
-                $movieList[] = $video;
-            }
-            writeToLog("Finished $fullPathToFile");
-        }
-        return $movieList;
-    }
-
     function generateTvShows() {
         //for every movie file location, get all movies from that location
-        for ($i = 0; $i < count($this->tvShowsFilePathList); $i++) {
-            $basePath = $this->tvShowsFilePathList[$i];
-            $baseUrl = $this->tvShowsBaseUrlList[$i];
-            $this->getTvShows($baseUrl, $basePath);
+        foreach ($this->tvShowSources as $source) {
+            $basePath = $source->location;
+            $baseUrl = $source->base_url;
+            $refreshVideos = $source->refresh_videos;
+            $this->getTvShows($baseUrl, $basePath, $refreshVideos);
         }
     }
 
-    function getTvShows($baseUrl, $basePath) {
+    function getTvShows($baseUrl, $basePath, $refreshVideos) {
         //get a list of every folder in the current video source directory, since the required tv show structure is
         //  TvShowsFolder/Name Of Tv Show/files.....
         $listOfAllFilesInSource = getFoldersFromDirectory($basePath);
@@ -260,6 +229,7 @@ class LibraryGenerator {
             //create a new Movie object
             $video = new TvShow($baseUrl, $basePath, $fullPathToFile);
 
+            $video->refreshVideo = $refreshVideos;
             //tell the tv show to scan subdirectories for tv episodes
             $video->getTvEpisodes();
 

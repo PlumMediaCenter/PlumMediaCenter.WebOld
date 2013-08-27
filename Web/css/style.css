@@ -87,3 +87,7 @@ body{
     padding-left:10px;
     padding-right:10px;
 }
+
+.tile:hover{
+    text-decoration: none;
+}

@@ -10,6 +10,7 @@ class TvEpisode extends Video {
     public $seasonNumber;
     public $episodeNumber;
     public $showName;
+    public $showFilePath;
 
     function __construct($baseUrl, $basePath, $fullPath) {
         parent::__construct($baseUrl, $basePath, $fullPath);
@@ -25,6 +26,10 @@ class TvEpisode extends Video {
         $str = str_replace($this->basePath, "", $this->fullPath);
         $arr = explode("/", $str);
         return $arr[0];
+    }
+    
+    function getTvShowVideoId(){
+        return Queries::getVideoIdByPath($this->tvShowFilePath);
     }
 
     /**
@@ -122,7 +127,16 @@ class TvEpisode extends Video {
         }
         return -1;
     }
-
+    function writeToDb(){
+        parent::writeToDb();
+        $videoId = $this->getVideoId();
+        $tvShowVideoId = $this->getTvShowVideoId();
+        if($tvShowVideoId == -1){
+            $k = 1;
+        }
+        Queries::insertTvEpisode($videoId,$tvShowVideoId , $this->seasonNumber, $this->episodeNumber);
+        
+    }
 }
 
 ?>

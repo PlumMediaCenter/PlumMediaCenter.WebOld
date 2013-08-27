@@ -235,3 +235,936 @@
 2013-08-18 20:00:12 -- 0.007 -- End generating videos.json
 2013-08-18 20:00:12 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 30 new. 
 2013-08-18 20:00:12 -- 0 -- Finished update library.
+2013-08-18 20:08:18 -- 0 -- Begin update library
+2013-08-18 20:08:18 -- 0.106 -- Begin generating videos.json
+2013-08-18 20:08:18 -- 0.003 -- End generating videos.json
+2013-08-18 20:08:18 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-18 20:08:18 -- 0 -- Finished update library.
+2013-08-18 20:09:03 -- 0 -- Begin update library
+2013-08-18 20:14:30 -- 0 -- Begin update library
+2013-08-18 20:14:30 -- 0.119 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-18 20:14:30 -- 0 -- Begin generating videos.json
+2013-08-18 20:14:30 -- 0.003 -- End generating videos.json
+2013-08-18 20:14:30 -- 0 -- Update Library Summary: Deleted 0. Updated 1. Added 0 new. 
+2013-08-18 20:14:30 -- 0.001 -- Finished update library.
+2013-08-18 20:16:00 -- 0 -- Begin update library
+2013-08-18 20:16:30 -- 0 -- Begin update library
+2013-08-18 20:16:30 -- 0.116 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-18 20:16:30 -- 0.001 -- Begin generating videos.json
+2013-08-18 20:16:30 -- 0.002 -- End generating videos.json
+2013-08-18 20:16:30 -- 0.001 -- Update Library Summary: Deleted 0. Updated 1. Added 0 new. 
+2013-08-18 20:16:30 -- 0 -- Finished update library.
+2013-08-18 20:22:24 -- 0 -- Begin update library
+2013-08-18 20:22:24 -- 0.092 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-18 20:22:24 -- 0.001 -- Begin generating videos.json
+2013-08-18 20:22:24 -- 0.001 -- End generating videos.json
+2013-08-18 20:22:24 -- 0.001 -- Update Library Summary: Deleted 0. Updated 1. Added 0 new. 
+2013-08-18 20:22:24 -- 0 -- Finished update library.
+2013-08-18 21:09:12 -- 0 -- Begin update library
+2013-08-18 21:09:12 -- 0.051 -- Added new Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' to library
+2013-08-18 21:09:12 -- 0.031 -- Added new Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' to library
+2013-08-18 21:09:12 -- 0.028 -- Added new Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4' to library
+2013-08-18 21:09:12 -- 0.031 -- Added new Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' to library
+2013-08-18 21:09:12 -- 0.035 -- Added new Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' to library
+2013-08-18 21:09:12 -- 0.032 -- Added new Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' to library
+2013-08-18 21:09:12 -- 0 -- Begin generating videos.json
+2013-08-18 21:09:12 -- 0.002 -- End generating videos.json
+2013-08-18 21:09:12 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 6 new. 
+2013-08-18 21:09:12 -- 0.001 -- Finished update library.
+2013-08-19 03:35:37 -- 0 -- Begin update library
+2013-08-19 03:35:38 -- 1.0411 -- Deleted video: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' from library
+2013-08-19 03:35:38 -- 0.064 -- Updated TvEpisode: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-19 03:35:38 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-19 03:35:38 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-19 03:35:38 -- 0.003 -- Updated TvEpisode: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-19 03:35:38 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-19 03:35:38 -- 0.003 -- Updated TvEpisode: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-19 03:35:38 -- 0.036 -- Added new TvShow: 'C:/Videos/Movies/Aladdin/' to library
+2013-08-19 03:35:38 -- 0.003 -- Added new TvEpisode: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' to library
+2013-08-19 03:35:38 -- 0.028 -- Added new TvShow: 'C:/Videos/Movies/Alex & Emma/' to library
+2013-08-19 03:35:38 -- 0.036 -- Added new TvShow: 'C:/Videos/Movies/Bambi/' to library
+2013-08-19 03:35:38 -- 0.031 -- Added new TvShow: 'C:/Videos/Movies/Batman & Robin/' to library
+2013-08-19 03:35:38 -- 0.036 -- Added new TvShow: 'C:/Videos/Movies/Billy Madison/' to library
+2013-08-19 03:35:38 -- 0.031 -- Added new TvShow: 'C:/Videos/Movies/Face Off (1997)/' to library
+2013-08-19 03:35:38 -- 0.027 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-19 03:35:38 -- 0.031 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-19 03:35:38 -- 0.036 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-19 03:35:38 -- 0.031 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-19 03:35:38 -- 0.036 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4' to library
+2013-08-19 03:35:38 -- 0.031 -- Added new TvShow: 'C:/Videos/Tv Shows/Dexter/' to library
+2013-08-19 03:35:38 -- 0.027 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4' to library
+2013-08-19 03:35:38 -- 0.039 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4' to library
+2013-08-19 03:35:38 -- 0.027 -- Added new TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' to library
+2013-08-19 03:35:38 -- 0.031 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4' to library
+2013-08-19 03:35:38 -- 0.087 -- Added new TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/' to library
+2013-08-19 03:35:38 -- 0.033 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4' to library
+2013-08-19 03:35:38 -- 0.03 -- Added new TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/' to library
+2013-08-19 03:35:38 -- 0.036 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4' to library
+2013-08-19 03:35:38 -- 0.064 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4' to library
+2013-08-19 03:35:39 -- 0.166 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4' to library
+2013-08-19 03:35:39 -- 0.112 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4' to library
+2013-08-19 03:35:39 -- 0.168 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4' to library
+2013-08-19 03:35:39 -- 0.032 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4' to library
+2013-08-19 03:35:39 -- 0.031 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4' to library
+2013-08-19 03:35:39 -- 0.027 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4' to library
+2013-08-19 03:35:39 -- 0.04 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4' to library
+2013-08-19 03:35:39 -- 0.075 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4' to library
+2013-08-19 03:35:39 -- 0.035 -- Added new TvShow: 'C:/Videos/Tv Shows/The Walking Dead/' to library
+2013-08-19 03:35:39 -- 0.031 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4' to library
+2013-08-19 03:35:39 -- 0.087 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4' to library
+2013-08-19 03:35:39 -- 0.041 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4' to library
+2013-08-19 03:35:39 -- 0.03 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4' to library
+2013-08-19 03:35:39 -- 0.037 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4' to library
+2013-08-19 03:35:39 -- 0.03 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4' to library
+2013-08-19 03:35:39 -- 0.001 -- Begin generating videos.json
+2013-08-19 03:35:39 -- 0.003 -- End generating videos.json
+2013-08-19 03:35:39 -- 0.001 -- Update Library Summary: Deleted 1. Updated 6. Added 37 new. 
+2013-08-19 03:35:39 -- 0 -- Finished update library.
+2013-08-19 13:50:54 -- 0 -- Begin update library
+2013-08-19 13:50:54 -- 0.001 -- Begin generating videos.json
+2013-08-19 13:50:54 -- 0.002 -- End generating videos.json
+2013-08-19 13:50:54 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-19 13:50:54 -- 0.001 -- Finished update library.
+2013-08-20 15:13:01 -- 0 -- Begin update library
+2013-08-20 15:13:02 -- 0.604 -- Added new Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' to library
+2013-08-20 15:13:02 -- 0.146 -- Added new Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' to library
+2013-08-20 15:13:02 -- 0.128 -- Added new Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4' to library
+2013-08-20 15:13:02 -- 0.08 -- Added new Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' to library
+2013-08-20 15:13:02 -- 0.054 -- Added new Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' to library
+2013-08-20 15:13:02 -- 0.028 -- Added new Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' to library
+2013-08-20 15:13:02 -- 0.002 -- Begin generating videos.json
+2013-08-20 15:13:02 -- 0.002 -- End generating videos.json
+2013-08-20 15:13:02 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 6 new. 
+2013-08-20 15:13:02 -- 0.001 -- Finished update library.
+2013-08-20 17:08:43 -- 0 -- Begin update library
+2013-08-20 17:14:19 -- 0 -- Begin update library
+2013-08-20 17:14:23 -- 3.845 -- Added new Movie: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-20 17:14:24 -- 1.867 -- Added new Movie: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-20 17:14:25 -- 0.201 -- Added new Movie: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4' to library
+2013-08-20 17:14:25 -- 0.294 -- Added new Movie: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4' to library
+2013-08-20 17:14:25 -- 0.18 -- Added new Movie: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4' to library
+2013-08-20 17:14:25 -- 0.069 -- Added new Movie: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4' to library
+2013-08-20 17:14:25 -- 0.105 -- Added new Movie: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4' to library
+2013-08-20 17:14:25 -- 0.114 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4' to library
+2013-08-20 17:14:26 -- 0.212 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4' to library
+2013-08-20 17:14:26 -- 0.225 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4' to library
+2013-08-20 17:14:26 -- 0.231 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4' to library
+2013-08-20 17:14:26 -- 0.317 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4' to library
+2013-08-20 17:14:27 -- 0.114 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4' to library
+2013-08-20 17:14:27 -- 0.145 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4' to library
+2013-08-20 17:14:27 -- 0.795 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4' to library
+2013-08-20 17:14:28 -- 0.15 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4' to library
+2013-08-20 17:14:28 -- 0.3 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4' to library
+2013-08-20 17:14:28 -- 0.263 -- Added new Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4' to library
+2013-08-20 17:14:28 -- 0.32 -- Added new Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4' to library
+2013-08-20 17:14:29 -- 0.91 -- Added new Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4' to library
+2013-08-20 17:14:31 -- 1.473 -- Added new Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4' to library
+2013-08-20 17:14:31 -- 0.176 -- Added new Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4' to library
+2013-08-20 17:14:31 -- 0.28 -- Added new Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4' to library
+2013-08-20 17:14:31 -- 0 -- Begin generating videos.json
+2013-08-20 17:14:31 -- 0.002 -- End generating videos.json
+2013-08-20 17:14:31 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 23 new. 
+2013-08-20 17:14:31 -- 0 -- Finished update library.
+2013-08-20 17:14:46 -- 0 -- Begin update library
+2013-08-20 17:14:47 -- 0.584 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-20 17:14:47 -- 0.11 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-20 17:14:47 -- 0.043 -- Added new TvShow: 'C:/Videos/Tv Shows/Dexter/' to library
+2013-08-20 17:14:47 -- 0.037 -- Added new TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' to library
+2013-08-20 17:14:47 -- 0.029 -- Added new TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/' to library
+2013-08-20 17:14:47 -- 0.038 -- Added new TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/' to library
+2013-08-20 17:14:47 -- 0.078 -- Added new TvShow: 'C:/Videos/Tv Shows/The Walking Dead/' to library
+2013-08-20 17:14:47 -- 0.001 -- Begin generating videos.json
+2013-08-20 17:14:47 -- 0.004 -- End generating videos.json
+2013-08-20 17:14:47 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 7 new. 
+2013-08-20 17:14:47 -- 0 -- Finished update library.
+2013-08-20 19:52:34 -- 0 -- Begin update library
+2013-08-20 19:52:35 -- 1.2631 -- Begin generating videos.json
+2013-08-20 19:52:35 -- 0.037 -- End generating videos.json
+2013-08-20 19:52:35 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-20 19:52:35 -- 0.001 -- Finished update library.
+2013-08-20 19:53:09 -- 0 -- Begin update library
+2013-08-20 19:53:09 -- 0.063 -- Begin generating videos.json
+2013-08-20 19:53:09 -- 0.001 -- End generating videos.json
+2013-08-20 19:53:09 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-20 19:53:09 -- 0 -- Finished update library.
+2013-08-20 19:53:49 -- 0 -- Begin update library
+2013-08-20 19:53:49 -- 0.094 -- Added new Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' to library
+2013-08-20 19:53:49 -- 0.029 -- Added new Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' to library
+2013-08-20 19:53:49 -- 0.029 -- Added new Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4' to library
+2013-08-20 19:53:49 -- 0.032 -- Added new Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' to library
+2013-08-20 19:53:49 -- 0.035 -- Added new Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' to library
+2013-08-20 19:53:49 -- 0.032 -- Added new Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' to library
+2013-08-20 19:53:49 -- 0.08 -- Added new Movie: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-20 19:53:49 -- 0.029 -- Added new Movie: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-20 19:53:49 -- 0.033 -- Added new Movie: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4' to library
+2013-08-20 19:53:49 -- 0.034 -- Added new Movie: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4' to library
+2013-08-20 19:53:49 -- 0.093 -- Added new Movie: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4' to library
+2013-08-20 19:53:49 -- 0.166 -- Added new Movie: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4' to library
+2013-08-20 19:53:49 -- 0.032 -- Added new Movie: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4' to library
+2013-08-20 19:53:49 -- 0.034 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4' to library
+2013-08-20 19:53:49 -- 0.032 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4' to library
+2013-08-20 19:53:49 -- 0.035 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4' to library
+2013-08-20 19:53:49 -- 0.032 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4' to library
+2013-08-20 19:53:49 -- 0.084 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4' to library
+2013-08-20 19:53:50 -- 0.034 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4' to library
+2013-08-20 19:53:50 -- 0.032 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4' to library
+2013-08-20 19:53:50 -- 0.088 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4' to library
+2013-08-20 19:53:50 -- 0.03 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4' to library
+2013-08-20 19:53:50 -- 0.029 -- Added new Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4' to library
+2013-08-20 19:53:50 -- 0.083 -- Added new Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4' to library
+2013-08-20 19:53:50 -- 0.03 -- Added new Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4' to library
+2013-08-20 19:53:50 -- 0.028 -- Added new Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4' to library
+2013-08-20 19:53:50 -- 0.03 -- Added new Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4' to library
+2013-08-20 19:53:50 -- 0.029 -- Added new Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4' to library
+2013-08-20 19:53:50 -- 0.03 -- Added new Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4' to library
+2013-08-20 19:53:50 -- 0.001 -- Begin generating videos.json
+2013-08-20 19:53:50 -- 0.003 -- End generating videos.json
+2013-08-20 19:53:50 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 29 new. 
+2013-08-20 19:53:50 -- 0.001 -- Finished update library.
+2013-08-20 19:58:10 -- 0 -- Begin update library
+2013-08-20 19:58:10 -- 0.051 -- Begin generating videos.json
+2013-08-20 19:58:10 -- 0.112 -- End generating videos.json
+2013-08-20 19:58:11 -- 1.1881 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-20 19:58:11 -- 0.001 -- Finished update library.
+2013-08-20 19:58:27 -- 0 -- Begin update library
+2013-08-20 19:58:27 -- 0.101 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-20 19:58:27 -- 0.039 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-20 19:58:27 -- 0.028 -- Added new TvShow: 'C:/Videos/Tv Shows/Dexter/' to library
+2013-08-20 19:58:27 -- 0.038 -- Added new TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' to library
+2013-08-20 19:58:27 -- 0.037 -- Added new TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/' to library
+2013-08-20 19:58:27 -- 0.03 -- Added new TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/' to library
+2013-08-20 19:58:27 -- 0.037 -- Added new TvShow: 'C:/Videos/Tv Shows/The Walking Dead/' to library
+2013-08-20 19:58:27 -- 0 -- Begin generating videos.json
+2013-08-20 19:58:27 -- 0.002 -- End generating videos.json
+2013-08-20 19:58:27 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 7 new. 
+2013-08-20 19:58:27 -- 0 -- Finished update library.
+2013-08-21 21:26:58 -- 0 -- Begin update library
+2013-08-21 21:27:00 -- 1.701 -- Deleted video: 'C:/Videos/Tv Shows/Chopped/' from library
+2013-08-21 21:27:00 -- 0.011 -- Deleted video: 'C:/Videos/Tv Shows/Clueless/' from library
+2013-08-21 21:27:00 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/Dexter/' from library
+2013-08-21 21:27:00 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' from library
+2013-08-21 21:27:00 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/Snooki & Jwoww/' from library
+2013-08-21 21:27:00 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/' from library
+2013-08-21 21:27:00 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/The Walking Dead/' from library
+2013-08-21 21:27:00 -- 0.001 -- Begin generating videos.json
+2013-08-21 21:27:00 -- 0.043 -- End generating videos.json
+2013-08-21 21:27:00 -- 0.001 -- Update Library Summary: Deleted 7. Updated 0. Added 0 new. 
+2013-08-21 21:27:00 -- 0.001 -- Finished update library.
+2013-08-21 21:27:07 -- 0 -- Begin update library
+2013-08-21 21:27:07 -- 0.084 -- Begin generating videos.json
+2013-08-21 21:27:07 -- 0.002 -- End generating videos.json
+2013-08-21 21:27:07 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-21 21:27:07 -- 0.001 -- Finished update library.
+2013-08-21 21:27:09 -- 0 -- Begin update library
+2013-08-21 21:27:09 -- 0.068 -- Begin generating videos.json
+2013-08-21 21:27:09 -- 0.002 -- End generating videos.json
+2013-08-21 21:27:09 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-21 21:27:09 -- 0.001 -- Finished update library.
+2013-08-21 21:27:18 -- 0 -- Begin update library
+2013-08-21 21:27:18 -- 0.23 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-21 21:27:18 -- 0.047 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-21 21:27:18 -- 0.095 -- Added new TvShow: 'C:/Videos/Tv Shows/Dexter/' to library
+2013-08-21 21:27:18 -- 0.119 -- Added new TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' to library
+2013-08-21 21:27:18 -- 0.031 -- Added new TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/' to library
+2013-08-21 21:27:18 -- 0.061 -- Added new TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/' to library
+2013-08-21 21:27:18 -- 0.03 -- Added new TvShow: 'C:/Videos/Tv Shows/The Walking Dead/' to library
+2013-08-21 21:27:18 -- 0.001 -- Begin generating videos.json
+2013-08-21 21:27:18 -- 0.005 -- End generating videos.json
+2013-08-21 21:27:18 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 7 new. 
+2013-08-21 21:27:18 -- 0 -- Finished update library.
+2013-08-25 03:59:06 -- 0 -- Begin update library
+2013-08-25 03:59:07 -- 0.385 -- Deleted video: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Movies/Bambi/Bambi.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/Chopped/' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/Clueless/' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/Dexter/' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/Snooki & Jwoww/' from library
+2013-08-25 03:59:07 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/' from library
+2013-08-25 03:59:07 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Walking Dead/' from library
+2013-08-25 03:59:07 -- 0 -- Begin generating videos.json
+2013-08-25 03:59:07 -- 0.001 -- End generating videos.json
+2013-08-25 03:59:07 -- 0.001 -- Update Library Summary: Deleted 36. Updated 0. Added 0 new. 
+2013-08-25 03:59:07 -- 0 -- Finished update library.
+2013-08-25 03:59:41 -- 0 -- Begin update library
+2013-08-25 04:00:09 -- 0 -- Begin update library
+2013-08-25 04:00:10 -- 1.0341 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 04:00:11 -- 0.233 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 04:00:11 -- 0.167 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 04:00:11 -- 0.065 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 04:00:11 -- 0.027 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 04:00:11 -- 0.031 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 04:00:11 -- 0.002 -- Added new Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' to library
+2013-08-25 04:00:11 -- 0.001 -- Added new Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' to library
+2013-08-25 04:00:11 -- 0.002 -- Added new Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4' to library
+2013-08-25 04:00:11 -- 0.001 -- Added new Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' to library
+2013-08-25 04:00:11 -- 0.002 -- Added new Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' to library
+2013-08-25 04:00:11 -- 0.001 -- Added new Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' to library
+2013-08-25 04:00:11 -- 0.076 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-25 04:00:11 -- 0.075 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-25 04:00:11 -- 0.032 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-25 04:00:11 -- 0.027 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-25 04:00:11 -- 0.031 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4' to library
+2013-08-25 04:00:11 -- 0.027 -- Added new TvShow: 'C:/Videos/Tv Shows/Dexter/' to library
+2013-08-25 04:00:11 -- 0.031 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4' to library
+2013-08-25 04:00:11 -- 0.036 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4' to library
+2013-08-25 04:00:11 -- 0.108 -- Added new TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' to library
+2013-08-25 04:00:11 -- 0.075 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4' to library
+2013-08-25 04:00:11 -- 0.031 -- Added new TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/' to library
+2013-08-25 04:00:12 -- 0.036 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4' to library
+2013-08-25 04:00:12 -- 0.031 -- Added new TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/' to library
+2013-08-25 04:00:12 -- 0.027 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4' to library
+2013-08-25 04:00:12 -- 0.031 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4' to library
+2013-08-25 04:00:12 -- 0.137 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4' to library
+2013-08-25 04:00:12 -- 0.04 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4' to library
+2013-08-25 04:00:12 -- 0.032 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4' to library
+2013-08-25 04:00:12 -- 0.068 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4' to library
+2013-08-25 04:00:12 -- 0.048 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4' to library
+2013-08-25 04:00:12 -- 0.069 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4' to library
+2013-08-25 04:00:12 -- 0.032 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4' to library
+2013-08-25 04:00:12 -- 0.043 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4' to library
+2013-08-25 04:00:12 -- 0.032 -- Added new TvShow: 'C:/Videos/Tv Shows/The Walking Dead/' to library
+2013-08-25 04:00:12 -- 0.026 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4' to library
+2013-08-25 04:00:12 -- 0.04 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4' to library
+2013-08-25 04:00:12 -- 0.027 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4' to library
+2013-08-25 04:00:12 -- 0.075 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4' to library
+2013-08-25 04:00:12 -- 0.083 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4' to library
+2013-08-25 04:00:12 -- 0.024 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4' to library
+2013-08-25 04:00:12 -- 0.001 -- Begin generating videos.json
+2013-08-25 04:00:12 -- 0.005 -- End generating videos.json
+2013-08-25 04:00:12 -- 0.001 -- Update Library Summary: Deleted 0. Updated 6. Added 36 new. 
+2013-08-25 04:00:12 -- 0 -- Finished update library.
+2013-08-25 04:05:25 -- 0 -- Begin update library
+2013-08-25 04:05:25 -- 0.079 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated TvShow: 'C:/Videos/Tv Shows/Chopped/'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvShow: 'C:/Videos/Tv Shows/Clueless/'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvShow: 'C:/Videos/Tv Shows/Dexter/'
+2013-08-25 04:05:25 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated TvShow: 'C:/Videos/Tv Shows/The Walking Dead/'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4'
+2013-08-25 04:05:25 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4'
+2013-08-25 04:05:25 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4'
+2013-08-25 04:05:25 -- 0 -- Begin generating videos.json
+2013-08-25 04:05:25 -- 0.002 -- End generating videos.json
+2013-08-25 04:05:25 -- 0 -- Update Library Summary: Deleted 0. Updated 36. Added 0 new. 
+2013-08-25 04:05:25 -- 0 -- Finished update library.
+2013-08-25 04:05:35 -- 0 -- Begin update library
+2013-08-25 04:05:35 -- 0.308 -- Deleted video: 'C:/Videos/Tv Shows/Chopped/' from library
+2013-08-25 04:05:36 -- 0.026 -- Deleted video: 'C:/Videos/Tv Shows/Clueless/' from library
+2013-08-25 04:05:36 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/Dexter/' from library
+2013-08-25 04:05:36 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' from library
+2013-08-25 04:05:36 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/Snooki & Jwoww/' from library
+2013-08-25 04:05:36 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/' from library
+2013-08-25 04:05:36 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Walking Dead/' from library
+2013-08-25 04:05:36 -- 0.004 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 04:05:36 -- 0.003 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 04:05:36 -- 0.003 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 04:05:36 -- 0.003 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 04:05:36 -- 0.003 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 04:05:36 -- 0.003 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 04:05:36 -- 0 -- Begin generating videos.json
+2013-08-25 04:05:36 -- 0.003 -- End generating videos.json
+2013-08-25 04:05:36 -- 0 -- Update Library Summary: Deleted 7. Updated 6. Added 0 new. 
+2013-08-25 04:05:36 -- 0.001 -- Finished update library.
+2013-08-25 04:05:59 -- 0 -- Begin update library
+2013-08-25 04:05:59 -- 0.087 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 04:05:59 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 04:05:59 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 04:05:59 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 04:05:59 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 04:05:59 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 04:05:59 -- 0.147 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-25 04:05:59 -- 0.103 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-25 04:05:59 -- 0.18 -- Added new TvShow: 'C:/Videos/Tv Shows/Dexter/' to library
+2013-08-25 04:05:59 -- 0.082 -- Added new TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' to library
+2013-08-25 04:06:00 -- 0.112 -- Added new TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/' to library
+2013-08-25 04:06:00 -- 0.096 -- Added new TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/' to library
+2013-08-25 04:06:00 -- 0.076 -- Added new TvShow: 'C:/Videos/Tv Shows/The Walking Dead/' to library
+2013-08-25 04:06:00 -- 0.001 -- Begin generating videos.json
+2013-08-25 04:06:00 -- 0.005 -- End generating videos.json
+2013-08-25 04:06:00 -- 0 -- Update Library Summary: Deleted 0. Updated 6. Added 7 new. 
+2013-08-25 04:06:00 -- 0.001 -- Finished update library.
+2013-08-25 04:08:26 -- 0 -- Begin update library
+2013-08-25 04:08:26 -- 0.102 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 04:08:26 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 04:08:26 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 04:08:26 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 04:08:26 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 04:08:26 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 04:08:26 -- 0 -- Begin generating videos.json
+2013-08-25 04:08:26 -- 0.002 -- End generating videos.json
+2013-08-25 04:08:26 -- 0 -- Update Library Summary: Deleted 0. Updated 6. Added 0 new. 
+2013-08-25 04:08:26 -- 0 -- Finished update library.
+2013-08-25 04:08:43 -- 0 -- Begin update library
+2013-08-25 04:08:43 -- 0.106 -- Deleted video: 'C:/Videos/Tv Shows/Chopped/' from library
+2013-08-25 04:08:43 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/Clueless/' from library
+2013-08-25 04:08:43 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/Dexter/' from library
+2013-08-25 04:08:43 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' from library
+2013-08-25 04:08:43 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/Snooki & Jwoww/' from library
+2013-08-25 04:08:43 -- 0.001 -- Deleted video: 'C:/Videos/Tv Shows/The Vampire Diaries/' from library
+2013-08-25 04:08:43 -- 0 -- Deleted video: 'C:/Videos/Tv Shows/The Walking Dead/' from library
+2013-08-25 04:08:43 -- 0 -- Begin generating videos.json
+2013-08-25 04:08:43 -- 0.002 -- End generating videos.json
+2013-08-25 04:08:43 -- 0 -- Update Library Summary: Deleted 7. Updated 0. Added 0 new. 
+2013-08-25 04:08:43 -- 0 -- Finished update library.
+2013-08-25 04:08:46 -- 0 -- Begin update library
+2013-08-25 04:08:46 -- 0.068 -- Begin generating videos.json
+2013-08-25 04:08:46 -- 0.002 -- End generating videos.json
+2013-08-25 04:08:46 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-25 04:08:46 -- 0 -- Finished update library.
+2013-08-25 04:10:49 -- 0 -- Begin update library
+2013-08-25 04:10:49 -- 0.088 -- Updated Movie: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 04:10:49 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 04:10:49 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4'
+2013-08-25 04:10:49 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4'
+2013-08-25 04:10:49 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4'
+2013-08-25 04:10:49 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4'
+2013-08-25 04:10:49 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4'
+2013-08-25 04:10:49 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4'
+2013-08-25 04:10:49 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4'
+2013-08-25 04:10:49 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4'
+2013-08-25 04:10:49 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4'
+2013-08-25 04:10:49 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4'
+2013-08-25 04:10:49 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4'
+2013-08-25 04:10:49 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4'
+2013-08-25 04:10:49 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4'
+2013-08-25 04:10:49 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4'
+2013-08-25 04:10:49 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4'
+2013-08-25 04:10:49 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4'
+2013-08-25 04:10:49 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4'
+2013-08-25 04:10:49 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4'
+2013-08-25 04:10:49 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4'
+2013-08-25 04:10:49 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4'
+2013-08-25 04:10:49 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4'
+2013-08-25 04:10:49 -- 0.001 -- Begin generating videos.json
+2013-08-25 04:10:49 -- 0.001 -- End generating videos.json
+2013-08-25 04:10:49 -- 0 -- Update Library Summary: Deleted 0. Updated 23. Added 0 new. 
+2013-08-25 04:10:49 -- 0.001 -- Finished update library.
+2013-08-25 04:11:02 -- 0 -- Begin update library
+2013-08-25 04:11:02 -- 0.073 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 04:11:02 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 04:11:02 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 04:11:02 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 04:11:02 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 04:11:02 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 04:11:02 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4'
+2013-08-25 04:11:02 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4'
+2013-08-25 04:11:02 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4'
+2013-08-25 04:11:02 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4'
+2013-08-25 04:11:02 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4'
+2013-08-25 04:11:02 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4'
+2013-08-25 04:11:02 -- 0.001 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4'
+2013-08-25 04:11:02 -- 0.002 -- Updated Movie: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4'
+2013-08-25 04:11:02 -- 0 -- Begin generating videos.json
+2013-08-25 04:11:02 -- 0.001 -- End generating videos.json
+2013-08-25 04:11:02 -- 0.001 -- Update Library Summary: Deleted 0. Updated 29. Added 0 new. 
+2013-08-25 04:11:02 -- 0 -- Finished update library.
+2013-08-25 04:11:22 -- 0 -- Begin update library
+2013-08-25 04:11:22 -- 0.069 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 04:11:22 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 04:11:22 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 04:11:22 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 04:11:22 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 04:11:22 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 04:11:22 -- 0.001 -- Begin generating videos.json
+2013-08-25 04:11:22 -- 0.001 -- End generating videos.json
+2013-08-25 04:11:22 -- 0 -- Update Library Summary: Deleted 0. Updated 6. Added 0 new. 
+2013-08-25 04:11:22 -- 0.001 -- Finished update library.
+2013-08-25 04:11:38 -- 0 -- Begin update library
+2013-08-25 04:11:38 -- 0.157 -- Updated TvShow: 'C:/Videos/Tv Shows/Chopped/'
+2013-08-25 04:11:38 -- 0.003 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 04:11:38 -- 0.072 -- Updated TvShow: 'C:/Videos/Tv Shows/Clueless/'
+2013-08-25 04:11:38 -- 0.003 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 04:11:38 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4'
+2013-08-25 04:11:38 -- 0.038 -- Updated TvShow: 'C:/Videos/Tv Shows/Dexter/'
+2013-08-25 04:11:38 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4'
+2013-08-25 04:11:38 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4'
+2013-08-25 04:11:38 -- 0.033 -- Updated TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/'
+2013-08-25 04:11:38 -- 0.003 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4'
+2013-08-25 04:11:38 -- 0.034 -- Updated TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/'
+2013-08-25 04:11:38 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4'
+2013-08-25 04:11:38 -- 0.034 -- Updated TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/'
+2013-08-25 04:11:38 -- 0.005 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4'
+2013-08-25 04:11:38 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4'
+2013-08-25 04:11:38 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4'
+2013-08-25 04:11:38 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4'
+2013-08-25 04:11:38 -- 0.003 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4'
+2013-08-25 04:11:38 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4'
+2013-08-25 04:11:38 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4'
+2013-08-25 04:11:38 -- 0.003 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4'
+2013-08-25 04:11:38 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4'
+2013-08-25 04:11:38 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4'
+2013-08-25 04:11:39 -- 0.078 -- Updated TvShow: 'C:/Videos/Tv Shows/The Walking Dead/'
+2013-08-25 04:11:39 -- 0.006 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4'
+2013-08-25 04:11:39 -- 0.006 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4'
+2013-08-25 04:11:39 -- 0.005 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4'
+2013-08-25 04:11:39 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4'
+2013-08-25 04:11:39 -- 0.005 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4'
+2013-08-25 04:11:39 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4'
+2013-08-25 04:11:39 -- 0.004 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-25 04:11:39 -- 0.002 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-25 04:11:39 -- 0.003 -- Added new TvShow: 'C:/Videos/Tv Shows/Dexter/' to library
+2013-08-25 04:11:39 -- 0.002 -- Added new TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' to library
+2013-08-25 04:11:39 -- 0.003 -- Added new TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/' to library
+2013-08-25 04:11:39 -- 0.002 -- Added new TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/' to library
+2013-08-25 04:11:39 -- 0.002 -- Added new TvShow: 'C:/Videos/Tv Shows/The Walking Dead/' to library
+2013-08-25 04:11:39 -- 0 -- Begin generating videos.json
+2013-08-25 04:11:39 -- 0.002 -- End generating videos.json
+2013-08-25 04:11:39 -- 0.001 -- Update Library Summary: Deleted 0. Updated 30. Added 7 new. 
+2013-08-25 04:11:39 -- 0 -- Finished update library.
+2013-08-25 06:21:14 -- 0 -- Begin update library
+2013-08-25 06:21:16 -- 1.4461 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 06:21:16 -- 0.004 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 06:21:16 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 06:21:16 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 06:21:16 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 06:21:16 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 06:21:16 -- 0.002 -- Updated TvShow: 'C:/Videos/Tv Shows/Chopped/'
+2013-08-25 06:21:35 -- 0 -- Begin update library
+2013-08-25 06:21:35 -- 0.104 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 06:21:35 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 06:21:35 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 06:21:35 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 06:21:35 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 06:21:35 -- 0.001 -- Updated TvShow: 'C:/Videos/Tv Shows/Chopped/'
+2013-08-25 06:21:35 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 06:21:35 -- 0 -- Updated TvShow: 'C:/Videos/Tv Shows/Clueless/'
+2013-08-25 06:21:35 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4'
+2013-08-25 06:21:35 -- 0.001 -- Updated TvShow: 'C:/Videos/Tv Shows/Dexter/'
+2013-08-25 06:21:35 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4'
+2013-08-25 06:21:35 -- 0 -- Updated TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/'
+2013-08-25 06:21:35 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4'
+2013-08-25 06:21:35 -- 0.001 -- Updated TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/'
+2013-08-25 06:21:35 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/'
+2013-08-25 06:21:35 -- 0.001 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4'
+2013-08-25 06:21:35 -- 0.003 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4'
+2013-08-25 06:21:35 -- 0.003 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4'
+2013-08-25 06:21:35 -- 0.001 -- Updated TvShow: 'C:/Videos/Tv Shows/The Walking Dead/'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4'
+2013-08-25 06:21:35 -- 0.002 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4'
+2013-08-25 06:21:35 -- 0 -- Begin generating videos.json
+2013-08-25 06:21:35 -- 0.002 -- End generating videos.json
+2013-08-25 06:21:35 -- 0 -- Update Library Summary: Deleted 0. Updated 36. Added 0 new. 
+2013-08-25 06:21:35 -- 0.001 -- Finished update library.
+2013-08-25 06:22:00 -- 0 -- Begin update library
+2013-08-25 06:22:00 -- 0.164 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 06:22:00 -- 0.097 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 06:22:00 -- 0.09 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 06:22:00 -- 0.108 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 06:22:00 -- 0.064 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 06:22:00 -- 0.04 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 06:22:00 -- 0.038 -- Added new Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' to library
+2013-08-25 06:22:00 -- 0.029 -- Added new Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' to library
+2013-08-25 06:22:00 -- 0.038 -- Added new Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4' to library
+2013-08-25 06:22:00 -- 0.052 -- Added new Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' to library
+2013-08-25 06:22:00 -- 0.098 -- Added new Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' to library
+2013-08-25 06:22:00 -- 0.075 -- Added new Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' to library
+2013-08-25 06:22:01 -- 0.113 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-25 06:22:51 -- 0 -- Begin update library
+2013-08-25 06:22:51 -- 0.152 -- Deleted video: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' from library
+2013-08-25 06:22:51 -- 0.063 -- Deleted video: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' from library
+2013-08-25 06:22:51 -- 0 -- Deleted video: 'C:/Videos/Movies/Bambi/Bambi.mp4' from library
+2013-08-25 06:22:51 -- 0.001 -- Deleted video: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' from library
+2013-08-25 06:22:51 -- 0 -- Deleted video: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' from library
+2013-08-25 06:22:51 -- 0.001 -- Deleted video: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' from library
+2013-08-25 06:22:51 -- 0.079 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-25 06:22:51 -- 0.031 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-25 06:22:51 -- 0.036 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4' to library
+2013-08-25 06:22:51 -- 0.092 -- Added new TvShow: 'C:/Videos/Tv Shows/Dexter/' to library
+2013-08-25 06:22:52 -- 0.092 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4' to library
+2013-08-25 06:22:52 -- 0.03 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4' to library
+2013-08-25 06:22:52 -- 0.067 -- Added new TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' to library
+2013-08-25 06:22:52 -- 0.042 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4' to library
+2013-08-25 06:22:52 -- 0.11 -- Added new TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/' to library
+2013-08-25 06:22:52 -- 0.032 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4' to library
+2013-08-25 06:22:52 -- 0.035 -- Added new TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/' to library
+2013-08-25 06:22:52 -- 0.082 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4' to library
+2013-08-25 06:22:52 -- 0.094 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4' to library
+2013-08-25 06:22:52 -- 0.03 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4' to library
+2013-08-25 06:22:52 -- 0.026 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4' to library
+2013-08-25 06:22:52 -- 0.041 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4' to library
+2013-08-25 06:22:52 -- 0.026 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4' to library
+2013-08-25 06:22:52 -- 0.066 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4' to library
+2013-08-25 06:22:52 -- 0.061 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4' to library
+2013-08-25 06:22:52 -- 0.073 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4' to library
+2013-08-25 06:22:52 -- 0.051 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4' to library
+2013-08-25 06:22:52 -- 0.075 -- Added new TvShow: 'C:/Videos/Tv Shows/The Walking Dead/' to library
+2013-08-25 06:22:53 -- 0.074 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4' to library
+2013-08-25 06:22:53 -- 0.077 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4' to library
+2013-08-25 06:22:53 -- 0.031 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4' to library
+2013-08-25 06:22:53 -- 0.1 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4' to library
+2013-08-25 06:22:53 -- 0.091 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4' to library
+2013-08-25 06:22:53 -- 0.084 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4' to library
+2013-08-25 06:22:53 -- 0 -- Begin generating videos.json
+2013-08-25 06:22:53 -- 0.003 -- End generating videos.json
+2013-08-25 06:22:53 -- 0.001 -- Update Library Summary: Deleted 6. Updated 0. Added 28 new. 
+2013-08-25 06:22:53 -- 0 -- Finished update library.
+2013-08-25 06:23:55 -- 0 -- Begin update library
+2013-08-25 06:23:56 -- 0.254 -- Deleted video: 'C:/Videos/Tv Shows/Chopped/' from library
+2013-08-25 06:23:56 -- 0.025 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 06:23:56 -- 0.033 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 06:23:56 -- 0.032 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 06:23:56 -- 0.027 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 06:23:56 -- 0.032 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 06:23:56 -- 0.026 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 06:23:56 -- 0.03 -- Updated TvShow: 'C:/Videos/Tv Shows/Chopped/'
+2013-08-25 06:24:22 -- 25.8195 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 06:24:22 -- 0.002 -- Updated TvShow: 'C:/Videos/Tv Shows/Clueless/'
+2013-08-25 06:25:54 -- 92.5063 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 06:25:57 -- 2.2341 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4'
+2013-08-25 06:25:57 -- 0.003 -- Updated TvShow: 'C:/Videos/Tv Shows/Dexter/'
+2013-08-25 06:25:57 -- 0.005 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/'
+2013-08-25 06:25:57 -- 0.003 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4'
+2013-08-25 06:25:57 -- 0.003 -- Updated TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4'
+2013-08-25 06:25:57 -- 0.002 -- Updated TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/'
+2013-08-25 06:25:57 -- 0.007 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4'
+2013-08-25 06:25:57 -- 0.039 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4'
+2013-08-25 06:25:57 -- 0.003 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4'
+2013-08-25 06:25:57 -- 0.005 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4'
+2013-08-25 06:25:57 -- 0.02 -- Updated TvShow: 'C:/Videos/Tv Shows/The Walking Dead/'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4'
+2013-08-25 06:25:57 -- 0.005 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4'
+2013-08-25 06:25:57 -- 0.004 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4'
+2013-08-25 06:25:57 -- 0.047 -- Added new Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' to library
+2013-08-25 06:25:57 -- 0.047 -- Added new Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' to library
+2013-08-25 06:25:57 -- 0.028 -- Added new Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4' to library
+2013-08-25 06:25:57 -- 0.03 -- Added new Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' to library
+2013-08-25 06:25:57 -- 0.059 -- Added new Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' to library
+2013-08-25 06:25:57 -- 0.033 -- Added new Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' to library
+2013-08-25 06:25:57 -- 0.001 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-25 06:25:57 -- 0.001 -- Begin generating videos.json
+2013-08-25 06:25:57 -- 0.002 -- End generating videos.json
+2013-08-25 06:25:57 -- 0 -- Update Library Summary: Deleted 1. Updated 36. Added 7 new. 
+2013-08-25 06:25:57 -- 0 -- Finished update library.
+2013-08-25 06:26:03 -- 0 -- Begin update library
+2013-08-25 06:26:04 -- 0.219 -- Deleted video: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4' from library
+2013-08-25 06:26:04 -- 0 -- Deleted video: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' from library
+2013-08-25 06:26:04 -- 0.001 -- Deleted video: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' from library
+2013-08-25 06:26:04 -- 0 -- Deleted video: 'C:/Videos/Movies/Bambi/Bambi.mp4' from library
+2013-08-25 06:26:04 -- 0 -- Deleted video: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' from library
+2013-08-25 06:26:04 -- 0.001 -- Deleted video: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' from library
+2013-08-25 06:26:04 -- 0 -- Deleted video: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' from library
+2013-08-25 06:26:04 -- 0.027 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-25 06:26:04 -- 0.071 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-25 06:26:04 -- 0 -- Begin generating videos.json
+2013-08-25 06:26:04 -- 0.005 -- End generating videos.json
+2013-08-25 06:26:04 -- 0 -- Update Library Summary: Deleted 7. Updated 0. Added 2 new. 
+2013-08-25 06:26:04 -- 0.001 -- Finished update library.
+2013-08-25 06:26:14 -- 0 -- Begin update library
+2013-08-25 06:26:14 -- 0.258 -- Deleted video: 'C:/Videos/Tv Shows/Clueless/' from library
+2013-08-25 06:26:15 -- 0.029 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 06:26:15 -- 0.03 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 06:26:15 -- 0.029 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 06:26:15 -- 0.025 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 06:26:15 -- 0.033 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 06:26:15 -- 0.025 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 06:26:15 -- 0.003 -- Updated TvShow: 'C:/Videos/Tv Shows/Chopped/'
+2013-08-25 06:26:15 -- 0.055 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 06:26:15 -- 0.002 -- Updated TvShow: 'C:/Videos/Tv Shows/Clueless/'
+2013-08-25 06:26:15 -- 0.032 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4'
+2013-08-25 06:26:15 -- 0.025 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4'
+2013-08-25 06:26:15 -- 0.002 -- Updated TvShow: 'C:/Videos/Tv Shows/Dexter/'
+2013-08-25 06:26:15 -- 0.031 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4'
+2013-08-25 06:26:15 -- 0.025 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4'
+2013-08-25 06:26:15 -- 0.002 -- Updated TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/'
+2013-08-25 06:26:15 -- 0.031 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4'
+2013-08-25 06:26:15 -- 0.003 -- Updated TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/'
+2013-08-25 06:26:15 -- 0.035 -- Updated TvEpisode: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4'
+2013-08-25 06:26:15 -- 0.002 -- Updated TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/'
+2013-08-25 06:26:15 -- 0.027 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4'
+2013-08-25 06:26:15 -- 0.03 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4'
+2013-08-25 06:26:15 -- 0.028 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4'
+2013-08-25 06:26:15 -- 0.026 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4'
+2013-08-25 06:26:15 -- 0.033 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4'
+2013-08-25 06:26:15 -- 0.03 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4'
+2013-08-25 06:26:15 -- 0.028 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4'
+2013-08-25 06:26:15 -- 0.03 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4'
+2013-08-25 06:26:15 -- 0.09 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4'
+2013-08-25 06:26:15 -- 0.043 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4'
+2013-08-25 06:26:15 -- 0.003 -- Updated TvShow: 'C:/Videos/Tv Shows/The Walking Dead/'
+2013-08-25 06:26:15 -- 0.034 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4'
+2013-08-25 06:26:15 -- 0.03 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4'
+2013-08-25 06:26:15 -- 0.028 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4'
+2013-08-25 06:26:15 -- 0.03 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4'
+2013-08-25 06:26:15 -- 0.029 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4'
+2013-08-25 06:26:15 -- 0.03 -- Updated TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4'
+2013-08-25 06:26:15 -- 0.028 -- Added new Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' to library
+2013-08-25 06:26:16 -- 0.025 -- Added new Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' to library
+2013-08-25 06:26:16 -- 0.033 -- Added new Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4' to library
+2013-08-25 06:26:16 -- 0.025 -- Added new Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' to library
+2013-08-25 06:26:16 -- 0.034 -- Added new Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' to library
+2013-08-25 06:26:16 -- 0.071 -- Added new Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' to library
+2013-08-25 06:26:16 -- 0.059 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-25 06:26:16 -- 0.001 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-25 06:26:16 -- 0.001 -- Begin generating videos.json
+2013-08-25 06:26:16 -- 0.004 -- End generating videos.json
+2013-08-25 06:26:16 -- 0 -- Update Library Summary: Deleted 1. Updated 36. Added 8 new. 
+2013-08-25 06:26:16 -- 0.001 -- Finished update library.
+2013-08-25 13:39:31 -- 0 -- Begin update library
+2013-08-25 13:39:33 -- 1.1291 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 13:39:33 -- 0.029 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 13:39:33 -- 0.032 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 13:39:33 -- 0.027 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 13:39:33 -- 0.032 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 13:39:33 -- 0.034 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 13:39:33 -- 0.025 -- Added new Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' to library
+2013-08-25 13:39:33 -- 0.058 -- Added new Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' to library
+2013-08-25 13:39:33 -- 0.042 -- Added new Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4' to library
+2013-08-25 13:39:33 -- 0.152 -- Added new Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' to library
+2013-08-25 13:39:33 -- 0.04 -- Added new Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' to library
+2013-08-25 13:39:33 -- 0.025 -- Added new Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' to library
+2013-08-25 13:39:33 -- 0.033 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-25 13:39:33 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-25 13:39:33 -- 0.033 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-25 13:39:33 -- 0.05 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-25 13:39:33 -- 0.101 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4' to library
+2013-08-25 13:39:33 -- 0.033 -- Added new TvShow: 'C:/Videos/Tv Shows/Dexter/' to library
+2013-08-25 13:39:33 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4' to library
+2013-08-25 13:39:34 -- 0.05 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4' to library
+2013-08-25 13:39:34 -- 0.034 -- Added new TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' to library
+2013-08-25 13:39:34 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4' to library
+2013-08-25 13:39:34 -- 0.066 -- Added new TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/' to library
+2013-08-25 13:39:34 -- 0.059 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4' to library
+2013-08-25 13:39:34 -- 0.034 -- Added new TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/' to library
+2013-08-25 13:39:34 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4' to library
+2013-08-25 13:39:34 -- 0.075 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4' to library
+2013-08-25 13:39:34 -- 0.14 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4' to library
+2013-08-25 13:39:34 -- 0.069 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4' to library
+2013-08-25 13:39:34 -- 0.088 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4' to library
+2013-08-25 13:39:34 -- 0.078 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4' to library
+2013-08-25 13:39:34 -- 0.067 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4' to library
+2013-08-25 13:39:34 -- 0.1 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4' to library
+2013-08-25 13:39:35 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4' to library
+2013-08-25 13:39:35 -- 0.067 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4' to library
+2013-08-25 13:39:35 -- 0.024 -- Added new TvShow: 'C:/Videos/Tv Shows/The Walking Dead/' to library
+2013-08-25 13:39:35 -- 0.125 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4' to library
+2013-08-25 13:39:35 -- 0.076 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4' to library
+2013-08-25 13:39:35 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4' to library
+2013-08-25 13:39:35 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4' to library
+2013-08-25 13:39:35 -- 0.059 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4' to library
+2013-08-25 13:39:35 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4' to library
+2013-08-25 13:39:35 -- 0.005 -- Begin generating videos.json
+2013-08-25 13:39:35 -- 0.003 -- End generating videos.json
+2013-08-25 13:39:35 -- 0.001 -- Update Library Summary: Deleted 0. Updated 6. Added 36 new. 
+2013-08-25 13:39:35 -- 0 -- Finished update library.
+2013-08-25 13:40:59 -- 0 -- Begin update library
+2013-08-25 13:40:59 -- 0.21 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 13:40:59 -- 0.026 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 13:40:59 -- 0.032 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 13:40:59 -- 0.043 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 13:41:00 -- 0.024 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 13:41:00 -- 0.043 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 13:41:00 -- 0.023 -- Added new Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' to library
+2013-08-25 13:41:00 -- 0.043 -- Added new Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' to library
+2013-08-25 13:41:00 -- 0.032 -- Added new Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4' to library
+2013-08-25 13:41:00 -- 0.027 -- Added new Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' to library
+2013-08-25 13:41:00 -- 0.032 -- Added new Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' to library
+2013-08-25 13:41:00 -- 0.043 -- Added new Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' to library
+2013-08-25 13:41:00 -- 0.023 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-25 13:41:17 -- 17.392 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-25 13:41:17 -- 0.034 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-25 13:41:17 -- 0.05 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-25 13:41:17 -- 0.077 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4' to library
+2013-08-25 13:41:17 -- 0.068 -- Added new TvShow: 'C:/Videos/Tv Shows/Dexter/' to library
+2013-08-25 13:41:17 -- 0.054 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4' to library
+2013-08-25 13:41:18 -- 0.059 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4' to library
+2013-08-25 13:41:18 -- 0.026 -- Added new TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' to library
+2013-08-25 13:41:18 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4' to library
+2013-08-25 13:41:18 -- 0.069 -- Added new TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/' to library
+2013-08-25 13:41:18 -- 0.055 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4' to library
+2013-08-25 13:41:18 -- 0.075 -- Added new TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/' to library
+2013-08-25 13:41:18 -- 0.067 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4' to library
+2013-08-25 13:41:18 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4' to library
+2013-08-25 13:41:18 -- 0.05 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4' to library
+2013-08-25 13:41:18 -- 0.11 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4' to library
+2013-08-25 13:41:18 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4' to library
+2013-08-25 13:41:18 -- 0.067 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4' to library
+2013-08-25 13:41:18 -- 0.066 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4' to library
+2013-08-25 13:41:18 -- 0.059 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4' to library
+2013-08-25 13:41:18 -- 0.067 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4' to library
+2013-08-25 13:41:18 -- 0.1 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4' to library
+2013-08-25 13:41:19 -- 0.031 -- Added new TvShow: 'C:/Videos/Tv Shows/The Walking Dead/' to library
+2013-08-25 13:41:19 -- 0.059 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4' to library
+2013-08-25 13:41:19 -- 0.066 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4' to library
+2013-08-25 13:41:19 -- 0.067 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4' to library
+2013-08-25 13:41:19 -- 0.11 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4' to library
+2013-08-25 13:41:19 -- 0.075 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4' to library
+2013-08-25 13:41:19 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4' to library
+2013-08-25 13:41:19 -- 0.001 -- Begin generating videos.json
+2013-08-25 13:41:19 -- 0.002 -- End generating videos.json
+2013-08-25 13:41:19 -- 0.001 -- Update Library Summary: Deleted 0. Updated 6. Added 36 new. 
+2013-08-25 13:41:19 -- 0 -- Finished update library.
+2013-08-25 13:42:28 -- 0 -- Begin update library
+2013-08-25 13:42:28 -- 0.208 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-25 13:42:28 -- 0.044 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-25 13:42:28 -- 0.031 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-25 13:42:29 -- 0.027 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-25 13:42:29 -- 0.032 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-25 13:42:29 -- 0.026 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-25 13:42:29 -- 0.003 -- Added new Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4' to library
+2013-08-25 13:42:29 -- 0.003 -- Added new Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4' to library
+2013-08-25 13:42:29 -- 0.002 -- Added new Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4' to library
+2013-08-25 13:42:29 -- 0.003 -- Added new Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4' to library
+2013-08-25 13:42:29 -- 0.002 -- Added new Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4' to library
+2013-08-25 13:42:29 -- 0.003 -- Added new Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4' to library
+2013-08-25 13:42:29 -- 0.032 -- Added new TvShow: 'C:/Videos/Tv Shows/Chopped/' to library
+2013-08-25 13:42:29 -- 0.053 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Chopped/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-25 13:42:29 -- 0.033 -- Added new TvShow: 'C:/Videos/Tv Shows/Clueless/' to library
+2013-08-25 13:42:29 -- 0.057 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Clueless.s01.e07.Kiss me Kip.mp4' to library
+2013-08-25 13:42:29 -- 0.059 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Clueless/Season 1/Clueless.s01.e08.Kiss me Kip.mp4' to library
+2013-08-25 13:42:29 -- 0.034 -- Added new TvShow: 'C:/Videos/Tv Shows/Dexter/' to library
+2013-08-25 13:42:29 -- 0.073 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s01.e12.Born Free.mp4' to library
+2013-08-25 13:42:29 -- 0.099 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Dexter/Dexter.s02.e01.It's Alive.mp4' to library
+2013-08-25 13:42:29 -- 0.036 -- Added new TvShow: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/' to library
+2013-08-25 13:42:29 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Keeping Up With The Kardashians/Keeping Up WIth The Kardashians.s05.e09.Kris The Cougar.mp4' to library
+2013-08-25 13:42:29 -- 0.032 -- Added new TvShow: 'C:/Videos/Tv Shows/Snooki & Jwoww/' to library
+2013-08-25 13:42:29 -- 0.066 -- Added new TvEpisode: 'C:/Videos/Tv Shows/Snooki & Jwoww/Snooki & Jwoww.s01.e12.mp4' to library
+2013-08-25 13:42:29 -- 0.027 -- Added new TvShow: 'C:/Videos/Tv Shows/The Vampire Diaries/' to library
+2013-08-25 13:42:29 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e01.mp4' to library
+2013-08-25 13:42:29 -- 0.059 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e02.mp4' to library
+2013-08-25 13:42:29 -- 0.108 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e03.mp4' to library
+2013-08-25 13:42:30 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e04.mp4' to library
+2013-08-25 13:42:30 -- 0.059 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e05.mp4' to library
+2013-08-25 13:42:30 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e06.mp4' to library
+2013-08-25 13:42:30 -- 0.059 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e07.mp4' to library
+2013-08-25 13:42:30 -- 0.108 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e08.mp4' to library
+2013-08-25 13:42:30 -- 0.067 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e09.mp4' to library
+2013-08-25 13:42:30 -- 0.066 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Vampire Diaries/TVD.s01.e10.mp4' to library
+2013-08-25 13:42:30 -- 0.032 -- Added new TvShow: 'C:/Videos/Tv Shows/The Walking Dead/' to library
+2013-08-25 13:42:30 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e01.mp4' to library
+2013-08-25 13:42:30 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e02.mp4' to library
+2013-08-25 13:42:30 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e03.mp4' to library
+2013-08-25 13:42:30 -- 0.059 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e04.mp4' to library
+2013-08-25 13:42:30 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e05.mp4' to library
+2013-08-25 13:42:30 -- 0.058 -- Added new TvEpisode: 'C:/Videos/Tv Shows/The Walking Dead/Season 1/The Walking Dead.s01.e06.mp4' to library
+2013-08-25 13:42:30 -- 0.001 -- Begin generating videos.json
+2013-08-25 13:42:30 -- 0.003 -- End generating videos.json
+2013-08-25 13:42:30 -- 0.001 -- Update Library Summary: Deleted 0. Updated 6. Added 36 new. 
+2013-08-25 13:42:30 -- 0 -- Finished update library.
+2013-08-27 21:37:00 -- 0 -- Begin update library
+2013-08-27 21:37:02 -- 1.524 -- Updated Movie: 'C:/Videos/Movies/Aladdin/Aladdin.mp4'
+2013-08-27 21:37:02 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Alex & Emma/Alex & Emma.mp4'
+2013-08-27 21:37:02 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Bambi/Bambi.mp4'
+2013-08-27 21:37:02 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Batman & Robin/Batman & Robin.mp4'
+2013-08-27 21:37:02 -- 0.001 -- Updated Movie: 'C:/Videos/Movies/Billy Madison/Billy Madison.mp4'
+2013-08-27 21:37:02 -- 0.002 -- Updated Movie: 'C:/Videos/Movies/Face Off (1997)/FaceOff.mp4'
+2013-08-27 21:37:02 -- 0 -- Begin generating videos.json
+2013-08-27 21:37:02 -- 0.002 -- End generating videos.json
+2013-08-27 21:37:02 -- 0 -- Update Library Summary: Deleted 0. Updated 6. Added 0 new. 
+2013-08-27 21:37:02 -- 0.001 -- Finished update library.
+2013-08-27 21:41:29 -- 0 -- Begin update library
+2013-08-27 21:41:30 -- 0.099 -- Begin generating videos.json
+2013-08-27 21:41:30 -- 0.002 -- End generating videos.json
+2013-08-27 21:41:30 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-27 21:41:30 -- 0 -- Finished update library.
+2013-08-27 21:42:06 -- 0 -- Begin update library
+2013-08-27 21:42:06 -- 0.086 -- Begin generating videos.json
+2013-08-27 21:42:06 -- 0.002 -- End generating videos.json
+2013-08-27 21:42:06 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-27 21:42:06 -- 0.001 -- Finished update library.
+2013-08-27 21:42:13 -- 0 -- Begin update library
+2013-08-27 21:42:13 -- 0.103 -- Begin generating videos.json
+2013-08-27 21:42:13 -- 0.002 -- End generating videos.json
+2013-08-27 21:42:13 -- 0 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-27 21:42:13 -- 0.001 -- Finished update library.
+2013-08-27 21:42:20 -- 0 -- Begin update library
+2013-08-27 21:42:20 -- 0.077 -- Begin generating videos.json
+2013-08-27 21:42:20 -- 0.002 -- End generating videos.json
+2013-08-27 21:42:20 -- 0.001 -- Update Library Summary: Deleted 0. Updated 0. Added 0 new. 
+2013-08-27 21:42:20 -- 0 -- Finished update library.
