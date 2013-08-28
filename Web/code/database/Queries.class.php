@@ -14,6 +14,7 @@ class Queries {
     private static $stmtAddVideoSource = null;
     private static $stmtUpdateVideoSource = null;
     private static $stmtInsertTvEpisode = null;
+    private static $getTvEpisodeSeasonEpisodeAndVideoIdForShow = null;
 
     /**
      * Retrieves the list of all video file paths currently in the database
@@ -347,6 +348,26 @@ class Queries {
         $stmt->bindParam(":timeInSeconds", $timeInSeconds);
         $stmt->bindParam(":positionInBytes", $positionInBytes);
         $stmt->bindParam(":dateWatched", $dateWatched);
+        $success = $stmt->execute();
+        return $success;
+    }
+    
+    public static function getLastEpisodeWatched($tvShowVideoId){
+        
+    }
+    
+
+    public static function getTvEpisodeSeasonEpisodeAndVideoIdForShow($tvShowVideoId) {
+        if (Queries::$getTvEpisodeSeasonEpisodeAndVideoIdForShow == null) {
+            $pdo = DbManager::getPdo();
+            $sql = "select video_id, season_number, episode_number from tv_episode
+                where tv_show_video_id=:tvShowVideoId";
+            $stmt = $pdo->prepare($sql);
+            Queries::$getTvEpisodeSeasonEpisodeAndVideoIdForShow = $stmt;
+        }
+        $stmt = Queries::$getTvEpisodeSeasonEpisodeAndVideoIdForShow;
+        $stmt->bindParam(":tvShowVideoId", $tvShowVideoId);
+
         $success = $stmt->execute();
         return $success;
     }

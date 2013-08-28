@@ -1,4 +1,4 @@
-<script type="text/javascript" src="Plugins/JWPlayer/jwplayer.js"></script>
+<script type="text/javascript" src="plugins/jwplayer/jwplayer.js"></script>
 <script type="text/javascript">
     var player;
     var videoUrl = "<?php echo $videoUrl; ?>";
@@ -6,7 +6,7 @@
 
     $(document).ready(function() {
         jwplayer("videoPlayer").setup({
-            flashplayer: "Plugins/JWPlayer/player.swf",
+            flashplayer: "plugins/jwplayer/player.swf",
             file: videoUrl,
             image: posterUrl,
             autostart: true,
