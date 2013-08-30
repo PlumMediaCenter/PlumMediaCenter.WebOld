@@ -1,4 +1,5 @@
 <?php
+include_once("MetadataFetcher/TvShowMetadataFetcher.class.php");
 
 include_once("Video.class.php");
 include_once("TvEpisode.class.php");
@@ -9,6 +10,7 @@ class TvShow extends Video {
     //holds each episode in a list instead of grouped by seasons
     public $episodes = [];
     public $episodeCount = 0;
+    private $loadEpisodesFromDatabase = false;
 
     function __construct($baseUrl, $basePath, $fullPath) {
         parent::__construct($baseUrl, $basePath, $fullPath);
@@ -18,12 +20,8 @@ class TvShow extends Video {
         $this->loadMetadata();
     }
 
-    /**
-     * Scan all subdirectories for episodes for this show. 
-     */
-    function getTvEpisodes() {
-        //generate all tv episode items
-        $this->seasons = $this->getSeasonList();
+    function setLoadEpisodesFromDatabase($loadEpisodesFromDatabase) {
+        $this->loadEpisodesFromDatabase = $loadEpisodesFromDatabase;
     }
 
     /**
@@ -63,10 +61,16 @@ class TvShow extends Video {
         return $this->getUrl();
     }
 
-    function getSeasonList() {
+    function generateTvEpisodes() {
         $seasonList = [];
-        //get the list of videos from this tv series 
-        $videosList = getVideosFromDir($this->fullPath);
+        //if the flag says to load from database, load the videos from the database instead of from disc
+        if ($this->loadEpisodesFromDatabase === true) {
+            $videosList = Queries::getVideoPathsBySourcePath($this->basePath, Enumerations::MediaType_TvEpisode);
+        } else {
+            //get the list of videos from this tv series 
+            $videosList = getVideosFromDir($this->fullPath);
+        }
+
         $this->episodeCount = count($videosList);
         //spin through every folder in the source location
         foreach ($videosList as $fullPathToFile) {
@@ -103,7 +107,7 @@ class TvShow extends Video {
             }
             $newSeasonList[] = $newSeason;
         }
-        return $newSeasonList;
+        $this->seasons = $newSeasonList;
     }
 
     /**
@@ -243,6 +247,14 @@ class TvShow extends Video {
         }
     }
 
-}
+    function getFolderName(){
+        return pathinfo($this->fullPath, PATHINFO_FILENAME);
+    }
+    function getMetadataFetcher() {
+        $t = new TvShowMetadataFetcher();
+        $t->searchByTitle($this->getFolderName());
+        return $t;
+    }
 
+}
 ?>

@@ -1,6 +1,5 @@
 <?php
 
-include_once("../code/Library.class.php");
 $baseUrl = $_GET["baseUrl"];
 $basePath = $_GET["basePath"];
 $fullPath = $_GET["fullPath"];
@@ -17,6 +16,7 @@ switch ($_GET["action"]) {
         $success = $success && $v->generateHdPoster();
         break;
     case Enumerations::MetadataManagerAction_FetchMetadata:
+        $success = $v->fetchMetadata();
         break;
     case Enumerations::MetadataManagerAction_FetchPoster:
         $success = $v->fetchPoster();

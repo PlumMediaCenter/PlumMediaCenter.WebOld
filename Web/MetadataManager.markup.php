@@ -1,11 +1,16 @@
 <script type="text/javascript" src="js/jquery.tablesorter.min.js"></script>
 <script type="text/javascript" src="js/ManageMetadata.js"></script>
+<script type="text/javascript">
+    var mediaType = '<?php echo $selectedTab == null ? Enumerations::MediaType_Movie : $selectedTab; ?>';
+</script>
+
+
 
 <div class="tabbable" >
-    <ul class=" nav nav-tabs">
-        <li <?php echo $selectedTab == Enumerations::MediaType_Movie ? " class='active' " : ""; ?>><a href="#moviesPane" data-toggle="tab">Movies</a></li>
-        <li <?php echo $selectedTab == Enumerations::MediaType_TvShow ? " class='active' " : ""; ?>><a href="#tvShowsPane" data-toggle="tab">Tv Shows</a></li>
-        <li <?php echo $selectedTab == Enumerations::MediaType_TvEpisode ? " class='active' " : ""; ?>><a href="#tvEpisodesPane" data-toggle="tab">Tv Episodes</a></li>
+    <ul class="mediaTypeTabs nav nav-tabs">
+        <li <?php echo $selectedTab == Enumerations::MediaType_Movie ? " class='active' " : ""; ?>><a href="#moviesPane" data-toggle="tab" onclick="setMediaType('<?php echo Enumerations::MediaType_Movie; ?>');">Movies</a></li>
+        <li <?php echo $selectedTab == Enumerations::MediaType_TvShow ? " class='active' " : ""; ?>><a href="#tvShowsPane" data-toggle="tab" onclick="setMediaType('<?php echo Enumerations::MediaType_TvShow; ?>');">Tv Shows</a></li>
+        <li <?php echo $selectedTab == Enumerations::MediaType_TvEpisode ? " class='active' " : ""; ?>><a href="#tvEpisodesPane" data-toggle="tab" onclick="setMediaType('<?php echo Enumerations::MediaType_TvEpisode; ?>');">Tv Episodes</a></li>
     </ul>
     <div class="buttonArea" style="height:20px;">
         <a class="btn action " onclick="action('<?php echo Enumerations::MetadataManagerAction_FetchMetadata; ?>');">Fetch Metadata</a>
@@ -48,30 +53,30 @@
 
 
 <script type="text/javascript">
-            $(document).ready(function() {
-                $(".table-sort").tablesorter();
-                $(".table-sort thead tr th").hover(
-                        function() {
-                            //$(this).prop("title","sort");
-                        },
-                        function() {
-                        });
-
-                $("tr").click(function() {
-                    $("tr.warning").removeClass("warning");
-                    $(this).addClass("warning").addClass("warning");
+    $(document).ready(function() {
+        $(".table-sort").tablesorter();
+        $(".table-sort thead tr th").hover(
+                function() {
+                    //$(this).prop("title","sort");
+                },
+                function() {
                 });
-                //resize the video grids to fill vertical space
-                $(window).resize(resize);
-                resize();
-            });
 
-            function resize() {
-                var height = $(window).height() - 150;
-                $("#tablesArea").height(height + "px");
-                var newHeight = $("#tablesArea").height() - 70;
-                $(".tableScrollArea").height(newHeight + "px");
-            }
+        $("tr").click(function() {
+            $("tr.warning").removeClass("warning");
+            $(this).addClass("warning").addClass("warning");
+        });
+        //resize the video grids to fill vertical space
+        $(window).resize(resize);
+        resize();
+    });
+
+    function resize() {
+        var height = $(window).height() - 150;
+        $("#tablesArea").height(height + "px");
+        var newHeight = $("#tablesArea").height() - 70;
+        $(".tableScrollArea").height(newHeight + "px");
+    }
 </script>
 
 <?php

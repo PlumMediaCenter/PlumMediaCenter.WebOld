@@ -345,10 +345,10 @@ class Video {
         $videoId = $this->getVideoId();
         //if this is a video that does not yet exist in the database, create a new video
         if ($videoId === -1) {
-            Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate());
+            Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->basePath);
         } else {
             //this is an existing video that needs to be updated. update it
-            Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate());
+            Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->basePath);
         }
         $this->videoId = $this->getVideoId(true);
     }
@@ -406,6 +406,26 @@ class Video {
         } else {
             return Video::NoMetadata;
         }
+    }
+
+    /**
+     * This class should be overridden by the child classes
+     * @return null
+     */
+    protected function getMetadataFetcher() {
+        return null;
+    }
+
+    /**
+     * Searches imdb to find the poster for this movie.
+     * Previous file is deleted before attempting to fetch new file. So if this fails, the video folder will be imageless
+     * 
+     * Returns true if successful, returns false and echoes error if failure
+     */
+    public function fetchPoster() {
+
+        $adapter = $this->getMetadataFetcher();
+        return $this->downloadPoster($adapter->posterUrl());
     }
 
 }

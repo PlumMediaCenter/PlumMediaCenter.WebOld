@@ -1,5 +1,5 @@
 <?php
-
+include_once(dirname(__FILE__) . "/MetadataFetcher.class.php");
 include_once(dirname(__FILE__) . "/../TMDB_v3/tmdb_v3.php");
 include_once(dirname(__FILE__) . "/../../config.php");
 
@@ -8,7 +8,7 @@ include_once(dirname(__FILE__) . "/../../config.php");
  *
  * @author bplumb
  */
-class MovieMetadataFetcher {
+class MovieMetadataFetcher extends MetadataFetcher{
 
     private $tmdb;
     private $tmdbId;
@@ -29,8 +29,8 @@ class MovieMetadataFetcher {
      * will be fetched.
      * @param type $id - the tmdb id
      */
-    function searchByTitle($movieTitle) {
-        $searchResults = $this->tmdb->searchMovie($movieTitle, 1, false);
+    function searchByTitle($title) {
+        $searchResults = $this->tmdb->searchMovie($title, 1, false);
         $firstItemId = $searchResults["results"][0]["id"];
         $this->tmdbId = $firstItemId;
     }
@@ -201,7 +201,7 @@ class MovieMetadataFetcher {
         return "";
     }
 
-    function posterLarge() {
+    function posterUrl() {
         $this->fetchImages();
         //if there are no posters for this video, quit.
         if (!isset($this->posters)) {

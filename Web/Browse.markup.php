@@ -11,7 +11,7 @@
                 ?>
                 <div class="tile">
                     <span><?php echo $movie->title; ?></span>
-                    <a href="Play.php?videoUrl=<?php echo $movie->url; ?>&posterUrl=<?php echo $movie->hdPosterUrl; ?>"><img src="<?php echo $movie->hdPosterUrl; ?>"/></a>
+                    <a href="Play.php?videoUrl=<?php echo urlencode($movie->url); ?>&posterUrl=<?php echo urlencode($movie->hdPosterUrl); ?>"><img src="<?php echo $movie->hdPosterUrl; ?>"/></a>
                 </div>
                 <?php
             }
@@ -51,7 +51,7 @@
                                 ?>
                                 <div class="tile">
                                     <span style='font-size: 20px;'><?php echo "$episode->episodeNumber. $episode->title"; ?></span>
-                                    <a href="Play.php?videoUrl=<?php echo $episode->url; ?>&posterUrl=<?php echo $episode->hdPosterUrl; ?>"><img src="<?php echo $episode->hdPosterUrl; ?>"/></a>
+                                    <a href="Play.php?videoUrl=<?php echo $episode->url; ?>&posterUrl=<?php echo urlencode($episode->hdPosterUrl); ?>"><img src="<?php echo $episode->hdPosterUrl; ?>"/></a>
                                 </div>
                                 <?php
                             }

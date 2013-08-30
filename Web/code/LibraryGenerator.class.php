@@ -13,18 +13,23 @@ class LibraryGenerator {
     private $movieCount = 0;
     private $tvShowCount = 0;
     private $tvEpisodeCount = 0;
+    private $loadFromDatabase = false;
 
-    // function __construct($moviesFilePathList, $moviesBaseUrlList, $tvShowsFilePathList, $tvShowsBaseUrlList) {
-//        $this->moviesFilePathList = $moviesFilePathList;
-//        $this->moviesBaseUrlList = $moviesBaseUrlList;
-//        $this->tvShowsFilePathList = $tvShowsFilePathList;
-//        $this->tvShowsBaseUrlList = $tvShowsBaseUrlList;
     function __construct() {
         $movieSources = Queries::getVideoSources(Enumerations::MediaType_Movie);
         $this->movieSources = $movieSources;
 
         $tvShowSources = Queries::getVideoSources(Enumerations::MediaType_TvShow);
         $this->tvShowSources = $tvShowSources;
+    }
+
+    /**
+     * Loads the library from the database instead of loading from disk
+     */
+    function loadFromDatabase() {
+        $this->loadFromDatabase = true;
+        $this->generateMovies();
+        $this->generateTvShows();
     }
 
     function generateLibrary() {
@@ -194,8 +199,14 @@ class LibraryGenerator {
             $basePath = $source->location;
             $baseUrl = $source->base_url;
             $refreshVideos = $source->refresh_videos;
-            //get a list of each video in this movies folder
-            $listOfAllFilesInSource = getVideosFromDir($basePath);
+
+            //if the flag says to load from database, load the videos from the database instead of from disc
+            if ($this->loadFromDatabase === true) {
+                $listOfAllFilesInSource = Queries::getVideoPathsBySourcePath($source->location, Enumerations::MediaType_Movie);
+            } else {
+                //get a list of each video in this movies folder
+                $listOfAllFilesInSource = getVideosFromDir($basePath);
+            }
 
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
                 //writeToLog("New Movie: $fullPathToFile");
@@ -208,39 +219,51 @@ class LibraryGenerator {
         }
     }
 
-    function generateTvShows() {
-        //for every movie file location, get all movies from that location
+    public function generateTvShows() {
+        //for every tv show file location, get all tv shows from that location
         foreach ($this->tvShowSources as $source) {
             $basePath = $source->location;
             $baseUrl = $source->base_url;
             $refreshVideos = $source->refresh_videos;
-            $this->getTvShows($baseUrl, $basePath, $refreshVideos);
+            //if the flag says to load from database, load the videos from the database instead of from disc
+            if ($this->loadFromDatabase === true) {
+                $listOfAllFilesInSource = Queries::getVideoPathsBySourcePath($basePath, Enumerations::MediaType_TvShow);
+            } else {
+                //get a list of every folder in the current video source directory, since the required tv show structure is
+                //  TvShowsFolder/Name Of Tv Show/files.....
+                //get a list of each video in this tv shows folder
+                $listOfAllFilesInSource = getFoldersFromDirectory($basePath);
+            }
+
+
+            //spin through every folder in the source location
+            foreach ($listOfAllFilesInSource as $fullPathToFile) {
+                //if the current file is a video file that we can add to our library
+                //create a new Movie object
+                $video = new TvShow($baseUrl, $basePath, $fullPathToFile);
+                $video->refreshVideo = $refreshVideos;
+                $video->setLoadEpisodesFromDatabase($this->loadFromDatabase);
+
+                //tell the tv show to scan subdirectories for tv episodes
+                $video->generateTvEpisodes();
+
+                //if this tv show has at least one season (which means it has at least one episode), then add it to the list
+                if (count($video->seasons) > 0) {
+                    $this->tvShows[] = $video;
+                    $this->tvShowCount++;
+                }
+
+                $this->tvEpisodeCount += $video->episodeCount;
+            }
         }
     }
 
-    function getTvShows($baseUrl, $basePath, $refreshVideos) {
-        //get a list of every folder in the current video source directory, since the required tv show structure is
-        //  TvShowsFolder/Name Of Tv Show/files.....
-        $listOfAllFilesInSource = getFoldersFromDirectory($basePath);
+    function getTvShows() {
+        return $this->tvShows;
+    }
 
-        //spin through every folder in the source location
-        foreach ($listOfAllFilesInSource as $fullPathToFile) {
-            //if the current file is a video file that we can add to our library
-            //create a new Movie object
-            $video = new TvShow($baseUrl, $basePath, $fullPathToFile);
-
-            $video->refreshVideo = $refreshVideos;
-            //tell the tv show to scan subdirectories for tv episodes
-            $video->getTvEpisodes();
-
-            //if this tv show has at least one season (which means it has at least one episode), then add it to the list
-            if (count($video->seasons) > 0) {
-                $this->tvShows[] = $video;
-                $this->tvShowCount++;
-            }
-
-            $this->tvEpisodeCount += $video->episodeCount;
-        }
+    function getMovies() {
+        return $this->movies;
     }
 
 }

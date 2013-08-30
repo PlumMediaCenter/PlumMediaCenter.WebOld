@@ -64,7 +64,8 @@ class CreateDatabase {
                     poster_last_modified_date datetime,
                     mpaa char(200), 
                     release_date date, 
-                    media_type char(10)  not null, 
+                    media_type char(10) not null, 
+                    source_path char(200) not null,
                     primary key(video_id)
                 );";
         DbManager::nonQuery($sql);

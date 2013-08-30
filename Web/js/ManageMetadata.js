@@ -1,7 +1,3 @@
-function fetchMetadata() {
-
-}
-
 function action(action) {
     var $r = $(".warning");
     //if no row was selected, stop executing
@@ -19,7 +15,7 @@ function action(action) {
     function(json) {
         if (json == true) {
             alert("Success");
-            window.location.reload();
+            window.location.href= "MetadataManager.php?mediaType=" + mediaType;
         } else {
             alert("Failed from json");
         }
@@ -27,4 +23,9 @@ function action(action) {
     ).fail(function() {
         alert("Failed")
     });
+}
+
+
+function setMediaType(type){
+    mediaType = type;
 }

@@ -83,7 +83,7 @@ class DbManager {
 
     /**
      * Fetches all values into an array of associatiative arrays
-     * @param obj $stmt - the pdo handler
+     * @param obj $stmt - the pdo handler for the statement. This MUST have already been executed
      * @return array of arrays
      */
     public static function fetchAllAssociative($stmt) {
@@ -98,19 +98,18 @@ class DbManager {
 
     /**
      * Fetches all values into an array of associatiative arrays
-     * @param obj $stmt - the pdo handler
+     * @param obj $stmt -the pdo handler for the statement. This MUST have already been executed
      * @return array of arrays
      */
-    private static function fetchAllClass($stmt) {
-        $result = [];
-        $val = $stmt->fetch(PDO::FETCH_OBJ);
-        while ($val != null) {
-            $result[] = $val;
-            $val = $stmt->fetch(PDO::FETCH_OBJ);
-        }
+    public static function fetchAllClass($stmt) {
+        $result = $stmt->fetchAll(PDO::FETCH_CLASS);
         return $result;
     }
 
+    public static function fetchAllColumn($stmt, $colNum){
+        $result = $stmt->fetchAll(PDO::FETCH_COLUMN, $colNum);
+        return $result;
+    }
     /**
      * Generates a string ready to be used in an 'in' statement for sql
      * @param type $list

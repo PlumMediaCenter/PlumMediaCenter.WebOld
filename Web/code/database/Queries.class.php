@@ -67,11 +67,11 @@ class Queries {
      * @param type $filetype -- the filetype of the video
      * @param type $mediaType -- the media type of the video (movie, tv show, tv episode   
      */
-    public static function insertVideo($title, $plot, $mpaa, $releaseDate, $filePath, $filetype, $mediaType, $metadataModifiedDate) {
+    public static function insertVideo($title, $plot, $mpaa, $releaseDate, $filePath, $filetype, $mediaType, $metadataModifiedDate, $sourcePath) {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtInsertVideo == null) {
-            $sql = "insert into video(title, plot, mpaa, release_date, file_path, filetype, media_type, metadata_last_modified_date)" .
-                    " values(:title, :plot, :mpaa, :releaseDate, :filePath, :filetype, :mediaType, :metadataLastModifiedDate)";
+            $sql = "insert into video(title, plot, mpaa, release_date, file_path, filetype, media_type, metadata_last_modified_date, source_path)" .
+                    " values(:title, :plot, :mpaa, :releaseDate, :filePath, :filetype, :mediaType, :metadataLastModifiedDate, :sourcePath)";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtInsertVideo = $stmt;
         }
@@ -84,6 +84,7 @@ class Queries {
         $stmt->bindParam(":filetype", $filetype);
         $stmt->bindParam(":mediaType", $mediaType);
         $stmt->bindParam(":metadataLastModifiedDate", $metadataModifiedDate);
+        $stmt->bindParam(":sourcePath", $sourcePath);
 
         $stmt->execute();
     }
@@ -96,15 +97,15 @@ class Queries {
      * @param string $filetype -- the filetype of the video
      * @param string $mediaType -- the media type of the video (movie, tv show, tv episode   
      */
-    public static function updateVideo($videoId, $title, $plot, $mpaa, $releaseDate, $filePath, $fileType, $mediaType, $metadataModifiedDate) {
+    public static function updateVideo($videoId, $title, $plot, $mpaa, $releaseDate, $filePath, $fileType, $mediaType, $metadataModifiedDate, $videoSourceLocation) {
         if ($videoId == null || $videoId == -1) {
-            Queries::insertVideo($title, $plot, $mpaa, $releaseDate, $filePath, $fileType, $mediaType, $metadataModifiedDate);
+            Queries::insertVideo($title, $plot, $mpaa, $releaseDate, $filePath, $fileType, $mediaType, $metadataModifiedDate, $sourcePath);
         }
         $pdo = DbManager::getPdo();
         if (Queries::$stmtUpdateVideo == null) {
             $sql = "update video set "
                     . "video_title = :title, plot=:plot, mpaa=:mpaa, release_date=:releaseDate, file_path=:filePath, filetype=:fileType, "
-                    . "media_type=:mediaType, metadata_last_modified_date= :metadataLastModifiedDate "
+                    . "media_type=:mediaType, metadata_last_modified_date= :metadataLastModifiedDate, source_path=:sourcePath "
                     . "where video_id = :videoId";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtUpdateVideo = $stmt;
@@ -118,6 +119,8 @@ class Queries {
         $stmt->bindParam(":fileType", $fileType);
         $stmt->bindParam(":mediaType", $mediaType);
         $stmt->bindParam(":metadataLastModifiedDate", $metadataModifiedDate);
+        $stmt->bindParam(":sourcePath", $sourcePath);
+
         $stmt->bindParam(":videoId", $videoId);
         $stmt->execute();
     }
@@ -351,11 +354,10 @@ class Queries {
         $success = $stmt->execute();
         return $success;
     }
-    
-    public static function getLastEpisodeWatched($tvShowVideoId){
+
+    public static function getLastEpisodeWatched($tvShowVideoId) {
         
     }
-    
 
     public static function getTvEpisodeSeasonEpisodeAndVideoIdForShow($tvShowVideoId) {
         if (Queries::$getTvEpisodeSeasonEpisodeAndVideoIdForShow == null) {
@@ -370,6 +372,17 @@ class Queries {
 
         $success = $stmt->execute();
         return $success;
+    }
+
+    public static function getVideoPathsBySourcePath($sourcePath, $mediaType) {
+        $pdo = DbManager::getPdo();
+        $sql = "select file_path from video where media_type = :mediaType and source_path = :sourcePath";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":mediaType", $mediaType);
+        $stmt->bindParam(":sourcePath", $sourcePath);
+        $success = $stmt->execute();
+        $result = DbManager::fetchAllColumn($stmt, 0);
+        return $result;
     }
 
 }
