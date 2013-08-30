@@ -12,6 +12,7 @@ class MetadataManagerModel {
 
     public function __construct() {
         $l = new LibraryGenerator();
+        set_time_limit(300);
         $l->loadFromDatabase();
         $this->movies = $l->getMovies();
         $this->tvShows = $l->getTvShows();
