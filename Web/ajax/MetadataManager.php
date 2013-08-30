@@ -1,4 +1,5 @@
 <?php
+include_once("../code/functions.php");
 
 $baseUrl = $_GET["baseUrl"];
 $basePath = $_GET["basePath"];
@@ -25,16 +26,17 @@ switch ($_GET["action"]) {
         break;
     case Enumerations::MetadataManagerAction_FetchAndGeneratePosters:
         $success = $v->fetchPoster();
-         //generate the posters
+        //generate the posters
         $success = $success && $v->generateSdPoster();
         $success = $success && $v->generateHdPoster();
         break;
 }
-////update the library 
-//$l = new Library();
-//$l->loadFullFromJson();
-//$l->update($fullPath);
-//$l->flush();
 //return the result
-echo json_encode($success);
+if ($success === true) {
+    //return the new video data to be put into the 
+    $v = new $mediaType($baseUrl, $basePath, $fullPath);
+    echo printVideoMetadataRow($v);
+} else {
+    echo json_encode($success);
+}
 ?>

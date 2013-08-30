@@ -1,5 +1,6 @@
 <?php
 
+//include_once("code/functions.php");
 include_once("code/Page.class.php");
 include_once("code/Video.class.php");
 include_once("code/Movie.class.php");

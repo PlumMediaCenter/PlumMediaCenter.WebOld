@@ -62,7 +62,7 @@
                 function() {
                 });
 
-        $("tr").click(function() {
+        $(document).on('click', "tr", function() {
             $("tr.warning").removeClass("warning");
             $(this).addClass("warning").addClass("warning");
         });
@@ -99,29 +99,12 @@ function printVideoTable($videoList) { ?>
             <tbody>
                 <?php
                 foreach ($videoList as $v) {
-                    printVideoRow($v);
+                    printVideoMetadataRow($v);
                 }
                 ?>
             </tbody>
         </table>
     </div>
-    <?php
-}
-
-function printVideoRow($v) {
-    $vSuccess = true;
-    ?>
-    <tr style="cursor:pointer;" class="videoRow <?php echo $vSuccess ? "success" : "error"; ?>" mediatype="<?php echo $v->mediaType; ?>" baseurl="<?php echo htmlspecialchars($v->baseUrl); ?>" basepath="<?php echo htmlspecialchars($v->basePath); ?>" fullpath="<?php echo htmlspecialchars($v->fullPath); ?>">
-        <?php if ($v->mediaType == Enumerations::MediaType_TvEpisode) { ?>
-            <td><?php echo $v->showName; ?></td>
-        <?php } ?>
-        <td><?php echo $v->title; ?></td>
-        <td><?php echo false ? color("Yes", "green") : color("No", "red"); ?></td>
-        <td><?php echo $v->posterExists ? color("Yes", "green") : color("No", "red"); ?></td>
-        <td><img class="sd" src="<?php echo $v->sdPosterUrl; ?>"/> </td>
-        <td><img class="hd" src="<?php echo $v->hdPosterUrl; ?>"/></td>
-
-    </tr>
     <?php
 }
 ?>

@@ -31,6 +31,10 @@ class LibraryGenerator {
         $this->generateMovies();
         $this->generateTvShows();
     }
+    
+    function loadFromVideosJson(){
+        
+    }
 
     function generateLibrary() {
         writeToLog("Begin generate library");

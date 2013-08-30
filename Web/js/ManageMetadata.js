@@ -4,28 +4,37 @@ function action(action) {
     if ($r.length === 0) {
         return;
     }
-    $.getJSON("ajax/MetadataManager.php", 
-            {
-                baseUrl: $r.attr("baseurl"),
-                basePath: $r.attr("basepath"),
-                fullPath: $r.attr("fullpath"),
-                mediaType: $r.attr("mediatype"),
-                action: action
-            },
-    function(json) {
-        if (json == true) {
-            alert("Success");
-            window.location.href= "MetadataManager.php?mediaType=" + mediaType;
-        } else {
-            alert("Failed from json");
-        }
-    }
-    ).fail(function() {
-        alert("Failed")
+    //draw a box on top of this row
+
+    $.ajax(
+            "ajax/MetadataManager.php", {
+        data:
+                {
+                    baseUrl: $r.attr("baseurl"),
+                    basePath: $r.attr("basepath"),
+                    fullPath: $r.attr("fullpath"),
+                    mediaType: $r.attr("mediatype"),
+                    action: action
+                },
+        complete:
+                function(response) {
+                    if (response.responseText != "false") {
+                        var updatedNotification = $("<tr><td colspan='5' style='background-color:black;color: white; height: " + $r.height() + "px;'>Updated </td></tr>").insertAfter($r);
+
+                        $r.remove();
+
+                        setTimeout(function() {
+                            $(response.responseText).insertAfter(updatedNotification);
+                            updatedNotification.remove();
+                        }, 1000);
+                    } else {
+                        alert("Failed from json");
+                    }
+                }
     });
+
 }
 
-
-function setMediaType(type){
+function setMediaType(type) {
     mediaType = type;
 }
