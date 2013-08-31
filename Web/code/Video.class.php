@@ -150,9 +150,9 @@ class Video {
         $nfoPath = pathinfo($p, PATHINFO_DIRNAME) . "/" . pathinfo($p, PATHINFO_FILENAME) . ".nfo";
         return $nfoPath;
     }
-
-    public function hasMetadata() {
-        //get the path to the nfo file
+    
+    public function nfoFileExists(){
+         //get the path to the nfo file
         $nfoPath = $this->getNfoPath();
         //verify that the file exists
         if (file_exists($nfoPath) === false) {
@@ -160,6 +160,13 @@ class Video {
         } else {
             return true;
         }
+    }
+    
+    /**
+     * Wrapper function for nfoFileExists, for older codebase support
+     */
+    public function hasMetadata() {
+       return $this->nfoFileExists();
     }
 
     /**

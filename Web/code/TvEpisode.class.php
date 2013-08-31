@@ -1,6 +1,8 @@
 <?php
 
-include_once("Video.class.php");
+include_once(dirname(__FILE__) . "/Video.class.php");
+include_once(dirname(__FILE__) . "/MetadataFetcher/TvEpisodeMetadataFetcher.class.php");
+
 
 class TvEpisode extends Video {
 
@@ -28,8 +30,8 @@ class TvEpisode extends Video {
         $arr = explode("/", $str);
         return $arr[0];
     }
-    
-    function getTvShowVideoId(){
+
+    function getTvShowVideoId() {
         return Queries::getVideoIdByPath($this->tvShowFilePath);
     }
 
@@ -128,17 +130,23 @@ class TvEpisode extends Video {
         }
         return -1;
     }
-    
-    function writeToDb(){
+
+    function writeToDb() {
         parent::writeToDb();
         $videoId = $this->getVideoId();
         $tvShowVideoId = $this->getTvShowVideoId();
-        if($tvShowVideoId == -1){
+        if ($tvShowVideoId == -1) {
             $k = 1;
         }
-        Queries::insertTvEpisode($videoId,$tvShowVideoId , $this->seasonNumber, $this->episodeNumber);
-        
+        Queries::insertTvEpisode($videoId, $tvShowVideoId, $this->seasonNumber, $this->episodeNumber);
     }
+
+    function getMetadataFetcher() {
+        $t = new TvEpisodeMetadataFetcher();
+        $t->searchByShowNameAndSeasonAndEpisodeNumber($this->showName, $this->seasonNumber, $this->episodeNumber);
+        return $t;
+    }
+
 }
 
 ?>

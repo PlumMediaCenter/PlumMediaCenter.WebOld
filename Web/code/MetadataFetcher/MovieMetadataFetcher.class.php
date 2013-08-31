@@ -60,7 +60,7 @@ class MovieMetadataFetcher extends MetadataFetcher{
      */
     private function fetchCast() {
         if ($this->cast == null) {
-            $this->cast = $this->tmdb->getMovieCast($this->tmdbId);
+            $this->cast = $this->tmdb->movieCast($this->tmdbId);
         }
     }
 
@@ -69,7 +69,7 @@ class MovieMetadataFetcher extends MetadataFetcher{
      */
     private function fetchInfo() {
         if ($this->info == null) {
-            $this->info = $this->tmdb->getMovie($this->tmdbId);
+            $this->info = $this->tmdb->movieDetail($this->tmdbId);
         }
     }
 
@@ -78,7 +78,7 @@ class MovieMetadataFetcher extends MetadataFetcher{
      */
     private function fetchRelease() {
         if ($this->release == null) {
-            $releases = $this->tmdb->getMovieReleases($this->tmdbId);
+            $releases = $this->tmdb->movieRelease($this->tmdbId);
             //just grab the first release in the list, should usually be the US
             $this->release = $releases["countries"][0];
         }
@@ -89,7 +89,7 @@ class MovieMetadataFetcher extends MetadataFetcher{
      */
     private function fetchTrailers() {
         if ($this->trailer == null) {
-            $trailers = $this->tmdb->getMovieTrailers($this->tmdbId);
+            $trailers = $this->tmdb->movieTrailer($this->tmdbId);
             $this->trailer = "http://www.youtube.com/watch?v=" . $trailers["youtube"][0]["source"];
         }
     }

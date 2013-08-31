@@ -187,6 +187,11 @@ function getXmlTagValue($node, $tagName) {
     }
 }
 
+/**
+ * Prints the video row as a metadataManager row. 
+ * This is used for the metadata manager as well as the metadata manager ajax calls
+ * @param Video $v
+ */
 function printVideoMetadataRow($v) {
     $vSuccess = true;
     ?>
@@ -195,7 +200,7 @@ function printVideoMetadataRow($v) {
             <td><?php echo $v->showName; ?></td>
         <?php } ?>
         <td><?php echo $v->title; ?></td>
-        <td><?php echo false ? color("Yes", "green") : color("No", "red"); ?></td>
+        <td><?php echo $v->nfoFileExists() ? color("Yes", "green") : color("No", "red"); ?></td>
         <td><?php echo $v->posterExists ? color("Yes", "green") : color("No", "red"); ?></td>
         <td><img class="sd" src="<?php echo $v->sdPosterUrl; ?>"/> </td>
         <td><img class="hd" src="<?php echo $v->hdPosterUrl; ?>"/></td>

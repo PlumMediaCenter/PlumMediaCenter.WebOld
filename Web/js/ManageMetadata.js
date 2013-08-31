@@ -21,7 +21,7 @@ function action(action) {
                     if (response.responseText != "false") {
                         var updatedNotification = $("<tr><td colspan='5' style='background-color:black;color: white; height: " + $r.height() + "px;'>Updated </td></tr>").insertAfter($r);
 
-                        $r.remove();
+                        //$r.remove();
 
                         setTimeout(function() {
                             $(response.responseText).insertAfter(updatedNotification);

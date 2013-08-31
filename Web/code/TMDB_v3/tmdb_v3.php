@@ -225,6 +225,15 @@ class TMDBv3 {
     public function movieDetail($idMovie) {
         return $this->movieInfo($idMovie, "", false);
     }
+    
+        /**
+     * movie release
+     * http://api.themoviedb.org/3/movie/$id
+     * @param array  movieReleases
+     */
+    public function movieRelease($idMovie) {
+        return $this->movieInfo($idMovie, "releases", false);
+    }
 
 //end of movieDetail
 
@@ -255,10 +264,10 @@ class TMDBv3 {
      */
     public function movieCast($idMovie) {
         $castingTmp = $this->movieInfo($idMovie, "casts", false);
-        foreach ($castingTmp['cast'] as $castArr) {
-            $casting[] = $castArr['name'] . " - " . $castArr['character'];
-        }
-        return $casting;
+       // foreach ($castingTmp['cast'] as $castArr) {
+       //     $casting[] = $castArr['name'] . " - " . $castArr['character'];
+      //  }
+        return $castingTmp;
     }
 
 //end of movieCast
@@ -274,6 +283,7 @@ class TMDBv3 {
         $movie = $this->_call($params, "");
         return $movie;
     }
+
 
 //end of movieInfo
 
