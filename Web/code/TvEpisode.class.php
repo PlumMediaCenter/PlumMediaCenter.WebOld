@@ -20,6 +20,7 @@ class TvEpisode extends Video {
         //load all of the information from the metadata file, if it exists
         $this->loadMetadata();
         $this->showName = $this->getShowName();
+        $this->showFilePath = "$this->basePath$this->showName/";
     }
 
     function getShowName() {
@@ -127,6 +128,7 @@ class TvEpisode extends Video {
         }
         return -1;
     }
+    
     function writeToDb(){
         parent::writeToDb();
         $videoId = $this->getVideoId();

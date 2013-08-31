@@ -65,7 +65,7 @@ class TvShow extends Video {
         $seasonList = [];
         //if the flag says to load from database, load the videos from the database instead of from disc
         if ($this->loadEpisodesFromDatabase === true) {
-            $videosList = Queries::getVideoPathsBySourcePath($this->basePath, Enumerations::MediaType_TvEpisode);
+            $videosList = Queries::getEpisodePathsByShowPath($this->fullPath);
         } else {
             //get the list of videos from this tv series 
             $videosList = getVideosFromDir($this->fullPath);

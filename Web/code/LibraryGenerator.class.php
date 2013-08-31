@@ -40,6 +40,7 @@ class LibraryGenerator {
         writeToLog("Begin generate library");
         //clear the database of all video references. 
         Queries::truncateTableVideo();
+        Queries::truncateTableTvEpisode();
         writeToLog("Begin loading movies");
         $this->generateMovies();
         writeToLog("End loading movies");

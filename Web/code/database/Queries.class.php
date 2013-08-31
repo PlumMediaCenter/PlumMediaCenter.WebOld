@@ -15,6 +15,7 @@ class Queries {
     private static $stmtUpdateVideoSource = null;
     private static $stmtInsertTvEpisode = null;
     private static $getTvEpisodeSeasonEpisodeAndVideoIdForShow = null;
+    private static $stmtGetEpisodePathsByShowPath = null;
 
     /**
      * Retrieves the list of all video file paths currently in the database
@@ -129,7 +130,9 @@ class Queries {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtInsertTvEpisode == null) {
             $sql = "insert into tv_episode(video_id, tv_show_video_id, season_number, episode_number, writer, director)" .
-                    " values(:videoId, :tvShowVideoId, :seasonNumber, :episodeNumber, :writer, :director);";
+                    " values(:videoId, :tvShowVideoId, :seasonNumber, :episodeNumber, :writer, :director) " .
+                    " on duplicate key update tv_show_video_id=:tvShowVideoId, season_number=:seasonNumber,
+                        episode_number=:episodeNumber, writer=:writer, director=:director;";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtInsertTvEpisode = $stmt;
         }
@@ -149,6 +152,16 @@ class Queries {
     public static function truncateTableVideo() {
         $pdo = DbManager::getPdo();
         $sql = "truncate table video";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+    }
+
+    /**
+     * deletes all videos from the tv_episode table. 
+     */
+    public static function truncateTableTvEpisode() {
+        $pdo = DbManager::getPdo();
+        $sql = "truncate table tv_episode";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
     }
@@ -380,6 +393,30 @@ class Queries {
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(":mediaType", $mediaType);
         $stmt->bindParam(":sourcePath", $sourcePath);
+        $success = $stmt->execute();
+        $result = DbManager::fetchAllColumn($stmt, 0);
+        return $result;
+    }
+
+    /**
+     * Fetch a list of all tv episode file paths from the database that are linked with the show path provided
+     * @param type $showPath - the path of the tv show
+     * @return array - an array of tv episode paths
+     */
+    public static function getEpisodePathsByShowPath($showPath) {
+
+        $pdo = DbManager::getPdo();
+        if (Queries::$stmtGetEpisodePathsByShowPath == null) {
+            $sql = "select file_path from video where video_id in (
+                        select video_id from tv_episode where tv_show_video_id = (
+                            select video_id from video where file_path = :showPath
+                        )
+                    )";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtGetEpisodePathsByShowPath = $stmt;
+        }
+        $stmt = Queries::$stmtGetEpisodePathsByShowPath;
+        $stmt->bindParam(":showPath", $showPath);
         $success = $stmt->execute();
         $result = DbManager::fetchAllColumn($stmt, 0);
         return $result;
