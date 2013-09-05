@@ -123,7 +123,7 @@ End Function
 Sub LoadLibraryFromJson()
     'the url pointing to the json file on the server containing the list of videos
     videoListUrl = GetVideoJsonUrl()
-    print "videoListUrl: "; videoListUrl 
+    print "Video list url from registry: "; videoListUrl 
     'if the video list is null, create an empty list of videos and movies
     If (videoListUrl = invalid) Then
         print "video list is invalid"
@@ -272,7 +272,9 @@ End Sub
 
 Sub ShowSettings(n)
     If (n = 0) Then
-        SetVideoJsonUrl(GetVideoJsonUrlFromUser())
+        jsonUrl = GetVideoJsonUrlFromUser()
+        SetRegVal("jsonUrl", jsonUrl)
+        
     Else If (n = 1) Then
         print "Refresh media list"
         Main()
