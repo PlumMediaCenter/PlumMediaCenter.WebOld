@@ -95,3 +95,9 @@ body{
 .tile:hover{
     text-decoration: none;
 }
+
+input[type=radio], label{
+    display:inline;
+    line-height:20px;
+    margin:0px;
+}

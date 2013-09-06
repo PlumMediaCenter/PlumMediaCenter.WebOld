@@ -12,6 +12,11 @@
         <li <?php echo $selectedTab == Enumerations::MediaType_TvShow ? " class='active' " : ""; ?>><a href="#tvShowsPane" data-toggle="tab" onclick="setMediaType('<?php echo Enumerations::MediaType_TvShow; ?>');">Tv Shows</a></li>
         <li <?php echo $selectedTab == Enumerations::MediaType_TvEpisode ? " class='active' " : ""; ?>><a href="#tvEpisodesPane" data-toggle="tab" onclick="setMediaType('<?php echo Enumerations::MediaType_TvEpisode; ?>');">Tv Episodes</a></li>
     </ul>
+    <b>Show rows: </b>
+    <label for="showAll" style="margin-left:10px;">All</label>
+    <input type="radio" id="showAll" value="all" checked="checked" name="showRows"/>
+    <label for="showMissing" style="margin-left:10px;">Missing something</label>
+    <input type="radio" id="showMissing" value="missing" name="showRows"/>
     <div class="buttonArea" style="height:20px;">
         <a class="btn action " onclick="action('<?php echo Enumerations::MetadataManagerAction_FetchMetadata; ?>');">Fetch Metadata</a>
         <a class="btn action " onclick="action('<?php echo Enumerations::MetadataManagerAction_ReloadMetadata; ?>');">Reload Metadata</a>
@@ -50,40 +55,11 @@
     </div>
 </div>
 
-
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $(".table-sort").tablesorter();
-        $(".table-sort thead tr th").hover(
-                function() {
-                    //$(this).prop("title","sort");
-                },
-                function() {
-                });
-
-        $(document).on('click', "tr", function() {
-            $("tr.warning").removeClass("warning");
-            $(this).addClass("warning").addClass("warning");
-        });
-        //resize the video grids to fill vertical space
-        $(window).resize(resize);
-        resize();
-    });
-
-    function resize() {
-        var height = $(window).height() - 150;
-        $("#tablesArea").height(height + "px");
-        var newHeight = $("#tablesArea").height() - 70;
-        $(".tableScrollArea").height(newHeight + "px");
-    }
-</script>
-
 <?php
 
 function printVideoTable($videoList) { ?>
     <div class="tableScrollArea">
-        <table class="table table-hover table-sort">
+        <table class="table table-sort">
             <thead>
                 <tr title="sort">
                     <?php if (isset($videoList[0]) && $videoList[0]->mediaType == Enumerations::MediaType_TvEpisode) { ?>

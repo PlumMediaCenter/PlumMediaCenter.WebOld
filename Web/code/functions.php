@@ -193,9 +193,20 @@ function getXmlTagValue($node, $tagName) {
  * @param Video $v
  */
 function printVideoMetadataRow($v) {
-    $vSuccess = true;
+    echo getVideoMetadataRow($v);
+}
+
+/**
+ *  Returns the metadata row in string form
+ * @param Video $v
+ * @return type
+ */
+function getVideoMetadataRow($v) {
+    ob_start();
+    $vSuccess = $v->nfoFileExists() && $v->posterExists() && $v->sdPosterExists() && $v->hdPosterExists();
+    $txtSuccess = $vSuccess === true? "true": "false";
     ?>
-    <tr style="cursor:pointer;" class="videoRow <?php echo $vSuccess ? "success" : "error"; ?>" mediatype="<?php echo $v->mediaType; ?>" baseurl="<?php echo htmlspecialchars($v->baseUrl); ?>" basepath="<?php echo htmlspecialchars($v->basePath); ?>" fullpath="<?php echo htmlspecialchars($v->fullPath); ?>">
+    <tr style="cursor:pointer;" data-complete="<?php echo $txtSuccess; ?>" class="videoRow <?php echo $vSuccess ? "success" : "error"; ?>" mediatype="<?php echo $v->mediaType; ?>" baseurl="<?php echo htmlspecialchars($v->baseUrl); ?>" basepath="<?php echo htmlspecialchars($v->basePath); ?>" fullpath="<?php echo htmlspecialchars($v->fullPath); ?>">
         <?php if ($v->mediaType == Enumerations::MediaType_TvEpisode) { ?>
             <td><?php echo $v->showName; ?></td>
         <?php } ?>
@@ -207,5 +218,8 @@ function printVideoMetadataRow($v) {
 
     </tr>
     <?php
+    $row = ob_get_contents();
+    ob_end_clean();
+    return $row;
 }
 ?>

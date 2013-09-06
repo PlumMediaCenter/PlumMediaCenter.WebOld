@@ -1,4 +1,5 @@
 <?php
+
 include_once("../code/functions.php");
 
 $baseUrl = $_GET["baseUrl"];
@@ -31,12 +32,16 @@ switch ($_GET["action"]) {
         $success = $success && $v->generateHdPoster();
         break;
 }
+$result = (object) [];
+$result->success = $success;
 //return the result
 if ($success === true) {
     //return the new video data to be put into the 
     $v = new $mediaType($baseUrl, $basePath, $fullPath);
-    echo printVideoMetadataRow($v);
+
+    $result->output = getVideoMetadataRow($v);
 } else {
-    echo json_encode($success);
+    
 }
+echo json_encode($result);
 ?>

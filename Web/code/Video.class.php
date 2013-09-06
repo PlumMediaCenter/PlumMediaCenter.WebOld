@@ -236,7 +236,7 @@ class Video {
     /**
      * Determines whether or not the SD poster exists on disk
      */
-    function getSdPosterExists() {
+    function sdPosterExists() {
         if (file_exists($this->getSdPosterPath())) {
             return true;
         } else {
@@ -247,7 +247,7 @@ class Video {
     /**
      * Determines whether or not the HD poster exists on disk
      */
-    function getHdPosterExists() {
+    function hdPosterExists() {
         if (file_exists($this->getHdPosterPath())) {
             return true;
         } else {

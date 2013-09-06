@@ -2,6 +2,7 @@
 <html>
     <head><title><?php echo $title != null ? $title : ""; ?></title>
         <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.color-2.1.0.min.js"></script>
         <script type="text/javascript" src="plugins/bootstrap/js/bootstrap.min.js"></script>
         <link href="plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="css/style.css" rel="stylesheet" media="screen">
