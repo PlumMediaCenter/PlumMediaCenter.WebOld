@@ -3,17 +3,23 @@
 include_once("database/Queries.class.php");
 include_once("SimpleImage.class.php");
 include_once("Enumerations.class.php");
+include_once("Movie.class.php");
+include_once("TvShow.class.php");
+include_once("TvEpisode.class.php");
+
 include_once(dirname(__FILE__) . "/../config.php");
 include_once(dirname(__FILE__) . "/functions.php");
 
-class Video {
+abstract class Video {
+
+    abstract function fetchMetadata();
 
     const NoMetadata = "0000-00-00 00:00:00"; //this will never be a valid date, so use it for invalid metadata dates
     const SdImageWidth = 110; //110x150
     const HdImageWidth = 210; // 210x270
 
-    public $baseUrl;
-    public $basePath;
+    public $videoSourceUrl;
+    public $videoSourcePath;
     public $fullPath;
     public $mediaType;
     public $title;
@@ -26,6 +32,7 @@ class Video {
     public $mpaa = "N/A";
     public $actorList = [];
     public $generatePosterMethod;
+    public $videoId = null;
     //if this is set to true, you should refresh the video in the db when being updated
     public $refreshVideo;
     protected $metadata;
@@ -33,12 +40,11 @@ class Video {
     protected $metadataFetcher;
     protected $filetype = null;
     protected $metadataLoaded = false;
-    protected $videoId = null;
 
-    function __construct($baseUrl, $basePath, $fullPath) {
+    function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
         //save the important stuff
-        $this->baseUrl = $baseUrl;
-        $this->basePath = $basePath;
+        $this->videoSourceUrl = $videoSourceUrl;
+        $this->videoSourcePath = $videoSourcePath;
         $this->fullPath = $fullPath;
 
         //calculate anything extra that is needed
@@ -49,6 +55,33 @@ class Video {
         $this->title = $this->getVideoName();
         $this->generatePosterMethod = $this->getGeneratePosterMethod();
         $this->generatePosters();
+    }
+
+    /**
+     * 
+     * @param type $videoId
+     * @return Video $video
+     */
+    public static function loadFromDb($videoId) {
+
+        $v = Queries::getVideo($videoId);
+        switch ($v->media_type) {
+            case Enumerations::MediaType_Movie:
+                $video = new Movie($v->video_source_url, $v->video_source_path, $v->path);
+                break;
+            case Enumerations::MediaType_TvShow:
+                $video = new TvShow($v->video_source_url, $v->video_source_path, $v->path);
+                break;
+            case Enumerations::MediaType_TvEpisode:
+                $video = new TvShow($v->video_source_url, $v->video_source_path, $v->path);
+                break;
+        }
+
+        $video->videoId = $v->video_id;
+        $video->title = $v->title;
+        $video->plot = $v->plot;
+        $video->mpaa = $v->mpaa;
+        return $video;
     }
 
     public function update() {
@@ -121,8 +154,8 @@ class Video {
     }
 
     protected function getUrl() {
-        $relativePath = str_replace($this->basePath, "", $this->fullPath);
-        $url = $this->baseUrl . $relativePath;
+        $relativePath = str_replace($this->videoSourcePath, "", $this->fullPath);
+        $url = $this->videoSourceUrl . $relativePath;
         //encode the url and then restore the forward slashes and colons
         return $url;
     }
@@ -150,9 +183,9 @@ class Video {
         $nfoPath = pathinfo($p, PATHINFO_DIRNAME) . "/" . pathinfo($p, PATHINFO_FILENAME) . ".nfo";
         return $nfoPath;
     }
-    
-    public function nfoFileExists(){
-         //get the path to the nfo file
+
+    public function nfoFileExists() {
+        //get the path to the nfo file
         $nfoPath = $this->getNfoPath();
         //verify that the file exists
         if (file_exists($nfoPath) === false) {
@@ -161,12 +194,12 @@ class Video {
             return true;
         }
     }
-    
+
     /**
      * Wrapper function for nfoFileExists, for older codebase support
      */
     public function hasMetadata() {
-       return $this->nfoFileExists();
+        return $this->nfoFileExists();
     }
 
     /**
@@ -352,10 +385,10 @@ class Video {
         $videoId = $this->getVideoId();
         //if this is a video that does not yet exist in the database, create a new video
         if ($videoId === -1) {
-            Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->basePath);
+            Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl);
         } else {
             //this is an existing video that needs to be updated. update it
-            Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->basePath);
+            Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl);
         }
         $this->videoId = $this->getVideoId(true);
     }
@@ -364,8 +397,8 @@ class Video {
      * Modifies the public variables in this class in order to only write the necessary variables to the json file. 
      */
     public function prepForJsonification() {
-        unset($this->baseUrl);
-        unset($this->basePath);
+        unset($this->videoSourceUrl);
+        unset($this->videoSourcePath);
         unset($this->fullPath);
         unset($this->mediaType);
         unset($this->posterExists);
@@ -397,7 +430,7 @@ class Video {
 
     public function getVideoId($bForce = false) {
         if ($this->videoId === null || $bForce === true) {
-            $this->videoId = Queries::getVideoIdByPath($this->fullPath);
+            $this->videoId = Queries::getVideoIdByVideoPath($this->fullPath);
         }
         return $this->videoId;
     }

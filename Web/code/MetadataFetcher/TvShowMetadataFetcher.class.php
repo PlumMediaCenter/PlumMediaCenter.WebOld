@@ -37,20 +37,61 @@ class TvShowMetadataFetcher extends MetadataFetcher {
         }
     }
 
-    function title() {
-        return $this->tvShowObject->seriesName;
+    function actors() {
+        return $this->tvShowObject->actors;
     }
 
-    function plot() {
-        return $this->tvShowObject->overview;
+    function bannerUrl() {
+        return $this->tvShowObject->bannerUrl;
+    }
+
+    function airTime() {
+        return $this->tvShowObject->airTime;
+    }
+
+    function dayOfWeek() {
+        return $this->tvShowObject->dayOfWeek;
+    }
+
+    function firstAired() {
+        return  $this->tvShowObject->firstAired;
+       
+    }
+
+    function genres() {
+        return $this->tvShowObject->genres;
+    }
+
+    function imdbId() {
+        return $this->tvShowObject->imdbId;
+    }
+
+    function title() {
+        return $this->tvShowObject->seriesName;
     }
 
     function mpaa() {
         return $this->tvShowObject->contentRating;
     }
 
-    function tmdbId() {
-        return $this->tvShowObject->id;
+    function network() {
+        return $this->tvShowObject->network;
+    }
+
+    function posterUrl() {
+        return $this->tvShowObject->posterUrl;
+    }
+
+    function plot() {
+        return $this->tvShowObject->overview;
+    }
+
+    function rating() {
+        return $this->tvShowObject->rating;
+    }
+
+    function runtime() {
+        return $this->tvShowObject->runtime;
     }
 
     function seriesName() {
@@ -61,48 +102,8 @@ class TvShowMetadataFetcher extends MetadataFetcher {
         return $this->tvShowObject->status;
     }
 
-    function firstAired() {
-        return $this->tvShowObject->firstAired;
-    }
-
-    function network() {
-        return $this->tvShowObject->network;
-    }
-
-    function runtime() {
-        return $this->tvShowObject->runtime;
-    }
-
-    function genres() {
-        return $this->tvShowObject->genres;
-    }
-
-    function actors() {
-        return $this->tvShowObject->actors;
-    }
-
-    function dayOfWeek() {
-        return $this->tvShowObject->dayOfWeek;
-    }
-
-    function airTime() {
-        return $this->tvShowObject->airTime;
-    }
-
-    function rating() {
-        return $this->tvShowObject->rating;
-    }
-
-    function imdbId() {
-        return $this->tvShowObject->imdbId;
-    }
-
-    function bannerUrl() {
-        return $this->tvShowObject->bannerUrl;
-    }
-
-    function posterUrl() {
-        return $this->tvShowObject->posterUrl;
+    function tmdbId() {
+        return $this->tvShowObject->id;
     }
 
 }

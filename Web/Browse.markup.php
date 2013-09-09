@@ -11,7 +11,7 @@
                 ?>
                 <div class="tile">
                     <span><?php echo $movie->title; ?></span>
-                    <a href="Play.php?videoUrl=<?php echo urlencode($movie->url); ?>&posterUrl=<?php echo urlencode($movie->hdPosterUrl); ?>"><img src="<?php echo $movie->hdPosterUrl; ?>"/></a>
+                    <a href="Play.php?videoId=<?php echo $movie->videoId; ?>"><img src="<?php echo $movie->hdPosterUrl; ?>"/></a>
                 </div>
                 <?php
             }
@@ -23,7 +23,9 @@
             foreach ($tvShows as $tvShow) {
                 $modalId = "modal-" . md5($tvShow->title);
                 ?>
-                <a class="tile" href="#<?php echo $modalId; ?>" role="button" data-toggle="modal">
+                <!--<a class="tile" href="#<?php echo $modalId; ?>" role="button" data-toggle="modal">-->
+                <a class="tile" href="VideoInfo.php?videoId=<?php echo $tvShow->videoId; ?>" >
+
                      <span><?php echo $tvShow->title; ?></span>
                     <img src="<?php echo $tvShow->hdPosterUrl; ?>"/>
                 </a>
@@ -51,7 +53,7 @@
                                 ?>
                                 <div class="tile">
                                     <span style='font-size: 20px;'><?php echo "$episode->episodeNumber. $episode->title"; ?></span>
-                                    <a href="Play.php?videoUrl=<?php echo $episode->url; ?>&posterUrl=<?php echo urlencode($episode->hdPosterUrl); ?>"><img src="<?php echo $episode->hdPosterUrl; ?>"/></a>
+                                   <!--<a href="Play.php?videoId=<?php echo $episode->videoId; ?>"><img src="<?php echo $episode->hdPosterUrl; ?>"/></a>-->
                                 </div>
                                 <?php
                             }

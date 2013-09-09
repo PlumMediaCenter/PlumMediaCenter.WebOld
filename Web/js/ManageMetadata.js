@@ -84,7 +84,7 @@ function action(action) {
                         pulsate($r, "#3333CC", "#dff0d8", function() {
                             newRow.insertAfter($r);
                             $r.remove();
-                            rowClick(newRow);
+                            //rowClick(newRow);
                         });
                     } else {
 

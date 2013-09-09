@@ -1,5 +1,9 @@
 <?php
 
 include_once(dirname(__FILE__) . "/../code/TvShow.class.php");
-TvShow::get
+$tvSeriesVideoId = isset($_GET["videoId"]) ? $_GET["videoId"] : -1;
+$episodeVideoId = TvShow::getNextEpisodeToWatch($tvSeriesVideoId);
+$result = (object) [];
+$result->videoId = $episodeVideoId;
+echo json_encode($result);
 ?>

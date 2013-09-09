@@ -128,7 +128,7 @@ class LibraryGenerator {
 
         //at this point, $videosToDelete should only contain videos that are no longer present in sources. 
         //delete these videos from the database
-        Queries::deleteVideosByFilePaths($videosToDelete);
+        Queries::deleteVideosByVideoPaths($videosToDelete);
 
         //log all vides that were just deleted
         foreach ($videosToDelete as $path) {

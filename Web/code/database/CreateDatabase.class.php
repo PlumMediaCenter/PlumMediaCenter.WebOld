@@ -55,17 +55,16 @@ class CreateDatabase {
                     title char(100),
                     running_time int(5),
                     plot varchar(3000), 
-                    file_path varchar(1000) not null,
+                    path varchar(1000) not null,
+                    url varchar(2000),
                     filetype char(15),
-                    video_file_id int,
-                    poster_file_id int,
-                    poster_thumbnail_file_id int,
                     metadata_last_modified_date datetime,
                     poster_last_modified_date datetime,
                     mpaa char(200), 
                     release_date date, 
                     media_type char(10) not null, 
-                    source_path char(200) not null,
+                    video_source_path varchar(2000) not null,
+                    video_source_url varchar(2000) not null,
                     primary key(video_id)
                 );";
         DbManager::nonQuery($sql);
@@ -80,7 +79,8 @@ class CreateDatabase {
                 season_number int,
                 episode_number int,
                 writer char(50),
-                director char(50)  
+                director char(50),
+                primary key(video_id)
             );";
         DbManager::nonQuery($sql);
     }

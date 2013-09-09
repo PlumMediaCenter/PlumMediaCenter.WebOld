@@ -135,7 +135,12 @@ class TV_Show extends TVDB {
         $this->id = (string) $config->id;
         $this->seriesName = (string) $config->SeriesName;
         $this->status = (string) $config->Status;
-        $this->firstAired = strtotime((string) $config->FirstAired);
+        $firstAired = $config->FirstAired;
+        $y = (string) substr($firstAired, 0, 4);
+        $m = substr($firstAired, 5, 2);
+        $d = substr($firstAired, 8, 2);
+        $d = new DateTime("$m/$d/$y");
+        $this->firstAired = $d;
         $this->network = (string) $config->Network;
         $this->runtime = (string) $config->Runtime;
         $this->genres = $this->removeEmptyIndexes(explode('|', (string) $config->Genre));

@@ -7,7 +7,7 @@ class Queries {
 
     private static $stmtInsertVideo = null;
     private static $getAllVideoPaths = null;
-    private static $stmtGetVideoIdByPath = null;
+    private static $stmtgetVideoIdByVideoPath = null;
     private static $stmtGetVideoMetadataLastModifiedDate = null;
     private static $stmtUpdateVideo = null;
     private static $stmtVideoCount = null;
@@ -16,6 +16,9 @@ class Queries {
     private static $stmtInsertTvEpisode = null;
     private static $getTvEpisodeSeasonEpisodeAndVideoIdForShow = null;
     private static $stmtGetEpisodePathsByShowPath = null;
+    private static $stmtGetVideo = null;
+    private static $stmtGetTvEpisode = null;
+    private static $stmtGetEpisodesInTvShow = null;
 
     /**
      * Retrieves the list of all video file paths currently in the database
@@ -23,14 +26,14 @@ class Queries {
     public static function getAllVideoPathsInCurrentLibrary() {
         $pdo = DbManager::getPdo();
         if (Queries::$getAllVideoPaths == null) {
-            $sql = "select video_id, file_path from video";
+            $sql = "select video_id, path from video";
             $stmt = $pdo->prepare($sql);
             Queries::$getAllVideoPaths = $stmt;
         }
         $stmt = Queries::$getAllVideoPaths;
         $stmt->execute();
         $list = [];
-        return Queries::fetchAllKeyValuePair($stmt, "video_id", "file_path");
+        return Queries::fetchAllKeyValuePair($stmt, "video_id", "path");
     }
 
     private static function fetchAll($stmt) {
@@ -68,11 +71,11 @@ class Queries {
      * @param type $filetype -- the filetype of the video
      * @param type $mediaType -- the media type of the video (movie, tv show, tv episode   
      */
-    public static function insertVideo($title, $plot, $mpaa, $releaseDate, $filePath, $filetype, $mediaType, $metadataModifiedDate, $sourcePath) {
+    public static function insertVideo($title, $plot, $mpaa, $releaseDate, $videoPath, $filetype, $mediaType, $metadataModifiedDate, $videoSourcePath, $videoSourceUrl) {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtInsertVideo == null) {
-            $sql = "insert into video(title, plot, mpaa, release_date, file_path, filetype, media_type, metadata_last_modified_date, source_path)" .
-                    " values(:title, :plot, :mpaa, :releaseDate, :filePath, :filetype, :mediaType, :metadataLastModifiedDate, :sourcePath)";
+            $sql = "insert into video(title, plot, mpaa, release_date, path, filetype, media_type, metadata_last_modified_date, video_source_path, video_source_url)" .
+                    " values(:title, :plot, :mpaa, :releaseDate, :filePath, :filetype, :mediaType, :metadataLastModifiedDate, :videoSourcePath, :videoSourceUrl)";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtInsertVideo = $stmt;
         }
@@ -81,12 +84,12 @@ class Queries {
         $stmt->bindParam(":plot", $plot);
         $stmt->bindParam(":mpaa", $mpaa);
         $stmt->bindParam(":releaseDate", $releaseDate);
-        $stmt->bindParam(":filePath", $filePath);
+        $stmt->bindParam(":filePath", $videoPath);
         $stmt->bindParam(":filetype", $filetype);
         $stmt->bindParam(":mediaType", $mediaType);
         $stmt->bindParam(":metadataLastModifiedDate", $metadataModifiedDate);
-        $stmt->bindParam(":sourcePath", $sourcePath);
-
+        $stmt->bindParam(":videoSourcePath", $videoSourcePath);
+        $stmt->bindParam(":videoSourceUrl", $videoSourceUrl);
         $stmt->execute();
     }
 
@@ -98,15 +101,15 @@ class Queries {
      * @param string $filetype -- the filetype of the video
      * @param string $mediaType -- the media type of the video (movie, tv show, tv episode   
      */
-    public static function updateVideo($videoId, $title, $plot, $mpaa, $releaseDate, $filePath, $fileType, $mediaType, $metadataModifiedDate, $videoSourceLocation) {
+    public static function updateVideo($videoId, $title, $plot, $mpaa, $releaseDate, $videoPath, $fileType, $mediaType, $metadataModifiedDate, $videoSourcePath, $videoSourceUrl) {
         if ($videoId == null || $videoId == -1) {
-            Queries::insertVideo($title, $plot, $mpaa, $releaseDate, $filePath, $fileType, $mediaType, $metadataModifiedDate, $sourcePath);
+            Queries::insertVideo($title, $plot, $mpaa, $releaseDate, $videoPath, $fileType, $mediaType, $metadataModifiedDate, $videoSourcePath, $videoSourceUrl);
         }
         $pdo = DbManager::getPdo();
         if (Queries::$stmtUpdateVideo == null) {
             $sql = "update video set "
-                    . "video_title = :title, plot=:plot, mpaa=:mpaa, release_date=:releaseDate, file_path=:filePath, filetype=:fileType, "
-                    . "media_type=:mediaType, metadata_last_modified_date= :metadataLastModifiedDate, source_path=:sourcePath "
+                    . "title = :title, plot=:plot, mpaa=:mpaa, release_date=:releaseDate, path=:path, filetype=:fileType, "
+                    . "media_type=:mediaType, metadata_last_modified_date= :metadataLastModifiedDate, video_source_path=:videoSourcePath, video_source_url=:videoSourceUrl "
                     . "where video_id = :videoId";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtUpdateVideo = $stmt;
@@ -116,14 +119,15 @@ class Queries {
         $stmt->bindParam(":plot", $plot);
         $stmt->bindParam(":mpaa", $mpaa);
         $stmt->bindParam(":releaseDate", $releaseDate);
-        $stmt->bindParam(":filePath", $filePath);
+        $stmt->bindParam(":path", $videoPath);
         $stmt->bindParam(":fileType", $fileType);
         $stmt->bindParam(":mediaType", $mediaType);
         $stmt->bindParam(":metadataLastModifiedDate", $metadataModifiedDate);
-        $stmt->bindParam(":sourcePath", $sourcePath);
-
+        $stmt->bindParam(":videoSourcePath", $videoSourcePath);
+        $stmt->bindParam(":videoSourceUrl", $videoSourceUrl);
         $stmt->bindParam(":videoId", $videoId);
-        $stmt->execute();
+        $success = $stmt->execute();
+        return $success;
     }
 
     public static function insertTvEpisode($videoId, $tvShowVideoId, $seasonNumber, $episodeNumber, $writer = "", $director = "") {
@@ -171,18 +175,18 @@ class Queries {
      * @param array $filePaths - the list of filepaths that are going to be deleted  
      * @return boolean - true if successful, false if unsuccessful
      */
-    public static function deleteVideosByFilePaths($filePaths) {
+    public static function deleteVideosByVideoPaths($videoPaths) {
         //if no file paths were provided, no videos will be deleted. return success.
-        if (count($filePaths) === 0) {
+        if (count($videoPaths) === 0) {
             return false;
         }
         $pdo = DbManager::getPdo();
 
         //get the list of video ids for the deleted videos
-        $filePathsStmt = '';
+        $videoPathStmt = '';
         $notFirstTime = false;
-        $filePathsStmt = DbManager::generateInStatement($filePaths);
-        $sql = "SELECT video_id FROM video WHERE file_path IN ($filePathsStmt)";
+        $videoPathStmt = DbManager::generateInStatement($videoPaths);
+        $sql = "SELECT video_id FROM video WHERE path IN ($videoPathStmt)";
         $stmt = $pdo->prepare($sql);
         $success = $stmt->execute();
         $videoIds = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
@@ -194,15 +198,15 @@ class Queries {
         return $success && $delSuccess;
     }
 
-    public static function getVideoIdByPath($filePath) {
+    public static function getVideoIdByVideoPath($videoPath) {
         $pdo = DbManager::getPdo();
-        if (Queries::$stmtGetVideoIdByPath == null) {
-            $sql = "select video_id from video where file_path = :filePath";
+        if (Queries::$stmtgetVideoIdByVideoPath == null) {
+            $sql = "select video_id from video where path = :videoPath";
             $stmt = $pdo->prepare($sql);
-            Queries::$stmtGetVideoIdByPath = $stmt;
+            Queries::$stmtgetVideoIdByVideoPath = $stmt;
         }
-        $stmt = Queries::$stmtGetVideoIdByPath;
-        $stmt->bindParam(":filePath", $filePath);
+        $stmt = Queries::$stmtgetVideoIdByVideoPath;
+        $stmt->bindParam(":videoPath", $videoPath);
         $success = $stmt->execute();
         $videoId = $stmt->fetch();
         if ($success === true) {
@@ -368,8 +372,31 @@ class Queries {
         return $success;
     }
 
-    public static function getLastEpisodeWatched($tvShowVideoId) {
-        
+    public static function getLastEpisodeWatched($username, $tvShowVideoId) {
+        $pdo = DbManager::getPdo();
+        $sql = "select w.video_id, w.time_in_seconds
+                from watch_video w, tv_episode e
+                where w.video_id = e.video_id
+                and e.tv_show_video_id = :tvShowVideoId
+                and w.username = :username
+                and w.date_watched = (
+                  select max(sw.date_watched) 
+                  from watch_video sw, tv_episode se
+                  where sw.video_id = se.video_id
+                  and se.tv_show_video_id = :tvShowVideoId
+                  and sw.username = :username
+                )";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":tvShowVideoId", $tvShowVideoId);
+        $stmt->bindParam(":username", $username);
+        $success = $stmt->execute();
+        if ($success === true) {
+            $rows = Dbmanager::fetchAllClass($stmt);
+            if (count($rows) > 0) {
+                return $rows[0];
+            }
+        }
+        return false;
     }
 
     public static function getTvEpisodeSeasonEpisodeAndVideoIdForShow($tvShowVideoId) {
@@ -387,12 +414,12 @@ class Queries {
         return $success;
     }
 
-    public static function getVideoPathsBySourcePath($sourcePath, $mediaType) {
+    public static function getVideoPathsBySourcePath($videoSourcePath, $mediaType) {
         $pdo = DbManager::getPdo();
-        $sql = "select file_path from video where media_type = :mediaType and source_path = :sourcePath";
+        $sql = "select path from video where media_type = :mediaType and video_source_path = :videoSourcePath";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(":mediaType", $mediaType);
-        $stmt->bindParam(":sourcePath", $sourcePath);
+        $stmt->bindParam(":videoSourcePath", $videoSourcePath);
         $success = $stmt->execute();
         $result = DbManager::fetchAllColumn($stmt, 0);
         return $result;
@@ -407,9 +434,9 @@ class Queries {
 
         $pdo = DbManager::getPdo();
         if (Queries::$stmtGetEpisodePathsByShowPath == null) {
-            $sql = "select file_path from video where video_id in (
+            $sql = "select path from video where video_id in (
                         select video_id from tv_episode where tv_show_video_id = (
-                            select video_id from video where file_path = :showPath
+                            select video_id from video where path = :showPath
                         )
                     )";
             $stmt = $pdo->prepare($sql);
@@ -420,6 +447,76 @@ class Queries {
         $success = $stmt->execute();
         $result = DbManager::fetchAllColumn($stmt, 0);
         return $result;
+    }
+
+    public static function getVideo($videoId) {
+        if (Queries::$stmtGetVideo == null) {
+            $pdo = DbManager::getPdo();
+            $sql = "select * from video 
+                where video_id=:videoId";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtGetVideo = $stmt;
+        }
+        $stmt = Queries::$stmtGetVideo;
+        $stmt->bindParam(":videoId", $videoId);
+
+        $success = $stmt->execute();
+        if ($success === true) {
+            $v = Dbmanager::fetchAllClass($stmt);
+            if (count($v) > 0) {
+                $v = $v[0];
+                return $v;
+            }
+        }
+        //return false if no videos were found or an error occurred.
+        return false;
+    }
+
+    public static function getTvEpisode($videoId) {
+        if (Queries::$stmtGetTvEpisode == null) {
+            $pdo = DbManager::getPdo();
+            $sql = "select * from video v, tv_episode e
+                where v.video_id=:videoId
+                and v.video_id=e.video_id";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtGetTvEpisode = $stmt;
+        }
+        $stmt = Queries::$stmtGetTvEpisode;
+        $stmt->bindParam(":videoId", $videoId);
+
+        $success = $stmt->execute();
+        if ($success === true) {
+            $v = Dbmanager::fetchAllClass($stmt);
+            if (count($v) > 0) {
+                $v = $v[0];
+                return $v;
+            }
+        }
+        //return false if no videos were found or an error occurred.
+        return false;
+    }
+
+    public static function getEpisodesInTvShow($tvShowVideoId) {
+        if (Queries::$stmtGetEpisodesInTvShow == null) {
+            $pdo = DbManager::getPdo();
+            $sql = "select * from video v, tv_episode e
+                where e.tv_show_video_id=:videoId
+                and v.video_id=e.video_id";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtGetEpisodesInTvShow = $stmt;
+        }
+        $stmt = Queries::$stmtGetEpisodesInTvShow;
+        $stmt->bindParam(":videoId", $tvShowVideoId);
+
+        $success = $stmt->execute();
+        if ($success === true) {
+            $v = Dbmanager::fetchAllClass($stmt);
+            if (count($v) > 0) {
+                return $v;
+            }
+        }
+        //return false if no videos were found or an error occurred.
+        return false;
     }
 
 }
