@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<movie>
+  <title>Fake Movie 1</title>
+  <originaltitle>Fake Movie 1</originaltitle>
+  <sorttitle>Fake Movie 1</sorttitle>
+  <set></set>
+  <rating>10</rating>
+  <year>1992-11-25</year>
+  <top250>1992-11-25</top250>
+  <votes>1992-11-25</votes>
+  <outline>1992-11-25</outline>
+  <plot>This is the plot for the fake movie 1.</plot>
+  <tagline>What a fake movie!</tagline>
+  <runtime>120</runtime>
+  <thumb></thumb>
+  <mpaa>PG</mpaa>
+  <playcount>0</playcount>
+  <watched></watched>
+  <id>1</id>
+  <filenameandpath></filenameandpath>
+  <trailer></trailer>
+  <genre>Fake</genre>
+  <genre>False</genre>
+  <genre>Bogus</genre>
+  <credits></credits>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec></codec>
+        <aspect></aspect>
+        <width></width>
+        <height></height>
+      </video>
+      <audio>
+        <codec></codec>
+        <language></language>
+        <channels></channels>
+      </audio>
+      <subtitle>
+        <language></language>
+      </subtitle>
+    </streamdetails>
+  </fileinfo>
+  <director>Fake Director 1</director>
+  <director>Fake Director 2</director>
+  <actor>
+    <name>Fake Actor 1</name>
+    <role>Fake Role 1</role>
+  </actor>
+  <actor>
+    <name>Fake Actor 2</name>
+    <role>Fake Role 2</role>
+  </actor>
+  <actor>
+    <name>Fake Actor 3</name>
+    <role>Fake Role 3</role>
+  </actor>
+</movie>
