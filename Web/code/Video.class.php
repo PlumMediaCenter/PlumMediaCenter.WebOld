@@ -48,9 +48,9 @@ abstract class Video {
         $this->fullPath = $fullPath;
 
         //calculate anything extra that is needed
-        $this->url = $this->encodeUrl($this->getUrl());
-        $this->sdPosterUrl = $this->encodeUrl($this->getSdPosterUrl());
-        $this->hdPosterUrl = $this->encodeUrl($this->getHdPosterUrl());
+        $this->url = Video::EncodeUrl($this->getUrl());
+        $this->sdPosterUrl = Video::EncodeUrl($this->getSdPosterUrl());
+        $this->hdPosterUrl = Video::EncodeUrl($this->getHdPosterUrl());
         $this->posterExists = $this->posterExists();
         $this->title = $this->getVideoName();
         $this->generatePosterMethod = $this->getGeneratePosterMethod();
@@ -84,10 +84,6 @@ abstract class Video {
         return $video;
     }
 
-    public function update() {
-        //__construct($this->baseUrl, $this->basePath, $this->fullPath);
-    }
-
     function getGeneratePosterMethod() {
         if (isset($_GET["generatePosters"])) {
             return $_GET["generatePosters"];
@@ -96,6 +92,10 @@ abstract class Video {
         }
     }
 
+    /**
+     * Returns the media type of this video. It could be Movie, Tv Show, or Tv Episode
+     * @return Enumerations::MediaType - the media type of the video
+     */
     function getMediaType() {
         return $this->mediaType;
     }
@@ -103,11 +103,11 @@ abstract class Video {
     /**
      * Given the url of an image, this function will pull down that poster and save it to the poster file path
      * @param type $posterUrl
-     * @return boolean
+     * @return boolean - true if successful, false if there was a problem
      */
     function downloadPoster($posterUrl) {
-        $posterImagePath = $this->getPosterPath();
-        $success = saveImageFromUrl($posterUrl, $posterImagePath);
+        $posterPath = $this->getPosterPath();
+        $success = saveImageFromUrl($posterUrl, $posterPath);
         if ($success === true) {
             return true;
         } else {
@@ -160,7 +160,7 @@ abstract class Video {
         return $url;
     }
 
-    protected function encodeUrl($url) {
+    public static function EncodeUrl($url) {
         return str_replace(" ", "%20", $url);
     }
 
@@ -262,10 +262,6 @@ abstract class Video {
         return true;
     }
 
-    function getPosterPath() {
-        return $this->getFullPathToContainingFolder() . "folder.jpg";
-    }
-
     /**
      * Determines whether or not the SD poster exists on disk
      */
@@ -286,6 +282,10 @@ abstract class Video {
         } else {
             return false;
         }
+    }
+
+    function getPosterPath() {
+        return $this->getFullPathToContainingFolder() . "folder.jpg";
     }
 
     function getSdPosterPath() {
