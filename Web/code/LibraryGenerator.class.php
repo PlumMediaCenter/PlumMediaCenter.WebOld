@@ -31,8 +31,8 @@ class LibraryGenerator {
         $this->generateMovies();
         $this->generateTvShows();
     }
-    
-    function loadFromVideosJson(){
+
+    function loadFromVideosJson() {
         
     }
 
@@ -58,73 +58,105 @@ class LibraryGenerator {
         writeToLog("End Generate Library");
     }
 
+    /**
+     * Determines if the provided video is a new video for this library
+     * @param Video $video
+     */
+    static function VideoIsNew($video) {
+        //if this video does NOT have a video id, then it does not exist in the database. It is new
+        if ($video->getVideoId() === -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Determines if the video is of 'modified' status. This means that the metadata is out of date in the db
+     * OR the video was set to be refreshed. 
+     * AND the videoId of this video MUST exist. If the videoId does not exist, then this is a new video.
+     * @param Video $video - the video in question
+     * @return boolean - true if the video is modified and not new, false if the video is not modified or is new
+     */
+    static function VideoIsModified($video) {
+        //if the video NOT new, and (metadata is old OR video flagged to be refreshed)
+        if (LibraryGenerator::VideoIsNew($video) === false && ($video->metadataInDatabaseIsUpToDate() === false || $video->refreshVideo === true)) {
+            return true;
+        }
+        return false;
+    }
+
     function updateLibrary() {
         writeToLog("Begin update library");
         /* @var $movie Video   */
         /* @var $tvShow TvShow  */
         /* @var $tvEpisode TvEpisode  */
 
-        //get the list of current videos in the library
-        $currentVideosList = Queries::getAllVideoPathsInCurrentLibrary();
-        $videosToDelete = array();
-        $videosToDelete = array_merge($videosToDelete, $currentVideosList);
         $videosToUpdate = [];
         $newVideos = [];
+        $unchangedVideos = [];
         $this->generateMovies();
         $this->generateTvShows();
         //for every movie found in sources, remove it from the list of videos found in the db...
         //it has been marked as 'present' in this role call
         foreach ($this->movies as $movie) {
             //if this video needs updated and it is not a new video, add it to the update list
-            if (($movie->metadataInDatabaseIsUpToDate() === false && $movie->getVideoId() == -1) || $movie->refreshVideo == true) {
+            if (LibraryGenerator::VideoIsModified($movie)) {
                 $videosToUpdate[] = $movie;
-            }
-            //if this movie is in the list of videos in the db, remove it from the list of movies from the db...items
-            //remaining in the list will be removed from the db after all disc videos have been accounted for
-            $key = array_search($movie->fullPath, $videosToDelete);
-            //if the path was found, remove it from the list of items to be deleted
-            if ($key !== false) {
-                $videosToDelete[$key] = null;
-            }
-            //if the path was not found, this is a NEW video. add it to the new video list
-            else {
+            } else if (LibraryGenerator::VideoIsNew($movie)) {
                 $newVideos[] = $movie;
+            } else {
+                $unchangedVideos[] = $movie;
             }
         }
 
         foreach ($this->tvShows as $tvShow) {
             //if this video needs updated and it is not a new video, add it to the update list
-            if (($tvShow->metadataInDatabaseIsUpToDate() === false && $tvShow->getVideoId() != -1) || $tvShow->refreshVideo == true) {
+            if (LibraryGenerator::VideoIsModified($tvShow)) {
                 $videosToUpdate[] = $tvShow;
             }
-            //if this tv show path is in the list from the db, remove it fro mthe list of videos to delete.
-            $key = array_search($tvShow->fullPath, $videosToDelete);
-            if ($key != null) {
-                $videosToDelete[$key] = null;
-            }
-            //if the path was not found, this is a NEW video. add it to the new video list
-            else {
+            //if this video is a new video, add it to the new videos list
+            else if (LibraryGenerator::VideoIsNew($tvShow)) {
                 $newVideos[] = $tvShow;
+            } else {
+                $unchangedVideos[] = $tvShow;
             }
             //now process every tv episode in the tv show
             foreach ($tvShow->episodes as $tvEpisode) {
                 //if this video needs updated and it is not a new video, add it to the update list
-                if (($tvEpisode->metadataInDatabaseIsUpToDate() === false || $tvEpisode->getVideoId()) != -1 || $tvEpisode->refreshVideo == true) {
+                if (LibraryGenerator::VideoIsModified($tvEpisode)) {
                     $videosToUpdate[] = $tvEpisode;
                 }
-                $key = array_search($tvEpisode->fullPath, $videosToDelete);
-                if ($key != null) {
-                    $videosToDelete[$key] = null;
-                }
-                //if the path was not found, this is a NEW video. add it to the new video list
-                else {
+                //if this is a new video, add it to the list of new videos
+                else if (LibraryGenerator::VideoIsNew($tvEpisode)) {
                     $newVideos[] = $tvEpisode;
+                } else {
+                    $unchangedVideos[] = $tvEpisode;
                 }
             }
         }
 
-        //remove nulls from the delete list. this will leave us with only the video paths that need deleted
-        $videosToDelete = array_filter($videosToDelete);
+        //get the list of videos currently in the database
+        $videosFromDb = Queries::getAllVideoPathsInCurrentLibrary();
+
+        //remove all modified videos from the list from the db
+        foreach ($videosToUpdate as $videoToUpdate) {
+            $key = array_search($videoToUpdate->fullPath, $videosFromDb);
+            if ($key != null) {
+                $videosFromDb[$key] = null;
+            }
+        }
+
+        //remove all unchanged videos from the list from the db
+        foreach ($unchangedVideos as $unchangedVideo) {
+            $key = array_search($unchangedVideo->fullPath, $videosFromDb);
+            if ($key != null) {
+                $videosFromDb[$key] = null;
+            }
+        }
+
+        //remove nulls from the list. this will leave us with only the video paths that need deleted
+        $videosToDelete = array_filter($videosFromDb);
 
         //at this point, $videosToDelete should only contain videos that are no longer present in sources. 
         //delete these videos from the database
@@ -135,13 +167,13 @@ class LibraryGenerator {
             writeToLog("Deleted video: '$path' from library");
         }
 
-        //write update videos to database
+        //update videos in the db
         foreach ($videosToUpdate as $video) {
             $video->writeToDb();
             writeToLog("Updated $video->mediaType: '$video->fullPath'");
         }
 
-        //log all new videos that were just added
+        //add new videos to db
         foreach ($newVideos as $video) {
             //write all new videos to the database
             $video->writeToDb();
@@ -153,7 +185,8 @@ class LibraryGenerator {
         $numDeleted = count($videosToDelete);
         $numUpdated = count($videosToUpdate);
         $numNew = count($newVideos);
-        writeToLog("Update Library Summary: Deleted $numDeleted. Updated $numUpdated. Added $numNew new. ");
+        $numUnchanged = count($unchangedVideos);
+        writeToLog("Update Library Summary: $numNew Added. $numUpdated Updated. $numDeleted Deleted. $numUnchanged Unchanged.");
         writeToLog("Finished update library.");
         //the update has finished. update the video_source table to indicate that its changes have been flushed to each video
         Queries::updateVideoSourceRefreshVideos();

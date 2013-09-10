@@ -73,7 +73,7 @@ abstract class Video {
                 $video = new TvShow($v->video_source_url, $v->video_source_path, $v->path);
                 break;
             case Enumerations::MediaType_TvEpisode:
-                $video = new TvShow($v->video_source_url, $v->video_source_path, $v->path);
+                $video = new TvEpisode($v->video_source_url, $v->video_source_path, $v->path);
                 break;
         }
 

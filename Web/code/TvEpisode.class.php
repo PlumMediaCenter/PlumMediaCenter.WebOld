@@ -147,6 +147,17 @@ class TvEpisode extends Video {
     }
 
     /**
+     * Determines the nfo file path. Does NOT check to make sure the file exists.
+     * Returns the path for an nfo file named the same as the video file. i.e. MyTvEpisode.avi, MyTvEpisode.nfo
+     * @return type
+     */
+    function getNfoPath() {
+        $p = $this->fullPath;
+        $nfoPath = pathinfo($p, PATHINFO_DIRNAME) . "/" . pathinfo($p, PATHINFO_FILENAME) . ".nfo";
+        return $nfoPath;
+    }
+
+    /**
      * Goes to TheTvDb and retrieves all available information about this tv episode. 
      * It then stores that information into an .nfo file named the same as the video file name .
      * Deletes any previous metadata files that exist, BEFORE anything else. 
@@ -397,4 +408,5 @@ class TvEpisode extends Video {
     }
 
 }
+
 ?>
