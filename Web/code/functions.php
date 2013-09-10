@@ -124,23 +124,16 @@ function saveImageFromUrl($imageUrl, $imageDest) {
     if (strlen($imageUrl) < 1) {
         return false;
     }
-    //open the poster file from tvdb
-    $ch = curl_init($imageUrl);
-    //delete the image if it already exists
-    if (file_exists($imageDest)) {
-        unlink($imageDest);
+    $content = @file_get_contents($imageUrl);
+    //if the result was not failure and was longer than empty, save the file
+    if ($content !== false && strlen($content) > 0) {
+        $result = file_put_contents($imageDest, $content);
+        if ($result !== false) {
+            return true;
+        }
     }
-    $fp = fopen($imageDest, 'wb');
-    curl_setopt($ch, CURLOPT_FILE, $fp);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_exec($ch);
-    curl_close($ch);
-    $success = fclose($fp);
-    //if the file was not successfully saved, delete any file we opened.
-    if ($success === false) {
-        unlink($imageDest);
-    }
-    return $success;
+    //if function makes it to here, something went wrong, return false
+    return false;
 }
 
 function writeToLog($message) {
@@ -223,7 +216,38 @@ function getVideoMetadataRow($v) {
     return $row;
 }
 
+function getBaseUrl($context, $url = null) {
+    $context = trim($context);
+    $pos = strpos($context, "/");
 
+    //if the first character of $context is the slash, remove it
+    if ($pos !== false && $pos === 0) {
+        $context = substr($context, 1);
+    }
+    //if the url was not provided, use the current url
+    if ($url === null) {
+        $url = url();
+    }
+    return str_replace($context, '', $url);
+}
+
+/**
+ *  Returns the current url
+ * @return string - the url of the current page
+ */
+function url() {
+    $pageURL = 'http';
+    if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
+        $pageURL .= "s";
+    }
+    $pageURL .= "://";
+    if ($_SERVER["SERVER_PORT"] != "80") {
+        $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
+    } else {
+        $pageURL .= $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
+    }
+    return $pageURL;
+}
 ?>
 
 
