@@ -11,8 +11,8 @@ class Movie extends Video {
     }
 
     /**
-     * Determiens the nfo path for this video. If movie.nfo is present, that file will be used. If not, then filename.nfo will be used.
-     * @return string
+     * Determines the nfo path for this video. If movie.nfo is present, that file will be used. If not, then filename.nfo will be used.
+     * @return string - the path to the nfo file for this video. The nfo file may not exist. 
      */
     function getNfoPath() {
 
@@ -164,12 +164,6 @@ class Movie extends Video {
         $playcountNode->appendChild($playcountNodeText);
         //      </playcount>
         $movieNode->appendChild($playcountNode);
-        //      <watched>
-        $watchedNode = $doc->createElement("watched");
-        $watchedNodeText = $doc->createTextNode($watched);
-        $watchedNode->appendChild($watchedNodeText);
-        //      </watched>
-        $movieNode->appendChild($watchedNode);
         //      <id>
         $idNode = $doc->createElement("id");
         $idNodeText = $doc->createTextNode($id);

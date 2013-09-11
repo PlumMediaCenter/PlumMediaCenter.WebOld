@@ -160,10 +160,6 @@ abstract class Video {
         return $url;
     }
 
-    public static function EncodeUrl($url) {
-        return str_replace(" ", "%20", $url);
-    }
-
     protected function getFullPathToContainingFolder() {
         return pathinfo($this->fullPath, PATHINFO_DIRNAME) . "/";
     }
@@ -173,17 +169,25 @@ abstract class Video {
         return $dirname . "/";
     }
 
+    public static function EncodeUrl($url) {
+        return str_replace(" ", "%20", $url);
+    }
+
     /**
      * Determines the nfo file path. Does NOT check to make sure the file exists.
      * Returns the path for an nfo file named the same as the video file. i.e. MyTvEpisode.avi, MyTvEpisode.nfo
      * @return type
      */
-    function getNfoPath() {
+    public function getNfoPath() {
         $p = $this->fullPath;
         $nfoPath = pathinfo($p, PATHINFO_DIRNAME) . "/" . pathinfo($p, PATHINFO_FILENAME) . ".nfo";
         return $nfoPath;
     }
 
+    /**
+     * Determines if this video HAS a metadata file (nfo file).
+     * @return boolean - true if the nfo file was found, false if it was not found
+     */
     public function nfoFileExists() {
         //get the path to the nfo file
         $nfoPath = $this->getNfoPath();
@@ -193,13 +197,6 @@ abstract class Video {
         } else {
             return true;
         }
-    }
-
-    /**
-     * Wrapper function for nfoFileExists, for older codebase support
-     */
-    public function hasMetadata() {
-        return $this->nfoFileExists();
     }
 
     /**
@@ -217,10 +214,6 @@ abstract class Video {
                 return false;
             }
             //load the nfo file as an xml file 
-            //hide any xml errors that may pop up
-            // $current_error_reporting = error_reporting();
-            // error_reporting(0);
-            //open the nfo file
             $m = new DOMDocument();
             $success = $m->load($nfoPath);
             if ($success == false) {
@@ -437,7 +430,7 @@ abstract class Video {
 
     protected function getNfoLastModifiedDate() {
         //if this movie has metadata
-        if ($this->hasMetadata()) {
+        if ($this->nfoFileExists()) {
             //get the path to the metadata
             $metadataPath = $this->getNfoPath();
 

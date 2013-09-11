@@ -131,15 +131,23 @@ class TestMovie extends UnitTestCase {
         $nfoPath = $this->videoSourcePath . "FakeMovie1/FakeMovie1.nfo";
         //if the nfo file is in the format filename.nfo, the getNfoPath function should pick that up
         $this->assertEqual($v->getNfoPath(), $this->videoSourcePath . "FakeMovie1/FakeMovie1.nfo");
+        //verify that the Movie class knows it has an nfo file
+        $this->assertTrue($v->nfoFileExists());
+
         //move the nfo file
         rename($nfoPath, "$nfoPath.tmp");
         //if no nfo file exists, the Movie class should default to filename.nfo
         $this->assertEqual($v->getNfoPath(), $this->videoSourcePath . "FakeMovie1/FakeMovie1.nfo");
+        //verify that the Movie class knows it does NOT have an nfo file
+        $this->assertFalse($v->nfoFileExists());
 
         $movieNfoPath = $this->videoSourcePath . "FakeMovie1/movie.nfo";
         //if the nfo file is in the format of movie.nfo, the getNfoPath function should pick that up
         rename("$nfoPath.tmp", $movieNfoPath);
+        //make sure the video returns the correct nfo file
         $this->assertEqual($v->getNfoPath(), $movieNfoPath);
+        //verify that the Movie knows it has an nfo file in the movie.nfo format
+        $this->assertTrue($v->nfoFileExists());
 
         //rename the nfo file back to filename.nfo
         rename($movieNfoPath, $nfoPath);
