@@ -19,6 +19,7 @@ class Queries {
     private static $stmtGetVideo = null;
     private static $stmtGetTvEpisode = null;
     private static $stmtGetEpisodesInTvShow = null;
+    private static $stmtGetVideoProgress = null;
 
     /**
      * Retrieves the list of all video file paths currently in the database
@@ -354,9 +355,9 @@ class Queries {
 
         $counts = (object) array("movieCount" => $movieCount, "tvShowCount" => $tvShowCount, "tvEpisodeCount" => $tvEpisodeCount);
         return $counts;
-    }
+        }
 
-    public static function insertWatchVideo($username = 'user', $videoId, $timeInSeconds, $positionInBytes) {
+        public static function insertWatchVideo($username, $videoId, $timeInSeconds, $positionInBytes) {
         $dateWatched = date("Y-m-d H:i:s");
         $pdo = DbManager::getPdo();
         $sql = "insert into watch_video (username, video_id, time_in_seconds, position_in_bytes, date_watched)
@@ -517,6 +518,38 @@ class Queries {
         }
         //return false if no videos were found or an error occurred.
         return false;
+    }
+
+    /**
+     * Fetches the time in seconds that a video was last registered to have played to. 
+     * @param int $videoId - the videoId of the video to get the video progress of
+     * @return int - the number of seconds the video was last played until, or 
+     */
+    public static function getVideoProgress($username, $videoId) {
+        if (Queries::$stmtGetVideoProgress == null) {
+            $pdo = DbManager::getPdo();
+            $sql = "select time_in_seconds
+                    from watch_video
+                    where video_id = :videoId
+                    and username = :username";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtGetVideoProgress = $stmt;
+        }
+        $stmt = Queries::$stmtGetVideoProgress;
+        $stmt->bindParam(":videoId", $videoId);
+        $stmt->bindParam(":username", $username);
+
+        $success = $stmt->execute();
+        if ($success === true) {
+            $v = Dbmanager::fetchSingleItem($stmt);
+            if ($v === false) {
+                return 0;
+            } else {
+                return intval($v);
+            }
+        }
+        //return 0 if no videos were found or an error occurred.
+        return 0;
     }
 
 }

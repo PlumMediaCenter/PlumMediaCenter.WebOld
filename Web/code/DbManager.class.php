@@ -106,10 +106,20 @@ class DbManager {
         return $result;
     }
 
-    public static function fetchAllColumn($stmt, $colNum){
+    public static function fetchAllColumn($stmt, $colNum) {
         $result = $stmt->fetchAll(PDO::FETCH_COLUMN, $colNum);
         return $result;
     }
+
+    public static function fetchSingleItem($stmt) {
+        $result = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        if (count($result) === 1) {
+            return $result[0];
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Generates a string ready to be used in an 'in' statement for sql
      * @param type $list

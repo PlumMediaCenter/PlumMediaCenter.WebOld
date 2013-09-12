@@ -224,9 +224,17 @@ function getBaseUrl($context, $url = null) {
     if ($pos !== false && $pos === 0) {
         $context = substr($context, 1);
     }
+
     //if the url was not provided, use the current url
     if ($url === null) {
         $url = url();
+    }
+    //context should be a series of folder names with slashes in between and a slash at the end. 
+    //The actual url may have a filename at the end of it. if this is the case, remove the filename
+    $endingSlashPos = strrpos ($url, "/");
+    //if the ending slash position is NOT at the end of the string, then there is a filename at the end of this url. remove it.
+    if($endingSlashPos === false || $endingSlashPos + 1 !== strlen($url)){
+        $url = dirname($url) . "/";
     }
     return str_replace($context, '', $url);
 }

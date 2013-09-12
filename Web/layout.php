@@ -1,3 +1,5 @@
+<?php include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
+?>
 <!DOCTYPE HTML>
 <html>
     <head><title><?php echo $title != null ? $title : ""; ?></title>
@@ -16,8 +18,8 @@
                         <a class="brand" href="index.php">Plum Video Player</a>
                         <div class="nav-collapse collapse">
                             <ul class="nav">
-                                <li id="homeNav" ><a href="index.php">Home</a></li>
-                                <li id="browseNav"><a href="Browse.php">Browse</a></li>
+                                <li id="browseNav<?php echo Enumerations::MediaType_Movie; ?>" ><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_Movie; ?>">Movies</a></li>
+                                <li id="browseNav<?php echo Enumerations::MediaType_TvShow; ?>"><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_TvShow; ?>">Tv Shows</a></li>
                                 <li id="adminNav"><a href="Admin.php">Admin</a></li>
                             </ul>
                         </div>

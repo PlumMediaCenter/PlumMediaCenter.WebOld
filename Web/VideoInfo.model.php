@@ -31,12 +31,14 @@ function printTvShowFileList($tvShow) {
             <?php
         }
         ?>
-        <tr data-video-id="<?php echo $episodeId;?>" id="episodeRow_<?php echo $episodeId; ?>" class="episodeRow <?php echo $nextEpisodeId == $episodeId ? "nextEpisodeRow" : ""; ?>" style="border:1px solid black;" episodeId="<?php echo $episodeId; ?>">
-            <td class="transparent" style="border:1px solid black;"><?php echo $episodeNumber; ?></td>
-            <td class="transparent" style="border:1px solid black;"><a class="playButton18" style="display:block;" href="WatchVideo.php?videoId=<?php echo $episodeId; ?>" title="Play"></a></td>
-            <td class="transparent" style="border:1px solid black;"><a class='addToPlaylistButton18' style="display:block;" href='#' onclick="addVideoToPlaylist($episodeId, '<?php echo $videoTitle; ?>');" title='Add Video To Playlist'></a></td>
-            <td class="transparent" style="border:1px solid black;"><a class='infoButton18' style="display:block;" ></a></td>
-            <td class="transparent" style="border:1px solid black;"><a href="Play.php?videoId=<?php echo $episodeId; ?>"><?php echo $videoTitle; ?></a></td>
+        <tr data-video-id="<?php echo $episodeId; ?>" id="episodeRow_<?php echo $episodeId; ?>" class="episodeRow <?php echo $nextEpisodeId == $episodeId ? "nextEpisodeRow" : ""; ?>" style="border:1px solid black;" episodeId="<?php echo $episodeId; ?>">
+            <td class="transparent"><?php echo $episodeNumber; ?></td>
+            <td class="transparent"><?php echo $episodeId; ?></td>
+            <td class="transparent"><a class="playButton18" style="display:block;" href="WatchVideo.php?videoId=<?php echo $episodeId; ?>" title="Play"></a></td>
+            <td class="transparent"><a class='addToPlaylistButton18' style="display:block;" href='#' onclick="addVideoToPlaylist($episodeId, '<?php echo $videoTitle; ?>');" title='Add Video To Playlist'></a></td>
+            <td class="transparent"><a class='infoButton18' style="display:block;" ></a></td>
+            <td class="transparent"><a href="Play.php?videoId=<?php echo $episodeId; ?>"><?php echo $videoTitle; ?></a></td>
+            <td class="transparent"><div class="progressbar"><div class="percentComplete" style="width:<?php echo $episode->progressPercent();?>%">&nbsp;</div></div></a>
         </tr>
         <?php
     }

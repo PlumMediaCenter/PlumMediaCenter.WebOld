@@ -1,6 +1,7 @@
 <?php
 
 include_once("Video.class.php");
+include_once("NfoReader/MovieNfoReader.class.php");
 
 class Movie extends Video {
 
@@ -23,8 +24,45 @@ class Movie extends Video {
             return parent::getNfoPath();
         }
     }
-    
-    
+
+    /**
+     * Loads pertinent metadata from the nfo file into this class
+     * @param bool $force -- optional. forces metadata to be loaded, even if it has already been loaded
+     * @return boolean
+     */
+    public function loadMetadata($force = false) {
+        //if the metadata hasn't been loaded yet, or force is true (saying do it anyway), load the metadata
+        if ($this->metadataLoaded === false || $force === true) {
+            //get the path to the nfo file
+            $nfoPath = $this->getNfoPath();
+            //verify that the file exists
+            if (file_exists($nfoPath) === false) {
+                return false;
+            }
+            $reader = new MovieNfoReader();
+            $loadSuccess = $reader->loadFromFile($nfoPath);
+            //if the nfo reader loaded successfully, pull the important information into this class
+            if ($loadSuccess) {
+                //if the title was found, use it. otherwise, keep the filename tile that was loaded during the constructor
+                $this->title = $reader->title !== null ? $reader->title : $this->title;
+                $this->plot = $reader->plot !== null ? $reader->plot : "";
+                $this->year = $reader->year !== null ? $reader->year : "";
+                $this->mpaa = $reader->mpaa !== null ? $reader->mpaa : $this->mpaa;
+                $this->actorList = $reader->actors;
+            } else {
+                return false;
+            }
+
+//            if ($this->mediaType == Enumerations::MediaType_Movie) {
+//                $this->year = getXmlTagValue($m, "year");
+//            } else {
+//                $this->year = getXmlTagValue($m, "premiered");
+//            }
+        }
+        //if made it to here, all is good. return true
+        return true;
+    }
+
     /**
      *  Goes to IMDB to fetch the metadata for this particular video.
      *  the metadata file is deleted (if it exists...) before the rest of this function executes. 
@@ -42,7 +80,7 @@ class Movie extends Video {
         //Metadata is then placed in the folder with the video
         //get the adapter for the imdb data
         $adapter = $this->getMetadataFetcher();
-        
+
         //get all of the data from the adapter
         $title = $adapter->title();
         $originalTitle = $adapter->title();
@@ -316,7 +354,6 @@ class Movie extends Video {
         echo "<span style='color:red;'>Failed to fetch metadata for " . $this->getPathToVideo() . "</span></br>";
         return false;
     }
-    
 
     /**
      * Returns a Movie Metadata Fetcher. If we have the Movie Database ID, use that. Otherwise, use the folder name

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<episodedetails>
+    <title>My TV Episode</title>
+    <rating>10.00</rating>
+    <season>1</season>
+    <episode>1</episode>
+    <plot>The best episode in the world</plot>
+    <thumb>http://thetvdb.com/banners/episodes/164981/2528821.jpg</thumb>
+    <playcount>0</playcount>
+    <lastplayed>2010-01-01</lastplayed>
+    <credits>Writer</credits>
+    <director>Mr. Vision</director>
+    <director>Mr. Vision's Son</director>
+    <aired>2000-12-31</aired>
+    <premiered>2010-09-24</premiered>
+    <studio>Production studio or channel</studio>
+    <mpaa>TV-PG</mpaa>
+    <epbookmark>200</epbookmark> 
+    <displayseason>3</displayseason>  
+    <displayepisode>4096</displayepisode>
+    <actor>
+        <name>Little Suzie</name>
+        <role>Pole Jumper/Dancer</role>
+    </actor>
+    <actor>
+        <name>Famous Actor</name>
+        <role>Super friend</role>
+    </actor>
+    <fileinfo>
+        <streamdetails>
+            <audio>
+                <channels>6</channels>
+                <codec>ac3</codec>
+            </audio>
+            <audio>
+                <channels>2</channels>
+                <codec>mp3</codec>
+            </audio>
+            <video>
+                <aspect>1.778</aspect>
+                <codec>h264</codec>
+                <durationinseconds>587</durationinseconds>
+                <height>720</height>
+                <language>eng</language>
+                <longlanguage>English</longlanguage>
+                <scantype>Progressive</scantype>
+                <width>1280</width>
+            </video>
+        </streamdetails>
+    </fileinfo>
+</episodedetails>

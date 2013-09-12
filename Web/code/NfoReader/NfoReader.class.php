@@ -5,19 +5,28 @@ abstract class NfoReader {
     protected $doc;
 
     public function loadFromFile($nfoPath) {
+        set_error_handler('NfoReaderHandleError');
         //verify that the file exists
-        if (file_exists($nfoPath) === false) {
+        if (is_string($nfoPath) === false || file_exists($nfoPath) === false) {
             return false;
         }
+        $obContents = "";
         //load the nfo file as an xml file 
         $this->doc = new DOMDocument();
-        $success = $this->doc->load($nfoPath);
-        $this->parseFile();
-        if ($success == false) {
-            //fail gracefully, since we will just use dummy information
-            return false;
+
+        try {
+            $loadFileSuccess = $this->doc->load($nfoPath);
+        } catch (Exception $e) {
+            $loadFileSuccess = false;
+        }
+
+        restore_error_handler();
+        //if the file was successfully loaded, then we can try to parse the document
+        if ($loadFileSuccess) {
+            //if the output buffer is not empty, then the document had problems loading the document. 
+            return $this->parseFile();
         } else {
-            return true;
+            return false;
         }
     }
 
@@ -27,8 +36,9 @@ abstract class NfoReader {
     /**
      * Shortcut function for retrieving values from tags
      */
-    protected function val($tagName) {
-        return $this->getXmlTagValue($this->doc, $tagName);
+    protected function val($tagName, $referenceNode = null) {
+        $referenceNode = $referenceNode === null ? $this->doc : $referenceNode;
+        return $this->getXmlTagValue($referenceNode, $tagName);
     }
 
     /**
@@ -53,4 +63,9 @@ abstract class NfoReader {
     }
 
 }
+
+function NfoReaderHandleError($errno, $errstr, $errfile, $errline) {
+    throw new Exception($errstr, 0);
+}
+
 ?>

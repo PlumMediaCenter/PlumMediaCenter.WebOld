@@ -2,6 +2,8 @@
 
 include_once(dirname(__FILE__) . "/Video.class.php");
 include_once(dirname(__FILE__) . "/MetadataFetcher/TvEpisodeMetadataFetcher.class.php");
+include_once(dirname(__FILE__) . "/NfoReader/TvEpisodeNfoReader.class.php");
+
 
 class TvEpisode extends Video {
 
@@ -24,6 +26,44 @@ class TvEpisode extends Video {
         $this->showFilePath = "$this->videoSourcePath$this->showName/";
     }
 
+    /**
+     * Loads pertinent metadata from the nfo file into this class
+     * @param bool $force -- optional. forces metadata to be loaded, even if it has already been loaded
+     * @return boolean
+     */
+    public function loadMetadata($force = false) {
+        //if the metadata hasn't been loaded yet, or force is true (saying do it anyway), load the metadata
+        if ($this->metadataLoaded === false || $force === true) {
+            //get the path to the nfo file
+            $nfoPath = $this->getNfoPath();
+            //verify that the file exists
+            if (file_exists($nfoPath) === false) {
+                return false;
+            }
+            $reader = new TvEpisodeNfoReader();
+            $loadSuccess = $reader->loadFromFile($nfoPath);
+            //if the nfo reader loaded successfully, pull the important information into this class
+            if ($loadSuccess) {
+                //if the title was found, use it. otherwise, keep the filename tile that was loaded during the constructor
+                $this->title = $reader->title !== null ? $reader->title : $this->title;
+                $this->plot = $reader->plot !== null ? $reader->plot : "";
+                $this->year = $reader->premiered !== null ? $reader->premiered : "";
+                $this->mpaa = $reader->mpaa !== null ? $reader->mpaa : $this->mpaa;
+                $this->actorList = $reader->actors;
+            } else {
+                return false;
+            }
+
+//            if ($this->mediaType == Enumerations::MediaType_Movie) {
+//                $this->year = getXmlTagValue($m, "year");
+//            } else {
+//                $this->year = getXmlTagValue($m, "premiered");
+//            }
+        }
+        //if made it to here, all is good. return true
+        return true;
+    }
+
     function getShowName() {
         $str = str_replace($this->videoSourcePath, "", $this->fullPath);
         $arr = explode("/", $str);
@@ -31,7 +71,7 @@ class TvEpisode extends Video {
     }
 
     function getTvShowVideoId() {
-        return Queries::getVideoIdByVideoPath($this->tvShowFilePath);
+        return Queries::getVideoIdByVideoPath($this->showFilePath);
     }
 
     /**

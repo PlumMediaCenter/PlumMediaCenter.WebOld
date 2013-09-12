@@ -104,11 +104,12 @@ input[type=radio], label{
 
 #episodeInfo{
     background-color: white;
-    border:2px solid black;
-    width:400px; 
-    height:200px;
+    border:0px solid black;
+    width:500px;
+    min-height:250px;
     display:none;
     position:absolute;
+    padding:20px;
 }
 #episodeInfo *{
     color:black;
@@ -119,11 +120,26 @@ input[type=radio], label{
 }
 
 .shadow {
-    -moz-box-shadow: 3px 3px 4px #000;
-    -webkit-box-shadow: 3px 3px 4px #000;
-    box-shadow: 3px 3px 4px #000;
+    -webkit-box-shadow: 3px 3px 50px 1px #555555;
+    box-shadow: 3px 3px 50px 1px #555555;
+    /*-moz-box-shadow: 3px 3px 4px #000;*/
     /* For IE 8 */
     -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000')";
     /* For IE 5.5 - 7 */
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000');
+}
+
+.progressbar{
+    width:100px;
+    border-top:1px solid black;
+    border-bottom:2px solid black;
+    background-color:red;
+    height:8px;
+    margin-left:20px;
+    margin-right:10px;
+}
+
+.percentComplete{
+    height:100%;
+    background-color:green;
 }

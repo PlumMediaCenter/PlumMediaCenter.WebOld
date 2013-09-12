@@ -18,16 +18,16 @@ class TestMovie extends UnitTestCase {
         $this->video = new Movie($this->videoSourceUrl, $this->videoSourcePath, $this->fullPath);
     }
 
-    function loadFakeMovie1() {
+    function loadMovie($halfPath) {
         $this->videoSourceUrl = "http://localhost/videos/movies/";
         $this->videoSourcePath = dirname(__FILE__) . "/videos/movies/";
-        $this->fullPath = dirname(__FILE__) . "/videos/movies/FakeMovie1/FakeMovie1.mp4";
+        $this->fullPath = dirname(__FILE__) . "/videos/movies/$halfPath";
         $this->loadVideo();
         return $this->video;
     }
 
     function testConstruct() {
-        $v = $this->loadFakeMovie1();
+        $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
         //make sure that the constructor loaded everything correctly
         $this->assertEqual($v->videoSourceUrl, $this->videoSourceUrl);
         $this->assertEqual($v->videoSourcePath, $this->videoSourcePath);
@@ -40,7 +40,7 @@ class TestMovie extends UnitTestCase {
     }
 
     function testMediaType() {
-        $v = $this->loadFakeMovie1();
+        $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
         $this->assertEqual($v->getMediaType(), Enumerations::MediaType_Movie);
     }
 
@@ -48,12 +48,12 @@ class TestMovie extends UnitTestCase {
      * Test that the url gets encoded with the needed characters in order to make it work
      */
     function testEncodeUrl() {
-        $v = $this->loadFakeMovie1();
+        $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
         $this->assertEqual(Video::EncodeUrl("http://domain.com/Hello World"), "http://domain.com/Hello%20World");
     }
 
     function testPosters() {
-        $v = $this->loadFakeMovie1();
+        $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
         $folder = $this->videoSourcePath . "FakeMovie1";
         $folderUrl = $this->videoSourceUrl . "FakeMovie1";
         //test poster paths
@@ -74,7 +74,7 @@ class TestMovie extends UnitTestCase {
      *      
      */
     function testPosterFile() {
-        $v = $this->loadFakeMovie1();
+        $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
 
         //rename the poster file temorarily so we can test that the video knows it doesn't have a poster
         $posterPath = $v->getPosterPath();
@@ -111,7 +111,7 @@ class TestMovie extends UnitTestCase {
      * Test that an image from the web is correctly downloaded
      */
     function testDowloadPoster() {
-        $v = $this->loadFakeMovie1();
+        $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
         $posterPath = $v->getPosterPath();
         rename($posterPath, "$posterPath.tmp");
         //download an image from a web server (this web server) and save it as the poster
@@ -127,7 +127,7 @@ class TestMovie extends UnitTestCase {
     }
 
     function testGetNfoPath() {
-        $v = $this->loadFakeMovie1();
+        $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
         $nfoPath = $this->videoSourcePath . "FakeMovie1/FakeMovie1.nfo";
         //if the nfo file is in the format filename.nfo, the getNfoPath function should pick that up
         $this->assertEqual($v->getNfoPath(), $this->videoSourcePath . "FakeMovie1/FakeMovie1.nfo");
@@ -151,6 +151,25 @@ class TestMovie extends UnitTestCase {
 
         //rename the nfo file back to filename.nfo
         rename($movieNfoPath, $nfoPath);
+    }
+
+    function testLoadMetadata() {
+        //load a video with full metadata
+        $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
+        $v->loadMetadata(true);
+
+        $this->assertEqual($v->title, "Fake Movie 1");
+        $this->assertEqual($v->plot, "This is the plot for the fake movie 1.");
+        $this->assertEqual($v->year, "1992-11-25");
+        $this->assertEqual($v->mpaa, "PG");
+        $this->assertEqual(count($v->actorList), 3);
+
+        $v = $this->loadMovie("BarrenMovie/BarrenMovie.mp4");
+        $this->assertEqual($v->title, "BarrenMovie");
+        $this->assertEqual($v->plot, "");
+        $this->assertEqual($v->year, "");
+        $this->assertEqual($v->mpaa, "N/A");
+        $this->assertEqual(count($v->actorList), 0);
     }
 
 }

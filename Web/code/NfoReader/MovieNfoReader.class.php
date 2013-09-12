@@ -30,41 +30,53 @@ class MovieNfoReader extends NfoReader {
         foreach ($genreNodeList as $genre) {
             $this->genres[] = $genre->nodeValue;
         }
-
         $this->credits = $this->val("credits");
 
-
+        //create the skeleton fileinfo object
         $this->fileInfo = (object) [];
         $this->fileInfo->streamDetails = (object) [];
+        $this->fileInfo->streamDetails->video = (object) [];
+        $this->fileInfo->streamDetails->video->codec = null;
+        $this->fileInfo->streamDetails->video->aspect = null;
+        $this->fileInfo->streamDetails->video->width = null;
+        $this->fileInfo->streamDetails->video->height = null;
+        $this->fileInfo->streamDetails->audio = [];
+        $this->fileInfo->streamDetails->subtitle = (object) [];
+        $this->fileInfo->streamDetails->subtitle->language = null;
+
+
 
         $infoNode = $this->doc->getElementsByTagName("fileinfo")->item(0);
-        $streamDetailsNode = $infoNode->getElementsByTagName("streamdetails")->item(0);
-        $videoNode = $streamDetailsNode->getElementsByTagName("video")->item(0);
-        $codec = $videoNode->getElementsByTagName("codec")->item(0)->nodeValue;
-        $aspect = $videoNode->getElementsByTagName("aspect")->item(0)->nodeValue;
-        $width = $videoNode->getElementsByTagName("width")->item(0)->nodeValue;
-        $height = $videoNode->getElementsByTagName("height")->item(0)->nodeValue;
-        $this->fileInfo->streamDetails->video = (object) [];
-        $this->fileInfo->streamDetails->video->codec = $codec;
-        $this->fileInfo->streamDetails->video->aspect = $aspect;
-        $this->fileInfo->streamDetails->video->width = $width;
-        $this->fileInfo->streamDetails->video->height = $height;
-
-        $audioNodes = $streamDetailsNode->getElementsByTagName("audio");
-        foreach ($audioNodes as $audioNode) {
-            $codec = $audioNode->getElementsByTagName("codec")->item(0)->nodeValue;
-            $language = $audioNode->getElementsByTagName("language")->item(0)->nodeValue;
-            $channels = $audioNode->getElementsByTagName("channels")->item(0)->nodeValue;
-            $audio = (object) [];
-            $audio->codec = $codec;
-            $audio->language = $language;
-            $audio->channels = $channels;
-            $this->fileInfo->streamDetails->audio[] = $audio;
+        if ($infoNode !== null) {
+            $streamDetailsNode = $infoNode->getElementsByTagName("streamdetails")->item(0);
+            if ($streamDetailsNode !== null) {
+                $videoNode = $streamDetailsNode->getElementsByTagName("video")->item(0);
+                if ($videoNode !== null) {
+                    $this->fileInfo->streamDetails->video = (object) [];
+                    $this->fileInfo->streamDetails->video->codec = $this->val("codec", $videoNode);
+                    $this->fileInfo->streamDetails->video->aspect = $this->val("aspect", $videoNode);
+                    $this->fileInfo->streamDetails->video->width = $this->val("width", $videoNode);
+                    $this->fileInfo->streamDetails->video->height = $this->val("height", $videoNode);
+                }
+                $audioNodes = $streamDetailsNode->getElementsByTagName("audio");
+                if ($audioNodes !== null) {
+                    foreach ($audioNodes as $audioNode) {
+                        $codec = $this->val("codec", $audioNode);
+                        $language = $this->val("language", $audioNode);
+                        $channels = $this->val("channels", $audioNode);
+                        $audio = (object) [];
+                        $audio->codec = $codec;
+                        $audio->language = $language;
+                        $audio->channels = $channels;
+                        $this->fileInfo->streamDetails->audio[] = $audio;
+                    }
+                }
+                $subtitleNode = $streamDetailsNode->getElementsByTagName("subtitle")->item(0);
+                if ($subtitleNode !== null) {
+                    $this->fileInfo->streamDetails->subtitle->language = $this->val("language", $subtitleNode);
+                }
+            }
         }
-        $subtitleNode = $streamDetailsNode->getElementsByTagName("subtitle")->item(0);
-        $language = $subtitleNode->getElementsByTagName("language")->item(0)->nodeValue;
-        $this->fileInfo->streamDetails->subtitle = (object) [];
-        $this->fileInfo->streamDetails->subtitle->language = $language;
 
         $this->directors = [];
         $directorNodes = $this->doc->getElementsByTagName("director");

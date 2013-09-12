@@ -1,6 +1,10 @@
 <?php
 
+include_once(dirname(__FILE__) . "/../config.php");
+
 include_once("MetadataFetcher/TvShowMetadataFetcher.class.php");
+include_once(dirname(__FILE__) . "/../plugins/php-mp4info/MP4Info.php");
+
 
 include_once("Video.class.php");
 include_once("TvEpisode.class.php");
@@ -19,6 +23,16 @@ class TvShow extends Video {
 
         //load all of the information from the metadata file, if it exists
         $this->loadMetadata();
+    }
+
+    /**
+     * Forces this show and every episode to retrieve its videoId from the database
+     */
+    function retrieveVideoIds() {
+        $this->getVideoId();
+        foreach ($this->episodes as $episode) {
+            $episode->getVideoId();
+        }
     }
 
     function setLoadEpisodesFromDatabase($loadEpisodesFromDatabase) {
@@ -167,11 +181,44 @@ class TvShow extends Video {
         }
     }
 
-    static function getNextEpisodeToWatch($tvSeriesVideoId) {
-        $result = Queries::getLastEpisodeWatched('user', $tvSeriesVideoId);
+    /**
+     * Determines the next episode to watch based on the watch_video table. 
+     * @param int $videoId - the videoId of the tv show that you wish to get the next video
+     * @param int $finishedBuffer - the number of seconds that a video must be near to the end of the video in order to retrieve the next episode
+     * @return int  - negative 1 if failure, the video id of the next video if success
+     */
+    static function getNextEpisodeToWatch($videoId, $finishedBuffer = 45) {
+        //load this video
+        $v = Video::loadFromDb($videoId);
+        //the video is a tv episode, get the tv show for that episode
+        if ($v->mediaType == Enumerations::MediaType_TvEpisode) {
+            $tvSeriesVideoId = $v->getTvShowVideoId();
+        } else
+        //the video is a tv show. use this video id
+        if ($v->mediaType == Enumerations::MediaType_TvShow) {
+            $tvSeriesVideoId = $videoId;
+        } else {
+            //the video associated with the videoId provided is not a tv episode or tv show, nothing more can be done
+            return -1;
+        }
+
+        $result = Queries::getLastEpisodeWatched(config::$globalUsername, $tvSeriesVideoId);
         $lastVideoIdWatched = $result === false ? -1 : $result->video_id;
         $lastWatchedSecondsProgress = $result === false ? 0 : $result->time_in_seconds;
+        $lastEpisodeWatched = Video::loadFromDb($lastVideoIdWatched);
 
+        //if the video progress seconds is more than $finishedBuffer seconds away from the end of the video, THIS video isn't finished yet. 
+        $videoLengthInSeconds = $lastEpisodeWatched->getLengthInSecondsFromFile();
+        if ($videoLengthInSeconds === false) {
+            //we couldn't determine the lengh of the video from its metadata. 
+        } else {
+            //if the $lastWatchedSecondsProgress is farther than $finishedBuffer away from the end, return THIS videoId
+            if ($lastWatchedSecondsProgress + $finishedBuffer < $videoLengthInSeconds) {
+                return $lastVideoIdWatched;
+            }
+        }
+
+        //echo json_encode(MP4Info::getInfo($v->fullPath));
         //if we didn't find anything from the query above, that means we haven't watched this series before. 
         //we need to set the last watched season episode string to 000.0000 so that the next episode we will find should be the first episode in the series.
         if ($lastVideoIdWatched === null || $lastVideoIdWatched === -1) {

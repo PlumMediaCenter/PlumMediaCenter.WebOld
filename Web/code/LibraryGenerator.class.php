@@ -36,6 +36,22 @@ class LibraryGenerator {
         
     }
 
+    /**
+     * After the library has been loaded, call this to force each video to retrieve its video id from the database
+     */
+    function retrieveVideoIds() {
+        /** @var $movie Movie  */
+        foreach ($this->movies as $movie) {
+            $movie->getVideoId();
+        }
+        foreach ($this->tvShows as $show) {
+            $show->getVideoId();
+            foreach ($show->episodes as $episode) {
+                $episode->getVideoId();
+            }
+        }
+    }
+
     function generateLibrary() {
         writeToLog("Begin generate library");
         //clear the database of all video references. 

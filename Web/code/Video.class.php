@@ -40,6 +40,7 @@ abstract class Video {
     protected $metadataFetcher;
     protected $filetype = null;
     protected $metadataLoaded = false;
+    protected $fileLengthSeconds = null;
 
     function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
         //save the important stuff
@@ -65,6 +66,10 @@ abstract class Video {
     public static function loadFromDb($videoId) {
 
         $v = Queries::getVideo($videoId);
+        //if no video was found, nothing more can be done
+        if ($v === false) {
+            return false;
+        }
         switch ($v->media_type) {
             case Enumerations::MediaType_Movie:
                 $video = new Movie($v->video_source_url, $v->video_source_path, $v->path);
@@ -82,6 +87,38 @@ abstract class Video {
         $video->plot = $v->plot;
         $video->mpaa = $v->mpaa;
         return $video;
+    }
+
+    /**
+     * Gets the percent of the video that has already been watched
+     * @return int - the percent complete this video is from being watched
+     */
+    public function progressPercent() {
+        $current = Video::getVideoStartSeconds($this->videoId);
+        $totalLength = $this->getLengthInSecondsFromFile();
+        $percent = intval(($current / $totalLength )* 100);
+        return $percent;
+    }
+
+    /**
+     * Parses the mp4 video's metadata to find the full length of the video in seconds
+     * @return int|boolean - the number of seconds if successful, false if unsuccessful
+     */
+    public function getLengthInSecondsFromFile() {
+        if ($this->fileLengthSeconds === null) {
+            $result = MP4Info::getInfo($this->fullPath);
+            if ($result !== false) {
+                return intval($result->duration);
+            } else {
+                return false;
+            }
+        } else {
+            return $this->fileLengthSeconds;
+        }
+    }
+
+    public static function getVideoStartSeconds($videoId) {
+        return Queries::getVideoProgress(config::$globalUsername, $videoId);
     }
 
     function getGeneratePosterMethod() {
@@ -197,62 +234,6 @@ abstract class Video {
         } else {
             return true;
         }
-    }
-
-    /**
-     * Loads pertinent metadata from the nfo file into this class
-     * @param bool $force -- optional. forces metadata to be loaded, even if it has already been loaded
-     * @return boolean
-     */
-    protected function loadMetadata($force = false) {
-        //if the metadata hasn't been loaded yet, or force is true (saying do it anyway), load the metadata
-        if ($this->metadataLoaded === false || $force === true) {
-            //get the path to the nfo file
-            $nfoPath = $this->getNfoPath();
-            //verify that the file exists
-            if (file_exists($nfoPath) === false) {
-                return false;
-            }
-            //load the nfo file as an xml file 
-            $m = new DOMDocument();
-            $success = $m->load($nfoPath);
-            if ($success == false) {
-                //fail gracefully, since we will just use dummy information
-                return false;
-            }
-
-            //parse the nfo file
-            $t = getXmlTagValue($m, "title");
-            //if the title is empty, use the filename like defined in the constructor
-            $this->title = strlen($t) > 0 ? $t : $this->title;
-            $this->plot = getXmlTagValue($m, "plot");
-            if ($this->mediaType == Enumerations::MediaType_Movie) {
-                $this->year = getXmlTagValue($m, "year");
-            } else {
-                $this->year = getXmlTagValue($m, "premiered");
-            }
-            $this->mpaa = getXmlTagValue($m, "mpaa");
-
-            //specify a maximum number of actors to include
-            $maxActorNumber = 4;
-            $actorNodeList = $m->getElementsByTagName("actor");
-            foreach ($actorNodeList as $actorNode) {
-                if (count($this->actorList) > $maxActorNumber) {
-                    break;
-                }
-                $actor = [];
-                $nameItem = $actorNode->getElementsByTagName("name")->item(0);
-                $actor["name"] = $nameItem != null ? $nameItem->nodeValue : "";
-                $roleItem = $actorNode->getElementsByTagName("role")->item(0);
-                $actor["role"] = $roleItem != null ? $roleItem->nodeValue : "";
-                //if we have either an actor name or role, add this actor
-                if ($actor["name"] != "" || $actor["role"] != "") {
-                    $this->actorList[] = $actor;
-                }
-            }
-        }
-        //if made it to here, all is good. return true
-        return true;
     }
 
     /**
