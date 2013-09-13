@@ -1,8 +1,3 @@
-Function GetVideoJsonUrl() As Dynamic
-    jsonUrl = GetRegVal("jsonUrl")
-    return jsonUrl
-End Function
-
 '
 ' Retrieves the registry value in the provided section and at the specified key
 '
@@ -25,4 +20,16 @@ Function SetRegVal(name as String, value as String) As Void
     sec = CreateObject("roRegistrySection", section)
     sec.Write(name, value)
     sec.Flush()
+End Function
+
+'
+' Performs a network request, returning the json result as an object
+' @param string sUrl - the url to request
+' @return object - the object created from the result json.
+'
+Function GetJSON(sUrl as String) as Object
+    searchRequest = CreateObject("roUrlTransfer") 
+    searchRequest.SetURL(sUrl)
+    result = ParseJson(searchRequest.GetToString())
+    return result
 End Function

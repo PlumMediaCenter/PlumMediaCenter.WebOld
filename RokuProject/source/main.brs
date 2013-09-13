@@ -2,24 +2,27 @@
 Function Main()
 
     'load the library from the remote json file
-    LoadLibraryFromJson()
+    LoadLibrary()
     
     port = CreateObject("roMessagePort")
     grid = CreateObject("roGridScreen")
     grid.SetMessagePort(port) 
-    rowTitles = CreateObject("roArray", 3, true)
+    rowTitles = []
     rowTitles.Push("Tv Shows")
     rowTitles.Push("Movies")
     rowTitles.Push("Settings")
     grid.SetupLists(rowTitles.Count())
     grid.SetListNames(rowTitles) 
     
-    
+    this = GetGlobalAA()
     gridList = []
-    gridList.push(m.lib.tvShows)
-    gridList.Push(m.lib.movies)
+    tvShows = m.lib.tvShows
+    movies = m.lib.movies
+    gridList.push(tvShows)
+    gridList.push(movies)
     
     'Add Tv Shows
+    tvShowCount = 0
     tvShowList = []
     For Each show in m.lib.tvShows
         o = CreateObject("roAssociativeArray")
@@ -37,11 +40,14 @@ Function Main()
         o.Actors = []
         
         For Each actor in show.actorList
-            o.Actors.push(actor.name)
+            name = actor.name   
+            o.Actors.push(name)
         End For
         o.Director = "[Director]"
         tvShowList.Push(o)
+        tvShowCount = tvShowCount + 1
     End For
+    'add the tv shows tile list to the grid    
     grid.SetContentList(0, tvShowList) 
 
     'Add movies
@@ -61,11 +67,11 @@ Function Main()
         'o.Length = 5400
         o.Actors = []
         For Each actor in mov.actorList
-            o.Actors.push(actor.name)
+            name = actor.name
+            o.Actors.push(name)
         End For
         o.Director = "[Director]"
         movieList.Push(o)
-
     End For
     grid.SetContentList(1, movieList) 
     
@@ -119,57 +125,14 @@ Function Main()
     End While
 End Function
 
-
-Sub LoadLibraryFromJson()
-    'the url pointing to the json file on the server containing the list of videos
-    videoListUrl = GetVideoJsonUrl()
-    print "Video list url from registry: "; videoListUrl 
-    'if the video list is null, create an empty list of videos and movies
-    If (videoListUrl = invalid) Then
-        print "video list is invalid"
-        m.lib = {
-            movies: [], 
-            tvShows: []
-        }
-    Else
-        print "video list is VALID"
-        'get the list of videos from the server
-        searchRequest = CreateObject("roUrlTransfer") 
-        searchRequest.SetURL(videoListUrl)
-        lib = ParseJson(searchRequest.GetToString())
-        m.lib = lib
-    End if
+'
+' Loads the library from the server into the m.library global variable
+'
+Sub LoadLibrary()
+    'retrieve the library from the server
+    lib = API_GetLibrary()
+    m.lib = lib
 End Sub
-
-Function GetVideoJsonUrlFromUser() as Dynamic
-    screen = CreateObject("roKeyboardScreen")
-    port = CreateObject("roMessagePort") 
-     screen.SetMessagePort(port)
-     screen.SetTitle("Enter URL to video.json file")
-     screen.SetText("http://192.168.1.109:8080/PlumVideoPlayer/Web/videos.json")
-     screen.SetDisplayText("Enter the url to the video.json file on server.")
-     screen.SetMaxLength(8)
-     screen.AddButton(1, "Ok")
-     screen.AddButton(2, "Cancel")
-     screen.Show() 
-  
-     while true
-         msg = wait(0, screen.GetMessagePort()) 
-         print "message received"
-         If type(msg) = "roKeyboardScreenEvent"
-             If msg.isScreenClosed()
-                 Return invalid
-             Else If msg.isButtonPressed() then
-                 If msg.GetIndex() = 1
-                     Return screen.GetText()
-                 End If
-             End If
-         End If
-     End While 
-     Return invalid
- End Function
-
-
 
 Function ShowTvShowEpisodesGrid(showIndex as integer)
     'print "Printing season from show episodes: ";m.lib.tvShows[selectedIndex].seasons["1"]
@@ -204,7 +167,8 @@ Function ShowTvShowEpisodesGrid(showIndex as integer)
             o.Actors = []
             o.url = episode.url
             For Each actor in episode.actorList
-                o.Actors.push(actor.name)
+                name = actor.name
+                o.Actors.push(name)
             End For
             o.Director = "[Director]"
             epList.Push(o)
@@ -268,18 +232,6 @@ Sub ShowMessage(messageTitle as String, message as String)
             End If
         End If
     End While
-End Sub
-
-Sub ShowSettings(n)
-    If (n = 0) Then
-        jsonUrl = GetVideoJsonUrlFromUser()
-        SetRegVal("jsonUrl", jsonUrl)
-        
-    Else If (n = 1) Then
-        print "Refresh media list"
-        Main()
-        
-    End If
 End Sub
 
 Function PlayVideo(video)
