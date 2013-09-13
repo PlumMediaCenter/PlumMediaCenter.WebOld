@@ -94,9 +94,9 @@ abstract class Video {
      * @return int - the percent complete this video is from being watched
      */
     public function progressPercent() {
-        $current = Video::getVideoStartSeconds($this->videoId);
+        $current = Video::GetVideoStartSeconds($this->videoId);
         $totalLength = $this->getLengthInSecondsFromFile();
-        $percent = intval(($current / $totalLength )* 100);
+        $percent = intval(($current / $totalLength ) * 100);
         return $percent;
     }
 
@@ -117,8 +117,22 @@ abstract class Video {
         }
     }
 
-    public static function getVideoStartSeconds($videoId) {
+    /**
+     * Retrieves the number of seconds into the video the video was stopped at
+     * @param int $videoId - the videoId of the video in question
+     * @return int - the number of seconds into the video that the video was stopped at
+     */
+    public static function GetVideoStartSeconds($videoId) {
         return Queries::getVideoProgress(config::$globalUsername, $videoId);
+    }
+
+    /**
+     * Retrieves the number of seconds into the video the video was stopped at
+     * @param int $videoId - the videoId of the video in question
+     * @return int - the number of seconds into the video that the video was stopped at
+     */
+    public function videoStartSeconds() {
+        return Queries::getVideoProgress(config::$globalUsername, $this->getVideoId());
     }
 
     function getGeneratePosterMethod() {

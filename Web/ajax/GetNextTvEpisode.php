@@ -6,6 +6,6 @@ $tvSeriesVideoId = isset($_GET["videoId"]) ? $_GET["videoId"] : -1;
 $episodeVideoId = TvShow::getNextEpisodeToWatch($tvSeriesVideoId);
 $result = (object) [];
 $result->videoId = $episodeVideoId;
-$result->startSeconds = Video::getVideoStartSeconds($episodeVideoId);
+$result->startSeconds = Video::GetVideoStartSeconds($episodeVideoId);
 echo json_encode($result);
 ?>

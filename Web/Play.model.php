@@ -13,7 +13,7 @@ class PlayModel extends Model {
         $this->videoUrl = $v->url;
         $this->posterUrl = $v->sdPosterUrl;
         $this->videoId = $v->videoId;
-        $this->startSeconds = Video::getVideoStartSeconds($videoId);
+        $this->startSeconds = Video::GetVideoStartSeconds($videoId);
     }
 
 }
