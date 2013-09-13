@@ -14,9 +14,10 @@ set_error_handler('handleError');
 
 function getLibrary() {
     $lib = null;
-    if (file_exists("videos.json") === true) {
+    $path = dirname(__FILE__) . "/../api/videos.json";
+    if (file_exists($path) === true) {
         //load the json file into memory
-        $json = $string = file_get_contents("videos.json");
+        $json = $string = file_get_contents($path);
         $lib = json_decode($json);
     }
     if ($lib == null) {

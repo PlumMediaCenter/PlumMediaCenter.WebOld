@@ -62,7 +62,7 @@ function action(action) {
     //draw a box on top of this row
 
     $.ajax(
-            "ajax/MetadataManager.php", {
+            "api/MetadataManager.php", {
         dataType: "json",
         data:
                 {

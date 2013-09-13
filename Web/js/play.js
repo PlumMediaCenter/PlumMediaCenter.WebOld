@@ -50,7 +50,7 @@ function onTime(obj) {
 
 function updateVideoPosition(videoId, seconds, bFinished) {
     bFinished = bFinished !== undefined ? bFinished : false;
-    $.ajax('ajax/SetVideoProgress.php',
+    $.ajax('api/SetVideoProgress.php',
             {
                 data: {
                     videoId: videoId,

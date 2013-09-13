@@ -26,13 +26,13 @@
 </div>
 <script type="text/javascript">
     function getVideosJson() {
-        $.getJSON("videos.json", function(json) {
+        $.getJSON("api/videos.json", function(json) {
             $("#videosJsonModalContent").html("<pre>" + JSON.stringify(json, undefined, 2) + "</pre>");
         });
     }
 
     function eraseVideosJson() {
-        $.ajax({url: "ajax/EraseVideos.json.php", success: function() {
+        $.ajax({url: "api/EraseVideos.json.php", success: function() {
                 alert("Erased videos.json");
             }});
     }

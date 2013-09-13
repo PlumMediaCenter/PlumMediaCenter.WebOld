@@ -226,7 +226,7 @@ class LibraryGenerator {
         $videoList["movies"] = $this->movies;
         $videoList["tvShows"] = $this->tvShows;
         $videoJson = json_encode($videoList, JSON_PRETTY_PRINT);
-        $success = file_put_contents(dirname(__FILE__) . "/../videos.json", $videoJson);
+        $success = file_put_contents(dirname(__FILE__) . "/../api/videos.json", $videoJson);
     }
 
     function writeMoviesToDb() {
