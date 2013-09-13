@@ -7,7 +7,7 @@
     var startSeconds = <?php echo $startSeconds; ?>;
 
 </script>
-<script type="text/javascript" src="plugins/jwplayer_tmp/jwplayer.js"></script>
+<script type="text/javascript" src="plugins/jwplayer/jwplayer.js"></script>
 <script type="text/javascript" src="js/play.js"></script>
 
 
