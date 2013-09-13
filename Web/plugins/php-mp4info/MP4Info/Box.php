@@ -185,10 +185,16 @@ class MP4Info_Box {
 		} else {
 			// Debug...
 			print '0x'.dechex($boxType).'-'.pack('N',$boxType);
-			if ($parent !== false) print ' in '.$parent->getBoxTypeStr();
-				else print ' in root';
-			die();
+			if ($parent !== false) 
+                        {
+                            print ' in '.$parent->getBoxTypeStr();
+                        }
+                        else {
+                            print ' in root';
+                        }
+			//die();
 			//$box = new MP4Info_Box($totalSize, $boxType, $f, $parent);
+                                
 		}
 		
 		// Return box

@@ -44,7 +44,7 @@ class MP4Info {
 		if (!$f) {
 			throw new Exception('Cannot open file: '.$file);
 		}
-		
+		$boxes = [];
 		// Get all boxes
 		try {
 			while (($box = MP4Info_Box::fromStream($f))) {

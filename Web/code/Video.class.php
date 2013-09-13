@@ -96,8 +96,13 @@ abstract class Video {
     public function progressPercent() {
         $current = Video::GetVideoStartSeconds($this->videoId);
         $totalLength = $this->getLengthInSecondsFromFile();
-        $percent = intval(($current / $totalLength ) * 100);
-        return $percent;
+        //if we don't have numbers avaiable that will give us a percent, assume the percent is zero
+        if ($totalLength === false || $current === 0) {
+            return 0;
+        } else {
+            $percent = intval(($current / $totalLength ) * 100);
+            return $percent;
+        }
     }
 
     /**
@@ -107,7 +112,7 @@ abstract class Video {
     public function getLengthInSecondsFromFile() {
         if ($this->fileLengthSeconds === null) {
             $result = MP4Info::getInfo($this->fullPath);
-            if ($result !== false) {
+            if ($result !== null && $result != false && $result->hasVideo === true) {
                 return intval($result->duration);
             } else {
                 return false;

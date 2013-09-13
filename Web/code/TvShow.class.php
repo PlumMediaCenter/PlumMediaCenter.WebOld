@@ -205,20 +205,22 @@ class TvShow extends Video {
         $result = Queries::getLastEpisodeWatched(config::$globalUsername, $tvSeriesVideoId);
         $lastVideoIdWatched = $result === false ? -1 : $result->video_id;
         $lastWatchedSecondsProgress = $result === false ? 0 : $result->time_in_seconds;
-        $lastEpisodeWatched = Video::loadFromDb($lastVideoIdWatched);
+        //if there IS a last video watched, then see if the user hadn't finished it yet
+        if ($lastVideoIdWatched !== -1) {
 
-        //if the video progress seconds is more than $finishedBuffer seconds away from the end of the video, THIS video isn't finished yet. 
-        $videoLengthInSeconds = $lastEpisodeWatched->getLengthInSecondsFromFile();
-        if ($videoLengthInSeconds === false) {
-            //we couldn't determine the lengh of the video from its metadata. 
-        } else {
-            //if the $lastWatchedSecondsProgress is farther than $finishedBuffer away from the end, return THIS videoId
-            if ($lastWatchedSecondsProgress + $finishedBuffer < $videoLengthInSeconds) {
-                return $lastVideoIdWatched;
+            $lastEpisodeWatched = Video::loadFromDb($lastVideoIdWatched);
+
+            //if the video progress seconds is more than $finishedBuffer seconds away from the end of the video, THIS video isn't finished yet. 
+            $videoLengthInSeconds = $lastEpisodeWatched->getLengthInSecondsFromFile();
+            if ($videoLengthInSeconds === false) {
+                //we couldn't determine the lengh of the video from its metadata. 
+            } else {
+                //if the $lastWatchedSecondsProgress is farther than $finishedBuffer away from the end, return THIS videoId
+                if ($lastWatchedSecondsProgress + $finishedBuffer < $videoLengthInSeconds) {
+                    return $lastVideoIdWatched;
+                }
             }
         }
-
-        //echo json_encode(MP4Info::getInfo($v->fullPath));
         //if we didn't find anything from the query above, that means we haven't watched this series before. 
         //we need to set the last watched season episode string to 000.0000 so that the next episode we will find should be the first episode in the series.
         if ($lastVideoIdWatched === null || $lastVideoIdWatched === -1) {
