@@ -92,6 +92,8 @@ Function Main()
     grid.SetContentList(2, settingsList)
 
     grid.Show() 
+    'for testing purposes, immediately play the first movie in the list
+    'PlayVideo(m.lib.movies[0])
     while true
         msg = wait(0, port)
         If type(msg) = "roGridScreenEvent" Then
@@ -234,10 +236,10 @@ Sub ShowMessage(messageTitle as String, message as String)
     End While
 End Sub
 
-Function PlayVideo(video)
-
-    episode = CreateObject("roAssociativeArray")
-    
+Function PlayVideo(pVideo as Object)
+    startSeconds = API_GetVideoProgress(pVideo.videoId)
+    print "Start Seconds";startSeconds
+    video  = CreateObject("roAssociativeArray")
     port = CreateObject("roMessagePort")
     screen = CreateObject("roVideoScreen") 
     ' Note: HDBranded controls whether the "HD" logo is displayed for a 
@@ -245,24 +247,24 @@ Function PlayVideo(video)
     ' have an HD title where you don't want to show the HD logo 
     ' branding for the title. Set these two as appropriate for 
     ' your content
-    episode.IsHD = true    
-    episode.HDBranded = false
+    video.IsHD = true    
+    video.HDBranded = false
 
     ' Note: The preferred way to specify stream info in v2.6 is to use
     ' the Stream roAssociativeArray content meta data parameter. 
     print "Play Video...Url:"
-    print video.url
-     episode.Stream = { 
-        url: video.url
-        bitrate:2000
+    print pVideo.url
+    video.Stream = { 
+        url: pVideo.url
+        bitrate:0
         StreamFormat:  "mp4"
     }
-
+    
    ' now just tell the screen about the title to be played, set the 
    ' message port for where you will receive events and call show to 
    ' begin playback.  You should see a buffering screen and then 
    ' playback will start immediately when we have enough data buffered. 
-    screen.SetContent(episode)
+    screen.SetContent(video)
     screen.SetMessagePort(port)
     screen.Show() 
    ' Wait in a loop on the message port for events to be received.  

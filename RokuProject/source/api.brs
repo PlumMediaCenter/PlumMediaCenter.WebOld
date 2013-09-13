@@ -1,7 +1,7 @@
 '
 'Get the current second number to start a video at 
 '
-Function API_GetVideoProgress(videoId as Integer) as Integer
+Function API_GetVideoProgress(videoId) as Integer
     url = BaseUrl() + "/api/GetVideoProgress.php?videoId=" + videoId
     progress = GetJson(url)
 
