@@ -67,9 +67,9 @@ class LibraryGenerator {
         $this->writeMoviesToDb();
         $this->writeTvShowsToDb();
         writeToLog("End writing videos to database");
-        writeToLog("Begin generating videos.json");
+        writeToLog("Begin generating library.json");
         $this->generateVideosJson();
-        writeToLog("End generating videos.json");
+        writeToLog("End generating library.json");
         writeToLog("Generate Library Summary: $this->movieCount Movies. $this->tvShowCount Tv Shows. $this->tvEpisodeCount Tv Episodes.");
         writeToLog("End Generate Library");
     }
@@ -195,9 +195,9 @@ class LibraryGenerator {
             $video->writeToDb();
             writeToLog("Added new $video->mediaType: '$video->fullPath' to library");
         }
-        writeToLog("Begin generating videos.json");
+        writeToLog("Begin generating library.json");
         $this->generateVideosJson();
-        writeToLog("End generating videos.json");
+        writeToLog("End generating library.json");
         $numDeleted = count($videosToDelete);
         $numUpdated = count($videosToUpdate);
         $numNew = count($newVideos);
@@ -210,7 +210,7 @@ class LibraryGenerator {
     }
 
     /**
-     * Generates the videos.json file based on the files in the database
+     * Generates the library.json file based on the files in the database
      */
     function generateVideosJson() {
         //remove any unnecessary public properties in each video
@@ -226,7 +226,7 @@ class LibraryGenerator {
         $videoList["movies"] = $this->movies;
         $videoList["tvShows"] = $this->tvShows;
         $videoJson = json_encode($videoList, JSON_PRETTY_PRINT);
-        $success = file_put_contents(dirname(__FILE__) . "/../api/videos.json", $videoJson);
+        $success = file_put_contents(dirname(__FILE__) . "/../api/library.json", $videoJson);
     }
 
     function writeMoviesToDb() {

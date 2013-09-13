@@ -1,4 +1,4 @@
 <?php
 
-file_put_contents("videos.json", "");
+file_put_contents("library.json", "");
 ?>
