@@ -49,7 +49,7 @@ class CreateDatabase {
     }
 
     private function table_video() {
-        $table = new Table();
+        //$table = new Table();
         DbManager::nonQuery("drop table video");
         $sql = "create table video(
                     video_id int not null auto_increment,
