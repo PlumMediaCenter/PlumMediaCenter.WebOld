@@ -9,6 +9,14 @@ Function API_GetVideoProgress(videoId) as Integer
 End Function
 
 '
+'Set the current second number the video is playing at
+'
+Sub API_SetVideoProgress(videoId, seconds)
+    url = BaseUrl() + "/api/SetVideoProgress.php?videoId=" + videoId.ToStr() + "&seconds=" + seconds.ToStr()
+    success = GetJson(url)
+End Sub
+
+'
 ' Retrieves the library json file from the server. If that was unsuccessful, 
 ' this function returns an empty library object
 ' @return Object  - the library object if successful, an empty library object if unsuccessful 

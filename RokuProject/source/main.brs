@@ -7,6 +7,7 @@ Function Main()
     port = CreateObject("roMessagePort")
     grid = CreateObject("roGridScreen")
     grid.SetMessagePort(port) 
+    
     rowTitles = []
     rowTitles.Push("Tv Shows")
     rowTitles.Push("Movies")
@@ -93,7 +94,7 @@ Function Main()
 
     grid.Show() 
     'for testing purposes, immediately play the first movie in the list
-    'PlayVideo(m.lib.movies[0])
+    PlayVideo(m.lib.movies[0])
     while true
         msg = wait(0, port)
         If type(msg) = "roGridScreenEvent" Then
@@ -193,8 +194,8 @@ Function ShowTvShowEpisodesGrid(showIndex as integer)
     grid.Show() 
     while true
         msg = wait(0, port)
-        if type(msg) = "roGridScreenEvent" then
-            if msg.isScreenClosed() then
+        If type(msg) = "roGridScreenEvent" then
+            If msg.isScreenClosed() then
                 Return -1
             Else If msg.isListItemFocused()
                 print "Focused msg: ";msg.GetMessage();"row: ";msg.GetIndex();
@@ -211,34 +212,23 @@ Function ShowTvShowEpisodesGrid(showIndex as integer)
     End While
 End Function
 
-
-Sub ShowMessage(messageTitle as String, message as String)
-    port = CreateObject("roMessagePort")
-    dialog = CreateObject("roMessageDialog")
-    dialog.SetMessagePort(port) 
-    dialog.SetTitle(messageTitle)
-    dialog.SetText(message)
- 
-    dialog.AddButton(1, "Ok")
-    dialog.EnableBackButton(true)
-    dialog.Show()
-    While True
-        dlgMsg = wait(0, dialog.GetMessagePort())
-        If type(dlgMsg) = "roMessageDialogEvent"
-            if dlgMsg.isButtonPressed()
-                if dlgMsg.GetIndex() = 1
-                    exit while
-                End If
-            Else If dlgMsg.isScreenClosed()
-                exit while
-            End If
-        End If
-    End While
-End Sub
-
 Function PlayVideo(pVideo as Object)
     startSeconds = API_GetVideoProgress(pVideo.videoId)
     print "Start Seconds";startSeconds
+    restart = false
+    
+    If startSeconds > 0 Then
+        hmsString = GetHourMinuteSecondString(startSeconds)
+        'for debugging purposes, skip the confirm window for now
+        restart = Confirm("Resume where you left off?(" + hmsString + ")", "Resume", "Restart")
+    End If
+    If restart Then
+        startMilliseconds = startSeconds * 1000
+        print "Resume playback at ";startSeconds;" seconds"
+    Else
+        print "Restart playback"
+        startMilliseconds = -1
+    End If
     video  = CreateObject("roAssociativeArray")
     port = CreateObject("roMessagePort")
     screen = CreateObject("roVideoScreen") 
@@ -267,6 +257,7 @@ Function PlayVideo(pVideo as Object)
     screen.SetContent(video)
     screen.SetMessagePort(port)
     screen.Show() 
+
    ' Wait in a loop on the message port for events to be received.  
    ' We will just quit the loop and Return to the calling function 
    ' when the users terminates playback, but there are other things 
@@ -275,11 +266,16 @@ Function PlayVideo(pVideo as Object)
    ' player for status and failure events that occur during playback 
     while true
        msg = wait(0, port)
-    
+        
        if type(msg) = "roVideoScreenEvent" then
            print "showVideoScreen | msg = "; msg.GetMessage() " | index = "; msg.GetIndex()
-           if msg.isScreenClosed()
+           if msg.isStreamStarted() and startMilliseconds > -1
+                print "Stream started. Seeking to milliseconds: "; startMilliseconds 
+                screen.Seek(startMilliseconds)
+                startMilliseconds = -1
+          Else if msg.isScreenClosed()
                print "Screen closed"
+               
                exit while
             Else If msg.isStatusMessage()
                   print "status message: "; msg.GetMessage()
