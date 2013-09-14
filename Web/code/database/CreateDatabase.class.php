@@ -22,6 +22,7 @@ class CreateDatabase {
         $this->createVideoDatabase($this->rootUsername, $this->rootPassword, $this->dbHost);
         //create all tables
         $this->table_video();
+        $this->table_tv_episode();
         $this->table_video_source();
         $this->table_watch_video();
     }
