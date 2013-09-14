@@ -27,9 +27,12 @@
                 </div>
             </div>
             <div class="container">
-                <?php
-                echo isset($body) ? $body : "";
-                ?>
+                <div id="containerRelativer">
+                    <?php
+                    echo isset($body) ? $body : "";
+                    ?>
+                </div>
+
             </div>
         </div>
     </body>

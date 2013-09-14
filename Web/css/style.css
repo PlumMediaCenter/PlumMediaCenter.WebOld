@@ -14,12 +14,18 @@ html, body{
 
 body{
     padding:0px;
+    border:1px solid red;
 }
 
 .content{
-    padding-top:50px;
-    padding-left:20px;
-    padding-right:20px;
+    margin-top:50px;
+    margin-left:20px;
+    margin-right:20px;
+    position:relative;
+}
+
+#containerRelativer{
+    position:relative;
 }
 
 .tile{
@@ -108,8 +114,8 @@ input[type=radio], label{
     width:500px;
     min-height:250px;
     display:none;
-    position:absolute;
     padding:20px;
+    padding-top:7px;
 }
 #episodeInfo *{
     color:black;
@@ -160,4 +166,9 @@ input[type=radio], label{
     background-color:transparent;
     line-height:10px;
     
+}
+
+#videoInfo{
+    float:left;
+    display:inline;
 }
