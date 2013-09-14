@@ -21,6 +21,8 @@ class LibraryGenerator {
 
         $tvShowSources = Queries::getVideoSources(Enumerations::MediaType_TvShow);
         $this->tvShowSources = $tvShowSources;
+        //set the time limit for this script to be 10 minutes. If it takes any longer than that, there's something wrong
+        set_time_limit(600);
     }
 
     /**

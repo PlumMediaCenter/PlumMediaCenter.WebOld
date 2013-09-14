@@ -22,7 +22,7 @@ function printTvShowFileList($tvShow) {
         $episodeId = $episode->getVideoId();
         $episodeNumber = $episode->episodeNumber;
         $seasonNumber = $episode->seasonNumber;
-
+        $percentWatched = $episode->progressPercent();
         if ($seasonNumber != $currentSeasonNumber) {
             $currentSeasonNumber = $seasonNumber;
             //create a new row
@@ -38,7 +38,7 @@ function printTvShowFileList($tvShow) {
             <td class="transparent"><a class='addToPlaylistButton18' style="display:block;" href='#' onclick="addVideoToPlaylist($episodeId, '<?php echo $videoTitle; ?>');" title='Add Video To Playlist'></a></td>
             <td class="transparent"><a class='infoButton18' style="display:block;" ></a></td>
             <td class="transparent"><a href="Play.php?videoId=<?php echo $episodeId; ?>"><?php echo $videoTitle; ?></a></td>
-            <td class="transparent"><div class="progressbar"><div class="percentComplete" style="width:<?php echo $episode->progressPercent();?>%">&nbsp;</div></div></a>
+            <td class="transparent"><div class="progressbar"><div class="percentWatched" style="width:<?php echo $percentWatched; ?>%"></div><div class="percentWatchedText"><?php echo $percentWatched; ?>%</div></div></a>
         </tr>
         <?php
     }

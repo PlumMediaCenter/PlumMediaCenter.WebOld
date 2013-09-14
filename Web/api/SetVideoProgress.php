@@ -22,5 +22,5 @@ if ($finished === "true") {
     }
 }
 Queries::insertWatchVideo(config::$globalUsername, $videoId, $timeInSeconds, 500);
-return json_encode(true);
+echo json_encode(true);
 ?>

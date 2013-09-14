@@ -132,14 +132,32 @@ input[type=radio], label{
 .progressbar{
     width:100px;
     border-top:1px solid black;
-    border-bottom:2px solid black;
+    border-bottom:1px solid black;
     background-color:red;
-    height:8px;
+    height:10px;
     margin-left:20px;
     margin-right:10px;
+    position:relative;
 }
 
-.percentComplete{
+.percentWatched{
     height:100%;
     background-color:green;
+    text-align:center;
+}
+
+.percentWatchedText{
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:100%;
+    height:100%;
+    background-color:transparent;
+    text-align:center;
+    padding:0px;
+    margin:0px;
+    font-size: 10px;
+    background-color:transparent;
+    line-height:10px;
+    
 }
