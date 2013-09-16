@@ -18,6 +18,7 @@ if ($video->mediaType === Enumerations::MediaType_TvShow) {
     $video->retrieveVideoIds();
 }
 $m->video = $video;
+$m->title = "PVP $video->title Info";
 $m->videoJson = json_encode($m->video);
 $p->show();
 ?>
