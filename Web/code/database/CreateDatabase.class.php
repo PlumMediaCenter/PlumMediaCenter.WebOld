@@ -1,6 +1,7 @@
 <?php
 
 include_once(dirname(__FILE__) . "/../DbManager.class.php");
+include_once(dirname(__FILE__) . "/Table.class.php");
 
 /**
  * Creates the entire database
@@ -18,13 +19,15 @@ class CreateDatabase {
     }
 
     function createDatabase() {
+        $totalSuccess = true;
         //log in to the db as root and create the video database
-        $this->createVideoDatabase($this->rootUsername, $this->rootPassword, $this->dbHost);
+        $totalSuccess = $totalSuccess && $this->createVideoDatabase($this->rootUsername, $this->rootPassword, $this->dbHost);
         //create all tables
-        $this->table_video();
-        $this->table_tv_episode();
-        $this->table_video_source();
-        $this->table_watch_video();
+        $totalSuccess = $totalSuccess && $this->table_video();
+        $totalSuccess = $totalSuccess && $this->table_tv_episode();
+        $totalSuccess = $totalSuccess && $this->table_video_source();
+        $totalSuccess = $totalSuccess && $this->table_watch_video();
+        return $totalSuccess;
     }
 
     private function createVideoDatabase($rootUsername, $rootPassword, $host) {
@@ -35,83 +38,69 @@ class CreateDatabase {
         try {
             $dbh = new PDO("mysql:host=$host", $rootUsername, $rootPassword);
             //delete any previous references to the user or the database
-            $dbh->exec("delete from mysql.user where user = 'plumvideoplayer';");
-            $dbh->exec("drop user 'plumvideoplayer'@'localhost';");
-            $dbh->exec("drop database plumvideoplayer;");
-            //create the database
-            $dbh->exec("CREATE DATABASE `$db`;
-                CREATE USER '$user'@'localhost' IDENTIFIED BY '$pass';
-                GRANT ALL ON `$db`.* TO '$user'@'$host';
-                FLUSH PRIVILEGES;") or die(print_r($dbh->errorInfo(), true));
+            //$dbh->exec("delete from mysql.user where user = 'plumvideoplayer';");
+            //$dbh->exec("drop user 'plumvideoplayer'@'localhost';");
+           // $dbh->exec("drop database plumvideoplayer;");
+            //create the database, if it doesn't already exist
+            $dbh->exec("CREATE DATABASE `$db`;");
+            $dbh->exec("CREATE USER '$user'@'$host' IDENTIFIED BY '$pass';");
+            $dbh->exec("GRANT ALL ON `$db`.* TO '$user'@'$host';");
+            $dbh->exec("FLUSH PRIVILEGES;");
         } catch (PDOException $e) {
-            die("DB ERROR: " . $e->getMessage());
+            //die("DB ERROR: " . $e->getMessage());
+            return false;
         }
+        return true;
     }
 
     private function table_video() {
-        //$table = new Table();
-        DbManager::nonQuery("drop table video");
-        $sql = "create table video(
-                    video_id int not null auto_increment,
-                    title char(100),
-                    running_time int(5),
-                    plot varchar(3000), 
-                    path varchar(1000) not null,
-                    url varchar(2000),
-                    filetype char(15),
-                    metadata_last_modified_date datetime,
-                    poster_last_modified_date datetime,
-                    mpaa char(200), 
-                    release_date date, 
-                    media_type char(10) not null, 
-                    video_source_path varchar(2000) not null,
-                    video_source_url varchar(2000) not null,
-                    primary key(video_id)
-                );";
-        DbManager::nonQuery($sql);
+        $t = new Table("video");
+        $t->addColumn("video_id", "int", "not null auto_increment", true);
+        $t->addColumn("title", "char(100)", "");
+        $t->addColumn("running_time", "int(5)", "");
+        $t->addColumn("plot", "varchar(3000)", "");
+        $t->addColumn("path", "varchar(1000)", "not null");
+        $t->addColumn("url", "varchar(2000)", "");
+        $t->addColumn("filetype", "char(15)", "");
+        $t->addColumn("metadata_last_modified_date", "datetime", "");
+        $t->addColumn("poster_last_modified_date", "datetime", "");
+        $t->addColumn("mpaa", "char(200)", "");
+        $t->addColumn("release_date", "date", "");
+        $t->addColumn("media_type", "char(10)", "not null");
+        $t->addColumn("video_source_path", "varchar(2000)", "not null");
+        $t->addColumn("video_source_url", "varchar(2000)", "not null");
+        return $t->applyTable();
     }
 
     private function table_tv_episode() {
-        DbManager::nonQuery("drop table tv_episode");
-        $sql = "   
-            create table tv_episode(
-                video_id int not null,
-                tv_show_video_id int not null,
-                season_number int,
-                episode_number int,
-                writer char(50),
-                director char(50),
-                primary key(video_id)
-            );";
-        DbManager::nonQuery($sql);
+        $t = new Table("tv_episode");
+        $t->addColumn("video_id", "int", "not null", true);
+        $t->addColumn("tv_show_video_id", "int", "not null");
+        $t->addColumn("season_number", "int", "");
+        $t->addColumn("episode_number", "int", "");
+        $t->addColumn("writer", "char(50)", "");
+        $t->addColumn("director", "char(50)", "");
+        return $t->applyTable();
     }
 
     private function table_video_source() {
-        DbManager::nonQuery("drop table video_source");
-        $sql = "
-            create table video_source(
-            location char(200),
-            base_url char(200),
-            media_type char(10),
-            security_type char(20),
-            refresh_videos int(1) default 0,
-            primary key(location)
-        );";
-        DbManager::nonQuery($sql);
+        $t = new Table("video_source");
+        $t->addColumn("location", "char(200)", "", true);
+        $t->addColumn("base_url", "char(200)", "");
+        $t->addColumn("media_type", "char(10)", "");
+        $t->addColumn("security_type", "char(20)", "");
+        $t->addColumn("refresh_videos", "int(1)", "default 0");
+        return $t->applyTable();
     }
 
     private function table_watch_video() {
-        DbManager::nonQuery("drop table watch_video");
-        $sql = "
-            create table watch_video(
-                username char(128),
-                video_id int not null,
-                time_in_seconds int(10),
-                position_in_bytes int(100),
-                date_watched datetime,
-                primary key (username, video_id)
-            ); ";
-        DbManager::nonQuery($sql);
+        $t = new Table("watch_video");
+        $t->addColumn("username", "char(128)", "", true);
+        $t->addColumn("video_id", "int", "not null", true);
+        $t->addColumn("time_in_seconds", "int(10)", "");
+        $t->addColumn("position_in_bytes", "int(100)", "");
+        $t->addColumn("date_watched", "datetime", "");
+        return $t->applyTable();
     }
 
 }

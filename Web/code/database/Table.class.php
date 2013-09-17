@@ -18,8 +18,8 @@ class Table {
      * @param type $dataType - the dataType of the column (i.e. int, char(10), etc...)
      * @param type $extraStuff - any extra items that are used for a column (not null, unique primary key, etc...)
      */
-    function addColumn($columnName, $dataType, $extraStuff = null) {
-        $this->columns[] = new DbColumn($columnName, $dataType, $extraStuff);
+    function addColumn($columnName, $dataType, $extraStuff = "", $primaryKey = false) {
+        $this->columns[] = new DbColumn($columnName, $dataType, $extraStuff, $primaryKey);
     }
 
     /**
@@ -59,11 +59,26 @@ class Table {
         //generate the create table statement
         $sql = "create table $this->tableName(";
         $comma = "";
-        foreach ($this->columns as $col /* @var $col DbColumn */) {
-            $sql .= " $comma $col->columnName $col->dataType $col->extraStuff";
+        $keyNameList = [];
+        foreach ($this->columns as $column /* @var $column DbColumn */) {
+            $sql .= " $comma $column->columnName $column->dataType $column->extraStuff";
             $comma = ",";
+            if ($column->primaryKey === true) {
+                $keyNameList[] = $column->columnName;
+            }
         }
-        $sql .=")";
+        //generate the primary key list, if any are present
+        $primaryKeySql = "";
+        if (count($keyNameList) > 0) {
+            $primaryKeySql = "primary key(";
+            $comma = "";
+            foreach ($keyNameList as $keyName) {
+                $primaryKeySql = "$primaryKeySql $comma $keyName";
+                $comma = ",";
+            }
+            $primaryKeySql = ",$primaryKeySql)";
+        }
+        $sql = "$sql $primaryKeySql)";
         return DbManager::nonQuery($sql);
     }
 
@@ -83,12 +98,37 @@ class Table {
                 $statements[] = "drop column $colFromDb->Field";
             }
         }
-
-        //add any new columns
+        //a list of names of columns that make up the primary key
+        $keyNameList = [];
+        //add any new columns or update existing ones
         foreach ($this->columns as $column) {
-            //see if this column is in the database already. if not, it is a new column
+            //see if this column does not exist in the table, it is a new column. generate a new column stmt
+            if ($this->columnExistsInTable($column->columnName, $existingColumnsFromDb) === false) {
+                $statements[] = "add column $column->columnName $column->dataType $column->extraStuff";
+            } else {
+                //these columns exist in the table already. create update statements for each column, even if nothing has changed. it won't harm the column
+                $statements[] = "modify column $column->columnName $column->dataType $column->extraStuff";
+            }
+            //add this column to the list of primary keys if it is flagged as such
+            if ($column->primaryKey === true) {
+                $keyNameList[] = $column->columnName;
+            }
         }
 
+        //reregister the primary keys
+        $primaryKeySql = "";
+        if (count($keyNameList) > 0) {
+            $primaryKeySql = "drop primary key, add primary key(";
+            $comma = "";
+            foreach ($keyNameList as $keyName) {
+                $primaryKeySql = "$primaryKeySql $comma $keyName";
+                $comma = ",";
+            }
+            $primaryKeySql = "$primaryKeySql)";
+            $statements[] = $primaryKeySql;
+        }
+
+        //
         //apply the alter statements
         $alter = "alter table $this->tableName";
         $bTotalSuccess = true;
@@ -97,13 +137,19 @@ class Table {
         }
         return $bTotalSuccess;
     }
-    
-    private function columnExistsInDatabase($columnName, $columnsFromDatabase){
-        foreach($columnsFromDatabase as $colFromDb){
-            if($columnName === $colFromDb->Field){
+
+    /**
+     * Determine if a particular column exists in a table. This only checks by name, and not by data type
+     * @param string $columnName - the name of the column
+     * @param object[] $columnsFromDatabase - an array of column definitions from a 'show columns' query 
+     * @return boolean - true if the column exists in the table, false if it does not
+     */
+    private function columnExistsInTable($columnName, $columnsFromDatabase) {
+        foreach ($columnsFromDatabase as $colFromDb) {
+            if ($columnName === $colFromDb->Field) {
                 return true;
             }
-        }        
+        }
         //if we got to here, the column is NOT in the db
         return false;
     }
@@ -130,11 +176,15 @@ Class DbColumn {
     public $columnName;
     public $dataType;
     public $extraStuff;
+    public $primaryKey;
 
-    function __construct($columnName, $dataType, $extraStuff) {
+    function __construct($columnName, $dataType, $extraStuff = "", $primaryKey = false) {
+        $extraStuff = $extraStuff == null ? "" : $extraStuff;
+        $primaryKey = $primaryKey == null ? false : $primaryKey;
         $this->columnName = $columnName;
         $this->dataType = $dataType;
-        $this->extraStuff;
+        $this->extraStuff = $extraStuff;
+        $this->primaryKey = $primaryKey;
     }
 
 }

@@ -70,6 +70,7 @@ class DbManager {
         $pdo = DbManager::getPdo();
         $stmt = $pdo->prepare($sql);
         $success = $stmt->execute();
+        
         //if the stmt failed execution, exit failure
         if ($success === false) {
             return false;
@@ -81,7 +82,7 @@ class DbManager {
     /**
      * Execute an sql statement without getting a return value
      * @param string $sql - the query to execute
-     * @return boolean success or failure
+     * @return array - the array of results, or an empty array if no results were found
      */
     public static function query($sql) {
         $pdo = DbManager::getPdo();
@@ -92,6 +93,20 @@ class DbManager {
             return DbManager::fetchAllClass($stmt);
         } else {
             return [];
+        }
+    }
+
+    /**
+     * Execute an sql statement without getting a return value
+     * @param string $sql - the query to execute
+     * @return array|boolean - the first and only row in a single row query, or false if rownum <> 1
+     */
+    public static function queryGetSingleRow($sql) {
+        $results = DbManager::query($sql);
+        if (count($results) === 1) {
+            return $results[0];
+        } else {
+            return false;
         }
     }
 
