@@ -94,7 +94,8 @@ Function Main()
     grid.Show() 
     'for testing purposes, immediately play the first movie in the list
     'PlayFirstEpisode()
-    ShowTvShowEpisodesGrid(1)
+    'ShowTvShowEpisodesGrid(1)
+    
     while true
         msg = wait(0, port)
         If type(msg) = "roGridScreenEvent" Then
