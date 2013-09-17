@@ -48,6 +48,20 @@ class DbManager {
     }
 
     /**
+     * Determines if a database table exists.
+     * @param string $tableName
+     * @return boolean - true if the table exists, false if the table does not exist
+     */
+    public static function TableExists($tableName) {
+        $results = DbManager::query("show tables like '$tableName'");
+        if (count($results) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Execute an sql statement without getting a return value
      * @param string $sql - the query to execute
      * @return boolean success or failure
@@ -109,6 +123,15 @@ class DbManager {
     public static function fetchAllColumn($stmt, $colNum) {
         $result = $stmt->fetchAll(PDO::FETCH_COLUMN, $colNum);
         return $result;
+    }
+
+    public static function GetSingleItem($sql) {
+        $result = DbManager::query($sql);
+        if ($result !== null && count($result) > 0) {
+            return $result[0];
+        } else {
+            return null;
+        }
     }
 
     public static function fetchSingleItem($stmt) {
