@@ -1,6 +1,5 @@
 
 Function Main()
-
     'load the library from the remote json file
     LoadLibrary()
     
@@ -94,7 +93,8 @@ Function Main()
 
     grid.Show() 
     'for testing purposes, immediately play the first movie in the list
-    PlayVideo(m.lib.movies[0])
+    'PlayFirstEpisode()
+    ShowTvShowEpisodesGrid(1)
     while true
         msg = wait(0, port)
         If type(msg) = "roGridScreenEvent" Then
@@ -128,6 +128,22 @@ Function Main()
     End While
 End Function
 
+Sub PlayFirstMovie()
+    PlayVideo(m.lib.movies[0])
+End Sub
+
+
+Function PlayFirstEpisode()
+    show = m.lib.tvShows[0]
+     episode = invalid
+     For Each season in show.seasons
+        For Each ep in season
+            Return PlayVideo(ep)
+        End For
+     End For
+     PlayVideo(episode)
+End Function
+
 '
 ' Loads the library from the server into the m.library global variable
 '
@@ -138,8 +154,6 @@ Sub LoadLibrary()
 End Sub
 
 Function ShowTvShowEpisodesGrid(showIndex as integer)
-    'print "Printing season from show episodes: ";m.lib.tvShows[selectedIndex].seasons["1"]
-    'print "Selected Index:";selectedIndex
     port = CreateObject("roMessagePort")
     grid = CreateObject("roGridScreen")
     grid.SetMessagePort(port) 
@@ -149,12 +163,25 @@ Function ShowTvShowEpisodesGrid(showIndex as integer)
     
     gridList = []
     show = m.lib.tvShows[showIndex]
+    'get the video id of the video that should be focused in the episode grid as the one to watch
+    nextEpisodeVideoId = API_GetNextEpisode(show.videoId)
     
     seasonList = []
     rowTitles = []
+    'these two should be populated if there is a tv episode that should be played next. otherwise, it defaults to the first episode in the list
+    nextEpisodeSeasonIndex = 0
+    nextEpisodeIndex = 0
+    seasonIndex = 0
+    episodeIndex = 0 
     For Each season in show.seasons
+        episodeIndex = 0 
         epList = []
         For Each episode in season
+            'if this is the episode to watch, save its position for later when we create the grid
+            If episode.videoId = nextEpisodeVideoId Then
+                nextEpisodeSeasonIndex = seasonIndex
+                nextEpisodeIndex = episodeIndex
+            End If
             o = CreateObject("roAssociativeArray")
             o.ContentType = "movie"
             o.Title = Str(episode.episodeNumber) + ". " + episode.title
@@ -169,18 +196,21 @@ Function ShowTvShowEpisodesGrid(showIndex as integer)
             'o.Length = 5400
             o.Actors = []
             o.url = episode.url
+            o.videoId = episode.videoId
             For Each actor in episode.actorList
                 name = actor.name
                 o.Actors.push(name)
             End For
             o.Director = "[Director]"
             epList.Push(o)
+            episodeIndex = episodeIndex + 1
         End For
         seasonList.push(epList)
+        seasonIndex = seasonIndex + 1
         'add the season number that the last episode in this list had...they should all be the same season
         rowTitles.push("Season " + Str(episode.seasonNumber) )
     End For
-
+   
     grid.SetupLists(seasonList.Count())
     grid.SetListNames(rowTitles) 
     i = 0
@@ -190,10 +220,13 @@ Function ShowTvShowEpisodesGrid(showIndex as integer)
         grid.SetContentList(i, season) 
         i = i + 1
     End For
-
+    'focus the grid on the episode that was marked as 'next'. 
+    print "Next Episode grid indexes:: ";nextEpisodeSeasonIndex; " - ";nextEpisodeIndex 
+    grid.SetFocusedListItem(nextEpisodeSeasonIndex,nextEpisodeIndex)    
     grid.Show() 
     while true
         msg = wait(0, port)
+        print msg
         If type(msg) = "roGridScreenEvent" then
             If msg.isScreenClosed() then
                 Return -1
@@ -206,23 +239,22 @@ Function ShowTvShowEpisodesGrid(showIndex as integer)
                 row = msg.GetIndex()
                 col = msg.GetData()
                 PlayVideo(gridList[row][col])
-                'PlayVideo(gridList[0][0])
             endif
         endif
     End While
 End Function
 
 Function PlayVideo(pVideo as Object)
+    print pVideo
     startSeconds = API_GetVideoProgress(pVideo.videoId)
     print "Start Seconds";startSeconds
-    restart = false
-    
+    resume = true
     If startSeconds > 0 Then
         hmsString = GetHourMinuteSecondString(startSeconds)
         'for debugging purposes, skip the confirm window for now
-        restart = Confirm("Resume where you left off?(" + hmsString + ")", "Resume", "Restart")
+        resume = Confirm("Resume where you left off?(" + hmsString + ")", "Resume", "Restart")
     End If
-    If restart Then
+    If resume Then
         startMilliseconds = startSeconds * 1000
         print "Resume playback at ";startSeconds;" seconds"
     Else
@@ -242,8 +274,7 @@ Function PlayVideo(pVideo as Object)
 
     ' Note: The preferred way to specify stream info in v2.6 is to use
     ' the Stream roAssociativeArray content meta data parameter. 
-    print "Play Video...Url:"
-    print pVideo.url
+    print "Play Video...Url:";pVideo.url
     video.Stream = { 
         url: pVideo.url
         bitrate:0
@@ -256,8 +287,12 @@ Function PlayVideo(pVideo as Object)
    ' playback will start immediately when we have enough data buffered. 
     screen.SetContent(video)
     screen.SetMessagePort(port)
+    'every 10 seconds, fire a position notification
+    screen.SetPositionNotificationPeriod(3)
     screen.Show() 
 
+    
+    m.lastVideoProgressUpdateTime = CreateObject("roDateTime")
    ' Wait in a loop on the message port for events to be received.  
    ' We will just quit the loop and Return to the calling function 
    ' when the users terminates playback, but there are other things 
@@ -268,19 +303,19 @@ Function PlayVideo(pVideo as Object)
        msg = wait(0, port)
         
        if type(msg) = "roVideoScreenEvent" then
-           print "showVideoScreen | msg = "; msg.GetMessage() " | index = "; msg.GetIndex()
            if msg.isStreamStarted() and startMilliseconds > -1
                 print "Stream started. Seeking to milliseconds: "; startMilliseconds 
                 screen.Seek(startMilliseconds)
                 startMilliseconds = -1
           Else if msg.isScreenClosed()
                print "Screen closed"
-               
                exit while
             Else If msg.isStatusMessage()
                   print "status message: "; msg.GetMessage()
             Else If msg.isPlaybackPosition()
-                  print "playback position: "; msg.GetIndex()
+                seconds = msg.GetIndex()
+                'print "PlayVideo: playback position: ";seconds; " seconds"
+                API_SetVideoProgress(pVideo.videoId, seconds)
             Else If msg.isFullResult()
                   print "playback completed"
                   exit while

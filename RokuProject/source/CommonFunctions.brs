@@ -1,5 +1,8 @@
 '
 ' Retrieves the registry value in the provided section and at the specified key
+' The registry technically lets you organize your registry values by category and name.
+' Most of the time it doesn't seem that many registry items are needed, so this function
+' just saves everyting in the 'Settings' category. 
 '
 Function GetRegVal(name) As Dynamic
     section = "Settings"
@@ -11,7 +14,7 @@ Function GetRegVal(name) As Dynamic
 End Function
 
 '
-' Saves a value to the registry
+' Saves a value to the registry in the 'Settings category
 ' @param string name - the name of the variable to be saved in the registry
 ' @param string value - the value to save into the registry
 '
@@ -28,11 +31,25 @@ End Function
 ' @return object - the object created from the result json.
 '
 Function GetJSON(sUrl as String) as Object
+    'print "GetJSON: ";sUrl
     searchRequest = CreateObject("roUrlTransfer") 
     searchRequest.SetURL(sUrl)
-    result = ParseJson(searchRequest.GetToString())
-    return result
+    result = searchRequest.GetToString() 
+    obj = ParseJson(result)
+    return obj    
 End Function
+
+'
+' Sends a nonblocking request in which the return result is not important. 
+' This is useful for update requests and such.
+'
+Sub FireNonBlockingRequest(sUrl as String)
+    'print "FireNonBlockingRequest: ";sUrl
+    searchRequest = CreateObject("roUrlTransfer") 
+    searchRequest.SetURL(sUrl)
+    'send the request 
+    searchRequest.AsyncGetToString() 
+End Sub
 
 Sub ShowMessage(messageTitle as String, message as String)
     port = CreateObject("roMessagePort")
