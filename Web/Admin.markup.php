@@ -9,6 +9,9 @@
 <a href='MetadataManager.php' class="btn">Manage Metadata</a>
 <br/>
 <br/>
+<a href='FetchAndGeneratePosters.php?fetchAndGenerate=true' class="btn">Fetch and Generate Missing Posters</a>
+<br/>
+<br/>
 <a href="#videosJsonModal" class="btn" role="button" data-toggle="modal" onclick="getVideosJson();">View library.json</a>
 <br/>
 <br/>

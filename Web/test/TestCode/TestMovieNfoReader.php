@@ -1,7 +1,7 @@
 <?php
 
-require_once(dirname(__FILE__) . '/simpletest/autorun.php');
-require_once(dirname(__FILE__) . '/../code/NfoReader/MovieNfoReader.class.php');
+require_once(dirname(__FILE__) . '/../simpletest/autorun.php');
+require_once(dirname(__FILE__) . '/../../code/NfoReader/MovieNfoReader.class.php');
 
 class TestMovieNfoReader extends UnitTestCase {
 

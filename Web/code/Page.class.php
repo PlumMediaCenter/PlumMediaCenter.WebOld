@@ -52,16 +52,20 @@ class Page {
         }
     }
 
-    function show($layout = "layout.php") {
+    function show($layout = "layout.php", $content = null) {
         extract((array) $this->getModel());
         //if the title is not set, set it
         if (isset($title) == false) {
             $title = "Roku LAN Video Player";
         }
         ob_start();
-        //load the markup
-        include($this->markupPath);
-
+        //if the content variable is included, use that instead of a markup page
+        if ($content != null) {
+            echo $content;
+        } else {
+            //load the markup
+            include($this->markupPath);
+        }
         global $body;
         $body = ob_get_contents();
         ob_end_clean();

@@ -1,7 +1,7 @@
 <?php
 
-require_once(dirname(__FILE__) . '/simpletest/autorun.php');
-require_once(dirname(__FILE__) . '/../code/Video.class.php');
+require_once(dirname(__FILE__) . '/../simpletest/autorun.php');
+require_once(dirname(__FILE__) . '/../../code/Video.class.php');
 
 class TestMovie extends UnitTestCase {
 
@@ -115,7 +115,7 @@ class TestMovie extends UnitTestCase {
         $posterPath = $v->getPosterPath();
         rename($posterPath, "$posterPath.tmp");
         //download an image from a web server (this web server) and save it as the poster
-        $this->assertTrue($v->downloadPoster(getBaseUrl('test/') . "test/videos/movies/FakeMovie2/folder.jpg"));
+        $this->assertTrue($v->downloadPoster(getBaseUrl('test/') . "test/TestCode/videos/movies/FakeMovie2/folder.jpg"));
 
         //does the poster exist?
         $this->assertTrue($v->posterExists());

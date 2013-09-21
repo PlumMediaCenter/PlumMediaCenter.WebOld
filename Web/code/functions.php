@@ -129,7 +129,13 @@ function saveImageFromUrl($imageUrl, $imageDest) {
     //if the result was not failure and was longer than empty, save the file
     if ($content !== false && strlen($content) > 0) {
         $result = file_put_contents($imageDest, $content);
+        //if we successfully wrote to the image
         if ($result !== false) {
+            //if the file we just wrote is not an image (say we got html content back instead of image, delete it
+            if (exif_imagetype($imageDest) == false) {
+                unlink($imageDest);
+                return false;
+            }
             return true;
         }
     }
@@ -232,9 +238,9 @@ function getBaseUrl($context, $url = null) {
     }
     //context should be a series of folder names with slashes in between and a slash at the end. 
     //The actual url may have a filename at the end of it. if this is the case, remove the filename
-    $endingSlashPos = strrpos ($url, "/");
+    $endingSlashPos = strrpos($url, "/");
     //if the ending slash position is NOT at the end of the string, then there is a filename at the end of this url. remove it.
-    if($endingSlashPos === false || $endingSlashPos + 1 !== strlen($url)){
+    if ($endingSlashPos === false || $endingSlashPos + 1 !== strlen($url)) {
         $url = dirname($url) . "/";
     }
     return str_replace($context, '', $url);

@@ -245,7 +245,7 @@ Function ShowTvShowEpisodesGrid(showIndex as integer)
     End While
 End Function
 
-Function PlayVideo(pVideo as Object)
+Sub PlayVideo(pVideo as Object)
     print pVideo
     startSeconds = API_GetVideoProgress(pVideo.videoId)
     print "Start Seconds";startSeconds
@@ -253,13 +253,24 @@ Function PlayVideo(pVideo as Object)
     If startSeconds > 0 Then
         hmsString = GetHourMinuteSecondString(startSeconds)
         'for debugging purposes, skip the confirm window for now
-        resume = Confirm("Resume where you left off?(" + hmsString + ")", "Resume", "Restart")
+        result = ConfirmWithCancel("Resume where you left off?(" + hmsString + ")", "Resume", "Restart")
+        print "Confirm Result: ";result
+        If result = 2 Then
+            print "PlayVideo: resuming playback at ";startSeconds;" seconds"
+            resume = true
+        Else If result = 1 Then
+            print "PlayVideo: restarting video from beginning"
+            resume = false
+        Else
+            print "PlayVideo: cancel video playback"
+            return 
+        End If
     End If
     If resume Then
         startMilliseconds = startSeconds * 1000
-        print "Resume playback at ";startSeconds;" seconds"
+        'print "PlayVideo: resuming playback at ";startSeconds;" seconds"
     Else
-        print "Restart playback"
+        'print "Restart playback"
         startMilliseconds = -1
     End If
     video  = CreateObject("roAssociativeArray")
@@ -330,4 +341,4 @@ Function PlayVideo(pVideo as Object)
             End If
        End If
     End While 
-End Function
+End Sub

@@ -12,7 +12,7 @@ class config {
     public static $tmdbUrl = 'http://api.themoviedb.org/3';
     public static $globalUsername = 'plumuser';
     //if a video is within this amount of time of the next video, play the next one instead (or restart it)
-    public static $playNextVideoBufferInSeconds = 30;
+    public static $playNextVideoBufferInSeconds = 90;
 
 }
 

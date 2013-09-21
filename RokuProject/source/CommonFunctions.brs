@@ -110,6 +110,45 @@ Function Confirm(message, yesText as String, noText as String) as Boolean
 End Function
 
 '
+' Prompts the user for a yes/no/cancel answer, returns the result
+' @return boolean - true if user selects yes, false if user selects no. -1 if the user selects cancel
+Function ConfirmWithCancel(message, yesText as String, noText as String) as Integer
+    print "Confirming: '" + message + "', '" + yesText + "', " + noText + "', 'Cancel'"
+    port = CreateObject("roMessagePort")
+    dialog = CreateObject("roMessageDialog")
+    dialog.SetMessagePort(port) 
+    'dialog.SetTitle(messageTitle)
+    dialog.SetText(message)
+
+    dialog.AddButton(0, yesText)
+    dialog.AddButton(1, noText)
+    dialog.AddButton(2, "Cancel")
+    dialog.EnableBackButton(true)
+    dialog.Show()
+    While True
+        dlgMsg = wait(0, dialog.GetMessagePort())
+        If type(dlgMsg) = "roMessageDialogEvent"
+            if dlgMsg.isButtonPressed()
+                print dlgMsg.getMessage()
+                If dlgMsg.GetIndex() = 0
+                    Return 2
+                End If
+                If dlgMsg.GetIndex() = 1
+                    Return 1
+                End If
+                If dlgMsg.GetIndex() = 2
+                    Return 0
+                End If
+            Else If dlgMsg.isScreenClosed()
+                exit while
+            End If
+        End If
+    End While
+    'default to return cancel
+    Return -1
+End Function
+
+'
 ' Generates a string containing the hours minutes all together for presentation purposes
 ' @return string - a string with the hours, minutes and seconds in presentation format
 '

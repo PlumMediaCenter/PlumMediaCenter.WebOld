@@ -25,6 +25,46 @@ class LibraryGenerator {
         set_time_limit(600);
     }
 
+    function generateAndFetchPosters() {
+        $fetchCount = 0;
+        $generateCount = 0;
+        $this->loadFromDatabase();
+        /* @var $movie Movie */
+        foreach ($this->movies as $movie) {
+            if ($movie->posterExists() === false) {
+                $fetchCount++;
+                $movie->fetchPoster();
+            }
+            if ($movie->sdPosterExists() === false) {
+                $generateCount++;
+                $movie->generatePosters();
+            }
+        }
+        /* @var $show TvShow */
+        foreach ($this->tvShows as $show) {
+            if ($show->posterExists() === false) {
+                $fetchCount++;
+                $show->fetchPoster();
+            }
+            if ($show->sdPosterExists() == false) {
+                $generateCount++;
+                $show->generatePosters();
+            }
+            //each episode in this show
+            foreach ($show->episodes as $episode) {
+                if ($episode->posterExists() === false) {
+                    $fetchCount++;
+                    $episode->fetchPoster();
+                }
+                if ($episode->sdPosterExists() == false) {
+                    $generateCount++;
+                    $episode->generatePosters();
+                }
+            }
+        }
+        return array($fetchCount, $generateCount);
+    }
+
     /**
      * Loads the library from the database instead of loading from disk
      */
