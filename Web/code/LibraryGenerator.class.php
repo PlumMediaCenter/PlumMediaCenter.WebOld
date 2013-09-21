@@ -33,32 +33,47 @@ class LibraryGenerator {
         foreach ($this->movies as $movie) {
             if ($movie->posterExists() === false) {
                 $fetchCount++;
-                $movie->fetchPoster();
+                $success = $movie->fetchPoster();
+                $success = $success ? "Success" : "Failure";
+                writeToLog("$success fetching poster for '$movie->fullPath'");
             }
             if ($movie->sdPosterExists() === false) {
                 $generateCount++;
-                $movie->generatePosters();
+                $success = $movie->generatePosters();
+                $success = $success ? "Success" : "Failure";
+                writeToLog("$success generating sd and hd posters for '$movie->fullPath'");
             }
         }
         /* @var $show TvShow */
         foreach ($this->tvShows as $show) {
             if ($show->posterExists() === false) {
                 $fetchCount++;
-                $show->fetchPoster();
+                $success = $show->fetchPoster();
+                $success = $success ? "Success" : "Failure";
+                writeToLog("$success fetching poster for '$show->fullPath'");
             }
             if ($show->sdPosterExists() == false) {
                 $generateCount++;
-                $show->generatePosters();
+                $success = $show->generatePosters();
+                $success = $success ? "Success" : "Failure";
+
+                writeToLog("$success generating sd and hd posters for '$show->fullPath'");
             }
             //each episode in this show
             foreach ($show->episodes as $episode) {
                 if ($episode->posterExists() === false) {
                     $fetchCount++;
-                    $episode->fetchPoster();
+                    $success = $episode->fetchPoster();
+                    $success = $success ? "Success" : "Failure";
+
+                    writeToLog("$success fetching poster for '$episode->fullPath'");
                 }
                 if ($episode->sdPosterExists() == false) {
                     $generateCount++;
-                    $episode->generatePosters();
+                    $success = $episode->generatePosters();
+                    $success = $success ? "Success" : "Failure";
+
+                    writeToLog("$success generating sd and hd posters for '$episode->fullPath'");
                 }
             }
         }
