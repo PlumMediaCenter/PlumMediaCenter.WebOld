@@ -13,7 +13,7 @@ $(document).ready(function() {
 function showEpisodeInfo(e) {
     //$("#episodeInfo").hide();
     $row = $(this);
-    setTimeout(function() {
+   // setTimeout(function() {
         var videoId = $row.attr("episodeId");
         var v = getVideo(videoId);
         // var top = e.pageY - 200;
@@ -30,7 +30,11 @@ function showEpisodeInfo(e) {
         $("#year").html(d.getFullYear());
         $("#episodeInfo").show();
         // $("#episodeInfo").offset({top: top, left: left});
-    }, 50);
+
+        //highlight the selected row so we know which row is selected
+        $(".episodeRow").removeClass("selected");
+        $row.addClass("selected");
+   // }, 50);
 }
 
 function hideEpisodeInfo() {

@@ -1,4 +1,13 @@
 <script type="text/javascript" src="js/VideoInfo.js"></script>
+<style type="text/css">
+    .selected{
+        background-color:grey;
+        color:white;
+    }
+    .selected a, .selected a:visited{
+        color:white
+    }
+</style>
 <script type="text/javascript">
     var video = <?php echo $videoJson; ?>;
 </script>
@@ -9,7 +18,7 @@
     <div class="span9">
         <h1><?php echo $video->title; ?></h1>
         Rating: <?php echo $video->mpaa; ?>
-        Plot: <?php echo $video->plot; ?>
+        <br/> <br/><?php echo $video->plot; ?>
     </div>
 </div>
 <div class="row">
@@ -24,7 +33,7 @@
             <h1 id="title" style="text-align:center;"></h1>
             <img align="right" id="episodePoster"/>
             <p>Season <span id="seasonNumber"></span> Episode <span id="episodeNumber"></span>
-                <br/>Rating: <span id="mpaa" style="font-weight:bold;"></span>
+                <br/><b>Rating: </b><span id="mpaa"></span>
                 <br/><b>Release Date:</b> <span id="year"></span>
 
             </p>
