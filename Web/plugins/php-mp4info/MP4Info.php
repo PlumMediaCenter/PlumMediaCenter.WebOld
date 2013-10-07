@@ -42,7 +42,8 @@ class MP4Info {
 		// Open file
 		$f = fopen($file,'rb');
 		if (!$f) {
-			throw new Exception('Cannot open file: '.$file);
+			//throw new Exception('Cannot open file: '.$file);
+                    return false;
 		}
 		$boxes = [];
 		// Get all boxes
