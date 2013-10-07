@@ -5,6 +5,9 @@
  */
 $(document).ready(function() {
     $(".episodeRow").hover(showEpisodeInfo, hideEpisodeInfo);
+    $("img").error(function() {
+        $(this).css({visibility: "hidden"});
+    });
 });
 
 function showEpisodeInfo(e) {
@@ -15,6 +18,7 @@ function showEpisodeInfo(e) {
         var v = getVideo(videoId);
         // var top = e.pageY - 200;
         //var left = e.pageX + 20;
+        $("#episodePoster").attr('src', v.hdPosterUrl).css({visibility: "visible"});
         $("#title").html(v.title);
         $("#plot").html(v.plot);
         $("#seasonNumber").html(v.seasonNumber);
