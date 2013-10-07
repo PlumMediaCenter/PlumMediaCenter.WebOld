@@ -212,10 +212,9 @@ function getVideoMetadataRow($v) {
         <?php } ?>
         <td><?php echo $v->title; ?></td>
         <td><?php echo $v->nfoFileExists() ? color("Yes", "green") : color("No", "red"); ?></td>
-        <td><?php echo $v->posterExists ? color("Yes", "green") : color("No", "red"); ?></td>
-        <td><img class="sd" src="<?php echo $v->sdPosterUrl; ?>"/> </td>
-        <td><img class="hd" src="<?php echo $v->hdPosterUrl; ?>"/></td>
-
+        <td><?php echo $v->posterExists() ? color("Yes", "green") : color("No", "red"); ?></td>
+        <td><?php echo $v->sdPosterExists() ? color("Yes", "green") : color("No", "red"); ?></td>
+        <td><?php echo $v->hdPosterExists() ? color("Yes", "green") : color("No", "red"); ?></td>
     </tr>
     <?php
     $row = ob_get_contents();
@@ -242,6 +241,15 @@ function getBaseUrl($context, $url = null) {
     //if the ending slash position is NOT at the end of the string, then there is a filename at the end of this url. remove it.
     if ($endingSlashPos === false || $endingSlashPos + 1 !== strlen($url)) {
         $url = dirname($url) . "/";
+    }
+
+    //if the context has a filename in front of it, remove the filename
+    //context should be a series of folder names with slashes in between and a slash at the end. 
+    //The actual url may have a filename at the end of it. if this is the case, remove the filename
+    $endingSlashPos = strrpos($context, "/");
+    //if the ending slash position is NOT at the end of the string, then there is a filename at the end of this url. remove it.
+    if ($endingSlashPos === false || $endingSlashPos + 1 !== strlen($context)) {
+        $context = dirname($context) . "/";
     }
     return str_replace($context, '', $url);
 }
