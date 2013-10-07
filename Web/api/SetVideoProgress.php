@@ -12,7 +12,7 @@ $finished = isset($_GET["finished"]) ? $_GET["finished"] : false;
 //if the finished flag was set, retrieve the total length of this video and save THAT time in the watchVideo table so we know this video is finished
 if ($finished === "true") {
     $v = Video::loadFromDb($videoId);
-    $sec = $v->getLengthInSecondsFromFile();
+    $sec = $v->getLengthInSeconds();
     //if the length was determined, use it
     if ($sec !== false) {
         $timeInSeconds = $sec;
