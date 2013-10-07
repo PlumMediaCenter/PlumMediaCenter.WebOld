@@ -10,8 +10,7 @@ $(document).ready(function() {
                 updateVideoPosition(videoId, -1, true);
             },
             onTime: onTime,
-            onPlay: onPlay,
-            onReady: onReady,
+            onPlay: onPlay
         },
         provider: 'http'
     });
@@ -20,7 +19,12 @@ $(document).ready(function() {
     window.player = jwplayer("videoPlayer");
 });
 
-function onReady() {
+var startVideoWhereWeLeftOffProcessed = false;
+/**
+ * Seeks to the playback position indicated by the database. This should only be called ONCE, and only after the video
+ * has started playing
+ */
+function startVideoWhereWeLeftOff() {
     //seek the player to the startPosition
     //if a startSeconds value greater than 0 was provided, seek to that position in the video
     if (startSeconds > 0) {
@@ -35,7 +39,11 @@ function onPlay() {
 }
 
 function onTime(obj) {
-
+    if(startVideoWhereWeLeftOffProcessed === false && obj.position > 0){
+        startVideoWhereWeLeftOffProcessed = true;
+        startVideoWhereWeLeftOff();
+    }
+    
     var durationInSeconds = obj.duration;
     var positionInSeconds = obj.position;
     //every minute, update the database with the current video's play position
