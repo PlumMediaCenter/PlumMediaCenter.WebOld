@@ -40,11 +40,12 @@ class CreateDatabase {
             //delete any previous references to the user or the database
             //$dbh->exec("delete from mysql.user where user = 'plumvideoplayer';");
             //$dbh->exec("drop user 'plumvideoplayer'@'localhost';");
-           // $dbh->exec("drop database plumvideoplayer;");
+            // $dbh->exec("drop database plumvideoplayer;");
             //create the database, if it doesn't already exist
             $dbh->exec("CREATE DATABASE `$db`;");
             $dbh->exec("CREATE USER '$user'@'$host' IDENTIFIED BY '$pass';");
             $dbh->exec("GRANT ALL ON `$db`.* TO '$user'@'$host';");
+            $dbh->exec("GRANT ALL ON `$db`.* TO '$user'@'192.168.1.%';");
             $dbh->exec("FLUSH PRIVILEGES;");
         } catch (PDOException $e) {
             //die("DB ERROR: " . $e->getMessage());
@@ -53,11 +54,38 @@ class CreateDatabase {
         return true;
     }
 
+    private function view_tv_episode_v() {
+        DbManager::nonQuery("CREATE VIEW tv_episode_v
+            AS
+               SELECT v.video_id,
+                      v.title,
+                      t.tv_show_video_id,
+                      t.season_number,
+                      t.episode_number,
+                      v.running_time,
+                      v.plot,
+                      v.path,
+                      v.url,
+                      v.filetype,
+                      v.metadata_last_modified_date,
+                      v.poster_last_modified_date,
+                      v.mpaa,
+                      v.release_date,
+                      v.media_type,
+                      v.video_source_path,
+                      v.video_source_url,
+                     
+                      t.writer,
+                      t.director
+                 FROM video v, tv_episode t
+                WHERE v.video_id = t.video_id");
+    }
+
     private function table_video() {
         $t = new Table("video");
         $t->addColumn("video_id", "int", "not null auto_increment", true);
         $t->addColumn("title", "char(100)", "");
-        $t->addColumn("running_time", "int(5)", "");
+        $t->addColumn("running_time_seconds", "int(5)", "");
         $t->addColumn("plot", "varchar(3000)", "");
         $t->addColumn("path", "varchar(1000)", "not null");
         $t->addColumn("url", "varchar(2000)", "");
@@ -98,7 +126,6 @@ class CreateDatabase {
         $t->addColumn("username", "char(128)", "", true);
         $t->addColumn("video_id", "int", "not null", true);
         $t->addColumn("time_in_seconds", "int(10)", "");
-        $t->addColumn("position_in_bytes", "int(100)", "");
         $t->addColumn("date_watched", "datetime", "");
         return $t->applyTable();
     }
