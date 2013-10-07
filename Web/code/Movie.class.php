@@ -25,6 +25,12 @@ class Movie extends Video {
         }
     }
 
+    protected function getLengthInSecondsFromMetadata() {
+        //make sure the metadata has been loaded
+        $this->loadMetadata();
+        return $this->runtime;
+    }
+
     /**
      * Loads pertinent metadata from the nfo file into this class
      * @param bool $force -- optional. forces metadata to be loaded, even if it has already been loaded
@@ -49,15 +55,10 @@ class Movie extends Video {
                 $this->year = $reader->year !== null ? $reader->year : "";
                 $this->mpaa = $reader->mpaa !== null ? $reader->mpaa : $this->mpaa;
                 $this->actorList = $reader->actors;
+                $this->runtime = $reader->runtime;
             } else {
                 return false;
             }
-
-//            if ($this->mediaType == Enumerations::MediaType_Movie) {
-//                $this->year = getXmlTagValue($m, "year");
-//            } else {
-//                $this->year = getXmlTagValue($m, "premiered");
-//            }
         }
         //if made it to here, all is good. return true
         return true;

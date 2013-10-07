@@ -15,7 +15,7 @@ abstract class Video {
     abstract function fetchMetadata();
 
     const NoMetadata = "0000-00-00 00:00:00"; //this will never be a valid date, so use it for invalid metadata dates
-    const SdImageWidth = 110; //110x150
+    const SdImageWidth = 110; //110x150 
     const HdImageWidth = 210; // 210x270
 
     public $videoSourceUrl;
@@ -26,7 +26,6 @@ abstract class Video {
     public $plot = "";
     public $year;
     public $url;
-    public $posterExists;
     public $sdPosterUrl;
     public $hdPosterUrl;
     public $mpaa = "N/A";
@@ -40,7 +39,8 @@ abstract class Video {
     protected $metadataFetcher;
     protected $filetype = null;
     protected $metadataLoaded = false;
-    protected $fileLengthSeconds = null;
+    protected $runtime = -1;
+    protected $runtimeInSeconds = 0;
 
     function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
         //save the important stuff
@@ -52,10 +52,8 @@ abstract class Video {
         $this->url = Video::EncodeUrl($this->getUrl());
         $this->sdPosterUrl = Video::EncodeUrl($this->getSdPosterUrl());
         $this->hdPosterUrl = Video::EncodeUrl($this->getHdPosterUrl());
-        $this->posterExists = $this->posterExists();
         $this->title = $this->getVideoName();
         $this->generatePosterMethod = $this->getGeneratePosterMethod();
-        $this->generatePosters();
     }
 
     /**
@@ -86,6 +84,7 @@ abstract class Video {
         $video->title = $v->title;
         $video->plot = $v->plot;
         $video->mpaa = $v->mpaa;
+        $video->runtimeInSeconds = $v->running_time_seconds;
         return $video;
     }
 
@@ -95,9 +94,9 @@ abstract class Video {
      */
     public function progressPercent() {
         $current = Video::GetVideoStartSeconds($this->videoId);
-        $totalLength = $this->getLengthInSecondsFromFile();
+        $totalLength = $this->getLengthInSeconds();
         //if we don't have numbers avaiable that will give us a percent, assume the percent is zero
-        if ($totalLength === false || $current === 0) {
+        if ($totalLength === false || $totalLength === 0 || $current === 0) {
             return 0;
         } else {
             $percent = intval(($current / $totalLength ) * 100);
@@ -105,24 +104,44 @@ abstract class Video {
         }
     }
 
+    protected $lengthInSeconds = false;
+
+    public function getLengthInSeconds($force = false) {
+        //if the lengthInSeconds has not yet been calculated, calculate it
+        if ($this->lengthInSeconds == false && $force !== true) {
+            //first, try to read the file, since it knows how long the video ACTUALLY is
+            $seconds = $this->getLengthInSecondsFromFile();
+            //if the seconds value was valid, return it
+            if ($seconds !== false) {
+                return $seconds;
+            }
+            //seconds was not able to be determined from the file. try reading it from the metadata.
+            $seconds = $this->getLengthInSecondsFromMetadata();
+            if ($seconds !== -1) {
+                return $seconds;
+            } else {
+                return -1;
+            }
+        } else {
+            return $this->lengthInSeconds;
+        }
+    }
+
+    protected abstract function getLengthInSecondsFromMetadata();
+
     /**
      * Parses the mp4 video's metadata to find the full length of the video in seconds
      * @return int|boolean - the number of seconds if successful, false if unsuccessful
      */
-    public function getLengthInSecondsFromFile() {
-
-        if ($this->fileLengthSeconds === null) {
-            //the mp4info class likes to spit out random crap. hide it with an output buffer
-            ob_start();
-            $result = MP4Info::getInfo($this->fullPath);
-            ob_end_clean();
-            if ($result !== null && $result != false && $result->hasVideo === true) {
-                return intval($result->duration);
-            } else {
-                return false;
-            }
+    private function getLengthInSecondsFromFile() {
+        //the mp4info class likes to spit out random crap. hide it with an output buffer
+        ob_start();
+        $result = @MP4Info::getInfo($this->fullPath);
+        ob_end_clean();
+        if ($result !== null && $result != false && $result->hasVideo === true) {
+            return intval($result->duration);
         } else {
-            return $this->fileLengthSeconds;
+            return false;
         }
     }
 
@@ -382,10 +401,10 @@ abstract class Video {
         $videoId = $this->getVideoId();
         //if this is a video that does not yet exist in the database, create a new video
         if ($videoId === -1) {
-            Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl);
+            Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds());
         } else {
             //this is an existing video that needs to be updated. update it
-            Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl);
+            Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds());
         }
         $this->videoId = $this->getVideoId(true);
     }
@@ -398,7 +417,6 @@ abstract class Video {
         unset($this->videoSourcePath);
         unset($this->fullPath);
         unset($this->mediaType);
-        unset($this->posterExists);
         unset($this->generatePosterMethod);
     }
 

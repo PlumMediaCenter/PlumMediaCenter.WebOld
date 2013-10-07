@@ -4,7 +4,6 @@ include_once(dirname(__FILE__) . "/Video.class.php");
 include_once(dirname(__FILE__) . "/MetadataFetcher/TvEpisodeMetadataFetcher.class.php");
 include_once(dirname(__FILE__) . "/NfoReader/TvEpisodeNfoReader.class.php");
 
-
 class TvEpisode extends Video {
 
     const EpisodeSdImageWidth = 140; //140x94
@@ -14,9 +13,10 @@ class TvEpisode extends Video {
     public $episodeNumber;
     public $showName;
     public $showFilePath;
+    public $tvShow;
 
-    function __construct($baseUrl, $basePath, $fullPath) {
-        parent::__construct($baseUrl, $basePath, $fullPath);
+    function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
+        parent::__construct($videoSourceUrl, $videoSourcePath, $fullPath);
         $this->mediaType = Enumerations::MediaType_TvEpisode;
         $this->seasonNumber = $this->getSeasonNumber();
         $this->episodeNumber = $this->getEpisodeNumber();
@@ -24,6 +24,25 @@ class TvEpisode extends Video {
         $this->loadMetadata();
         $this->showName = $this->getShowName();
         $this->showFilePath = "$this->videoSourcePath$this->showName/";
+    }
+
+    /**
+     * This tv episode cannot provide all important information by itself. It needs the tv show object to do that for it. As such, 
+     * this function provides a way to load the tv show from within this tv episode if it has not already been set by the owning tv show
+     * when this episode object was loaded
+     */
+    private function getTvShowObject() {
+        $this->tvShow = isset($this->tvShow) ? $this->tvShow : null;
+        if ($this->tvShow == null) {
+            $this->tvShow = new TvShow($this->videoSourceUrl, $this->videoSourcePath, $this->showFilePath);
+        }
+        return $this->tvShow;
+    }
+
+    protected function getLengthInSecondsFromMetadata() {
+        //make sure the metadata has been loaded
+        $tvShow = $this->getTvShowObject();
+        return $tvShow->runtime;
     }
 
     /**
@@ -168,6 +187,11 @@ class TvEpisode extends Video {
             }
         }
         return -1;
+    }
+
+    function prepForJsonification() {
+        parent::prepForJsonification();
+        unset($this->tvShow);
     }
 
     function writeToDb() {

@@ -76,6 +76,25 @@ class TvShow extends Video {
         return $this->getUrl();
     }
 
+    /**
+     * Override this function since no tv show will ever have a file to scan.
+     * @return boolean - always will be false for tv shows
+     */
+    public function getLengthInSecondsFromFile() {
+        return false;
+    }
+
+    protected function getLengthInSecondsFromMetadata() {
+        //make sure the metadata has been loaded
+        $this->loadMetadata();
+        if($this->runtime != null){
+            $intMinutes = intval($this->runtime);
+            $intSeconds = $intMinutes * 60;
+            $this->runtime = $intSeconds;
+        }
+        return $this->runtime;
+    }
+
     function generateTvEpisodes() {
         $seasonList = [];
         //if the flag says to load from database, load the videos from the database instead of from disc
@@ -91,6 +110,9 @@ class TvShow extends Video {
         foreach ($videosList as $fullPathToFile) {
             //create a new Episode object
             $episode = new TvEpisode($this->videoSourceUrl, $this->videoSourcePath, $fullPathToFile, Enumerations::MediaType_Movie);
+
+            $episode->runtime = $this->getLengthInSeconds();
+            //$episode->tvShow = $this;
             //pass on to the episode if it needs to be refreshed or not
             $episode->refreshVideo = $this->refreshVideo;
             //give the video the show's file path
@@ -169,6 +191,7 @@ class TvShow extends Video {
             $this->plot = $m->getElementsByTagName("plot")->item(0)->nodeValue;
             $this->year = $m->getElementsByTagName("year")->item(0)->nodeValue;
             $this->mpaa = $m->getElementsByTagName("mpaa")->item(0)->nodeValue;
+            $this->runtime = $m->getElementsByTagName("runtime")->item(0)->nodeValue;
 
             //error_reporting($current_error_reporting);
         }
@@ -209,9 +232,12 @@ class TvShow extends Video {
         if ($lastVideoIdWatched !== -1) {
 
             $lastEpisodeWatched = Video::loadFromDb($lastVideoIdWatched);
-
+            //if the last episode watched is 
+            if ($lastEpisodeWatched === false) {
+                return -1;
+            }
             //if the video progress seconds is more than $finishedBuffer seconds away from the end of the video, THIS video isn't finished yet. 
-            $videoLengthInSeconds = $lastEpisodeWatched->getLengthInSecondsFromFile();
+            $videoLengthInSeconds = $lastEpisodeWatched->getLengthInSeconds();
             if ($videoLengthInSeconds === false) {
                 //we couldn't determine the lengh of the video from its metadata. 
             } else {
