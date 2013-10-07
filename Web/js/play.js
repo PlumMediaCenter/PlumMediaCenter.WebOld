@@ -21,8 +21,8 @@ $(document).ready(function() {
 
 var startVideoWhereWeLeftOffProcessed = false;
 /**
- * Seeks to the playback position indicated by the database. This should only be called ONCE, and only after the video
- * has started playing
+ * Seeks to the playback position indicated by the database. This should only be called ONCE, 
+ * and only after the video has started playing
  */
 function startVideoWhereWeLeftOff() {
     //seek the player to the startPosition
@@ -39,12 +39,11 @@ function onPlay() {
 }
 
 function onTime(obj) {
-    if(startVideoWhereWeLeftOffProcessed === false && obj.position > 0){
+    if (startVideoWhereWeLeftOffProcessed === false && obj.position > 0) {
         startVideoWhereWeLeftOffProcessed = true;
         startVideoWhereWeLeftOff();
     }
-    
-    var durationInSeconds = obj.duration;
+
     var positionInSeconds = obj.position;
     //every minute, update the database with the current video's play position
     var nowTime = new Date();
@@ -53,7 +52,6 @@ function onTime(obj) {
         playPositionUpdateTime = new Date();
         updateVideoPosition(videoId, positionInSeconds);
     }
-
 }
 
 function updateVideoPosition(videoId, seconds, bFinished) {
