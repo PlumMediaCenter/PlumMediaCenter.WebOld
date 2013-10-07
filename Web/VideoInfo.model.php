@@ -1,6 +1,7 @@
 <?php
 
 class VideoInfoModel extends Model {
+
     public $video;
 
 }
@@ -10,7 +11,8 @@ class VideoInfoModel extends Model {
  * @param type $videoId 
  */
 function printTvShowFileList($tvShow) {
-    echo "<table>";
+    echo "<table class='table'>"
+    . "<tr><th>Episode</th><th style='display:none;'>VID</th><th  style='display:none;'>Play</th><th style='display:none;'>Add To Playlist</th><th>Title</th><th>Progress</th></tr>";
     //get the list of all episodes of this tv series. 
     $episodeList = $tvShow->episodes;
 
@@ -22,21 +24,21 @@ function printTvShowFileList($tvShow) {
         $episodeNumber = $episode->episodeNumber;
         $seasonNumber = $episode->seasonNumber;
         $percentWatched = $episode->progressPercent();
+        $playUrl = "Play.php?videoId=$episodeId";
         if ($seasonNumber != $currentSeasonNumber) {
             $currentSeasonNumber = $seasonNumber;
             //create a new row
             ?>
-            <tr><td colspan="5">Season <?php echo $seasonNumber ?><td></tr>
+            <tr><td colspan="6">Season <?php echo $seasonNumber ?><td></tr>
             <?php
         }
         ?>
         <tr data-video-id="<?php echo $episodeId; ?>" id="episodeRow_<?php echo $episodeId; ?>" class="episodeRow <?php echo $nextEpisodeId == $episodeId ? "nextEpisodeRow" : ""; ?>" style="border:1px solid black;" episodeId="<?php echo $episodeId; ?>">
             <td class="transparent"><?php echo $episodeNumber; ?></td>
-            <td class="transparent"><?php echo $episodeId; ?></td>
-            <td class="transparent"><a class="playButton18" style="display:block;" href="WatchVideo.php?videoId=<?php echo $episodeId; ?>" title="Play"></a></td>
-            <td class="transparent"><a class='addToPlaylistButton18' style="display:block;" href='#' onclick="addVideoToPlaylist($episodeId, '<?php echo $videoTitle; ?>');" title='Add Video To Playlist'></a></td>
-            <td class="transparent"><a class='infoButton18' style="display:block;" ></a></td>
-            <td class="transparent"><a href="Play.php?videoId=<?php echo $episodeId; ?>"><?php echo $videoTitle; ?></a></td>
+            <td class="transparent"  style='display:none;'><?php echo $episodeId; ?></td>
+            <td class="transparent"  style='display:none;'><a class="playButton18" style="display:block;" href="<?php echo $playUrl;?>" title="Play">Play</a></td>
+            <td class="transparent"  style='display:none;'><a class='addToPlaylistButton18' style="display:block;" href='#' onclick="addVideoToPlaylist($episodeId, '<?php echo $videoTitle; ?>');" title='Add Video To Playlist'>Add To Playlist</a></td>
+            <td class="transparent"><a href="<?php echo $playUrl;?>"><?php echo $videoTitle;?></a></td>
             <td class="transparent"><div class="progressbar"><div class="percentWatched" style="width:<?php echo $percentWatched; ?>%"></div><div class="percentWatchedText"><?php echo $percentWatched; ?>%</div></div></a>
         </tr>
         <?php
@@ -77,7 +79,7 @@ function printTvShowGridTiles($tvShow) {
                 <span><br/><?php echo "$episodeNumber - $episodeTitle"; ?> </span>
                 <a href="<?php echo $playUrl; ?>" title="Play <?php echo "$episodeTitle"; ?>" class="playButton semiTransparent"  style="position:absolute; left:35%; top:30%;"></a>
                 <a class = 'infoButton18'  style="display:block;" onclick="getEpisodeInfo('<?php echo $episodeId; ?>', 'episodeTile_<?php echo $episodeId; ?>');
-                        return false;"></a>
+                                return false;"></a>
 
             </div>
         </div>
