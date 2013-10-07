@@ -5,7 +5,7 @@
     Description:
         Purpose of the stylesheet follows.
 */
-html, body{
+html{
     height:100%;
 }
 .brand{
@@ -14,7 +14,7 @@ html, body{
 
 body{
     padding:0px;
-    border:1px solid red;
+    border:0px solid red;
 }
 
 .content{

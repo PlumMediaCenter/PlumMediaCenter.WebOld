@@ -21,15 +21,14 @@
     </div>
     <div class="span7" style="border:0px solid red;">
         <div id="episodeInfo" class="shadow">
-           <h1 id="title" style="text-align:center;"></h1>
-           <h4 style="font-weight: normal; text-align:center;">    
-                Season <span id="seasonNumber"></span> Episode <span id="episodeNumber"></span>
-           </h4>
-            <span id="mpaa" style="font-weight:bold;"></span>
-            
+            <h1 id="title" style="text-align:center;"></h1>
+            <img align="right" id="episodePoster"/>
+            <p>Season <span id="seasonNumber"></span> Episode <span id="episodeNumber"></span>
+                <br/>Rating: <span id="mpaa" style="font-weight:bold;"></span>
+                <br/><b>Release Date:</b> <span id="year"></span>
 
+            </p>
             <div id="plot"></div>
-            <div><br/> <b>Release Date:<b/> <span id="year"></span> </div>
         </div>
     </div>
 </div>
