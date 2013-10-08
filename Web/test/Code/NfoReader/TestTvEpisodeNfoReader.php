@@ -1,7 +1,7 @@
 <?php
 
-require_once(dirname(__FILE__) . '/simpletest/autorun.php');
-require_once(dirname(__FILE__) . '/../code/NfoReader/TvEpisodeNfoReader.class.php');
+require_once(dirname(__FILE__) . '/../../simpletest/autorun.php');
+require_once(dirname(__FILE__) . '/../../../code/NfoReader/TvEpisodeNfoReader.class.php');
 
 class TestTvEpisodeNfoReader extends UnitTestCase {
 
@@ -10,7 +10,7 @@ class TestTvEpisodeNfoReader extends UnitTestCase {
      */
     function testLoadsValidFile() {
         $m = new TvEpisodeNfoReader();
-        $m->loadFromFile(dirname(__file__) . "/videos/tv shows/FakeShow1/Season1/s01.e01.nfo");
+        $m->loadFromFile(dirname(__file__) . "/../../videos/tv shows/FakeShow1/Season1/s01.e01.nfo");
         $this->assertEqual($m->title, "My TV Episode");
         $this->assertEqual($m->rating, "10.00");
         $this->assertEqual($m->season, "1");
@@ -61,37 +61,28 @@ class TestTvEpisodeNfoReader extends UnitTestCase {
      * Test that the nfo reader correctly handles a file that only has the <episodedetails></episodedetails> tags. It should fetch null values for every item the reader is expecting
      */
     function testEmptyXmlFile() {
-       $m = new TvEpisodeNfoReader();
+        $m = new TvEpisodeNfoReader();
         $m->loadFromFile(dirname(__file__) . "/videos/tv shows/FakeShow1/Season1/s01.e02.nfo");
         $this->assertEqual($m->title, null);
-        $this->assertEqual($m->rating,null);
+        $this->assertEqual($m->rating, null);
         $this->assertEqual($m->season, null);
         $this->assertEqual($m->episode, null);
         $this->assertEqual($m->plot, null);
-        $this->assertEqual($m->thumb,null);
-        $this->assertEqual($m->playCount,null);
+        $this->assertEqual($m->thumb, null);
+        $this->assertEqual($m->playCount, null);
         $this->assertEqual($m->lastPlayed, null);
         $this->assertEqual($m->credits, null);
         $this->assertEqual(count($m->directors), 0);
         $this->assertEqual($m->aired, null);
         $this->assertEqual($m->premiered, null);
-        $this->assertEqual($m->studio,null);
+        $this->assertEqual($m->studio, null);
         $this->assertEqual($m->mpaa, null);
         $this->assertEqual($m->epbookmark, null);
         $this->assertEqual($m->displaySeason, null);
         $this->assertEqual($m->displayEpisode, null);
         $this->assertEqual(count($m->actors), 0);
         //test the fileInfo item
-        $this->assertNotNull($m->fileInfo);
-        $this->assertEqual(count($m->fileInfo->streamDetails->audio), 0);
-        $this->assertEqual($m->fileInfo->streamDetails->video->aspect,null);
-        $this->assertEqual($m->fileInfo->streamDetails->video->codec,null);
-        $this->assertEqual($m->fileInfo->streamDetails->video->durationInSeconds, null);
-        $this->assertEqual($m->fileInfo->streamDetails->video->height, null);
-        $this->assertEqual($m->fileInfo->streamDetails->video->language, null);
-        $this->assertEqual($m->fileInfo->streamDetails->video->longLanguage, null);
-        $this->assertEqual($m->fileInfo->streamDetails->video->scanType,null);
-        $this->assertEqual($m->fileInfo->streamDetails->video->width, null);
+        $this->assertEqual($m->fileInfo, null);
     }
 
 }

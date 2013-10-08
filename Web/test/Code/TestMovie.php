@@ -20,8 +20,8 @@ class TestMovie extends UnitTestCase {
 
     function loadMovie($halfPath) {
         $this->videoSourceUrl = "http://localhost/videos/movies/";
-        $this->videoSourcePath = dirname(__FILE__) . "/videos/movies/";
-        $this->fullPath = dirname(__FILE__) . "/videos/movies/$halfPath";
+        $this->videoSourcePath = dirname(__FILE__) . "/../videos/movies/";
+        $this->fullPath = dirname(__FILE__) . "/../videos/movies/$halfPath";
         $this->loadVideo();
         return $this->video;
     }
@@ -115,7 +115,7 @@ class TestMovie extends UnitTestCase {
         $posterPath = $v->getPosterPath();
         rename($posterPath, "$posterPath.tmp");
         //download an image from a web server (this web server) and save it as the poster
-        $this->assertTrue($v->downloadPoster(getBaseUrl('test/') . "test/TestCode/videos/movies/FakeMovie2/folder.jpg"));
+        $this->assertTrue($v->downloadPoster(getBaseUrl() . "test/videos/movies/FakeMovie2/folder.jpg"));
 
         //does the poster exist?
         $this->assertTrue($v->posterExists());

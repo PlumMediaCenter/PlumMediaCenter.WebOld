@@ -8,6 +8,7 @@ $fullPath = $_GET["fullPath"];
 $mediaType = $_GET["mediaType"];
 //import the proper class
 include_once("../code/$mediaType.class.php");
+/* @var $v Video */
 $v = new $mediaType($baseUrl, $basePath, $fullPath);
 $success = false;
 
@@ -24,6 +25,7 @@ switch ($_GET["action"]) {
         $success = $v->fetchPoster();
         break;
     case Enumerations::MetadataManagerAction_ReloadMetadata:
+        $success = $v->writeToDb();
         break;
     case Enumerations::MetadataManagerAction_FetchAndGeneratePosters:
         $success = $v->fetchPoster();

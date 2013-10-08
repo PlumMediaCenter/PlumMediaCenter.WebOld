@@ -100,7 +100,7 @@ class TvEpisodeNfoReader extends NfoReader {
     public $episode;
     public $plot;
     public $thumb;
-    public $playcount;
+    public $playCount;
     public $lastPlayed;
     public $credits;
     public $directors;

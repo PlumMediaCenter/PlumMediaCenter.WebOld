@@ -1,7 +1,7 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../simpletest/autorun.php');
-require_once(dirname(__FILE__) . '/../../code/NfoReader/MovieNfoReader.class.php');
+require_once(dirname(__FILE__) . '/../../simpletest/autorun.php');
+require_once(dirname(__FILE__) . '/../../../code/NfoReader/MovieNfoReader.class.php');
 
 class TestMovieNfoReader extends UnitTestCase {
 
@@ -10,7 +10,7 @@ class TestMovieNfoReader extends UnitTestCase {
      */
     function testLoadsValidFile() {
         $m = new MovieNfoReader();
-        $m->loadFromFile(dirname(__file__) . "/videos/movies/FakeMovie1/FakeMovie1.nfo");
+        $m->loadFromFile(dirname(__file__) . "/../../videos/movies/FakeMovie1/FakeMovie1.nfo");
         $this->assertEqual($m->title, "Fake Movie 1");
         $this->assertEqual($m->originalTitle, "Fake Movie 1 Original Title");
         $this->assertEqual($m->sortTitle, "Fake Movie 1 Sort Title");
@@ -94,19 +94,8 @@ class TestMovieNfoReader extends UnitTestCase {
         $this->assertEqual(count($m->genres), 0);
 
         $this->assertEqual($m->credits, null);
-        //test the fileInfo item. even if there was no info, there will be a skeleton
-        $this->assertNotNull($m->fileInfo);
-        //fileinfo video
-        $this->assertEqual($m->fileInfo->streamDetails->video->codec, null);
-        $this->assertEqual($m->fileInfo->streamDetails->video->aspect, null);
-        $this->assertEqual($m->fileInfo->streamDetails->video->width, null);
-        $this->assertEqual($m->fileInfo->streamDetails->video->height, null);
-        //fileinfo audio 1
-        $this->assertEqual(count($m->fileInfo->streamDetails->audio), 0);
-        //fileinfo subtitle
-        $this->assertEqual($m->fileInfo->streamDetails->subtitle->language, null);
-        $this->assertEqual(count($m->directors), 0);
-        $this->assertEqual(count($m->actors), 0);
+        //test the fileInfo item. Should be null since the file never loaded
+        $this->assertEqual($m->fileInfo, null);
     }
 
     /**

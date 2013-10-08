@@ -150,7 +150,7 @@ class Queries {
         $stmt->bindParam(":episodeNumber", $episodeNumber);
         $stmt->bindParam(":writer", $writer);
         $stmt->bindParam(":director", $director);
-        $stmt->execute();
+        return $stmt->execute();
     }
 
     /**

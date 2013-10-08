@@ -1,5 +1,7 @@
 <?php
 
+define("BASE_URL", "http://localhost:8080/PlumVideoPlayer/Web/");
+
 class config {
 
     public static $dbHost = "127.0.0.1";

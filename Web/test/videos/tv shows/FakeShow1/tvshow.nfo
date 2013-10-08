@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<tvshow>
+    <title>FakeShow1</title>
+    <showtitle>FakeShow1Title</showtitle>
+    <rating>9.98</rating>
+    <votes>6</votes>
+    <epbookmark>0.000000</epbookmark>
+    <year>1864</year>
+    <top250>0</top250>
+    <season>-1</season>
+    <episode>3</episode>
+    <uniqueid>314</uniqueid>
+    <displayseason>-1</displayseason>
+    <displayepisode>2</displayepisode>
+    <outline>outline of fake show</outline>
+    <plot>plot of fake show</plot>
+    <tagline>it's a fake show!</tagline>
+    <runtime>60</runtime>
+    <mpaa>TV-MA</mpaa>
+    <playcount>3</playcount>
+    <lastplayed>1969-12-31</lastplayed>
+    <episodeguide>
+        <url cache="73255.xml">http://www.fakeshow.com</url>
+    </episodeguide>
+    <id>99999</id>
+    <genre>Comedy</genre>
+    <genre>Drama</genre>
+    <set>fake set</set>
+    <premiered>2004-11-16</premiered>
+    <status>current</status>
+    <code>fakecode</code>
+    <aired>1969-12-31</aired>
+    <studio>FAKENETWORK</studio>
+    <trailer>http://www.youtube.com?q=fakeshow</trailer>
+    <actor>
+     <name>Fake Actor A</name>
+     <role>Fake Role A</role>
+     <thumb>http://www.google.com?q=fake actor a</thumb>
+   </actor>
+   <actor>
+     <name>Fake Actor B</name>
+     <role>Fake Role B</role>
+     <thumb>http://www.google.com?q=fake actor b</thumb>
+   </actor>
+   <actor>
+     <name>Fake Actor C</name>
+     <role>Fake Role C</role>
+     <thumb>http://www.google.com?q=fake actor c</thumb>
+   </actor>
+    <resume>
+        <position>1.000000</position>
+        <total>30.000000</total>
+    </resume>
+    <dateadded>2013-01-28 23:33:03</dateadded>
+</tvshow>

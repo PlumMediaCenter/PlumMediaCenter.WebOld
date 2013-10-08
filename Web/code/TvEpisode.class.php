@@ -45,42 +45,8 @@ class TvEpisode extends Video {
         return $tvShow->runtime;
     }
 
-    /**
-     * Loads pertinent metadata from the nfo file into this class
-     * @param bool $force -- optional. forces metadata to be loaded, even if it has already been loaded
-     * @return boolean
-     */
-    public function loadMetadata($force = false) {
-        //if the metadata hasn't been loaded yet, or force is true (saying do it anyway), load the metadata
-        if ($this->metadataLoaded === false || $force === true) {
-            //get the path to the nfo file
-            $nfoPath = $this->getNfoPath();
-            //verify that the file exists
-            if (file_exists($nfoPath) === false) {
-                return false;
-            }
-            $reader = new TvEpisodeNfoReader();
-            $loadSuccess = $reader->loadFromFile($nfoPath);
-            //if the nfo reader loaded successfully, pull the important information into this class
-            if ($loadSuccess) {
-                //if the title was found, use it. otherwise, keep the filename tile that was loaded during the constructor
-                $this->title = $reader->title !== null ? $reader->title : $this->title;
-                $this->plot = $reader->plot !== null ? $reader->plot : "";
-                $this->year = $reader->premiered !== null ? $reader->premiered : "";
-                $this->mpaa = $reader->mpaa !== null ? $reader->mpaa : $this->mpaa;
-                $this->actorList = $reader->actors;
-            } else {
-                return false;
-            }
-
-//            if ($this->mediaType == Enumerations::MediaType_Movie) {
-//                $this->year = getXmlTagValue($m, "year");
-//            } else {
-//                $this->year = getXmlTagValue($m, "premiered");
-//            }
-        }
-        //if made it to here, all is good. return true
-        return true;
+    function getNfoReader() {
+        return new TvEpisodeNfoReader();
     }
 
     function getShowName() {
@@ -195,13 +161,14 @@ class TvEpisode extends Video {
     }
 
     function writeToDb() {
-        parent::writeToDb();
+        $success = parent::writeToDb();
         $videoId = $this->getVideoId();
         $tvShowVideoId = $this->getTvShowVideoId();
         if ($tvShowVideoId == -1) {
             $k = 1;
         }
-        Queries::insertTvEpisode($videoId, $tvShowVideoId, $this->seasonNumber, $this->episodeNumber);
+        $success = $success && Queries::insertTvEpisode($videoId, $tvShowVideoId, $this->seasonNumber, $this->episodeNumber);
+        return $success;
     }
 
     function getMetadataFetcher() {
@@ -243,6 +210,7 @@ class TvEpisode extends Video {
         $episodeNumber = $e->episode();
         $plot = $e->plot();
         $thumb = $e->posterUrl();
+        $mpaa = $e->mpaa();
         $writers = implode(",", $e->writers());
         $directorList = implode(",", $e->directors());
         $actorList = $e->actors();
@@ -334,7 +302,7 @@ class TvEpisode extends Video {
         $episodeDetailsNode->appendChild($l2Node);
         //      <mpaa>
         $l2Node = $doc->createElement("mpaa");
-        $l3Node = $doc->createTextNode("MPAA certification");
+        $l3Node = $doc->createTextNode($mpaa);
         $l2Node->appendChild($l3Node);
         //      </mpaa>
         $episodeDetailsNode->appendChild($l2Node);

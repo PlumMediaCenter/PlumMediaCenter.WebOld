@@ -222,7 +222,8 @@ function getVideoMetadataRow($v) {
     return $row;
 }
 
-function getBaseUrl($context, $url = null) {
+function getBaseUrl() {
+    return BASE_URL;
     $context = trim($context);
     $pos = strpos($context, "/");
 
@@ -251,7 +252,20 @@ function getBaseUrl($context, $url = null) {
     if ($endingSlashPos === false || $endingSlashPos + 1 !== strlen($context)) {
         $context = dirname($context) . "/";
     }
-    return str_replace($context, '', $url);
+    //$url =str_replace($context, '', $url);
+    //now walk backwards in each portion of the context, piece by piece. This allows us to provide a context that may be more detailed than 
+    //the url requires (such as going to a root directory insted of rootDirectory/FileName
+    $contexts = explode("/", $context);
+    foreach ($contexts as $c) {
+        $c = "$c/";
+        $len = strlen($c);
+        $pos = strpos($url, $c);
+        //if the current context portion is at the end of the url, rip it off
+        if ($pos + $len === strlen($url)) {
+            $url = substr($url, 0, $pos);
+        }
+    }
+    return $url;
 }
 
 /**

@@ -1,20 +1,20 @@
 <?php
+
 /**
  *  Base include file for SimpleTest
  *  @package    SimpleTest
  *  @subpackage WebTester
  *  @version    $Id: page.php 1938 2009-08-05 17:16:23Z dgheath $
  */
-
-/**#@+
-    *   include other SimpleTest class files
-    */
+/* * #@+
+ *   include other SimpleTest class files
+ */
 require_once(dirname(__FILE__) . '/http.php');
 require_once(dirname(__FILE__) . '/php_parser.php');
 require_once(dirname(__FILE__) . '/tag.php');
 require_once(dirname(__FILE__) . '/form.php');
 require_once(dirname(__FILE__) . '/selector.php');
-/**#@-*/
+/* * #@- */
 
 /**
  *    A wrapper for a web page.
@@ -22,6 +22,7 @@ require_once(dirname(__FILE__) . '/selector.php');
  *    @subpackage WebTester
  */
 class SimplePage {
+
     private $links = array();
     private $title = false;
     private $last_widget;
@@ -105,7 +106,7 @@ class SimplePage {
      *    @access public
      */
     function getText() {
-        if (! $this->text) {
+        if (!$this->text) {
             $this->text = SimplePage::normalise($this->raw);
         }
         return $this->text;
@@ -253,6 +254,7 @@ class SimplePage {
      *    @access public
      */
     function clearFrameFocus() {
+        
     }
 
     /**
@@ -270,7 +272,7 @@ class SimplePage {
      */
     protected function linkIsAbsolute($url) {
         $parsed = new SimpleUrl($url);
-        return (boolean)($parsed->getScheme() && $parsed->getHost());
+        return (boolean) ($parsed->getScheme() && $parsed->getHost());
     }
 
     /**
@@ -308,7 +310,7 @@ class SimplePage {
      *    @access public
      */
     function getFrameset() {
-        if (! $this->hasFrames()) {
+        if (!$this->hasFrames()) {
             return false;
         }
         $urls = array();
@@ -370,7 +372,7 @@ class SimplePage {
      */
     function getUrlById($id) {
         foreach ($this->links as $link) {
-            if ($link->getAttribute('id') === (string)$id) {
+            if ($link->getAttribute('id') === (string) $id) {
                 return $this->getUrlFromLink($link);
             }
         }
@@ -399,7 +401,7 @@ class SimplePage {
      *    @access public
      */
     function expandUrl($url) {
-        if (! is_object($url)) {
+        if (!is_object($url)) {
             $url = new SimpleUrl($url);
         }
         $location = $this->getBaseUrl() ? $this->getBaseUrl() : new SimpleUrl();
@@ -493,7 +495,7 @@ class SimplePage {
      *    @return boolean                    True if value is valid.
      *    @access public
      */
-    function setField($selector, $value, $position=false) {
+    function setField($selector, $value, $position = false) {
         $is_set = false;
         for ($i = 0; $i < count($this->forms); $i++) {
             if ($this->forms[$i]->setField($selector, $value, $position)) {
@@ -538,5 +540,7 @@ class SimplePage {
         $text = preg_replace('#\s+#', ' ', $text);
         return trim(trim($text), "\xA0");        // TODO: The \xAO is a &nbsp;. Add a test for this.
     }
+
 }
+
 ?>
