@@ -8,9 +8,12 @@ class VideoInfoModel extends Model {
 
 /**
  * Spins through the list of tv shows and prints them as table rows. 
- * @param type $videoId 
+ * @param TvShow $tvShow 
  */
 function printTvShowFileList($tvShow) {
+    if ($tvShow->mediaType != Enumerations::MediaType_TvShow) {
+        return;
+    }
     echo "<table class='table'>"
     . "<tr><th>Episode</th><th style='display:none;'>VID</th><th  style='display:none;'>Play</th><th style='display:none;'>Add To Playlist</th><th>Title</th><th>Progress</th></tr>";
     //get the list of all episodes of this tv series. 
@@ -37,8 +40,8 @@ function printTvShowFileList($tvShow) {
             <td class="transparent"><?php echo $episodeNumber; ?></td>
             <td class="transparent"  style='display:none;'><?php echo $episodeId; ?></td>
             <td class="transparent"  style='display:none;'><a class="playButton18" style="display:block;" href="<?php echo $playUrl; ?>" title="Play">Play</a></td>
-            <td class="transparent"  style='display:none;'><a class='addToPlaylistButton18' style="display:block;" href='#' onclick="addVideoToPlaylist($episodeId, '<?php echo $videoTitle; ?>');" title='Add Video To Playlist'>Add To Playlist</a></td>
-            <td class="transparent"><a href="<?php echo $playUrl; ?>"><?php echo $videoTitle; ?></a></td>
+            <td class="transparent"  style='display:none;'><a class='addToPlaylistButton18' style="display:block;" href='#'  title='Add Video To Playlist'>Add To Playlist</a></td>
+            <td class="transparent"><a class="play" href="<?php echo $playUrl; ?>"><?php echo $videoTitle; ?></a></td>
             <td class="transparent"><div class="progressbar"><div class="percentWatched" style="width:<?php echo $percentWatched; ?>%"></div><div class="percentWatchedText"><?php echo $percentWatched; ?>%</div></div></a>
         </tr>
         <?php
