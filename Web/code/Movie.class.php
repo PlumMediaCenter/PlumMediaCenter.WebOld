@@ -11,12 +11,24 @@ class Movie extends Video {
         $this->loadMetadata();
     }
 
+    protected function getLengthInSecondsFromMetadata() {
+        //make sure the metadata has been loaded
+        $this->loadMetadata();
+        return $this->runtime;
+    }
+
+    function getNfoReader() {
+        if ($this->nfoReader == null) {
+            $this->nfoReader = new MovieNfoReader();
+        }
+        return $this->nfoReader;
+    }
+
     /**
      * Determines the nfo path for this video. If movie.nfo is present, that file will be used. If not, then filename.nfo will be used.
      * @return string - the path to the nfo file for this video. The nfo file may not exist. 
      */
     function getNfoPath() {
-
         $movieNfoPath = $this->getFullPathToContainingFolder() . "movie.nfo";
         if (file_exists($movieNfoPath) === true) {
             return $movieNfoPath;
@@ -25,22 +37,25 @@ class Movie extends Video {
         }
     }
 
-    protected function getLengthInSecondsFromMetadata() {
-        //make sure the metadata has been loaded
-        $this->loadMetadata();
-        return $this->runtime;
-    }
-
-    public function getNfoReader() {
-        return new MovieNfoReader();
+    /**
+     * Load any Movie specific metadata here. It will be called from the parent loadMetadata function
+     * ***DO NOT CALL THIS FUNCTION UNLESS YOU PRELOAD THE NfoReader object with metadata
+     */
+    protected function loadCustomMetadata() {
+        //we are assuming that the reader has already been loaded with the metadata file, since this function should only be called from 
+        $reader = $this->getNfoReader();
+        $this->year = $reader->year !== null ? $reader->year : "";
+        $this->runtime = $reader->runtime;
     }
 
     /**
-     *  Goes to IMDB to fetch the metadata for this particular video.
+     *  Goes to TVDB to fetch the metadata for this particular video.
      *  the metadata file is deleted (if it exists...) before the rest of this function executes. 
      *  So if the function fails, the video folder will be left without any metadata at all.
+     * @param type $onlineVideoDatabaseId
+     * @return boolean
      */
-    function fetchMetadata() {
+    function fetchMetadata($onlineVideoDatabaseId = null) {
         $nfoPath = $this->getNfoPath();
         //if an old metadata file already exists, delete it.
         if (file_exists($nfoPath) == true) {
@@ -48,10 +63,8 @@ class Movie extends Video {
             unlink($nfoPath);
         }
 
-        //scrapes a video folder name and scrapes it. Searches through IMDB to find all metadata for that video.
-        //Metadata is then placed in the folder with the video
-        //get the adapter for the imdb data
-        $adapter = $this->getMetadataFetcher();
+        //get the adapter for the video
+        $adapter = $this->getMetadataFetcher(true, $onlineVideoDatabaseId);
 
         //get all of the data from the adapter
         $title = $adapter->title();
@@ -311,6 +324,11 @@ class Movie extends Video {
         // </movie>
         $doc->appendChild($movieNode);
 
+
+        //if the adapter was unable to retrieve metadata for this video, do no more
+        if ($adapter->getFetchSuccess() === false) {
+            return false;
+        }
         ob_start();
         echo $doc->saveXML();
         //get the xml file contents
@@ -321,22 +339,25 @@ class Movie extends Video {
         //write the contents to the destination file
         $success = file_put_contents("$nfoPath", $contents);
 
-        return true;
-        //   }
-        echo "<span style='color:red;'>Failed to fetch metadata for " . $this->getPathToVideo() . "</span></br>";
-        return false;
+        return $success;
     }
 
     /**
      * Returns a Movie Metadata Fetcher. If we have the Movie Database ID, use that. Otherwise, use the folder name
+     * @param boolean $refresh - if set to true, the metadata fetcher is recreated. otehrwise, a cached one is used if present
+     * @param int $onlineVideoDatabaseId - the id of the online video database used to reference this video. 
+     *                                     If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
      * @return MovieMetadataFetcher adapter
      */
-    protected function getMetadataFetcher() {
-        if ($this->metadataFetcher == null) {
+    protected function getMetadataFetcher($refresh = false, $onlineVideoDatabaseId = null) {
+        //If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
+        $id = $this->onlineVideoDatabaseId;
+        $id = $onlineVideoDatabaseId != null ? $onlineVideoDatabaseId : $id;
+        if ($this->metadataFetcher == null || $refresh == true) {
             include_once(dirname(__FILE__) . "/MetadataFetcher/MovieMetadataFetcher.class.php");
             $this->metadataFetcher = new MovieMetadataFetcher();
-            if ($this->onlineMovieDatabaseId != null) {
-                $this->metadataFetcher->searchById($this->onlineMovieDatabaseId);
+            if ($id != null) {
+                $this->metadataFetcher->searchById($id);
             } else {
                 $this->metadataFetcher->searchByTitle($this->getVideoName());
             }

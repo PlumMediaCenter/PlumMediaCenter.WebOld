@@ -2,6 +2,9 @@
 
 abstract class NfoReader {
 
+    //each child will parse the file and load their properties into the class
+    abstract protected function parseFile();
+
     protected $doc;
 
     public function loadFromFile($nfoPath) {
@@ -29,9 +32,6 @@ abstract class NfoReader {
             return false;
         }
     }
-
-    //each child will parse the file and load their properties into the class
-    abstract protected function parseFile();
 
     /**
      * Shortcut function for retrieving values from tags

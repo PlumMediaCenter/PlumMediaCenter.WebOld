@@ -153,6 +153,66 @@ class TestMovie extends UnitTestCase {
         rename($movieNfoPath, $nfoPath);
     }
 
+    function testFetchMetadata() {
+
+        //
+        //check that the fetcher correctly fetches a video by folder name
+        //
+        //delete any metadata that exists in the folder
+        @unlink(dirname(__FILE__) . "/../videos/movies/Night of the Living Dead/movie.nfo");
+        @unlink(dirname(__FILE__) . "/../videos/movies/Night of the Living Dead/Night of the Living Dead.nfo");
+        $v = $this->loadMovie("Night of the Living Dead/Night of the Living Dead.mp4");
+
+        $this->assertFalse(is_file($v->getNfoPath()));
+        $v->fetchMetadata();
+        $this->assertTrue(is_file($v->getNfoPath()));
+
+        //
+        //check that the video fails gracefully when fetching a video that doesn't exist
+        //
+        //delete any metadata that exists in the folder
+        @unlink(dirname(__FILE__) . "/../videos/movies/Movie that is not real/movie.nfo");
+        @unlink(dirname(__FILE__) . "/../videos/movies/Movie that is not real/Movie that is not real.nfo");
+        $v = $this->loadMovie("Movie that is not real/Movie that is not real.mp4");
+        $this->assertFalse(is_file($v->getNfoPath()));
+        $this->assertFalse($v->fetchMetadata());
+        //no nfo file should have been created since no metadata will be found for this video
+        $this->assertFalse(is_file($v->getNfoPath()));
+
+        //
+        //Check that the video can fetch metadata based on a videoId, and that it overrides the foldername option
+        //
+        @unlink(dirname(__FILE__) . "/../videos/movies/Movie that is not real/movie.nfo");
+        @unlink(dirname(__FILE__) . "/../videos/movies/Movie that is not real/Movie that is not real.nfo");
+        $v = $this->loadMovie("Movie that is not real/Movie that is not real.mp4");
+        $this->assertFalse(is_file($v->getNfoPath()));
+        $v->setOnlineVideoDatabaseId(10331);
+        $this->assertTrue($v->fetchMetadata());
+        $this->assertTrue(is_file($v->getNfoPath()));
+
+        //
+        //Check that the video fetches metadata based on the videoId provided in the fetchCall and that it overrides the property id
+        //
+        @unlink(dirname(__FILE__) . "/../videos/movies/Movie that is not real/movie.nfo");
+        @unlink(dirname(__FILE__) . "/../videos/movies/Movie that is not real/Movie that is not real.nfo");
+        $v = $this->loadMovie("Movie that is not real/Movie that is not real.mp4");
+        $this->assertFalse(is_file($v->getNfoPath()));
+        //set an invalid videoId
+        $v->setOnlineVideoDatabaseId(0);
+        //load metadata, it should fail
+        $this->assertFalse($v->fetchMetadata());
+        $this->assertFalse(is_file($v->getNfoPath()));
+        //load metadata again, this time using a provided videoId
+        $this->assertTrue($v->fetchMetadata(10331));
+        $this->assertTrue(is_file($v->getNfoPath()));
+
+        //clean up the directory
+        @unlink(dirname(__FILE__) . "/../videos/movies/Movie that is not real/movie.nfo");
+        @unlink(dirname(__FILE__) . "/../videos/movies/Movie that is not real/Movie that is not real.nfo");
+        @unlink(dirname(__FILE__) . "/../videos/movies/Night of the Living Dead/movie.nfo");
+        @unlink(dirname(__FILE__) . "/../videos/movies/Night of the Living Dead/Night of the Living Dead.nfo");
+    }
+
     function testLoadMetadata() {
         //load a video with full metadata
         $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");

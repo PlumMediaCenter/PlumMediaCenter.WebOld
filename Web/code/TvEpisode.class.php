@@ -45,10 +45,6 @@ class TvEpisode extends Video {
         return $tvShow->runtime;
     }
 
-    function getNfoReader() {
-        return new TvEpisodeNfoReader();
-    }
-
     function getShowName() {
         $str = str_replace($this->videoSourcePath, "", $this->fullPath);
         $arr = explode("/", $str);
@@ -169,6 +165,23 @@ class TvEpisode extends Video {
         }
         $success = $success && Queries::insertTvEpisode($videoId, $tvShowVideoId, $this->seasonNumber, $this->episodeNumber);
         return $success;
+    }
+
+    /**
+     * Load any TvEpisode specific metadata here. It will be called from the parent loadMetadata function
+     */
+    protected function loadCustomMetadata() {
+        //we are assuming that the reader has already been loaded with the metadata file, since this function should only be called from 
+        $reader = $this->getNfoReader();
+        $this->year = strlen($reader->aired) >= 4 ? substr($reader->aired, 0, 4) : null;
+        return null;
+    }
+
+    function getNfoReader() {
+        if ($this->nfoReader == null) {
+            $this->nfoReader = new TvEpisodeNfoReader();
+        }
+        return $this->nfoReader;
     }
 
     function getMetadataFetcher() {

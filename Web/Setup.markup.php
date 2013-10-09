@@ -1,5 +1,5 @@
 <?php if ($success === true) { ?>
-PlumVideoPlayer has successfully installed on the database and is ready to go!
+PlumVideoPlayer has successfully installed on the database and is ready to go! Add video sources to the player <a href="VideoSources.php">here</a>. 
 <?php } else if ($success === false) { ?>
 There was an error installing the PlumVideoPlayer on the database. Please check the logs for more information.
 <?php } else { ?>

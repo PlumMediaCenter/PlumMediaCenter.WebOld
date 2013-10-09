@@ -9,8 +9,15 @@ abstract class MetadataFetcher {
     abstract function plot();
 
     abstract function mpaa();
-    
+
     abstract function posterUrl();
+
+    protected $fetchSuccess = false;
+
+    function getFetchSuccess() {
+        return $this->fetchSuccess;
+    }
+
 }
 
 ?>

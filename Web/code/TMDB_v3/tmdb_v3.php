@@ -250,6 +250,10 @@ class TMDBv3 {
             $this->setLang(null);
             $posters = $this->movieInfo($idMovie, "images", false);
             $this->setLang($lang);
+            if(count($posters) == 0){
+                $posters = [];
+                $posters["posters"] = [];
+            }
         }
         $posters = $posters['posters'];
         return $posters;

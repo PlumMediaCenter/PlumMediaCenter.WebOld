@@ -50,7 +50,7 @@ class TvShowNfoReader extends NfoReader {
             $thumbItem = $actorNode->getElementsByTagName("thumb")->item(0);
             $actor->thumb = $thumbItem != null ? $thumbItem->nodeValue : "";
             //if we have either an actor name or role, add this actor
-            if ($actor->name != "" || $actor->role != "" || $actor->thumbItem != "") {
+            if ($actor->name != "" || $actor->role != "" || $actor->thumb != "") {
                 $this->actors[] = $actor;
             }
         }

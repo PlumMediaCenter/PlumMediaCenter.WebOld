@@ -14,6 +14,8 @@ abstract class Video {
 
     abstract function fetchMetadata();
 
+    abstract protected function loadCustomMetadata();
+
     abstract function getNfoReader();
 
     const NoMetadata = "0000-00-00 00:00:00"; //this will never be a valid date, so use it for invalid metadata dates
@@ -37,12 +39,13 @@ abstract class Video {
     //if this is set to true, you should refresh the video in the db when being updated
     public $refreshVideo;
     protected $metadata;
-    protected $onlineMovieDatabaseId;
+    protected $onlineVideoDatabaseId;
     protected $metadataFetcher;
     protected $filetype = null;
     protected $metadataLoaded = false;
     protected $runtime = -1;
     protected $runtimeInSeconds = 0;
+    protected $nfoReader = null;
 
     function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
         //save the important stuff
@@ -500,10 +503,13 @@ abstract class Video {
                 //if the title was found, use it. otherwise, keep the filename tile that was loaded during the constructor
                 $this->title = $reader->title !== null ? $reader->title : $this->title;
                 $this->plot = $reader->plot !== null ? $reader->plot : "";
-                $this->year = $reader->year !== null ? $reader->year : "";
                 $this->mpaa = $reader->mpaa !== null ? $reader->mpaa : $this->mpaa;
                 $this->actorList = $reader->actors;
-                $this->runtime = $reader->runtime;
+
+                $success = $this->loadCustomMetadata();
+                return $success;
+                //  $this->year = $reader->getYear() !== null ? $reader->getYear() : "";
+                // $this->runtime = $reader->runtime;
             } else {
                 return false;
             }
@@ -522,6 +528,10 @@ abstract class Video {
 
         $adapter = $this->getMetadataFetcher();
         return $this->downloadPoster($adapter->posterUrl());
+    }
+
+    public function setOnlineVideoDatabaseId($id) {
+        $this->onlineVideoDatabaseId = $id;
     }
 
 }

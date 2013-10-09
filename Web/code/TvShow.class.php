@@ -3,6 +3,8 @@
 include_once(dirname(__FILE__) . "/../config.php");
 
 include_once("MetadataFetcher/TvShowMetadataFetcher.class.php");
+include_once("NfoReader/TvShowNfoReader.class.php");
+
 include_once(dirname(__FILE__) . "/../plugins/php-mp4info/MP4Info.php");
 
 
@@ -156,6 +158,17 @@ class TvShow extends Video {
     }
 
     /**
+     * Load any TvShow specific metadata here. It will be called from the parent loadMetadata function
+     * ***DO NOT CALL THIS FUNCTION UNLESS YOU PRELOAD THE NfoReader object with metadata
+     */
+    protected function loadCustomMetadata() {
+        //we are assuming that the reader has already been loaded with the metadata file, since this function should only be called from 
+        $reader = $this->getNfoReader();
+        $this->year = $reader->year !== null ? $reader->year : "";
+        $this->runtime = $reader->runtime;
+    }
+
+    /**
      * Determines the nfo file path. Does NOT check to make sure the file exists.
      * @return type
      */
@@ -165,7 +178,10 @@ class TvShow extends Video {
     }
 
     function getNfoReader() {
-        return new TvShowNfoReader();
+        if ($this->nfoReader == null) {
+            $this->nfoReader = new TvShowNfoReader();
+        }
+        return $this->nfoReader;
     }
 
     function prepForJsonification() {
