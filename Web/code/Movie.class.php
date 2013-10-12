@@ -52,7 +52,7 @@ class Movie extends Video {
      *  Goes to TVDB to fetch the metadata for this particular video.
      *  the metadata file is deleted (if it exists...) before the rest of this function executes. 
      *  So if the function fails, the video folder will be left without any metadata at all.
-     * @param type $onlineVideoDatabaseId
+     * @param int $onlineVideoDatabaseId - the id of the online video database used to reference this video. 
      * @return boolean
      */
     function fetchMetadata($onlineVideoDatabaseId = null) {
@@ -343,26 +343,10 @@ class Movie extends Video {
     }
 
     /**
-     * Returns a Movie Metadata Fetcher. If we have the Movie Database ID, use that. Otherwise, use the folder name
-     * @param boolean $refresh - if set to true, the metadata fetcher is recreated. otehrwise, a cached one is used if present
-     * @param int $onlineVideoDatabaseId - the id of the online video database used to reference this video. 
-     *                                     If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
-     * @return MovieMetadataFetcher adapter
+     * Returns a new instance of the metadata fetcher for this video type. 
      */
-    protected function getMetadataFetcher($refresh = false, $onlineVideoDatabaseId = null) {
-        //If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
-        $id = $this->onlineVideoDatabaseId;
-        $id = $onlineVideoDatabaseId != null ? $onlineVideoDatabaseId : $id;
-        if ($this->metadataFetcher == null || $refresh == true) {
-            include_once(dirname(__FILE__) . "/MetadataFetcher/MovieMetadataFetcher.class.php");
-            $this->metadataFetcher = new MovieMetadataFetcher();
-            if ($id != null) {
-                $this->metadataFetcher->searchById($id);
-            } else {
-                $this->metadataFetcher->searchByTitle($this->getVideoName());
-            }
-        }
-        return $this->metadataFetcher;
+    protected function getMetadataFetcherClass() {
+        return new MovieMetadataFetcher();
     }
 
 }

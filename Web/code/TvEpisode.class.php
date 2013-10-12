@@ -23,7 +23,7 @@ class TvEpisode extends Video {
         //load all of the information from the metadata file, if it exists
         $this->loadMetadata();
         $this->showName = $this->getShowName();
-        $this->showFilePath = "$this->videoSourcePath$this->showName/";
+        $this->showFilePath = str_replace("\\", "/", realpath("$this->videoSourcePath/$this->showName/")) . "/";
     }
 
     /**
@@ -47,22 +47,28 @@ class TvEpisode extends Video {
 
     function getShowName() {
         $str = str_replace($this->videoSourcePath, "", $this->fullPath);
+        //if the first character is a slash, remove it
+        if (strpos($str, "/") === 0) {
+            $str = substr($str, 1);
+        }
         $arr = explode("/", $str);
         return $arr[0];
     }
 
-    function getTvShowVideoId() {
+    function getTvShowVideoIdFromVideoTable() {
         return Queries::getVideoIdByVideoPath($this->showFilePath);
+    }
+
+    function getTvShowVideoIdFromTvEpisodeTable() {
+        return Queries::getTvShowVideoIdFromEpisodeTable($this->videoId);
     }
 
     /**
      * Overrides the parent function in order to generate the standard size for tv episode tiles
      */
     function generatePosters() {
-        if (isset($_GET["generatePosters"])) {
-            $this->generateSdPoster(TvEpisode::EpisodeSdImageWidth);
-            $this->generateHdPoster(TvEpisode::EpisodeHdImageWidth);
-        }
+        $this->generateSdPoster(TvEpisode::EpisodeSdImageWidth);
+        $this->generateHdPoster(TvEpisode::EpisodeHdImageWidth);
     }
 
     function getPosterUrl($imgExt = "jpg") {
@@ -159,7 +165,7 @@ class TvEpisode extends Video {
     function writeToDb() {
         $success = parent::writeToDb();
         $videoId = $this->getVideoId();
-        $tvShowVideoId = $this->getTvShowVideoId();
+        $tvShowVideoId = $this->getTvShowVideoIdFromVideoTable();
         if ($tvShowVideoId == -1) {
             $k = 1;
         }
@@ -184,10 +190,37 @@ class TvEpisode extends Video {
         return $this->nfoReader;
     }
 
-    function getMetadataFetcher() {
-        $t = new TvEpisodeMetadataFetcher();
-        $t->searchByShowNameAndSeasonAndEpisodeNumber($this->showName, $this->seasonNumber, $this->episodeNumber);
-        return $t;
+    /**
+     * Returns a new instance of the metadata fetcher for this video type. 
+     */
+    protected function getMetadataFetcherClass() {
+        $m = new TvEpisodeMetadataFetcher();
+        $m->setEpisodeNumber($this->episodeNumber);
+        $m->setSeasonNumber($this->seasonNumber);
+        return $m;
+    }
+
+    /**
+     * Returns a Video Metadata Fetcher. If we have the Online Video Database ID, use that. Otherwise, use the folder name.
+     * @param boolean $refresh - if set to true, the metadata fetcher is recreated. otehrwise, a cached one is used if present
+     * @param int $onlineVideoDatabaseId - the id of the online video database used to reference this video. 
+     *                                     If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
+     * @return TvEpisodeMetadataFetcher
+     */
+    protected function getMetadataFetcher($refresh = false, $onlineVideoDatabaseId = null) {
+        //If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
+        $id = $this->onlineVideoDatabaseId;
+        $id = $onlineVideoDatabaseId != null ? $onlineVideoDatabaseId : $id;
+        if ($this->metadataFetcher == null || $refresh == true) {
+            include_once(dirname(__FILE__) . "/MetadataFetcher/MovieMetadataFetcher.class.php");
+            $this->metadataFetcher = $this->getMetadataFetcherClass();
+            if ($id != null) {
+                $this->metadataFetcher->searchById($id);
+            } else {
+                $this->metadataFetcher->searchByTitle($this->getShowName());
+            }
+        }
+        return $this->metadataFetcher;
     }
 
     /**

@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<episodedetails>
+  <title></title>
+  <rating>10.0</rating>
+  <season></season>
+  <episode></episode>
+  <plot></plot>
+  <thumb>http://thetvdb.com/banners/</thumb>
+  <playcount>0</playcount>
+  <lastplayed></lastplayed>
+  <credits></credits>
+  <director></director>
+  <aired></aired>
+  <premiered></premiered>
+  <studio></studio>
+  <mpaa></mpaa>
+  <epbookmark>0</epbookmark>
+  <displayseason></displayseason>
+  <displayepisode></displayepisode>
+  <actor>
+    <name>Ann Morgan Guilbert</name>
+    <role></role>
+    <name>Dick Van Dyke</name>
+    <role></role>
+    <name>Jerry Paris</name>
+    <role></role>
+    <name>Larry Mathews</name>
+    <role></role>
+    <name>Mary Tyler Moore</name>
+    <role></role>
+    <name>Morey Amsterdam</name>
+    <role></role>
+    <name>Richard Deacon</name>
+    <role></role>
+    <name>Rose Marie</name>
+    <role></role>
+  </actor>
+  <fileinfo>
+    <streamdetails>
+      <audio>
+        <channels></channels>
+        <codec></codec>
+      </audio>
+      <video>
+        <aspect></aspect>
+        <codec></codec>
+        <durationinseconds></durationinseconds>
+        <height></height>
+        <language></language>
+        <longlanguage></longlanguage>
+        <scantype></scantype>
+        <width></width>
+      </video>
+    </streamdetails>
+  </fileinfo>
+</episodedetails>

@@ -9,17 +9,22 @@ class TvShowMetadataFetcher extends MetadataFetcher {
 
     function searchByTitle($title) {
         $this->tvShowObject = TvShowMetadataFetcher::GetSearchByTitle($title);
+        $this->fetchSuccess = $this->tvShowObject != null;
+        return $this->fetchSuccess;
     }
 
     function searchById($id) {
         $this->tvShowObject = TvShowMetadataFetcher::GetSearchById($id);
+        $this->fetchSuccess = $this->tvShowObject != null;
+        return $this->fetchSuccess;
     }
 
     static function GetSearchByTitle($title) {
         //query the TvDb to find a tv show that matches this folder's title. 
         $tvShowsList = TV_Shows::search($title);
         if (count($tvShowsList) < 1) {
-            throw new Exception("No tv shows found for '$title'");
+            //throw new Exception("No tv shows found for '$title'");
+            return null;
         } else {
             //just assume that the first search result is the one that we want.
             return $tvShowsList[0];
@@ -31,79 +36,78 @@ class TvShowMetadataFetcher extends MetadataFetcher {
         //if we found the tv show l
         if ($tvShow == false) {
             //echo "No TV show found using TvDB ID '" . $this->onlineMovieDatabaseId . "'<br/>";
-            throw new Exception("No tv shows found with id of $id");
+            // throw new Exception("No tv shows found with id of $id");
         } else {
             return $tvShow;
         }
     }
 
     function actors() {
-        return $this->tvShowObject->actors;
+        return $this->fetchSuccess ? $this->tvShowObject->actors : null;
     }
 
     function bannerUrl() {
-        return $this->tvShowObject->bannerUrl;
+        return $this->fetchSuccess ? $this->tvShowObject->bannerUrl : null;
     }
 
     function airTime() {
-        return $this->tvShowObject->airTime;
+        return $this->fetchSuccess ? $this->tvShowObject->airTime : null;
     }
 
     function dayOfWeek() {
-        return $this->tvShowObject->dayOfWeek;
+        return $this->fetchSuccess ? $this->tvShowObject->dayOfWeek : null;
     }
 
     function firstAired() {
-        return  $this->tvShowObject->firstAired;
-       
+        return $this->fetchSuccess ? $this->tvShowObject->firstAired : null;
     }
 
     function genres() {
-        return $this->tvShowObject->genres;
+        return $this->fetchSuccess ? $this->tvShowObject->genres : null;
     }
 
     function imdbId() {
-        return $this->tvShowObject->imdbId;
+        return $this->fetchSuccess ? $this->tvShowObject->imdbId : null;
     }
 
     function title() {
-        return $this->tvShowObject->seriesName;
+        return $this->fetchSuccess ? $this->tvShowObject->seriesName : null;
     }
 
     function mpaa() {
-        return $this->tvShowObject->contentRating;
+        return $this->fetchSuccess ? $this->tvShowObject->contentRating : null;
     }
 
     function network() {
-        return $this->tvShowObject->network;
+        return $this->fetchSuccess ? $this->tvShowObject->network : null;
     }
 
     function posterUrl() {
-        return $this->tvShowObject->posterUrl;
+        return $this->fetchSuccess ? $this->tvShowObject->posterUrl : null;
     }
 
     function plot() {
-        return $this->tvShowObject->overview;
+        return $this->fetchSuccess ? $this->tvShowObject->overview : null;
     }
 
     function rating() {
-        return $this->tvShowObject->rating;
+        return $this->fetchSuccess ? $this->tvShowObject->rating : null;
     }
 
     function runtime() {
-        return $this->tvShowObject->runtime;
+        return $this->fetchSuccess ? $this->tvShowObject->runtime : null;
     }
 
     function seriesName() {
-        return $this->tvShowObject->seriesName;
+        return $this->fetchSuccess ? $this->tvShowObject->seriesName : null;
     }
 
     function status() {
-        return $this->tvShowObject->status;
+        return $this->fetchSuccess ? $this->tvShowObject->status : null;
     }
 
     function tmdbId() {
-        return $this->tvShowObject->id;
+        return $this->fetchSuccess ? $this->tvShowObject->id : null;
     }
 
 }

@@ -6,10 +6,12 @@ class Table {
 
     private $tableName;
     private $columns;
+    private $constraints;
 
     function __construct($tableName) {
         $this->tableName = $tableName;
         $this->columns = [];
+        $this->constraints = [];
     }
 
     /**
@@ -33,6 +35,26 @@ class Table {
             if ($column->columnName === $columnName) {
                 //delete the column
                 unset($this->columns[$key]);
+            }
+        }
+    }
+
+    function addConstraint($constraintType, $columnName, $referencesTableName, $referencesColumnName) {
+        $this->constraints[] = new DbConstraint($constraintType, $columnName, $referencesTableName, $referencesColumnName);
+    }
+
+    /**
+     * This does not remove a constraint from the table. This removes a constraint from the list of constraints that have been added to this
+     * class that will be applied to the table when the table is applied.
+     * @param type $constraintType
+     * @param type $columnName
+     * @param type $referencesTableName
+     * @param type $referencesColumnName
+     */
+    function removeConstraint($constraintType, $columnName, $referencesTableName, $referencesColumnName) {
+        foreach ($this->constraints as $key => $c) {
+            if ($c->equals(new DbConstraint($constraintType, $columnName, $referencesTableName, $referencesColumnName))) {
+                unset($this->constraints[$key]);
             }
         }
     }
@@ -78,8 +100,29 @@ class Table {
             }
             $primaryKeySql = ",$primaryKeySql)";
         }
-        $sql = "$sql $primaryKeySql)";
+
+        //constraints
+        $cSql = "";
+        //we are assuming that there is at least one table. otherwise, the query would fail anyway.
+        $comma = ",";
+        foreach ($this->constraints as $c) {
+            $cSql .= " $comma";
+            switch ($c->constraintType) {
+                case "foreign key":
+                    $cSql .= " FOREIGN KEY($c->columnName) REFERENCES $c->referencesTableName($c->referencesColumnName)";
+                    break;
+            }
+        }
+        $sql = "$sql $primaryKeySql $cSql)";
         return DbManager::nonQuery($sql);
+    }
+
+    public static function getConstraints($tableName) {
+        //verify that the constraint has been applied to the column
+        $constraints = DbManager::query("select TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME,
+                REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME from INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+                where table_name = '$tableName'");
+        return $constraints;
     }
 
     /**
@@ -91,6 +134,22 @@ class Table {
         //get the list of current columns in this table
         $existingColumnsFromDb = DbManager::query("show columns from $this->tableName");
 
+        //get the list of constraints currently available for the columns in this table. 
+        $constraints = Table::getConstraints($this->tableName);
+        //remove all constraints from the table
+        foreach ($constraints as $c) {
+            //for now, the only constraints supported are primary key and foreign key
+            switch ($c->CONSTRAINT_NAME) {
+                case "PRIMARY":
+                    //handled below
+                    break;
+                default:
+                    //assume the constraint is a foreign key. 
+                    $statements[] = "drop foreign key $c->CONSTRAINT_NAME";
+                    break;
+            }
+        }
+
         foreach ($existingColumnsFromDb as $colFromDb) {
             //if the column was not found in the list, this column that is 
             ////currently in the database will need to be deleted
@@ -98,6 +157,7 @@ class Table {
                 $statements[] = "drop column $colFromDb->Field";
             }
         }
+
         //a list of names of columns that make up the primary key
         $keyNameList = [];
         //add any new columns or update existing ones
@@ -188,4 +248,28 @@ Class DbColumn {
     }
 
 }
+
+class DbConstraint {
+
+    public $constraintType;
+    public $columnName;
+    public $referencesTableName;
+    public $referencesColumnName;
+
+    function __construct($constraintType, $columnName, $referencesTableName, $referencesColumnName) {
+        $this->constraintType = $constraintType;
+        $this->columnName = $columnName;
+        $this->referencesTableName = $referencesTableName;
+        $this->referencesColumnName = $referencesColumnName;
+    }
+
+    function equals($dbConstraint) {
+        return $dbConstraint->constraintType == $this->constraintType &&
+                $dbConstraint->columnName == $this->columnName &&
+                $dbConstraint->referencesTableName == $this->referencesTableName &&
+                $dbConstraint->referencesColumnName == $this->referencesColumnName;
+    }
+
+}
+
 ?>

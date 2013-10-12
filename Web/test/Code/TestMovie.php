@@ -19,9 +19,10 @@ class TestMovie extends UnitTestCase {
     }
 
     function loadMovie($halfPath) {
+        //this url doesn't have to exist right now.
         $this->videoSourceUrl = "http://localhost/videos/movies/";
-        $this->videoSourcePath = dirname(__FILE__) . "/../videos/movies/";
-        $this->fullPath = dirname(__FILE__) . "/../videos/movies/$halfPath";
+        $this->videoSourcePath = str_replace("\\", "/", realpath(dirname(__FILE__) . "/../videos/movies/")) . "/";
+        $this->fullPath = "$this->videoSourcePath$halfPath";
         $this->loadVideo();
         return $this->video;
     }

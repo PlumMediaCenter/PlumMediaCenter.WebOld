@@ -50,8 +50,8 @@ abstract class Video {
     function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
         //save the important stuff
         $this->videoSourceUrl = $videoSourceUrl;
-        $this->videoSourcePath = $videoSourcePath;
-        $this->fullPath = $fullPath;
+        $this->videoSourcePath = str_replace("\\", "/", realpath($videoSourcePath)) . "/";
+        $this->fullPath = str_replace("\\", "/", realpath($fullPath));
 
         //calculate anything extra that is needed
         $this->url = Video::EncodeUrl($this->getUrl());
@@ -204,24 +204,8 @@ abstract class Video {
      * are generated. if all, then all posters are re-generated
      */
     function generatePosters() {
-        switch ($this->generatePosterMethod) {
-            case Enumerations::GeneratePosters_None:
-                break;
-            case Enumerations::GeneratePosters_Missing:
-                //if the SD poster does not exist, generate it
-                if (!file_exists($this->getSdPosterPath())) {
-                    $this->generateSdPoster();
-                }
-                //if the HD poster does not exist, generate it
-                if (!file_exists($this->getHdPosterPath())) {
-                    $this->generateHdPoster();
-                }
-                break;
-            case Enumerations::GeneratePosters_All:
-                $this->generateSdPoster();
-                $this->generateHdPoster();
-                break;
-        }
+        $this->generateSdPoster();
+        $this->generateHdPoster();
     }
 
     /**
@@ -431,6 +415,15 @@ abstract class Video {
         unset($this->generatePosterMethod);
     }
 
+    protected function deleteMetadata() {
+        $metadataDestination = $this->getNfoPath();
+        //if an old metadata file already exists, delete it.
+        if (is_file($metadataDestination) == true) {
+            //delete the file
+            unlink($metadataDestination);
+        }
+    }
+
     /**
      * Compares the last modified time of the metadata file currently attached to this video with the 
      * last modified time of the metadata that was added to the db. 
@@ -472,14 +465,6 @@ abstract class Video {
         } else {
             return Video::NoMetadata;
         }
-    }
-
-    /**
-     * This class should be overridden by the child classes
-     * @return null
-     */
-    protected function getMetadataFetcher() {
-        return null;
     }
 
     /**
@@ -532,6 +517,29 @@ abstract class Video {
 
     public function setOnlineVideoDatabaseId($id) {
         $this->onlineVideoDatabaseId = $id;
+    }
+
+    /**
+     * Returns a Video Metadata Fetcher. If we have the Online Video Database ID, use that. Otherwise, use the folder name.
+     * @param boolean $refresh - if set to true, the metadata fetcher is recreated. otehrwise, a cached one is used if present
+     * @param int $onlineVideoDatabaseId - the id of the online video database used to reference this video. 
+     *                                     If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
+     * @return MovieMetadataFetcher|TvShowMetadataFetcher 
+     */
+    protected function getMetadataFetcher($refresh = false, $onlineVideoDatabaseId = null) {
+        //If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
+        $id = $this->onlineVideoDatabaseId;
+        $id = $onlineVideoDatabaseId != null ? $onlineVideoDatabaseId : $id;
+        if ($this->metadataFetcher == null || $refresh == true) {
+            include_once(dirname(__FILE__) . "/MetadataFetcher/MovieMetadataFetcher.class.php");
+            $this->metadataFetcher = $this->getMetadataFetcherClass();
+            if ($id != null) {
+                $this->metadataFetcher->searchById($id);
+            } else {
+                $this->metadataFetcher->searchByTitle($this->getVideoName());
+            }
+        }
+        return $this->metadataFetcher;
     }
 
 }

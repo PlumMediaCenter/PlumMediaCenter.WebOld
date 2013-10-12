@@ -7,7 +7,8 @@ class Queries {
 
     private static $stmtInsertVideo = null;
     private static $getAllVideoPaths = null;
-    private static $stmtgetVideoIdByVideoPath = null;
+    private static $stmtGetVideoIdByVideoPath = null;
+    private static $stmtGetTvShowVideoIdFromEpisodeTable = null;
     private static $stmtGetVideoMetadataLastModifiedDate = null;
     private static $stmtUpdateVideo = null;
     private static $stmtVideoCount = null;
@@ -174,6 +175,16 @@ class Queries {
     }
 
     /**
+     * Deletes all rows from the tv_episode table that are no longer associated with a valid video
+     */
+    public static function deleteOrphanedTvEpisodes() {
+        $pdo = DbManager::getPdo();
+        $sql = "delete from tv_episode where video_id not in (select video_id from video)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+    }
+
+    /**
      * 
      * @param array $filePaths - the list of filepaths that are going to be deleted  
      * @return boolean - true if successful, false if unsuccessful
@@ -201,14 +212,34 @@ class Queries {
         return $success && $delSuccess;
     }
 
+    public static function getTvShowVideoIdFromEpisodeTable($videoId) {
+        $pdo = DbManager::getPdo();
+        if (Queries::$stmtGetTvShowVideoIdFromEpisodeTable == null) {
+            $sql = "select tv_show_video_id from tv_episode where video_id = :videoId";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtGetTvShowVideoIdFromEpisodeTable = $stmt;
+        }
+        $stmt = Queries::$stmtGetTvShowVideoIdFromEpisodeTable;
+        $stmt->bindParam(":videoId", $videoId);
+        $success = $stmt->execute();
+        $videoId = $stmt->fetch();
+        if ($success === true) {
+            $tvShowVideoId = $videoId["tv_show_video_id"];
+            //if the tvShowVideoId is null, return -1. otherwise, return the tvShowVideoId found
+            return $tvShowVideoId === null ? -1 : $tvShowVideoId;
+        } else {
+            return -1;
+        }
+    }
+
     public static function getVideoIdByVideoPath($videoPath) {
         $pdo = DbManager::getPdo();
-        if (Queries::$stmtgetVideoIdByVideoPath == null) {
+        if (Queries::$stmtGetVideoIdByVideoPath == null) {
             $sql = "select video_id from video where path = :videoPath";
             $stmt = $pdo->prepare($sql);
-            Queries::$stmtgetVideoIdByVideoPath = $stmt;
+            Queries::$stmtGetVideoIdByVideoPath = $stmt;
         }
-        $stmt = Queries::$stmtgetVideoIdByVideoPath;
+        $stmt = Queries::$stmtGetVideoIdByVideoPath;
         $stmt->bindParam(":videoPath", $videoPath);
         $success = $stmt->execute();
         $videoId = $stmt->fetch();

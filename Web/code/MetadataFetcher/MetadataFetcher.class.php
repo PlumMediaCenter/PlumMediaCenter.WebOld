@@ -12,6 +12,10 @@ abstract class MetadataFetcher {
 
     abstract function posterUrl();
 
+    abstract function searchByTitle($title);
+
+    abstract function searchById($id);
+
     protected $fetchSuccess = false;
 
     function getFetchSuccess() {

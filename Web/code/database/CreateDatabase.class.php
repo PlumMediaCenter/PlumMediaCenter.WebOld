@@ -2,6 +2,7 @@
 
 include_once(dirname(__FILE__) . "/../DbManager.class.php");
 include_once(dirname(__FILE__) . "/Table.class.php");
+include_once(dirname(__FILE__) . "/../functions.php");
 
 /**
  * Creates the entire database
@@ -19,14 +20,23 @@ class CreateDatabase {
     }
 
     function createDatabase() {
+        writeToLog("Creating database");
         $totalSuccess = true;
         //log in to the db as root and create the video database
         $totalSuccess = $totalSuccess && $this->createVideoDatabase($this->rootUsername, $this->rootPassword, $this->dbHost);
         //create all tables
         $totalSuccess = $totalSuccess && $this->table_video();
+        writeToLog("Created video table: $totalSuccess");
         $totalSuccess = $totalSuccess && $this->table_tv_episode();
+        writeToLog("Created tv_episode table: $totalSuccess");
         $totalSuccess = $totalSuccess && $this->table_video_source();
+        writeToLog("Created video_source table: $totalSuccess");
         $totalSuccess = $totalSuccess && $this->table_watch_video();
+        writeToLog("Created watch_video table: $totalSuccess");
+        $totalSuccess = $totalSuccess && $this->view_tv_episode_v();
+        writeToLog("Created tv_episode view: $totalSuccess");
+        writeToLog("Finished creating database");
+
         return $totalSuccess;
     }
 
@@ -48,6 +58,7 @@ class CreateDatabase {
             $dbh->exec("GRANT ALL ON `$db`.* TO '$user'@'192.168.1.%';");
             $dbh->exec("FLUSH PRIVILEGES;");
         } catch (PDOException $e) {
+            writeToLog($e);
             //die("DB ERROR: " . $e->getMessage());
             return false;
         }
@@ -55,29 +66,28 @@ class CreateDatabase {
     }
 
     private function view_tv_episode_v() {
-        DbManager::nonQuery("CREATE VIEW tv_episode_v
+        return DbManager::nonQuery("CREATE OR REPLACE VIEW tv_episode_v
             AS
-               SELECT v.video_id,
-                      v.title,
-                      t.tv_show_video_id,
-                      t.season_number,
-                      t.episode_number,
-                      v.running_time,
-                      v.plot,
-                      v.path,
-                      v.url,
-                      v.filetype,
-                      v.metadata_last_modified_date,
-                      v.poster_last_modified_date,
-                      v.mpaa,
-                      v.release_date,
-                      v.media_type,
-                      v.video_source_path,
-                      v.video_source_url,
-                     
-                      t.writer,
-                      t.director
-                 FROM video v, tv_episode t
+                SELECT v.video_id,
+                    v.title,
+                    t.tv_show_video_id,
+                    t.season_number,
+                    t.episode_number,
+                    v.running_time_seconds,
+                    v.path,
+                    v.url,
+                    v.filetype,
+                    v.metadata_last_modified_date,
+                    v.poster_last_modified_date,
+                    v.mpaa,
+                    v.release_date,
+                    v.media_type,
+                    v.video_source_path,
+                    v.video_source_url,
+                    t.writer,
+                    t.director,
+                    v.plot
+                FROM video v, tv_episode t
                 WHERE v.video_id = t.video_id");
     }
 

@@ -10,7 +10,7 @@ $videoId = isset($_GET["videoId"]) ? $_GET["videoId"] : -1;
 $video = Video::loadFromDb($videoId);
 //if the video is a tv episode, load the tv show and load the SHOW page instead
 if ($video->mediaType === Enumerations::MediaType_TvEpisode) {
-    $video = Video::loadFromDb($video->getTvShowVideoId());
+    $video = Video::loadFromDb($video->getTvShowVideoIdFromVideoTable());
 }
 if ($video->mediaType === Enumerations::MediaType_TvShow) {
     $video->setLoadEpisodesFromDatabase(true);

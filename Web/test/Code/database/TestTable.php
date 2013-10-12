@@ -25,8 +25,9 @@ class TestTable extends UnitTestCase {
      * delete the test_movie table before every test
      */
     function tearDown() {
-        //delete the table
+        //delete the tables
         DbManager::nonQuery("drop table test_movie");
+
         //verify that the table has been deleted
         $this->assertFalse(DbManager::TableExists("test_movie"));
     }
@@ -36,7 +37,6 @@ class TestTable extends UnitTestCase {
     }
 
     function testRemovedColumn() {
-
         //insert a record into the table
         DbManager::nonQuery("insert into test_movie (title) values('myTitle')");
         //verify that the table has the right number of columns
@@ -145,6 +145,60 @@ class TestTable extends UnitTestCase {
         //verify that we found a single row
         $this->assertTrue($row !== false);
         $this->assertEqual($row->title, "this is a title");
+    }
+
+    function testConstraint() {
+        //add a second table, give it a foreign key for the first table
+        $t = new Table("test_movie_2");
+        $t->addColumn("video_id", "int", "", true);
+        $t->addColumn("dummy_column", "int");
+        $t->addConstraint("foreign key", "video_id", "test_movie", "video_id");
+        $this->assertTrue($t->applyTable());
+
+
+        $this->assertTrue($this->constraintExists("test_movie_2", "video_id", "test_movie", "video_id"));
+        //remove the constraint. make sure it has been removed
+        $t->removeConstraint("foreign key", "video_id", "test_movie", "video_id");
+        $this->assertTrue($t->applyTable());
+        $this->assertFalse($this->constraintExists("test_movie_2", "video_id", "test_movie", "video_id"));
+
+        DbManager::nonQuery("drop table test_movie_2");
+        $this->assertFalse(DbManager::TableExists("test_movie_2"));
+    }
+
+    function testChangePrimaryKey() {
+        //remove the registration of the video_id column
+        $this->table->removeColumn("video_id");
+        //reregister the column as NOT being a primary key
+        $this->table->addColumn("video_id", "int", "", false);
+        //remove the registration of the title column
+        $this->table->removeColumn("title");
+        //reregister it as the primary key
+        $this->table->addColumn("title", "char(100)", "", true);
+        $this->assertTrue($this->table->applyTable());
+        //get the constraints of the table
+        $c = Table::getConstraints("test_movie");
+        //the constraints should only have 1 row. 
+        $this->assertEqual(count($c), 1);
+        //constraints should be on the title column as primary key
+        $this->assertEqual($c[0]->TABLE_NAME, "test_movie");
+        $this->assertEqual($c[0]->COLUMN_NAME, "title");
+        $this->assertEqual($c[0]->CONSTRAINT_NAME, "PRIMARY");
+    }
+
+    function constraintExists($tableName, $columnName, $referencedTableName, $referencedColumnName) {
+
+        //verify that the constraint has been applied to the column
+        $results = DbManager::query("select TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME,
+                REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME from INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+                where table_name = '$tableName' and column_name = '$columnName'  and"
+                        . " referenced_table_name = '$referencedTableName' "
+                        . " and referenced_column_name = '$referencedColumnName'");
+        if (count($results) != 1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

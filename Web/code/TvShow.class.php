@@ -21,10 +21,18 @@ class TvShow extends Video {
 
     function __construct($baseUrl, $basePath, $fullPath) {
         parent::__construct($baseUrl, $basePath, $fullPath);
+        //the full path for this video needs to have a slash at the end of it. if it doesn't, then append it
+        if (substr($this->fullPath, -1) != "/") {
+            $this->fullPath .= "/";
+        }
         $this->mediaType = Enumerations::MediaType_TvShow;
 
         //load all of the information from the metadata file, if it exists
         $this->loadMetadata();
+    }
+
+    function getUrl() {
+        return parent::getUrl() . "/";
     }
 
     /**
@@ -202,7 +210,7 @@ class TvShow extends Video {
         $v = Video::loadFromDb($videoId);
         //the video is a tv episode, get the tv show for that episode
         if ($v->mediaType == Enumerations::MediaType_TvEpisode) {
-            $tvSeriesVideoId = $v->getTvShowVideoId();
+            $tvSeriesVideoId = $v->getTvShowVideoIdFromVideoTable();
         } else
         //the video is a tv show. use this video id
         if ($v->mediaType == Enumerations::MediaType_TvShow) {
@@ -311,27 +319,31 @@ class TvShow extends Video {
         return pathinfo($this->fullPath, PATHINFO_FILENAME);
     }
 
-    function getMetadataFetcher() {
-        $t = new TvShowMetadataFetcher();
-        $t->searchByTitle($this->getFolderName());
-        return $t;
+    /**
+     * Returns a new instance of the metadata fetcher for this video type. 
+     */
+    protected function getMetadataFetcherClass() {
+        return new TvShowMetadataFetcher();
     }
 
     /**
      * Goes to TheTvDb and retrieves all available information about this tv episode. 
      * It then stores that information into an .nfo file named the same as the video file name .
      * Deletes any previous metadata files that exist, BEFORE anything else. 
+     * @param int $onlineVideoDatabaseId - the id of the online video database used to reference this video. 
+     * @return boolean - true if totally successful, false if unsuccessful
      */
-    function fetchMetadata() {
+    function fetchMetadata($onlineVideoDatabaseId = null) {
 
-        $metadataDestination = $this->getNfoPath();
-        //if an old metadata file already exists, delete it.
-        if (file_exists($metadataDestination) == true) {
-            //delete the file
-            unlink($metadataDestination);
+        //delete the existing metadata file before starting
+        $this->deleteMetadata();
+
+        $s = $this->getMetadataFetcher(true, $onlineVideoDatabaseId);
+
+        //if the metadata fetcher was not able to find a show, nothing more can be done. quit.
+        if ($s->getFetchSuccess() == false) {
+            return false;
         }
-        $s = $this->getMetadataFetcher();
-
 
         $title = $s->title();
         $rating = $s->rating();
@@ -609,7 +621,7 @@ class TvShow extends Video {
         ob_end_clean();
 
         //write the contents to the destination file
-        file_put_contents("$metadataDestination", $contents);
+        file_put_contents($this->getNfoPath(), $contents);
         return true;
     }
 

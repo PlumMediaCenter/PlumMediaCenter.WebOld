@@ -8,6 +8,24 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher {
 
     private $tvShowObject = null;
     private $episodeObject = null;
+    private $episodeNumber = null;
+    private $seasonNumber = null;
+
+    /**
+     * Search by season name and by preset season and episode numbers. you MUST set the episode and season numbers before calling this
+     * @param string $title - the show title
+     */
+    function searchByTitle($title) {
+        $this->searchByShowNameAndSeasonAndEpisodeNumber($title, $this->seasonNumber, $this->episodeNumber);
+    }
+
+    /**
+     * Search by show id and by preset season and episode numbers. you MUST set the episode and season numbers before calling this
+     * @param string $id - the id of the show that this episode belongs to
+     */
+    function searchById($id) {
+        $this->searchByShowIdAndSeasonAndEpisodeNumber($id, $this->seasonNumber, $this->episodeNumber);
+    }
 
     public function searchByShowNameAndEpisodeId($showName, $id) {
         //query the TvDb to find a tv show that matches this folder's title. 
@@ -19,6 +37,34 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher {
         //query the TvDb to find a tv show that matches this folder's title. 
         $this->tvShowObject = TvShowMetadataFetcher::GetSearchByTitle($showName);
         $this->episodeObject = $this->tvShowObject->getEpisode($seasonNumber, $episodeNumber);
+    }
+
+    public function searchByShowIdAndEpisodeId($showId, $id) {
+        //query the TvDb to find a tv show that matches this folder's title. 
+        $this->tvShowObject = TvShowMetadataFetcher::GetSearchById($showId);
+        $this->episodeObject = $this->tvShowObject->getEpisodeById($id);
+    }
+
+    public function searchByShowIdAndSeasonAndEpisodeNumber($showId, $seasonNumber, $episodeNumber) {
+        //query the TvDb to find a tv show that matches this folder's title. 
+        $this->tvShowObject = TvShowMetadataFetcher::GetSearchById($showId);
+        $this->episodeObject = $this->tvShowObject->getEpisode($seasonNumber, $episodeNumber);
+    }
+
+    /**
+     * Set the episode number of the episode to be fetched
+     * @param int $eNum
+     */
+    public function setEpisodeNumber($eNum) {
+        $this->episodeNumber = $eNum;
+    }
+
+    /**
+     * Set the season number of the episode to be fetched
+     * @param int $sNum
+     */
+    public function setSeasonNumber($sNum) {
+        $this->seasonNumber = $sNum;
     }
 
     public function actors() {
