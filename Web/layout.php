@@ -11,6 +11,7 @@
 
     </head>
     <body>
+        <?php include("partials/playlist.php"); ?>
         <div class="content">
             <div class="navbar navbar-inverse navbar-fixed-top">
                 <div class="navbar-inner">
@@ -21,6 +22,7 @@
                                 <li id="browseNav<?php echo Enumerations::MediaType_Movie; ?>" ><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_Movie; ?>">Movies</a></li>
                                 <li id="browseNav<?php echo Enumerations::MediaType_TvShow; ?>"><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_TvShow; ?>">Tv Shows</a></li>
                                 <li id="adminNav"><a href="Admin.php">Admin</a></li>
+                                <li id="playlistNav"><a style="cursor:pointer;">Playlist</a></li>
                             </ul>
                         </div>
                     </div>
