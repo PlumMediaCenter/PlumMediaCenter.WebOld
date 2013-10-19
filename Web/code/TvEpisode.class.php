@@ -20,8 +20,6 @@ class TvEpisode extends Video {
         $this->mediaType = Enumerations::MediaType_TvEpisode;
         $this->seasonNumber = $this->getSeasonNumber();
         $this->episodeNumber = $this->getEpisodeNumber();
-        //load all of the information from the metadata file, if it exists
-        $this->loadMetadata();
         $this->showName = $this->getShowName();
         $this->showFilePath = str_replace("\\", "/", realpath("$this->videoSourcePath/$this->showName/")) . "/";
     }

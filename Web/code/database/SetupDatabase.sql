@@ -21,3 +21,6 @@ flush privileges;
 grant all on plumvideoplayer.* to 'plumvideoplayer'@'localhost';
 flush privileges;
 
+GRANT ALL ON plumvideoplayer.* TO 'plumvideoplayer'@'*' IDENTIFIED BY 'plumvideoplayer';
+FLUSH PRIVILEGES;
+

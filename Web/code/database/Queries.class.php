@@ -6,7 +6,7 @@ include_once(dirname(__FILE__) . "/../Enumerations.class.php");
 class Queries {
 
     private static $stmtInsertVideo = null;
-    private static $getAllVideoPaths = null;
+    private static $stmtGetAllVideoPaths = null;
     private static $stmtGetVideoIdByVideoPath = null;
     private static $stmtGetTvShowVideoIdFromEpisodeTable = null;
     private static $stmtGetVideoMetadataLastModifiedDate = null;
@@ -18,21 +18,66 @@ class Queries {
     private static $getTvEpisodeSeasonEpisodeAndVideoIdForShow = null;
     private static $stmtGetEpisodePathsByShowPath = null;
     private static $stmtGetVideo = null;
+    private static $stmtGetVideos = null;
     private static $stmtGetTvEpisode = null;
     private static $stmtGetEpisodesInTvShow = null;
     private static $stmtGetVideoProgress = null;
+    private static $stmtClearPlaylist = null;
+    private static $stmtGetPlaylistVideoIds = null;
+
+    public static function getPlaylistVideoIds($username, $playlistName) {
+        $pdo = DbManager::getPdo();
+        if (Queries::$stmtGetPlaylistVideoIds == null) {
+            $sql = "select video_id "
+                    . "from playlist "
+                    . "where username = :username and name = :playlistName "
+                    . "order by idx asc";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtGetPlaylistVideoIds = $stmt;
+        }
+        $stmt = Queries::$stmtGetPlaylistVideoIds;
+        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":playlistName", $playlistName);
+
+        $stmt->execute();
+        return Queries::fetchAllSingleColumn($stmt, "video_id");
+    }
+
+    public static function clearPlaylist($username, $playlistName) {
+        $pdo = DbManager::getPdo();
+        if (Queries::$stmtClearPlaylist == null) {
+            $sql = "delete from playlist where username = :username and name = :playlistName";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtClearPlaylist = $stmt;
+        }
+        $stmt = Queries::$stmtClearPlaylist;
+        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":playlistName", $playlistName);
+        return $stmt->execute();
+    }
+
+    public static function setPlaylistItems($username, $playlistName, $videoIds) {
+        //pdo is annoying for this kind of query. just make a normal query
+        $sql = "insert into playlist(username, name, idx, video_id) values";
+        $comma = "";
+        foreach ($videoIds as $rank => $videoId) {
+            $sql .= "$comma('$username', '$playlistName', $rank, $videoId)";
+            $comma = ",";
+        }
+        return DbManager::nonQuery($sql);
+    }
 
     /**
      * Retrieves the list of all video file paths currently in the database
      */
     public static function getAllVideoPathsInCurrentLibrary() {
         $pdo = DbManager::getPdo();
-        if (Queries::$getAllVideoPaths == null) {
+        if (Queries::$stmtGetAllVideoPaths == null) {
             $sql = "select video_id, path from video";
             $stmt = $pdo->prepare($sql);
-            Queries::$getAllVideoPaths = $stmt;
+            Queries::$stmtGetAllVideoPaths = $stmt;
         }
-        $stmt = Queries::$getAllVideoPaths;
+        $stmt = Queries::$stmtGetAllVideoPaths;
         $stmt->execute();
         $list = [];
         return Queries::fetchAllKeyValuePair($stmt, "video_id", "path");
@@ -480,6 +525,30 @@ class Queries {
         $success = $stmt->execute();
         $result = DbManager::fetchAllColumn($stmt, 0);
         return $result;
+    }
+
+    public static function getVideos($videoIdList) {
+        $videoIds = join(",", $videoIdList);
+        if (Queries::$stmtGetVideos == null) {
+            $pdo = DbManager::getPdo();
+            $sql = "select * from video 
+                where video_id in(:videoIds";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtGetVideos = $stmt;
+        }
+        $stmt = Queries::$stmtGetVideos;
+        $stmt->bindParam(":videoIds", $videoIds);
+
+        $success = $stmt->execute();
+        if ($success === true) {
+            $v = Dbmanager::fetchAllClass($stmt);
+            if (count($v) > 0) {
+                $v = $v[0];
+                return $v;
+            }
+        }
+        //return false if no videos were found or an error occurred.
+        return false;
     }
 
     public static function getVideo($videoId) {

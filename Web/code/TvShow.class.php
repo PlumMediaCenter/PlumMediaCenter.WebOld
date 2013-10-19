@@ -26,9 +26,6 @@ class TvShow extends Video {
             $this->fullPath .= "/";
         }
         $this->mediaType = Enumerations::MediaType_TvShow;
-
-        //load all of the information from the metadata file, if it exists
-        $this->loadMetadata();
     }
 
     function getUrl() {

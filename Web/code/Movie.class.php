@@ -8,7 +8,6 @@ class Movie extends Video {
     function __construct($baseUrl, $basePath, $fullPath) {
         parent::__construct($baseUrl, $basePath, $fullPath);
         $this->mediaType = Enumerations::MediaType_Movie;
-        $this->loadMetadata();
     }
 
     protected function getLengthInSecondsFromMetadata() {

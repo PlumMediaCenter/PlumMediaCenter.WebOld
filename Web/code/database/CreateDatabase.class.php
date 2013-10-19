@@ -35,8 +35,10 @@ class CreateDatabase {
         writeToLog("Created watch_video table: $totalSuccess");
         $totalSuccess = $totalSuccess && $this->view_tv_episode_v();
         writeToLog("Created tv_episode view: $totalSuccess");
-        writeToLog("Finished creating database");
+        $totalSuccess = $totalSuccess && $this->table_playlist();
+        writeToLog("Created playlist table: $totalSuccess");
 
+        writeToLog("Finished creating database");
         return $totalSuccess;
     }
 
@@ -137,6 +139,15 @@ class CreateDatabase {
         $t->addColumn("video_id", "int", "not null", true);
         $t->addColumn("time_in_seconds", "int(10)", "");
         $t->addColumn("date_watched", "datetime", "");
+        return $t->applyTable();
+    }
+
+    private function table_playlist() {
+        $t = new Table("playlist");
+        $t->addColumn("username", "char(128)");
+        $t->addColumn("name", "char(128)");
+        $t->addColumn("idx", "int");
+        $t->addColumn("video_id", "int");
         return $t->applyTable();
     }
 
