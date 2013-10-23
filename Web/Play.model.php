@@ -10,6 +10,10 @@ class PlayModel extends Model {
 
     function init($videoId) {
         $v = Video::loadFromDb($videoId);
+        //if this is a tv show, we want to watch the next episode. get the next episode
+        if($v->mediaType == Enumerations::MediaType_TvShow){
+            $v = $v->nextEpisode();
+        }
         $this->videoUrl = $v->url;
         $this->posterUrl = $v->sdPosterUrl;
         $this->videoId = $v->videoId;

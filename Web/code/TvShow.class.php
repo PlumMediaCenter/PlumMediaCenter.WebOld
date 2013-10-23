@@ -195,6 +195,12 @@ class TvShow extends Video {
             $episode->prepForJsonification();
         }
     }
+    
+    function nextEpisode(){
+        $episodeVideoId = TvShow::getNextEpisodeToWatch($this->videoId);
+        $episode = Video::loadFromDb($episodeVideoId);
+        return $episode;
+    }
 
     /**
      * Determines the next episode to watch based on the watch_video table. 

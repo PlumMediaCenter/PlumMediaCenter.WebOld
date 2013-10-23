@@ -10,33 +10,38 @@
         <script type="text/javascript" src="plugins/bootstrap/js/bootstrap.min.js"></script>
         <link href="plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="css/style.css" rel="stylesheet" media="screen">
-
+        <script type="text/javascript">
+            //determines how many pixels are avaible from below the navbar to the bottom of the nonscrollable portion of the screen.
+            function displayHeight() {
+                return $("body").height() - $("#bodyPadding").height();
+            }
+        </script>
     </head>
     <body>
-        <div class="content">
-            <div class="navbar navbar-inverse navbar-fixed-top">
-                <div class="navbar-inner">
-                    <div class="container">
-                        <a class="brand" href="index.php">Plum Video Player</a>
-                        <div class="nav-collapse collapse">
-                            <ul class="nav">
-                                <li id="browseNav<?php echo Enumerations::MediaType_Movie; ?>" ><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_Movie; ?>">Movies</a></li>
-                                <li id="browseNav<?php echo Enumerations::MediaType_TvShow; ?>"><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_TvShow; ?>">Tv Shows</a></li>
-                                <li id="adminNav"><a href="Playlist.php">Playlist</a></li>
-                                <li id="adminNav"><a href="Admin.php">Admin</a></li>
-                            </ul>
-                        </div>
+        <div id="bodyPadding"></div>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="index.php">Plum Video Player</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">
+                            <li id="browseNav<?php echo Enumerations::MediaType_Movie; ?>" ><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_Movie; ?>">Movies</a></li>
+                            <li id="browseNav<?php echo Enumerations::MediaType_TvShow; ?>"><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_TvShow; ?>">Tv Shows</a></li>
+                            <li id="adminNav"><a href="Playlist.php">Playlist</a></li>
+                            <li id="adminNav"><a href="Admin.php">Admin</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            <div class="container">
-                <div id="containerRelativer">
-                    <?php
-                    echo isset($body) ? $body : "";
-                    ?>
-                </div>
-
-            </div>
         </div>
+        <div class="container">
+            <div id="containerRelativer">
+                <?php
+                echo isset($body) ? $body : "";
+                ?>
+            </div>
+
+        </div>
+
     </body>
 </html>

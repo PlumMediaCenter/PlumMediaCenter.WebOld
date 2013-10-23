@@ -15,13 +15,12 @@ html{
 body{
     padding:0px;
     border:0px solid red;
+    height:100%;
 }
 
-.content{
-    margin-top:50px;
-    margin-left:20px;
-    margin-right:20px;
-    position:relative;
+#bodyPadding{
+    height:50px;
+    width:100%;
 }
 
 #containerRelativer{
@@ -35,9 +34,13 @@ body{
     margin: 10px;
     width:205px;
     padding:2px;
+    border: 5px solid transparent;
 }
 .tile:hover{
-    border:2px solid black;
+    background-color:#CCCCCC;
+    border-left:5px solid #CCCCCC;
+    border-right:5px solid #CCCCCC;
+
 }
 .tile span{
     display:block;
@@ -198,3 +201,9 @@ input[type=radio], label{
     margin:0px;
     padding:0px;
 }
+
+.ui-icon.white { background-image: url(../plugins/jquery-ui-1.10.3.custom/css/dark-hive/images/ui-icons_ffffff_256x240.png); }
+.ui-icon.red { background-image: url(../plugins/jquery-ui-1.10.3.custom/css/dark-hive/images/ui-icons_a83300_256x240.png); }
+.ui-icon.green { background-image: url(../plugins/jquery-ui-1.10.3.custom/css/dark-hive/images/ui-icons_4b8e0b_256x240.png); }
+
+

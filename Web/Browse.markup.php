@@ -13,7 +13,10 @@
                 foreach ($movies as $movie) {
                     ?>
                     <div class="tile">
-                        <span><?php echo $movie->title; ?></span>
+                        <span>
+                            <a href="VideoInfo.php?videoId=<?php echo $movie->videoId; ?>" title="View movie information"><?php echo $movie->title; ?></a>
+                            <a style="cursor:pointer;" onclick="$.getJSON('api/AddToPlaylist.php?playlistName=My Playlist&videoIds=<?php echo $movie->videoId; ?>');" title="Add to a playlist">+</a>
+                        </span>
                         <a href="Play.php?videoId=<?php echo $movie->videoId; ?>"><img src="<?php echo $movie->hdPosterUrl; ?>"/></a>
                     </div>
                     <?php
@@ -28,12 +31,16 @@
                 foreach ($tvShows as $tvShow) {
                     $modalId = "modal-" . md5($tvShow->title);
                     ?>
-                                    <!--<a class="tile" href="#<?php echo $modalId; ?>" role="button" data-toggle="modal">-->
-                    <a class="tile" href="VideoInfo.php?videoId=<?php echo $tvShow->videoId; ?>" >
+                                                                                            <!--<a class="tile" href="#<?php echo $modalId; ?>" role="button" data-toggle="modal">-->
+                    <div class="tile" >
+                        <span>
+                            <a href="VideoInfo.php?videoId=<?php echo $tvShow->videoId; ?>"><?php echo $tvShow->title; ?></a>
+                            <a style="cursor:pointer;" onclick="$.getJSON('api/AddToPlaylist.php?playlistName=My Playlist&videoIds=<?php echo $tvShow->videoId; ?>');">+</a>
+                        </span>
 
-                        <span><?php echo $tvShow->title; ?></span>
-                        <img src="<?php echo $tvShow->hdPosterUrl; ?>"/>
-                    </a>
+                        <a href="Play.php?videoId=<?php echo $tvShow->videoId; ?>"><img src="<?php echo $tvShow->hdPosterUrl; ?>"/></a>
+                        </a>
+                    </div>
                     <div id="<?php echo $modalId; ?>" class="modal hide fade">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
@@ -77,7 +84,7 @@
     </div>
 <?php } ?>
 <script type="text/javascript">
-    $("#browseNav<?php echo $mediaType;?>").addClass("active");
+    $("#browseNav<?php echo $mediaType; ?>").addClass("active");
     $('.modal').on('show', function() {
 //        //temporarily hide the scrollbars
 //        $('body').css('overflow', 'hidden');

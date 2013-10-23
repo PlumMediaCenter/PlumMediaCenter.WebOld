@@ -13,7 +13,10 @@
 </script>
 
 <div class="row">
-    <div class="span3"><img src="<?php echo $video->hdPosterUrl; ?>" style="float:left;">
+    <div class="span3">
+        <a href="Play.php?videoId=<?php echo $video->videoId; ?>">
+            <img src="<?php echo $video->hdPosterUrl; ?>" style="float:left;">
+        </a>
     </div>
     <div class="span9">
         <h1><?php echo $video->title; ?></h1>
@@ -35,7 +38,6 @@
             <p>Season <span id="seasonNumber"></span> Episode <span id="episodeNumber"></span>
                 <br/><b>Rating: </b><span id="mpaa"></span>
                 <br/><b>Release Date:</b> <span id="year"></span>
-
             </p>
             <div id="plot"></div>
         </div>

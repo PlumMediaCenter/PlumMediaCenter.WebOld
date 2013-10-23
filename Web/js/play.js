@@ -17,7 +17,16 @@ $(document).ready(function() {
 
     //set the reference to the player object so we don't have to look for it again.
     window.player = jwplayer("videoPlayer");
+    resizePlayer();
+    $(window).resize(resizePlayer);
 });
+
+function resizePlayer() {
+    //get the current width of the containerRelativer,set the jwplayer to that size
+    var w = $("#containerRelativer").width();
+    var h = displayHeight() - 40;
+    player.resize(w, h);
+}
 
 var startVideoWhereWeLeftOffProcessed = false;
 /**
