@@ -24,6 +24,10 @@ class TvEpisode extends Video {
         $this->showFilePath = str_replace("\\", "/", realpath("$this->videoSourcePath/$this->showName/")) . "/";
     }
 
+    function getBlankPosterName() {
+        return "BlankEpisode";
+    }
+
     /**
      * This tv episode cannot provide all important information by itself. It needs the tv show object to do that for it. As such, 
      * this function provides a way to load the tv show from within this tv episode if it has not already been set by the owning tv show

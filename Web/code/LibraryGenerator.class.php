@@ -153,7 +153,7 @@ class LibraryGenerator {
      */
     static function VideoIsModified($video) {
         //if the video NOT new, and (metadata is old OR video flagged to be refreshed)
-        $isModified = LibraryGenerator::VideoIsNew($video) === false && ($video->metadataInDatabaseIsUpToDate() === false || $video->refreshVideo === true);
+        $isModified = LibraryGenerator::VideoIsNew($video) == false && ($video->metadataInDatabaseIsUpToDate() == false || $video->refreshVideo == true);
         //if this is a tv episode
         if ($video->mediaType === Enumerations::MediaType_TvEpisode) {
             //if the tv show ids don't match up, this video needs to be refreshed.

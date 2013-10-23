@@ -3,7 +3,6 @@
 include_once("database/Queries.class.php");
 include_once("Video.class.php");
 
-
 class Playlist {
 
     private $name;
@@ -95,7 +94,6 @@ class Playlist {
     }
 
     static function LoadPlaylistFromDb($username, $name) {
-        Queries::getPlaylist($username, $name);
         $p = new Playlist($username, $name);
         $p->loadFromDb();
         return $p;
@@ -105,9 +103,22 @@ class Playlist {
         $playlist = [];
         foreach ($this->videoIds as $videoId) {
             $video = Video::loadFromDb($videoId);
-            $playlist[] = $video;
+            if ($video != false) {
+                $video->prepForJsonification();
+                $playlist[] = $video;
+            }
         }
         return $playlist;
+    }
+
+    static function GetPlaylists($username) {
+        $names = Queries::getPlaylistNames($username);
+        $lists = [];
+        foreach ($names as $name) {
+            $p = Playlist::LoadPlaylistFromDb($username, $name);
+            $lists[$name] = $p->getPlaylistVideos();
+        }
+        return $lists;
     }
 
 }

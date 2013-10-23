@@ -55,8 +55,8 @@ abstract class Video {
 
         //calculate anything extra that is needed
         $this->url = Video::EncodeUrl($this->getUrl());
-        $this->sdPosterUrl = Video::EncodeUrl($this->getSdPosterUrl());
-        $this->hdPosterUrl = Video::EncodeUrl($this->getHdPosterUrl());
+        $this->sdPosterUrl = Video::EncodeUrl($this->getActualSdPosterUrl());
+        $this->hdPosterUrl = Video::EncodeUrl($this->getActualHdPosterUrl());
         $this->title = $this->getVideoName();
         $this->generatePosterMethod = $this->getGeneratePosterMethod();
     }
@@ -313,6 +313,34 @@ abstract class Video {
         return $this->getFullUrlToContainingFolder() . "folder.hd.jpg";
     }
 
+    function getActualHdPosterUrl() {
+        if ($this->hdPosterExists() == true) {
+            return $this->getHdPosterUrl();
+        } else {
+            return fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".hd.jpg";
+        }
+    }
+
+    function getActualSdPosterUrl() {
+        if ($this->sdPosterExists() == true) {
+            return $this->getHdPosterUrl();
+        } else {
+            return fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".sd.jpg";
+        }
+    }
+
+    function getActualPosterUrl() {
+        if ($this->PosterExists() == true) {
+            return $this->getPosterUrl();
+        } else {
+            return fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".jpg";
+        }
+    }
+
+    function getBlankPosterName() {
+        return "BlankPoster";
+    }
+
     /**
      * Generates an poster that is sized to the SD image specifications for the roku standard movie grid layout
      * The existing aspect ratio is retained
@@ -408,6 +436,8 @@ abstract class Video {
      * Modifies the public variables in this class in order to only write the necessary variables to the json file. 
      */
     public function prepForJsonification() {
+        $this->hdPosterUrl = $this->getActualHdPosterUrl();
+        $this->sdPosterUrl = $this->getActualSdPosterUrl();
         unset($this->videoSourceUrl);
         unset($this->videoSourcePath);
         unset($this->fullPath);

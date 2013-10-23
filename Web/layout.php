@@ -5,13 +5,14 @@
     <head><title><?php echo $title != null ? $title : ""; ?></title>
         <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.color-2.1.0.min.js"></script>
+        <link href="plugins/jquery-ui-1.10.3.custom/css/dark-hive/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" media="screen">
+        <script type="text/javascript" src="plugins/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"></script>
         <script type="text/javascript" src="plugins/bootstrap/js/bootstrap.min.js"></script>
         <link href="plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="css/style.css" rel="stylesheet" media="screen">
 
     </head>
     <body>
-        <?php include("partials/playlist.php"); ?>
         <div class="content">
             <div class="navbar navbar-inverse navbar-fixed-top">
                 <div class="navbar-inner">
@@ -21,8 +22,8 @@
                             <ul class="nav">
                                 <li id="browseNav<?php echo Enumerations::MediaType_Movie; ?>" ><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_Movie; ?>">Movies</a></li>
                                 <li id="browseNav<?php echo Enumerations::MediaType_TvShow; ?>"><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_TvShow; ?>">Tv Shows</a></li>
+                                <li id="adminNav"><a href="Playlist.php">Playlist</a></li>
                                 <li id="adminNav"><a href="Admin.php">Admin</a></li>
-                                <li id="playlistNav"><a style="cursor:pointer;">Playlist</a></li>
                             </ul>
                         </div>
                     </div>

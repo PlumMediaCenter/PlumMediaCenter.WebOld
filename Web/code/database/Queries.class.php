@@ -67,6 +67,10 @@ class Queries {
         return DbManager::nonQuery($sql);
     }
 
+    public static function getPlaylistNames($username) {
+        return DbManager::singleColumnQuery("select distinct name from playlist where username='$username'");
+    }
+
     /**
      * Retrieves the list of all video file paths currently in the database
      */

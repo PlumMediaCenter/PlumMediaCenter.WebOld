@@ -285,6 +285,15 @@ function url() {
     }
     return $pageURL;
 }
+
+/**
+ * Returns the url to the file path provided
+ * @param type $fullFilePath
+ */
+function fileUrl($fullFilePath) {
+    $realpath = str_replace('\\', '/', dirname($fullFilePath));
+    return str_replace($_SERVER['DOCUMENT_ROOT'], '', $realpath);
+}
 ?>
 
 

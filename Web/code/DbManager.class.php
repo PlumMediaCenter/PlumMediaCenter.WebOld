@@ -70,7 +70,7 @@ class DbManager {
         $pdo = DbManager::getPdo();
         $stmt = $pdo->prepare($sql);
         $success = $stmt->execute();
-        
+
         //if the stmt failed execution, exit failure
         if ($success === false) {
             return false;
@@ -94,6 +94,23 @@ class DbManager {
         } else {
             return [];
         }
+    }
+
+    public static function singleColumnQuery($sql) {
+        $result = DbManager::query($sql);
+        if ($result == false) {
+            return false;
+        } else {
+            $results = [];
+            foreach ($result as $r) {
+                foreach ($r as $key => $col) {
+                    $results[] = $col;
+                    break;
+                }
+            }
+            return $results;
+        }
+        return false;
     }
 
     /**
