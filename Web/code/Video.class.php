@@ -310,22 +310,27 @@ abstract class Video {
     }
 
     function getHdPosterUrl() {
-        return $this->getFullUrlToContainingFolder() . "folder.hd.jpg";
+        $hdPosterUrl = $this->getFullUrlToContainingFolder() . "folder.hd.jpg";
+        return $hdPosterUrl;
     }
 
     function getActualHdPosterUrl() {
         if ($this->hdPosterExists() == true) {
             return $this->getHdPosterUrl();
         } else {
-            return fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".hd.jpg";
+            $url = fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".hd.jpg";
+            $url = url_remove_dot_segments($url);
+            return $url;
         }
     }
 
     function getActualSdPosterUrl() {
         if ($this->sdPosterExists() == true) {
-            return $this->getHdPosterUrl();
+            return $this->getSdPosterUrl();
         } else {
-            return fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".sd.jpg";
+            $url = fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".sd.jpg";
+            $url = url_remove_dot_segments($url);
+            return $url;
         }
     }
 
@@ -333,7 +338,9 @@ abstract class Video {
         if ($this->PosterExists() == true) {
             return $this->getPosterUrl();
         } else {
-            return fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".jpg";
+            $url = fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".jpg";
+            $url = url_remove_dot_segments($url);
+            return $url;
         }
     }
 

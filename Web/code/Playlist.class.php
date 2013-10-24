@@ -90,7 +90,30 @@ class Playlist {
 
     function writeToDb() {
         $this->clearFromDb();
+        Queries::AddPlaylistName($this->username, $this->name);
         return Queries::setPlaylistItems($this->username, $this->name, $this->videoIds);
+    }
+
+    /**
+     * Adds a playlist or overwrites an existing playlist
+     * @param string $username - the username of the user who owns the playlist
+     * @param string $playlistName - the name of the playlist 
+     * @return boolean - success or failure.
+     */
+    static function AddPlaylist($username, $playlistName, $videoIds) {
+        $pl = new Playlist($username, $playlistName);
+        $pl->addRange($videoIds);
+        return $pl->writeToDb();
+    }
+
+    /**
+     * Delete a playlist 
+     * @param string $username - the username of the user who owns the playlist
+     * @param string $playlistName - the name of the playlist 
+     * @return boolean
+     */
+    static function DeletePlaylist($username, $playlistName) {
+        return Queries::DeletePlaylist($username, $playlistName) && Queries::DeletePlaylistName($username, $playlistName);
     }
 
     static function LoadPlaylistFromDb($username, $name) {
@@ -112,13 +135,17 @@ class Playlist {
     }
 
     static function GetPlaylists($username) {
-        $names = Queries::getPlaylistNames($username);
+        $names = Playlist::getPlaylistNames($username);
         $lists = [];
         foreach ($names as $name) {
             $p = Playlist::LoadPlaylistFromDb($username, $name);
             $lists[$name] = $p->getPlaylistVideos();
         }
         return $lists;
+    }
+
+    static function GetPlaylistNames($username) {
+        return Queries::getPlaylistNames($username);
     }
 
 }

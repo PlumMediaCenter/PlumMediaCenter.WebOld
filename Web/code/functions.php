@@ -294,6 +294,29 @@ function fileUrl($fullFilePath) {
     $realpath = str_replace('\\', '/', dirname($fullFilePath));
     return str_replace($_SERVER['DOCUMENT_ROOT'], '', $realpath);
 }
+
+//used from http://nadeausoftware.com/node/79
+function url_remove_dot_segments($path) {
+    // multi-byte character explode
+    $inSegs = preg_split('!/!u', $path);
+    $outSegs = array();
+    foreach ($inSegs as $seg) {
+        if ($seg == '' || $seg == '.')
+            continue;
+        if ($seg == '..')
+            array_pop($outSegs);
+        else
+            array_push($outSegs, $seg);
+    }
+    $outPath = implode('/', $outSegs);
+    if ($path[0] == '/')
+        $outPath = '/' . $outPath;
+    // compare last multi-byte character against '/'
+    if ($outPath != '/' &&
+            (mb_strlen($path) - 1) == mb_strrpos($path, '/', 'UTF-8'))
+        $outPath .= '/';
+    return $outPath;
+}
 ?>
 
 

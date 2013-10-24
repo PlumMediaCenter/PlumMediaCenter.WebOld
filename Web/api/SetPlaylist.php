@@ -13,7 +13,6 @@ if (isset($_GET["videoIds"])) {
     }
 }
 
-$p = new Playlist($username, $playlistName);
-$p->addRange($videoIds);
-echo json_encode((object) ["success" => $p->writeToDb()]);
+$success = Playlist::AddPlaylist($username, $playlistName, $videoIds);
+echo json_encode((object) ["success" => $success]);
 ?>

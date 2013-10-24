@@ -1,4 +1,6 @@
-<?php include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
+<?php
+include_once(dirname(__FILE__) . "/code/Security.class.php");
+include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -8,17 +10,28 @@
         <link href="plugins/jquery-ui-1.10.3.custom/css/dark-hive/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" media="screen">
         <script type="text/javascript" src="plugins/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"></script>
         <script type="text/javascript" src="plugins/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/jquery.playlistadder.js"></script>
         <link href="plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="css/style.css" rel="stylesheet" media="screen">
         <script type="text/javascript">
+            var username = "<?php echo Security::GetUsername(); ?>";
+
             //determines how many pixels are avaible from below the navbar to the bottom of the nonscrollable portion of the screen.
             function displayHeight() {
                 return $("body").height() - $("#bodyPadding").height();
+            }
+            $(document).ready(function() {
+                $("#playlistAdder").playlistAdder({username: username});
+            });
+            
+            function addToPlaylist(videoId){
+                  $("#playlistAdder").playlistAdder('show',videoId);
             }
         </script>
     </head>
     <body>
         <div id="bodyPadding"></div>
+        <div id="playlistAdder"></div>
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
@@ -40,8 +53,6 @@
                 echo isset($body) ? $body : "";
                 ?>
             </div>
-
         </div>
-
     </body>
 </html>

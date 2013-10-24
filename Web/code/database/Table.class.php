@@ -5,10 +5,12 @@ include_once(dirname(__FILE__) . "/../DbManager.class.php");
 class Table {
 
     private $tableName;
+    private $dbName;
     private $columns;
     private $constraints;
 
-    function __construct($tableName) {
+    function __construct($dbName, $tableName) {
+        $this->dbName = $dbName;
         $this->tableName = $tableName;
         $this->columns = [];
         $this->constraints = [];
@@ -178,7 +180,12 @@ class Table {
         //reregister the primary keys
         $primaryKeySql = "";
         if (count($keyNameList) > 0) {
-            $primaryKeySql = "drop primary key, add primary key(";
+            $primaryKeySql = "";
+            if (Table::HasPrimaryKey($this->dbName, $this->tableName) == true) {
+                $primaryKeySql = "drop primary key,";
+            }
+
+            $primaryKeySql .= "add primary key(";
             $comma = "";
             foreach ($keyNameList as $keyName) {
                 $primaryKeySql = "$primaryKeySql $comma $keyName";
@@ -227,6 +234,23 @@ class Table {
         }
         //if the column was not found, return null
         return null;
+    }
+
+    /**
+     * Determines if the specified table currently has a primary key
+     */
+    static function HasPrimaryKey($dbName, $tableName) {
+        $sql = "SELECT 1
+            FROM information_schema.columns
+            WHERE table_schema = '$dbName'
+               and table_name='$tableName'
+               and column_key = 'PRI'";
+        $val = DbManager::query($sql);
+        if (count($val) > 0 && $val != false) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

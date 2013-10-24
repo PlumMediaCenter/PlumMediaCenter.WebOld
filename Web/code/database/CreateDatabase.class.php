@@ -35,6 +35,8 @@ class CreateDatabase {
         writeToLog("Created watch_video table: $totalSuccess");
         $totalSuccess = $totalSuccess && $this->view_tv_episode_v();
         writeToLog("Created tv_episode view: $totalSuccess");
+        $totalSuccess = $totalSuccess && $this->table_playlist_name();
+        writeToLog("Created playlist_name table: $totalSuccess");
         $totalSuccess = $totalSuccess && $this->table_playlist();
         writeToLog("Created playlist table: $totalSuccess");
 
@@ -94,7 +96,7 @@ class CreateDatabase {
     }
 
     private function table_video() {
-        $t = new Table("video");
+        $t = new Table(config::$dbName, "video");
         $t->addColumn("video_id", "int", "not null auto_increment", true);
         $t->addColumn("title", "char(100)", "");
         $t->addColumn("running_time_seconds", "int(5)", "");
@@ -113,7 +115,7 @@ class CreateDatabase {
     }
 
     private function table_tv_episode() {
-        $t = new Table("tv_episode");
+        $t = new Table(config::$dbName, "tv_episode");
         $t->addColumn("video_id", "int", "not null", true);
         $t->addColumn("tv_show_video_id", "int", "not null");
         $t->addColumn("season_number", "int", "");
@@ -124,17 +126,17 @@ class CreateDatabase {
     }
 
     private function table_video_source() {
-        $t = new Table("video_source");
+        $t = new Table(config::$dbName, "video_source");
         $t->addColumn("location", "char(200)", "", true);
         $t->addColumn("base_url", "char(200)", "");
         $t->addColumn("media_type", "char(10)", "");
         $t->addColumn("security_type", "char(20)", "");
-        $t->addColumn("refresh_videos", "int(1)", "default 0");
+        $t->addColumn("refresh_videos", "boolean", "default 0");
         return $t->applyTable();
     }
 
     private function table_watch_video() {
-        $t = new Table("watch_video");
+        $t = new Table(config::$dbName, "watch_video");
         $t->addColumn("username", "char(128)", "", true);
         $t->addColumn("video_id", "int", "not null", true);
         $t->addColumn("time_in_seconds", "int(10)", "");
@@ -143,11 +145,18 @@ class CreateDatabase {
     }
 
     private function table_playlist() {
-        $t = new Table("playlist");
+        $t = new Table(config::$dbName, "playlist");
         $t->addColumn("username", "char(128)");
         $t->addColumn("name", "char(128)");
         $t->addColumn("idx", "int");
         $t->addColumn("video_id", "int");
+        return $t->applyTable();
+    }
+
+    private function table_playlist_name() {
+        $t = new Table(config::$dbName, "playlist_name");
+        $t->addColumn("username", "char(128)", "", true);
+        $t->addColumn("name", "char(128)", "", true);
         return $t->applyTable();
     }
 

@@ -15,7 +15,7 @@
                     <div class="tile">
                         <span>
                             <a href="VideoInfo.php?videoId=<?php echo $movie->videoId; ?>" title="View movie information"><?php echo $movie->title; ?></a>
-                            <a style="cursor:pointer;" onclick="$.getJSON('api/AddToPlaylist.php?playlistName=My Playlist&videoIds=<?php echo $movie->videoId; ?>');" title="Add to a playlist">+</a>
+                            <a style="cursor:pointer;" onclick="addToPlaylist(<?php echo $movie->videoId; ?>);" title="Add to a playlist">+</a>
                         </span>
                         <a href="Play.php?videoId=<?php echo $movie->videoId; ?>"><img src="<?php echo $movie->hdPosterUrl; ?>"/></a>
                     </div>
@@ -31,7 +31,7 @@
                 foreach ($tvShows as $tvShow) {
                     $modalId = "modal-" . md5($tvShow->title);
                     ?>
-                                                                                            <!--<a class="tile" href="#<?php echo $modalId; ?>" role="button" data-toggle="modal">-->
+                                                                                                <!--<a class="tile" href="#<?php echo $modalId; ?>" role="button" data-toggle="modal">-->
                     <div class="tile" >
                         <span>
                             <a href="VideoInfo.php?videoId=<?php echo $tvShow->videoId; ?>"><?php echo $tvShow->title; ?></a>

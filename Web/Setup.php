@@ -9,8 +9,12 @@ if (isset($_POST["setup"])) {
     $host = isset($_POST["mysqlHostName"]) ? $_POST["mysqlHostName"] : null;
     if ($username != null && $password !== null && $host != null) {
         include_once("code/database/CreateDatabase.class.php");
+
         $cd = new CreateDatabase($username, $password, $host);
         $success = $cd->createDatabase();
+        //mark all existing video sources as updated so that every video will be refreshed.
+        include_once("code/database/Queries.class.php");
+        Queries::updateVideoSourceRefreshVideos(1);
     }
 
     //delete any previously existing library.json file 

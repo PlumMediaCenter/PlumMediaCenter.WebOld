@@ -174,7 +174,7 @@ class DbManager {
             return false;
         }
     }
-
+    
     /**
      * Generates a string ready to be used in an 'in' statement for sql
      * @param type $list

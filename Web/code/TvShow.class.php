@@ -29,7 +29,12 @@ class TvShow extends Video {
     }
 
     function getUrl() {
-        return parent::getUrl() . "/";
+        $url = parent::getUrl();
+        //the url path for this video needs to have a slash at the end of it. if it doesn't, then append it
+        if (substr($url, -1) != "/") {
+            $url .= "/";
+        }
+        return $url;
     }
 
     /**
@@ -76,11 +81,18 @@ class TvShow extends Video {
      * @return type
      */
     protected function getFullPathToContainingFolder() {
-        return $this->fullPath . "/";
+        $slash = "";
+        //the full path for this video needs to have a slash at the end of it. if it doesn't, then append it
+        if (substr($this->fullPath, -1) != "/") {
+            $slash = "/";
+        }
+        $path = $this->fullPath . $slash;
+        return $path;
     }
 
     protected function getFullUrlToContainingFolder() {
-        return $this->getUrl();
+        $url = $this->getUrl();
+        return $url;
     }
 
     /**
@@ -195,8 +207,8 @@ class TvShow extends Video {
             $episode->prepForJsonification();
         }
     }
-    
-    function nextEpisode(){
+
+    function nextEpisode() {
         $episodeVideoId = TvShow::getNextEpisodeToWatch($this->videoId);
         $episode = Video::loadFromDb($episodeVideoId);
         return $episode;

@@ -24,6 +24,10 @@ class Queries {
     private static $stmtGetVideoProgress = null;
     private static $stmtClearPlaylist = null;
     private static $stmtGetPlaylistVideoIds = null;
+    private static $stmtAddPlaylistName = null;
+    private static $stmtDeletePlaylistName = null;
+    private static $stmtDeletePlaylist = null;
+    private static $stmtGetPlaylistNames = null;
 
     public static function getPlaylistVideoIds($username, $playlistName) {
         $pdo = DbManager::getPdo();
@@ -56,6 +60,64 @@ class Queries {
         return $stmt->execute();
     }
 
+    /**
+     * Adds a playlist name to the playlist table. If the playlist name already exists, this will overwrite it.
+     * @param string $username - the username of the user who owns the playlist
+     * @param string $playlistName - the name of the playlist 
+     * @return boolean - success or failure.
+     */
+    public static function AddPlaylistName($username, $playlistName) {
+        $pdo = DbManager::getPdo();
+        if (Queries::$stmtAddPlaylistName == null) {
+            $sql = "insert into playlist_name (username, name) values(:username, :name) "
+                    . "on duplicate key update username=:username, name=:name";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtAddPlaylistName = $stmt;
+        }
+        $stmt = Queries::$stmtAddPlaylistName;
+        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":name", $playlistName);
+        return $stmt->execute();
+    }
+
+    /**
+     * Deletes a playlist name from the playlist_name table
+     * @param string $username - the username of the user who owns the playlist
+     * @param string $playlistName - the name of the playlist 
+     * @return boolean - success or failure.
+     */
+    public static function DeletePlaylistName($username, $playlistName) {
+        $pdo = DbManager::getPdo();
+        if (Queries::$stmtDeletePlaylistName == null) {
+            $sql = "delete from playlist_name where username=:username and name=:name";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtDeletePlaylistName = $stmt;
+        }
+        $stmt = Queries::$stmtDeletePlaylistName;
+        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":name", $playlistName);
+        return $stmt->execute();
+    }
+
+    /**
+     * Deletes all entries of a playlist from the playlist table
+     * @param string $username - the username of the user who owns the playlist
+     * @param string $playlistName - the name of the playlist 
+     * @return boolean - success or failure.
+     */
+    public static function DeletePlaylist($username, $playlistName) {
+        $pdo = DbManager::getPdo();
+        if (Queries::$stmtDeletePlaylist == null) {
+            $sql = "delete from playlist where username=:username and name=:name";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtDeletePlaylist = $stmt;
+        }
+        $stmt = Queries::$stmtDeletePlaylist;
+        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":name", $playlistName);
+        return $stmt->execute();
+    }
+
     public static function setPlaylistItems($username, $playlistName, $videoIds) {
         //pdo is annoying for this kind of query. just make a normal query
         $sql = "insert into playlist(username, name, idx, video_id) values";
@@ -67,8 +129,17 @@ class Queries {
         return DbManager::nonQuery($sql);
     }
 
-    public static function getPlaylistNames($username) {
-        return DbManager::singleColumnQuery("select distinct name from playlist where username='$username'");
+    public static function GetPlaylistNames($username) {
+        $pdo = DbManager::getPdo();
+        if (Queries::$stmtGetPlaylistNames == null) {
+            $sql = "select distinct name from playlist_name where username=:username";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtGetPlaylistNames = $stmt;
+        }
+        $stmt = Queries::$stmtGetPlaylistNames;
+        $stmt->bindParam(":username", $username);
+        $stmt->execute();
+        return Queries::fetchAllSingleColumn($stmt, "name");
     }
 
     /**
@@ -338,12 +409,11 @@ class Queries {
      * Adds a new video source to the vide_source table
      */
     public static function addVideoSource($location, $baseUrl, $mediaType, $securityType) {
-
         if ($location != null && $baseUrl != null && $mediaType != null && $securityType != null) {
             $pdo = DbManager::getPdo();
             if (Queries::$stmtAddVideoSource == null) {
                 $sql = "insert into video_source(location, base_url, media_type, security_type, refresh_videos) 
-                values(:location, :baseUrl, :mediaType, :securityType, 1)";
+                values(:location, :baseUrl, :mediaType, :securityType, true)";
                 $stmt = $pdo->prepare($sql);
                 Queries::$stmtAddVideoSource = $stmt;
             }
@@ -390,10 +460,13 @@ class Queries {
      * @param boolean $refreshVideos - the flag to be set to either true or false 
      * @return boolean - true if successful, false if failure
      */
-    public static function updateVideoSourceRefreshVideos() {
+    public static function updateVideoSourceRefreshVideos($refreshVideos = false) {
+        //if the param was not zero, then we will use a 1
+        $refreshVideos = $refreshVideos != false ? true : false;
         $pdo = DbManager::getPdo();
-        $sql = "update video_source set refresh_videos=0";
+        $sql = "update video_source set refresh_videos=:refreshVideos";
         $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":refreshVideos", $refreshVideos);
         $success = $stmt->execute();
         return $success;
     }
