@@ -210,7 +210,7 @@ class TvShow extends Video {
 
     function nextEpisode() {
         $episodeVideoId = TvShow::getNextEpisodeToWatch($this->videoId);
-        $episode = Video::loadFromDb($episodeVideoId);
+        $episode = Video::GetVideo($episodeVideoId);
         return $episode;
     }
 
@@ -222,7 +222,7 @@ class TvShow extends Video {
      */
     static function getNextEpisodeToWatch($videoId, $finishedBuffer = 45) {
         //load this video
-        $v = Video::loadFromDb($videoId);
+        $v = Video::GetVideo($videoId);
         //the video is a tv episode, get the tv show for that episode
         if ($v->mediaType == Enumerations::MediaType_TvEpisode) {
             $tvSeriesVideoId = $v->getTvShowVideoIdFromVideoTable();
@@ -241,7 +241,7 @@ class TvShow extends Video {
         //if there IS a last video watched, then see if the user hadn't finished it yet
         if ($lastVideoIdWatched !== -1) {
 
-            $lastEpisodeWatched = Video::loadFromDb($lastVideoIdWatched);
+            $lastEpisodeWatched = Video::GetVideo($lastVideoIdWatched);
             //if the last episode watched is 
             if ($lastEpisodeWatched === false) {
                 return -1;

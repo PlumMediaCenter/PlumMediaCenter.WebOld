@@ -62,11 +62,12 @@ abstract class Video {
     }
 
     /**
-     * 
-     * @param type $videoId
-     * @return Video $video
+     * Creates a video object of the media type of the video specified. Loads all metadata from the database and
+     * populates the class with that metadata.
+     * @param int $videoId
+     * @return Movie|TvShow|TvEpisode $video
      */
-    public static function loadFromDb($videoId) {
+    public static function GetVideo($videoId) {
 
         $v = Queries::getVideo($videoId);
         //if no video was found, nothing more can be done

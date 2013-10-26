@@ -9,7 +9,7 @@ class PlayModel extends Model {
     public $videoId;
 
     function init($videoId) {
-        $v = Video::loadFromDb($videoId);
+        $v = Video::GetVideo($videoId);
         //if this is a tv show, we want to watch the next episode. get the next episode
         if($v->mediaType == Enumerations::MediaType_TvShow){
             $v = $v->nextEpisode();

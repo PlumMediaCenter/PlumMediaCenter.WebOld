@@ -125,7 +125,7 @@ class Playlist {
     function getPlaylistVideos() {
         $playlist = [];
         foreach ($this->videoIds as $videoId) {
-            $video = Video::loadFromDb($videoId);
+            $video = Video::GetVideo($videoId);
             if ($video != false) {
                 $video->prepForJsonification();
                 $playlist[] = $video;
