@@ -11,7 +11,7 @@ class VideoInfoModel extends Model {
  * @param TvShow $tvShow 
  */
 function printTvShowFileList($tvShow) {
-    if ($tvShow->mediaType != Enumerations::MediaType_TvShow) {
+    if ($tvShow->getMediaType() != Enumerations::MediaType_TvShow) {
         return;
     }
     echo "<table class='table'>"

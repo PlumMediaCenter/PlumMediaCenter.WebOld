@@ -25,61 +25,6 @@ class LibraryGenerator {
         set_time_limit(600);
     }
 
-    function generateAndFetchPosters() {
-        $fetchCount = 0;
-        $generateCount = 0;
-        $this->loadFromDatabase();
-        /* @var $movie Movie */
-        foreach ($this->movies as $movie) {
-            if ($movie->posterExists() === false) {
-                $fetchCount++;
-                $success = $movie->fetchPoster();
-                $success = $success ? "Success" : "Failure";
-                writeToLog("$success fetching poster for '$movie->fullPath'");
-            }
-            if ($movie->sdPosterExists() === false) {
-                $generateCount++;
-                $success = $movie->generatePosters();
-                $success = $success ? "Success" : "Failure";
-                writeToLog("$success generating sd and hd posters for '$movie->fullPath'");
-            }
-        }
-        /* @var $show TvShow */
-        foreach ($this->tvShows as $show) {
-            if ($show->posterExists() === false) {
-                $fetchCount++;
-                $success = $show->fetchPoster();
-                $success = $success ? "Success" : "Failure";
-                writeToLog("$success fetching poster for '$show->fullPath'");
-            }
-            if ($show->sdPosterExists() == false) {
-                $generateCount++;
-                $success = $show->generatePosters();
-                $success = $success ? "Success" : "Failure";
-
-                writeToLog("$success generating sd and hd posters for '$show->fullPath'");
-            }
-            //each episode in this show
-            foreach ($show->episodes as $episode) {
-                if ($episode->posterExists() === false) {
-                    $fetchCount++;
-                    $success = $episode->fetchPoster();
-                    $success = $success ? "Success" : "Failure";
-
-                    writeToLog("$success fetching poster for '$episode->fullPath'");
-                }
-                if ($episode->sdPosterExists() == false) {
-                    $generateCount++;
-                    $success = $episode->generatePosters();
-                    $success = $success ? "Success" : "Failure";
-
-                    writeToLog("$success generating sd and hd posters for '$episode->fullPath'");
-                }
-            }
-        }
-        return array($fetchCount, $generateCount);
-    }
-
     /**
      * Loads the library from the database instead of loading from disk
      */
@@ -87,10 +32,6 @@ class LibraryGenerator {
         $this->loadFromDatabase = true;
         $this->generateMovies();
         $this->generateTvShows();
-    }
-
-    function loadFromVideosJson() {
-        
     }
 
     /**
@@ -108,62 +49,11 @@ class LibraryGenerator {
             }
         }
     }
-
-    function generateLibrary() {
-        writeToLog("Begin generate library");
-        //clear the database of all video references. 
-        Queries::truncateTableVideo();
-        Queries::truncateTableTvEpisode();
-        writeToLog("Begin loading movies");
-        $this->generateMovies();
-        writeToLog("End loading movies");
-        writeToLog("Begin loading tv shows");
-        $this->generateTvShows();
-        writeToLog("End loading tv shows");
-        writeToLog("Begin writing videos to database");
-        $this->writeMoviesToDb();
-        $this->writeTvShowsToDb();
-        writeToLog("End writing videos to database");
-        writeToLog("Begin generating library.json");
-        $this->generateVideosJson();
-        writeToLog("End generating library.json");
-        writeToLog("Generate Library Summary: $this->movieCount Movies. $this->tvShowCount Tv Shows. $this->tvEpisodeCount Tv Episodes.");
-        writeToLog("End Generate Library");
-    }
-
+    
     /**
-     * Determines if the provided video is a new video for this library
-     * @param Video $video
+     * Processes the video sources directories and updates the database and library.json to have all videos found in the sources.
+     * @return true if total success, false if at least partial failure
      */
-    static function VideoIsNew($video) {
-        //if this video does NOT have a video id, then it does not exist in the database. It is new
-        if ($video->getVideoId() === -1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Determines if the video is of 'modified' status. This means that the metadata is out of date in the db
-     * OR the video was set to be refreshed. 
-     * AND the videoId of this video MUST exist. If the videoId does not exist, then this is a new video.
-     * @param Video $video - the video in question
-     * @return boolean - true if the video is modified and not new, false if the video is not modified or is new
-     */
-    static function VideoIsModified($video) {
-        //if the video NOT new, and (metadata is old OR video flagged to be refreshed)
-        $isModified = LibraryGenerator::VideoIsNew($video) == false && ($video->metadataInDatabaseIsUpToDate() == false || $video->refreshVideo == true);
-        //if this is a tv episode
-        if ($video->mediaType === Enumerations::MediaType_TvEpisode) {
-            //if the tv show ids don't match up, this video needs to be refreshed.
-            if ($video->getTvShowVideoIdFromVideoTable() != $video->getTvShowVideoIdFromTvEpisodeTable()) {
-                return true;
-            }
-        }
-        return $isModified;
-    }
-
     function updateLibrary() {
         writeToLog("Begin update library");
         /* @var $movie Video   */
@@ -248,14 +138,14 @@ class LibraryGenerator {
         //update videos in the db
         foreach ($videosToUpdate as $video) {
             $video->writeToDb();
-            writeToLog("Updated $video->mediaType: '$video->fullPath'");
+            writeToLog("Updated " . $video->getMediaType() . ": '$video->fullPath'");
         }
 
         //add new videos to db
         foreach ($newVideos as $video) {
             //write all new videos to the database
             $video->writeToDb();
-            writeToLog("Added new $video->mediaType: '$video->fullPath' to library");
+            writeToLog("Added new " . $video->getMediaType() . ": '$video->fullPath' to library");
         }
         writeToLog("Begin generating library.json");
         $this->generateVideosJson();
@@ -283,12 +173,7 @@ class LibraryGenerator {
             $tvShow->prepForJsonification();
         }
 
-        //save the videos to a new object
-        $videoList = [];
-        $videoList["movies"] = $this->movies;
-        $videoList["tvShows"] = $this->tvShows;
-        $videoJson = json_encode($videoList, JSON_PRETTY_PRINT);
-        $success = file_put_contents(dirname(__FILE__) . "/../api/library.json", $videoJson);
+      
     }
 
     function writeMoviesToDb() {
@@ -309,6 +194,65 @@ class LibraryGenerator {
         }
     }
 
+    /**
+     * Fetches posters for all videos missing posters. Generates sd and hd posters for all videos missing them.
+     * @return boolean - success or at least one video failure
+     */
+    function generateAndFetchPosters() {
+        $fetchCount = 0;
+        $generateCount = 0;
+        $this->loadFromDatabase();
+        /* @var $movie Movie */
+        foreach ($this->movies as $movie) {
+            if ($movie->posterExists() === false) {
+                $fetchCount++;
+                $success = $movie->fetchPoster();
+                $success = $success ? "Success" : "Failure";
+                writeToLog("$success fetching poster for '$movie->fullPath'");
+            }
+            if ($movie->sdPosterExists() === false) {
+                $generateCount++;
+                $success = $movie->generatePosters();
+                $success = $success ? "Success" : "Failure";
+                writeToLog("$success generating sd and hd posters for '$movie->fullPath'");
+            }
+        }
+        /* @var $show TvShow */
+        foreach ($this->tvShows as $show) {
+            if ($show->posterExists() === false) {
+                $fetchCount++;
+                $success = $show->fetchPoster();
+                $success = $success ? "Success" : "Failure";
+                writeToLog("$success fetching poster for '$show->fullPath'");
+            }
+            if ($show->sdPosterExists() == false) {
+                $generateCount++;
+                $success = $show->generatePosters();
+                $success = $success ? "Success" : "Failure";
+
+                writeToLog("$success generating sd and hd posters for '$show->fullPath'");
+            }
+            //each episode in this show
+            foreach ($show->episodes as $episode) {
+                if ($episode->posterExists() === false) {
+                    $fetchCount++;
+                    $success = $episode->fetchPoster();
+                    $success = $success ? "Success" : "Failure";
+
+                    writeToLog("$success fetching poster for '$episode->fullPath'");
+                }
+                if ($episode->sdPosterExists() == false) {
+                    $generateCount++;
+                    $success = $episode->generatePosters();
+                    $success = $success ? "Success" : "Failure";
+
+                    writeToLog("$success generating sd and hd posters for '$episode->fullPath'");
+                }
+            }
+        }
+        return array($fetchCount, $generateCount);
+    }
+    
     function generateMovies() {
         //for every movie file location, get all movies from that location
         foreach ($this->movieSources as $source) {
@@ -380,6 +324,39 @@ class LibraryGenerator {
 
     function getMovies() {
         return $this->movies;
+    }
+
+    /**
+     * Determines if the provided video is a new video for this library
+     * @param Video $video
+     */
+    static function VideoIsNew($video) {
+        //if this video does NOT have a video id, then it does not exist in the database. It is new
+        if ($video->getVideoId() === -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Determines if the video is of 'modified' status. This means that the metadata is out of date in the db
+     * OR the video was set to be refreshed. 
+     * AND the videoId of this video MUST exist. If the videoId does not exist, then this is a new video.
+     * @param Video $video - the video in question
+     * @return boolean - true if the video is modified and not new, false if the video is not modified or is new
+     */
+    static function VideoIsModified($video) {
+        //if the video NOT new, and (metadata is old OR video flagged to be refreshed)
+        $isModified = LibraryGenerator::VideoIsNew($video) == false && ($video->metadataInDatabaseIsUpToDate() == false || $video->refreshVideo == true);
+        //if this is a tv episode
+        if ($video->getMediaType() === Enumerations::MediaType_TvEpisode) {
+            //if the tv show ids don't match up, this video needs to be refreshed.
+            if ($video->getTvShowVideoIdFromVideoTable() != $video->getTvShowVideoIdFromTvEpisodeTable()) {
+                return true;
+            }
+        }
+        return $isModified;
     }
 
 }

@@ -206,8 +206,8 @@ function getVideoMetadataRow($v) {
     $vSuccess = $v->nfoFileExists() && $v->posterExists() && $v->sdPosterExists() && $v->hdPosterExists();
     $txtSuccess = $vSuccess === true ? "true" : "false";
     ?>
-    <tr style="cursor:pointer;" data-complete="<?php echo $txtSuccess; ?>" class="videoRow <?php echo $vSuccess ? "success" : "error"; ?>" mediatype="<?php echo $v->mediaType; ?>" baseurl="<?php echo htmlspecialchars($v->videoSourceUrl); ?>" basepath="<?php echo htmlspecialchars($v->videoSourcePath); ?>" fullpath="<?php echo htmlspecialchars($v->fullPath); ?>">
-        <?php if ($v->mediaType == Enumerations::MediaType_TvEpisode) { ?>
+    <tr style="cursor:pointer;" data-complete="<?php echo $txtSuccess; ?>" class="videoRow <?php echo $vSuccess ? "success" : "error"; ?>" mediatype="<?php echo $v->getMediaType(); ?>" baseurl="<?php echo htmlspecialchars($v->videoSourceUrl); ?>" basepath="<?php echo htmlspecialchars($v->videoSourcePath); ?>" fullpath="<?php echo htmlspecialchars($v->fullPath); ?>">
+        <?php if ($v->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
             <td><?php echo $v->showName; ?></td>
         <?php } ?>
         <td><?php echo $v->title; ?></td>

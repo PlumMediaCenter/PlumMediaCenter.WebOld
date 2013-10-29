@@ -131,9 +131,6 @@ class TvShow extends Video {
             $episode = new TvEpisode($this->videoSourceUrl, $this->videoSourcePath, $fullPathToFile, Enumerations::MediaType_Movie);
 
             $episode->runtime = $this->getLengthInSeconds();
-            //$episode->tvShow = $this;
-            //pass on to the episode if it needs to be refreshed or not
-            $episode->refreshVideo = $this->refreshVideo;
             //give the video the show's file path
             $episode->tvShowFilePath = $this->fullPath;
             //if the season that this episode is in does not yet exist, create it

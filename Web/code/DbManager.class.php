@@ -174,7 +174,7 @@ class DbManager {
             return false;
         }
     }
-    
+
     /**
      * Generates a string ready to be used in an 'in' statement for sql
      * @param type $list
@@ -196,6 +196,39 @@ class DbManager {
             $notFirstTime = true;
         }
         return $str;
+    }
+
+    /**
+     * Generates a string combining all elements in the list 
+     * @param type $list
+     * @param type $wrapInQuotes
+     * @param type $inLength
+     */
+    public static function NotIn($list, $wrapInQuotes = null, $inLength = 1000) {
+        $q = $wrapInQuotes == true ? "'" : "";
+        $lists = [];
+        $listIndex = 0;
+        $count = 0;
+        //split the list into smaller chunks the size of inLength
+        foreach ($list as $item) {
+            $lists[$listIndex][] = $item;
+            $count++;
+            if ($count >= $inLength) {
+                $listIndex++;
+                $count = 0;
+            }
+        }
+
+        $s = "";
+        $and = "";
+        foreach ($lists as $sizedList) {
+            if (count($sizedList) > 0) {
+                //join all of the items together into an IN statement
+                $s .= "$and not in($q" . implode("$q,$q", $sizedList) . "$q)";
+                $and = " and";
+            }
+        }
+        return "$s ";
     }
 
 }

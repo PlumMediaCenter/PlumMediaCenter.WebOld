@@ -28,6 +28,21 @@ class Queries {
     private static $stmtDeletePlaylistName = null;
     private static $stmtDeletePlaylist = null;
     private static $stmtGetPlaylistNames = null;
+    private static $stmtGetVideoIds = null;
+
+    /**
+     * Deletes any videos that are not in the list of videos to keep.
+     * @param int[] $videoIdsToKeep - the list of videoIds to keep. Any video not in this list will be deleted.
+     * @return boolean - true if successful, false if failure
+     */
+    public static function DeleteVideosNotInThisList($videoIdsToKeep) {
+        $notInStmt = DbManager::NotIn($videoIdsToKeep, false);
+        $pdo = DbManager::getPdo();
+        $sql = "delete from video where video_id $notInStmt";
+        $stmt = $pdo->prepare($sql);
+        $success = $stmt->execute();
+        return $success;
+    }
 
     public static function getPlaylistVideoIds($username, $playlistName) {
         $pdo = DbManager::getPdo();
@@ -527,6 +542,26 @@ class Queries {
         return $success;
     }
 
+    /**
+     * Returns an array of all videoIds that are of the specified media type
+     * @param type $mediaType
+     */
+    public static function GetVideoIds($mediaType) {
+        if (Queries::$stmtGetVideoIds == null) {
+            $sql = "select video_id from video where media_type=:mediaType";
+            $pdo = DbManager::getPdo();
+            Queries::$stmtGetVideoIds = $pdo->prepare($sql);
+        }
+        $stmt = Queries::$stmtGetVideoIds;
+        $stmt->bindParam(":mediaType", $mediaType);
+        $success = $stmt->execute();
+        if ($success == false) {
+            return false;
+        }
+        $videoIds = DbManager::fetchAllColumn($stmt, 0);
+        return $videoIds;
+    }
+
     public static function getLastEpisodeWatched($username, $tvShowVideoId) {
         $pdo = DbManager::getPdo();
         $sql = "select w.video_id, w.time_in_seconds
@@ -731,5 +766,4 @@ class Queries {
     }
 
 }
-
 ?>

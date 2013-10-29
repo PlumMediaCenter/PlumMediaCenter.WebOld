@@ -62,7 +62,7 @@ function printVideoTable($videoList) { ?>
         <table class="table table-sort">
             <thead>
                 <tr title="sort">
-                    <?php if (isset($videoList[0]) && $videoList[0]->mediaType == Enumerations::MediaType_TvEpisode) { ?>
+                    <?php if (isset($videoList[0]) && $videoList[0]->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
                         <th>Series</th>
                     <?php } ?>
                     <th>Title</th>

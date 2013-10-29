@@ -22,10 +22,10 @@ abstract class Video {
     const SdImageWidth = 110; //110x150 
     const HdImageWidth = 210; // 210x270
 
-    public $videoSourceUrl;
-    public $videoSourcePath;
-    public $fullPath;
-    public $mediaType;
+    protected $videoSourceUrl;
+    protected $videoSourcePath;
+    protected $fullPath;
+    protected $mediaType;
     public $title;
     public $plot = "";
     public $year;
@@ -34,10 +34,7 @@ abstract class Video {
     public $hdPosterUrl;
     public $mpaa = "N/A";
     public $actorList = [];
-    public $generatePosterMethod;
     public $videoId = null;
-    //if this is set to true, you should refresh the video in the db when being updated
-    public $refreshVideo;
     protected $metadata;
     protected $onlineVideoDatabaseId;
     protected $metadataFetcher;
@@ -58,7 +55,26 @@ abstract class Video {
         $this->sdPosterUrl = Video::EncodeUrl($this->getActualSdPosterUrl());
         $this->hdPosterUrl = Video::EncodeUrl($this->getActualHdPosterUrl());
         $this->title = $this->getVideoName();
-        $this->generatePosterMethod = $this->getGeneratePosterMethod();
+    }
+
+    public function getFullPath() {
+        return $this->fullpath;
+    }
+
+    /**
+     * Returns the media type of this video. It could be Movie, Tv Show, or Tv Episode
+     * @return Enumerations::MediaType - the media type of the video
+     */
+    public function getMediaType() {
+        return $this->mediaType;
+    }
+
+    public function getVideoSourceUrl() {
+        return $this->videoSourceUrl;
+    }
+
+    public function getVideoSourcePath() {
+        return $this->videoSourcePath;
     }
 
     /**
@@ -85,13 +101,25 @@ abstract class Video {
                 $video = new TvEpisode($v->video_source_url, $v->video_source_path, $v->path);
                 break;
         }
-
-        $video->videoId = $v->video_id;
+        $video->videoId = intval($v->video_id);
         $video->title = $v->title;
+        $video->runtimeInSeconds = $v->running_time_seconds;
         $video->plot = $v->plot;
         $video->mpaa = $v->mpaa;
-        $video->runtimeInSeconds = $v->running_time_seconds;
+        $video->year = $v->release_date;
         return $video;
+    }
+
+    /**
+     * Determines if this is a new video
+     */
+    public function isNew() {
+        //if this video does NOT have a video id, then it does not exist in the database. It is new.
+        if ($this->getVideoId() === -1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -167,22 +195,6 @@ abstract class Video {
      */
     public function videoStartSeconds() {
         return Queries::getVideoProgress(config::$globalUsername, $this->getVideoId());
-    }
-
-    function getGeneratePosterMethod() {
-        if (isset($_GET["generatePosters"])) {
-            return $_GET["generatePosters"];
-        } else {
-            return Enumerations::GeneratePosters_None;
-        }
-    }
-
-    /**
-     * Returns the media type of this video. It could be Movie, Tv Show, or Tv Episode
-     * @return Enumerations::MediaType - the media type of the video
-     */
-    function getMediaType() {
-        return $this->mediaType;
     }
 
     /**
@@ -446,11 +458,6 @@ abstract class Video {
     public function prepForJsonification() {
         $this->hdPosterUrl = $this->getActualHdPosterUrl();
         $this->sdPosterUrl = $this->getActualSdPosterUrl();
-        unset($this->videoSourceUrl);
-        unset($this->videoSourcePath);
-        unset($this->fullPath);
-        unset($this->mediaType);
-        unset($this->generatePosterMethod);
     }
 
     protected function deleteMetadata() {

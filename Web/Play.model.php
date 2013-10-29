@@ -11,7 +11,7 @@ class PlayModel extends Model {
     function init($videoId) {
         $v = Video::GetVideo($videoId);
         //if this is a tv show, we want to watch the next episode. get the next episode
-        if($v->mediaType == Enumerations::MediaType_TvShow){
+        if($v->getMediaType() == Enumerations::MediaType_TvShow){
             $v = $v->nextEpisode();
         }
         $this->videoUrl = $v->url;
