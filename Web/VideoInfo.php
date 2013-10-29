@@ -13,9 +13,7 @@ if ($video->getMediaType() === Enumerations::MediaType_TvEpisode) {
     $video = Video::GetVideo($video->getTvShowVideoIdFromVideoTable());
 }
 if ($video->getMediaType() === Enumerations::MediaType_TvShow) {
-    $video->setLoadEpisodesFromDatabase(true);
-    $video->generateTvEpisodes();
-    $video->retrieveVideoIds();
+    $video->loadEpisodesFromDatabase();
 }
 $m->video = $video;
 $m->title = "PVP $video->title Info";

@@ -15,7 +15,7 @@ class Queries {
     private static $stmtAddVideoSource = null;
     private static $stmtUpdateVideoSource = null;
     private static $stmtInsertTvEpisode = null;
-    private static $getTvEpisodeSeasonEpisodeAndVideoIdForShow = null;
+    private static $stmtGetTvEpisodeVideoIdsForShow = null;
     private static $stmtGetEpisodePathsByShowPath = null;
     private static $stmtGetVideo = null;
     private static $stmtGetVideos = null;
@@ -589,19 +589,24 @@ class Queries {
         return false;
     }
 
-    public static function getTvEpisodeSeasonEpisodeAndVideoIdForShow($tvShowVideoId) {
-        if (Queries::$getTvEpisodeSeasonEpisodeAndVideoIdForShow == null) {
+    /*
+     * Returns a list of videoIds pointing to episodes in the specified tv show
+     */
+
+    public static function GetTvEpisodeVideoIdsForShow($tvShowVideoId) {
+        if (Queries::$stmtGetTvEpisodeVideoIdsForShow == null) {
             $pdo = DbManager::getPdo();
-            $sql = "select video_id, season_number, episode_number from tv_episode
-                where tv_show_video_id=:tvShowVideoId";
+            $sql = "select video_id from tv_episode
+                where tv_show_video_id=:tvShowVideoId
+                order by season_number asc, episode_number asc";
             $stmt = $pdo->prepare($sql);
-            Queries::$getTvEpisodeSeasonEpisodeAndVideoIdForShow = $stmt;
+            Queries::$stmtGetTvEpisodeVideoIdsForShow = $stmt;
         }
-        $stmt = Queries::$getTvEpisodeSeasonEpisodeAndVideoIdForShow;
+        $stmt = Queries::$stmtGetTvEpisodeVideoIdsForShow;
         $stmt->bindParam(":tvShowVideoId", $tvShowVideoId);
 
         $success = $stmt->execute();
-        return $success;
+        return DbManager::fetchAllClass($stmt);
     }
 
     public static function getVideoPathsBySourcePath($videoSourcePath, $mediaType) {
@@ -766,4 +771,5 @@ class Queries {
     }
 
 }
+
 ?>

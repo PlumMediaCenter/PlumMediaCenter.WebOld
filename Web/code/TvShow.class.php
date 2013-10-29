@@ -17,7 +17,6 @@ class TvShow extends Video {
     //holds each episode in a list instead of grouped by seasons
     public $episodes = [];
     public $episodeCount = 0;
-    private $loadEpisodesFromDatabase = false;
 
     function __construct($baseUrl, $basePath, $fullPath) {
         parent::__construct($baseUrl, $basePath, $fullPath);
@@ -45,10 +44,6 @@ class TvShow extends Video {
         foreach ($this->episodes as $episode) {
             $episode->getVideoId();
         }
-    }
-
-    function setLoadEpisodesFromDatabase($loadEpisodesFromDatabase) {
-        $this->loadEpisodesFromDatabase = $loadEpisodesFromDatabase;
     }
 
     /**
@@ -114,15 +109,30 @@ class TvShow extends Video {
         return $this->runtime;
     }
 
-    function generateTvEpisodes() {
-        $seasonList = [];
-        //if the flag says to load from database, load the videos from the database instead of from disc
-        if ($this->loadEpisodesFromDatabase === true) {
-            $videosList = Queries::getEpisodePathsByShowPath($this->fullPath);
-        } else {
-            //get the list of videos from this tv series 
-            $videosList = getVideosFromDir($this->fullPath);
+    /**
+     * Loads the episodes associated with this tv show into this tv show based on information found in the db
+     */
+    function loadEpisodesFromDatabase() {
+        $this->seasons = [];
+        $episodeInfoList = Queries::GetTvEpisodeVideoIdsForShow($this->videoId);
+        foreach ($episodeInfoList as $info) {
+            $episode = Video::GetVideo($info->video_id);
+            //if this season does not exist, create it
+            if (isset($this->seasons[$episode->seasonNumber]) == false) {
+                $this->seasons[$episode->seasonNumber] = [];
+            }
+            $this->seasons[$episode->seasonNumber][] = $episode;
+            $this->episodes[] = $episode;
         }
+    }
+
+    /**
+     * Loads episodes for this tv show from within the folder designated as this tv show's root path
+     */
+    function loadTvEpisodesFromFilesystem() {
+        $seasonList = [];
+        //get the list of videos from this tv series 
+        $videosList = getVideosFromDir($this->fullPath);
 
         $this->episodeCount = count($videosList);
         //spin through every folder in the source location

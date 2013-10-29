@@ -143,7 +143,7 @@ class Library {
                 $video = new TvShow($source->base_url, $source->location, $fullPathToFile);
 
                 //tell the tv show to scan subdirectories for tv episodes
-                $video->generateTvEpisodes();
+                $video->loadTvEpisodesFromFilesystem();
 
                 //if this tv show has at least one season (which means it has at least one episode), then add it to the list
                 if (count($video->seasons) > 0) {
