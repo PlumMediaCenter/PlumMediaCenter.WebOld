@@ -33,7 +33,7 @@ class TvShow extends Video {
         if (substr($url, -1) != "/") {
             $url .= "/";
         }
-        return $url;
+        return Video::encodeUrl($url);
     }
 
     /**
@@ -87,7 +87,7 @@ class TvShow extends Video {
 
     protected function getFullUrlToContainingFolder() {
         $url = $this->getUrl();
-        return $url;
+        return Video::encodeUrl($url);
     }
 
     /**
@@ -171,14 +171,6 @@ class TvShow extends Video {
             $newSeasonList[] = $newSeason;
         }
         $this->seasons = $newSeasonList;
-    }
-
-    /**
-     * Checks for 
-     * @return type
-     */
-    function getThumbnailUrl() {
-        return $this->getUrl() . "folder.jpg";
     }
 
     /**

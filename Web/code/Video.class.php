@@ -51,9 +51,9 @@ abstract class Video {
         $this->fullPath = str_replace("\\", "/", realpath($fullPath));
 
         //calculate anything extra that is needed
-        $this->url = Video::EncodeUrl($this->getUrl());
-        $this->sdPosterUrl = Video::EncodeUrl($this->getActualSdPosterUrl());
-        $this->hdPosterUrl = Video::EncodeUrl($this->getActualHdPosterUrl());
+        $this->url = $this->getUrl();
+        $this->sdPosterUrl = $this->getActualSdPosterUrl();
+        $this->hdPosterUrl = $this->getActualHdPosterUrl();
         $this->title = $this->getVideoName();
     }
 
@@ -238,7 +238,7 @@ abstract class Video {
         $relativePath = str_replace($this->videoSourcePath, "", $this->fullPath);
         $url = $this->videoSourceUrl . $relativePath;
         //encode the url and then restore the forward slashes and colons
-        return $url;
+        return Video::encodeUrl($url);
     }
 
     protected function getFullPathToContainingFolder() {
@@ -315,45 +315,45 @@ abstract class Video {
     }
 
     function getPosterUrl() {
-        return $this->getFullUrlToContainingFolder() . "folder.jpg";
+        return Video::EncodeUrl($this->getFullUrlToContainingFolder() . "folder.jpg");
     }
 
     function getSdPosterUrl() {
-        return $this->getFullUrlToContainingFolder() . "folder.sd.jpg";
+        return Video::EncodeUrl($this->getFullUrlToContainingFolder() . "folder.sd.jpg");
     }
 
     function getHdPosterUrl() {
         $hdPosterUrl = $this->getFullUrlToContainingFolder() . "folder.hd.jpg";
-        return $hdPosterUrl;
+        return Video::EncodeUrl($hdPosterUrl);
     }
 
     function getActualHdPosterUrl() {
         if ($this->hdPosterExists() == true) {
-            return $this->getHdPosterUrl();
+            return Video::EncodeUrl($this->getHdPosterUrl());
         } else {
             $url = fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".hd.jpg";
             $url = url_remove_dot_segments($url);
-            return $url;
+            return Video::EncodeUrl($url);
         }
     }
 
     function getActualSdPosterUrl() {
         if ($this->sdPosterExists() == true) {
-            return $this->getSdPosterUrl();
+            return Video::EncodeUrl($this->getSdPosterUrl());
         } else {
             $url = fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".sd.jpg";
             $url = url_remove_dot_segments($url);
-            return $url;
+            return Video::EncodeUrl($url);
         }
     }
 
     function getActualPosterUrl() {
         if ($this->PosterExists() == true) {
-            return $this->getPosterUrl();
+            return Video::EncodeUrl($this->getPosterUrl());
         } else {
             $url = fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".jpg";
             $url = url_remove_dot_segments($url);
-            return $url;
+            return Video::EncodeUrl($url);
         }
     }
 
