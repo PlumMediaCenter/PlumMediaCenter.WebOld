@@ -51,7 +51,7 @@ abstract class Video {
         $this->fullPath = str_replace("\\", "/", realpath($fullPath));
 
         //calculate anything extra that is needed
-        $this->url = $this->getUrl();
+        $this->url = Video::EncodeUrl($this->getUrl());
         $this->sdPosterUrl = $this->getActualSdPosterUrl();
         $this->hdPosterUrl = $this->getActualHdPosterUrl();
         $this->title = $this->getVideoName();
@@ -238,7 +238,7 @@ abstract class Video {
         $relativePath = str_replace($this->videoSourcePath, "", $this->fullPath);
         $url = $this->videoSourceUrl . $relativePath;
         //encode the url and then restore the forward slashes and colons
-        return Video::encodeUrl($url);
+        return $url;
     }
 
     protected function getFullPathToContainingFolder() {

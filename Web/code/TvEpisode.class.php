@@ -75,12 +75,12 @@ class TvEpisode extends Video {
 
     function getPosterUrl($imgExt = "jpg") {
         //the poster is located in the same directory as the file, named the same except for the extension
-        $Url = $this->getUrl();
+        $url = $this->getUrl();
         $filename = pathinfo($this->fullPath, PATHINFO_FILENAME);
         $ext = pathinfo($this->fullPath, PATHINFO_EXTENSION);
         $filenameAndExt = "$filename.$ext";
         //replace the 
-        return str_replace($filenameAndExt, "$filename.$imgExt", $Url);
+        return Video::EncodeUrl(str_replace($filenameAndExt, "$filename.$imgExt", $url));
     }
 
     function getPosterPath($imgExt = "jpg") {
@@ -101,11 +101,11 @@ class TvEpisode extends Video {
     }
 
     function getSdPosterUrl() {
-        return $this->getPosterUrl("sd.jpg");
+        return Video::EncodeUrl($this->getPosterUrl("sd.jpg"));
     }
 
     function getHdPosterUrl() {
-        return $this->getPosterUrl("hd.jpg");
+        return Video::EncodeUrl($this->getPosterUrl("hd.jpg"));
     }
 
     function getEpisodeNumber() {
