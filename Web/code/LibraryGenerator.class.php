@@ -44,7 +44,7 @@ class LibraryGenerator {
         }
         foreach ($this->tvShows as $show) {
             $show->getVideoId();
-            foreach ($show->episodes as $episode) {
+            foreach ($show->tvEpisodes as $episode) {
                 $episode->getVideoId();
             }
         }
@@ -187,7 +187,7 @@ class LibraryGenerator {
         foreach ($this->tvShows as $tvShow) {
             $tvShow->writeToDb();
             writeToLog("Added new tv show: '$tvShow->fullPath'");
-            foreach ($tvShow->episodes as $episode) {
+            foreach ($tvShow->tvEpisodes as $episode) {
                 writeToLog("Added new tv episode: '$episode->fullPath'");
                 $episode->writeToDb();
             }

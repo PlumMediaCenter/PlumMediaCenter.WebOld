@@ -15,6 +15,10 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
         <link href="css/style.css" rel="stylesheet" media="screen">
         <script type="text/javascript">
             var username = "<?php echo Security::GetUsername(); ?>";
+            var enumerations = [];
+            enumerations.movie = "<?php echo Enumerations::MediaType_Movie; ?>";
+            enumerations.tvShow = "<?php echo Enumerations::MediaType_TvShow; ?>";
+            enumerations.tvEpisode = "<?php echo Enumerations::MediaType_TvEpisode; ?>";
 
             //determines how many pixels are avaible from below the navbar to the bottom of the nonscrollable portion of the screen.
             function displayHeight() {
@@ -23,9 +27,9 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
             $(document).ready(function() {
                 $("#playlistAdder").playlistAdder({username: username});
             });
-            
-            function addToPlaylist(videoId){
-                  $("#playlistAdder").playlistAdder('show',videoId);
+
+            function addToPlaylist(videoId) {
+                $("#playlistAdder").playlistAdder('show', videoId);
             }
         </script>
     </head>

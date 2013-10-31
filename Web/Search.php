@@ -38,7 +38,7 @@ function search($lib, $searchString) {
             $results[] = $vid;
         }
         //spin through each tv episode
-        foreach ($vid->episodes as $ep) {
+        foreach ($vid->tvEpisodes as $ep) {
             $t = strtolower($ep->title);
             //if the search string was found in the title of the video, add it to the results list
             if (strpos($t, $searchString) > -1) {

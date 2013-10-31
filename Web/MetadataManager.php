@@ -8,7 +8,6 @@ include_once("code/TvShow.class.php");
 include_once("code/TvEpisode.class.php");
 include_once("code/Enumerations.class.php");
 
-
 global $title;
 $p = new Page(__FILE__);
 $m = $p->getModel();

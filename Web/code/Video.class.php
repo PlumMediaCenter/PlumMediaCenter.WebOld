@@ -58,7 +58,7 @@ abstract class Video {
     }
 
     public function getFullPath() {
-        return $this->fullpath;
+        return $this->fullPath;
     }
 
     /**

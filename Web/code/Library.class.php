@@ -9,7 +9,8 @@ class Library {
     private $movieCount = 0;
     public $tvShows;
     private $tvShowCount = 0;
-    private $episodeCount = 0;
+    public $tvEpisodes;
+    private $tvEpisodeCount = 0;
     //contains a list of all videos, a combination of movies, tv shows and tv episodes
     private $videos;
 
@@ -18,18 +19,33 @@ class Library {
         set_time_limit(600);
     }
 
+    /**
+     * Returns the number of movies in the library
+     * @return int - the number of movies in the library
+     */
     public function getMovieCount() {
         return $this->movieCount;
     }
 
+    /**
+     * Returns the number of tv shows found in the library
+     * @return int - the number of tv shows in the library
+     */
     public function getTvShowCount() {
         return $this->tvShowCount;
     }
 
+    /**
+     * Returns the number of episodes found in the library
+     * @return int - the number of episodes found in the library
+     */
     public function getTvEpisodeCount() {
         return $this->tvEpisodeCount;
     }
 
+    /**
+     * Loads all movies and tv shows from the database
+     */
     public function loadFromDatabase() {
         $this->videos = [];
         $this->loadMoviesFromDatabase();
@@ -38,8 +54,9 @@ class Library {
 
     /**
      * Populates the movies array with all movies found in the database. All metadata is loaded into the movies. 
+     * @return Movie[] - returns the array of movies loaded from the database
      */
-    private function loadMoviesFromDatabase() {
+    public function loadMoviesFromDatabase() {
         $this->movies = [];
         $this->movieCount = 0;
         $videoIds = Queries::GetVideoIds(Enumerations::MediaType_Movie);
@@ -49,21 +66,32 @@ class Library {
             $this->videos[] = $movie;
             $this->movieCount++;
         }
+        return $this->movies;
     }
 
     /**
      * Loads an array of all tv shows found in the database. All metadata is loaded into the tv show objects. 
+     * @return TvShow[] - returns the tv shows in the library that was loaded from the database
      */
-    private function loadTvShowsFromDatabase() {
+    public function loadTvShowsFromDatabase() {
         $this->tvShows = [];
+        $this->tvEpisodes = [];
         $this->tvShowCount = 0;
+        $this->tvEpisodeCount = 0;
         $videoIds = Queries::GetVideoIds(Enumerations::MediaType_TvShow);
         foreach ($videoIds as $videoId) {
             $tvShow = Video::GetVideo($videoId);
             $this->tvShows[] = $tvShow;
             $this->videos[] = $tvShow;
             $this->tvShowCount++;
+
+            //load all of the episodes for this tv show
+            $tvShow->loadEpisodesFromDatabase();
+            $this->videos = array_merge($this->videos, $tvShow->episodes);
+            $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
+            $this->tvEpisodeCount += $tvShow->episodeCount;
         }
+        return $this->tvShows;
     }
 
     /**
@@ -127,6 +155,8 @@ class Library {
      */
     public function loadTvShowsFromFilesystem() {
         $this->tvShows = [];
+        $this->tvEpisodes = [];
+        $this->tvEpisodeCount = 0;
         $this->tvShowCount = 0;
         $tvShowSources = Queries::getVideoSources(Enumerations::MediaType_TvShow);
         //for every tv show file location, get all tv shows from that location
@@ -140,21 +170,21 @@ class Library {
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
                 //if the current file is a video file that we can add to our library
                 //create a new Movie object
-                $video = new TvShow($source->base_url, $source->location, $fullPathToFile);
+                $tvShow = new TvShow($source->base_url, $source->location, $fullPathToFile);
 
                 //tell the tv show to scan subdirectories for tv episodes
-                $video->loadTvEpisodesFromFilesystem();
+                $tvShow->loadTvEpisodesFromFilesystem();
 
                 //if this tv show has at least one season (which means it has at least one episode), then add it to the list
-                if (count($video->seasons) > 0) {
-                    $this->tvShows[] = $video;
-                    $this->videos[] = $video;
+                if (count($tvShow->seasons) > 0) {
+                    $this->tvShows[] = $tvShow;
+                    $this->videos[] = $tvShow;
                     $this->tvShowCount++;
-                    //add all tv episodes found in this tv show to the video lost
-                    foreach ($video->episodes as $episode) {
-                        $this->videos[] = $episode;
-                        $this->episodeCount++;
-                    }
+
+                    //include episodes
+                    $this->videos[] = array_merge($this->videos, $tvShow->episodes);
+                    $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
+                    $this->tvEpisodeCount+= $tvShow->episodeCount;
                 }
             }
         }
