@@ -182,7 +182,7 @@ class Library {
                     $this->tvShowCount++;
 
                     //include episodes
-                    $this->videos[] = array_merge($this->videos, $tvShow->episodes);
+                    $this->videos = array_merge($this->videos, $tvShow->episodes);
                     $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
                     $this->tvEpisodeCount+= $tvShow->episodeCount;
                 }
