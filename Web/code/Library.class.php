@@ -28,6 +28,26 @@ class Library {
     }
 
     /**
+     * Fetches any missing metadata for the videos and fetches any missing posters for the videos and generates posters for
+     * any video that doesn't have the posters generated yet.
+     */
+    public function fetchMissingMetadataAndPosters() {
+        /* @var $video Video   */
+        foreach ($this->videos as $video) {
+            if ($video->nfoFileExists() == false) {
+                $video->fetchMetadata();
+            }
+            if ($video->posterExists() == false) {
+                $video->fetchPoster();
+            }
+            if ($video->sdPosterExists() == false || $video->hdPosterExists() == false) {
+                $video->generatePosters();
+            }
+        }
+        return true;
+    }
+
+    /**
      * Returns the number of tv shows found in the library
      * @return int - the number of tv shows in the library
      */
@@ -48,8 +68,9 @@ class Library {
      */
     public function loadFromDatabase() {
         $this->videos = [];
-        $this->loadMoviesFromDatabase();
-        $this->loadTvShowsFromDatabase();
+        $success = $this->loadMoviesFromDatabase();
+        $success = $success && $this->loadTvShowsFromDatabase();
+        return $success;
     }
 
     /**
@@ -121,8 +142,9 @@ class Library {
      */
     public function loadFromFilesystem() {
         //for each movie
-        $this->loadMoviesFromFilesystem();
-        $this->loadTvShowsFromFilesystem();
+        $success = $this->loadMoviesFromFilesystem();
+        $success = $success && $this->loadTvShowsFromFilesystem();
+        return $success;
     }
 
     /**
@@ -131,7 +153,6 @@ class Library {
     public function loadMoviesFromFilesystem() {
         //list of all video sources
         $movieSources = Queries::getVideoSources(Enumerations::MediaType_Movie);
-
         $this->movies = [];
         $this->movieCount = 0;
         foreach ($movieSources as $source) {
@@ -147,6 +168,7 @@ class Library {
                 $this->movieCount++;
             }
         }
+        return true;
     }
 
     /**
@@ -188,6 +210,7 @@ class Library {
                 }
             }
         }
+        return true;
     }
 
     /**

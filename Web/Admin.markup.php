@@ -1,6 +1,5 @@
 <?php ?>
-
-<a href='UpdateLibrary.php' class="btn">Generate/Update library</a>
+<a onclick="generateLibrary();" class="btn">Generate/Update library</a>
 <br/>
 <br/>
 <a href='VideoSources.php' class="btn">Add/Remove Video Sources</a>
@@ -9,16 +8,13 @@
 <a href='MetadataManager.php' class="btn">Manage Metadata</a>
 <br/>
 <br/>
-<a href='FetchAndGeneratePosters.php?fetchAndGenerate=true' class="btn">Fetch and Generate Missing Posters</a>
+<a class="btn" onclick="fetchMissingMetadataAndPosters();">Fetch and Generate Missing Metadata and Posters</a>
 <br/>
 <br/>
 <a href="#videosJsonModal" class="btn" role="button" data-toggle="modal" onclick="getVideosJson();">View library.json</a>
 <br/>
 <br/>
 <a href='Log.php' class="btn">View Log</a>
-<br/>
-<br/>
-<a href='javascript:eraseVideosJson();' class="btn">Clear library.json</a>
 
 <div id="videosJsonModal" class="modal hide" style="width: 1000px; margin-left: -500px;">
     <div class="modal-header">
@@ -34,9 +30,29 @@
         });
     }
 
-    function eraseVideosJson() {
-        $.ajax({url: "api/Eraselibrary.json.php", success: function() {
-                alert("Erased library.json");
-            }});
+    function generateLibrary() {
+        bootbox.alert("Generating Library. <img src='img/ajax-loader.gif'/>");
+        $.ajax({url: "api/GenerateLibrary.php", dataType: "json", success: function(result) {
+                bootbox.hideAll();
+                if (result.success == true) {
+                    bootbox.alert("Total Success: " + result.success);
+                } else {
+                    bootbox.alert(result);
+                }
+            }
+        });
+    }
+
+    function fetchMissingMetadataAndPosters() {
+        bootbox.alert("Fetching missing metadata and posters. <img src='img/ajax-loader.gif'/>");
+        $.ajax({url: "api/FetchMissingMetadataAndPosters.php", dataType: "json", success: function(result) {
+                bootbox.hideAll();
+                if (result.success == true) {
+                    bootbox.alert("Total Success: " + result.success);
+                } else {
+                    bootbox.alert(result);
+                }
+            }
+        });
     }
 </script>

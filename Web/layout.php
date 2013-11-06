@@ -10,6 +10,7 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
         <link href="plugins/jquery-ui-1.10.3.custom/css/dark-hive/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" media="screen">
         <script type="text/javascript" src="plugins/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"></script>
         <script type="text/javascript" src="plugins/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="plugins/bootstrap/js/bootbox.min.js"></script>
         <script type="text/javascript" src="js/jquery.playlistadder.js"></script>
         <link href="plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="css/style.css" rel="stylesheet" media="screen">
@@ -53,9 +54,7 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
         </div>
         <div class="container">
             <div id="containerRelativer">
-                <?php
-                echo isset($body) ? $body : "";
-                ?>
+                <?php echo isset($body) ? $body : ""; ?>
             </div>
         </div>
     </body>
