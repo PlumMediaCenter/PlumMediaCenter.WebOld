@@ -9,6 +9,7 @@ $l = new Library();
 $result->successLoadingFromDatabase = $l->loadFromDatabase();
 $result->successFetchingMetadataAndPosters = $l->fetchMissingMetadataAndPosters();
 $result->successWritingToDb = $l->writeToDb();
-$result->success = $result->successLoadingFromDatabase && $result->successWritingToDb && $result->successFetchingMetadataAndPosters;
+$result->successWritingLibraryJson = $l->writeLibraryJson();
+$result->success = $result->successLoadingFromDatabase && $result->successWritingToDb && $result->successFetchingMetadataAndPosters && $result->successWritingLibraryJson;
 echo json_encode($result);
 ?>
