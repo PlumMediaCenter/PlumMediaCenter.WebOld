@@ -40,7 +40,8 @@ $result->success = $success;
 if ($success === true) {
     //return the new video data to be put into the 
     $v = new $mediaType($baseUrl, $basePath, $fullPath);
-
+    //load the latest metadata from the file into the video 
+    $v->loadMetadata(true);
     $result->output = getVideoMetadataRow($v);
 } else {
     
