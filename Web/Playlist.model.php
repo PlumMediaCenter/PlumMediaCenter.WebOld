@@ -8,7 +8,7 @@ class PlaylistModel extends Model {
     public $playlists;
 
     function __construct() {
-        $this->playlists = Playlist::GetPlaylists(config::$globalUsername);
+        $this->playlists = Playlist::GetPlaylistNames(Security::GetUsername());
     }
 
 }

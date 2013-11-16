@@ -1,5 +1,5 @@
 <?php
-
+include_once("code/Security.class.php");
 include_once("code/functions.php");
 include_once("code/Model.class.php");
 
