@@ -25,7 +25,7 @@
         <a class="btn action" onclick="action('<?php echo Enumerations::MetadataManagerAction_GeneratePosters; ?>');">Generate SD and HD Posters</a>
         <a class="btn action" onclick="action('<?php echo Enumerations::MetadataManagerAction_FetchAndGeneratePosters; ?>');">Fetch and Generate Sd and HD Poster</a>
     </div>
-    <div id="tablesArea" class="tab-content" style="border:1px solid black; min-height: 300px; overflow:auto;">
+    <div id="tablesArea" class="tab-content" style="border:1px solid black; min-height: 300px; overflow:auto;margin-top:10px;">
         <div id="moviesPane" class="tab-pane  <?php echo $selectedTab == Enumerations::MediaType_Movie ? "active" : ""; ?>">
             <h2>Movies</h2>
             <div id="moviesTableArea">

@@ -1,3 +1,5 @@
+var showRowsStyle = "all";
+
 $(document).ready(function() {
     $(".table-sort").tablesorter();
     $(".table-sort thead tr th").hover(
@@ -21,12 +23,16 @@ $(document).ready(function() {
     resize();
 });
 
-
+/**
+ * 
+ * @param string  style - can be either 'missing' or 'all'. 
+ * @returns {undefined}
+ */
 function showRows(style) {
-    switch (style) {
-        case "all":
-            $("tr").show();
-            break;
+    //if the style was specified, set that as the new default.
+    showRowsStyle = (style != undefined) ? style : showRowsStyle;
+    switch (showRowsStyle) {
+
         case "missing":
             //$("tr").filter(":hidden").show();
             $("tr").each(function() {
@@ -36,6 +42,9 @@ function showRows(style) {
                     $this.hide();
                 }
             });
+            break;
+        default:
+            $("tr").show();
             break;
     }
 }
@@ -118,6 +127,7 @@ function loadMetadataTables() {
         function(result) {
             moviesLoaded = true;
             $("#moviesTableArea").html(result[enumerations.movie]);
+            showRows();
         });
     } else if ((mediaType == enumerations.tvShow && tvShowsLoaded == false) || (mediaType == enumerations.tvEpisode && tvEpisodesLoaded == false)) {
         $("#tvShowsTableArea").html("Loading <img src='img/ajax-loader.gif'/>")
@@ -130,7 +140,7 @@ function loadMetadataTables() {
             tvEpisodesLoaded = true;
             $("#tvShowsTableArea").html(result[enumerations.tvShow]);
             $("#tvEpisodesTableArea").html(result[enumerations.tvEpisode]);
-
+            showRows();
         });
     } else {
         //do nothing
