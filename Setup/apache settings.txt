@@ -17,3 +17,6 @@ xdebug.remote_enable=on
 xdebug.remote_host=localhost
 xdebug.remote_handler=dbgp
 xdebug.remote_port=9000
+
+Install the mod-h264 module to allow pseudostreaming of mp4 files.
+http://h264.code-shop.com/trac/wiki/Mod-H264-Streaming-Apache-Version2
