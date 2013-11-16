@@ -67,6 +67,8 @@ $.widget("ui.playlistAdder", {
     hide: function() {
         this.modal.modal('hide');
         $(".modal-backdrop").hide();
+        this.element.hide();
+        this.modal.hide();
     },
     getPlaylistNames: function(callback) {
         var me = this;

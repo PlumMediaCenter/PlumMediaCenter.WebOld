@@ -31,12 +31,20 @@ body{
 
 .tile{
     display:inline-block;
+    float:left;
     border:2px solid white;
     cursor:pointer;
     margin: 10px;
     width:205px;
+    height:350px;
     padding:2px;
     border: 5px solid transparent;
+}
+
+.tile img{
+    width:205px;
+    cursor:pointer;
+    border:0px solid white;
 }
 .tile:hover{
     background-color:#CCCCCC;
@@ -50,11 +58,6 @@ body{
     text-align:center;
 }
 
-.tile img{
-    width:100%;
-    cursor:pointer;
-    border:0px solid white;
-}
 .radio{
     padding-left:0px;
 }

@@ -26,7 +26,8 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
                 return $("body").height() - $("#bodyPadding").height();
             }
             $(document).ready(function() {
-               // $("#playlistAdder").playlistAdder({username: username});
+               $("#playlistAdder").playlistAdder({username: username});
+               $("#playlistAdder").playlistAdder("hide");
             });
 
             function addToPlaylist(videoId) {

@@ -17,7 +17,7 @@
                             <a href="VideoInfo.php?videoId=<?php echo $movie->videoId; ?>" title="View movie information"><?php echo $movie->title; ?></a>
                             <a style="cursor:pointer;" onclick="addToPlaylist(<?php echo $movie->videoId; ?>);" title="Add to a playlist">+</a>
                         </span>
-                        <a href="Play.php?videoId=<?php echo $movie->videoId; ?>"><img src="<?php echo $movie->hdPosterUrl; ?>"/></a>
+                        <a href="Play.php?videoId=<?php echo $movie->videoId; ?>"><img class="tileImg" src="<?php echo $movie->hdPosterUrl; ?>"/></a>
                     </div>
                     <?php
                 }
