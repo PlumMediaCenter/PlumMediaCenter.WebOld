@@ -5,10 +5,15 @@
 <a href='VideoSources.php' class="btn">Add/Remove Video Sources</a>
 <br/>
 <br/>
-<a href='MetadataManager.php' class="btn">Manage Metadata</a>
+<a id="metadataManagerBtn" href-original="MetadataManager.php" href="MetadataManager.php" class="btn">Manage Metadata</a>
+<input id="allMetadataType" checked="checked" type="radio" value="" name="metadataType"/> <label for="movieMetadataType">All Media</label>&nbsp;&nbsp;&nbsp;
+<input id="movieMetadataType" type="radio" value="<?php echo Enumerations::MediaType_Movie; ?>" name="metadataType"/><label for="movieMetadataType">Movies Only</label>&nbsp;&nbsp;&nbsp;
+<input id="tvShowMetadataType" type="radio" value="<?php echo Enumerations::MediaType_TvShow; ?>" name="metadataType"/><label for="movieMetadataType">Tv Shows/Episodes Only</label>
+
 <br/>
 <br/>
 <a class="btn" onclick="fetchMissingMetadataAndPosters();">Fetch and Generate Missing Metadata and Posters</a>
+
 <br/>
 <br/>
 <a href="#videosJsonModal" class="btn" role="button" data-toggle="modal" onclick="getVideosJson();">View library.json</a>
@@ -24,6 +29,12 @@
     </div>
 </div>
 <script type="text/javascript">
+
+    $(document).ready(function() {
+        $("[name=metadataType]").click(function() {
+            $("#metadataManagerBtn").attr("href", $("#metadataManagerBtn").attr("href-original") + "?mediaType=" + $(this).val());
+        });
+    });
     function getVideosJson() {
         $.getJSON("api/library.json", function(json) {
             $("#videosJsonModalContent").html("<pre>" + JSON.stringify(json, undefined, 2) + "</pre>");

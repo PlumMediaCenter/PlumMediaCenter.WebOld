@@ -126,7 +126,8 @@ function loadMetadataTables() {
         $.getJSON("ajax/GetMetadataManagerTables.php", {mediaType: mediaType},
         function(result) {
 
-            moviesLoaded = true;
+            tvShowsLoaded = true;
+            tvEpisodesLoaded = true;
             $("#tvShowsTableArea").html(result[enumerations.tvShow]);
             $("#tvEpisodesTableArea").html(result[enumerations.tvEpisode]);
 
