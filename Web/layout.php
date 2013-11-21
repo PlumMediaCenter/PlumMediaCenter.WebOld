@@ -14,6 +14,7 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
         <script type="text/javascript" src="js/jquery.playlistadder.js"></script>
         <link href="plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="css/style.css" rel="stylesheet" media="screen">
+        <link rel="icon" href="favicon.ico" type="image/x-icon" />
         <script type="text/javascript">
             var username = "<?php echo Security::GetUsername(); ?>";
             var enumerations = [];
