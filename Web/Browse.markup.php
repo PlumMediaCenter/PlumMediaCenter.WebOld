@@ -35,10 +35,10 @@
                     <div class="tile" >
                         <span>
                             <a href="VideoInfo.php?videoId=<?php echo $tvShow->videoId; ?>"><?php echo $tvShow->title; ?></a>
-                            <a style="cursor:pointer;" onclick="$.getJSON('api/AddToPlaylist.php?playlistName=My Playlist&videoIds=<?php echo $tvShow->videoId; ?>');">+</a>
+                            <a style="cursor:pointer;" onclick="addToPlaylist(<?php echo $tvShow->videoId; ?>);" title="Add to a playlist">+</a>
                         </span>
 
-                        <a href="Play.php?videoId=<?php echo $tvShow->videoId; ?>"><img src="<?php echo $tvShow->hdPosterUrl; ?>"/></a>
+                        <a href="VideoInfo.php?videoId=<?php echo $tvShow->videoId; ?>"><img src="<?php echo $tvShow->hdPosterUrl; ?>"/></a>
                         </a>
                     </div>
                     <div id="<?php echo $modalId; ?>" class="modal hide fade">
