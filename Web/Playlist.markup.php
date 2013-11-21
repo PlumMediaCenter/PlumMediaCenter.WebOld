@@ -9,7 +9,7 @@
 </script>
 <?php foreach ($playlists as $key => $playlist) { ?>
     <div class="playlistArea" style="overflow:hidden;padding-bottom:20px;">
-        <h1><?php echo $playlist; ?></h1>
+        <h1><a href="<?php echo "Play.php?playlistName=$playlist"; ?>"><?php echo $playlist; ?></a></h1>
         <div id="playlistArea<?php echo $key; ?>"></div>
     </div>
 <?php } ?>

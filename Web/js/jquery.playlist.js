@@ -7,7 +7,7 @@ $.widget("ui.playlist", {
     _playlist: [],
     _create: function() {
         //create an unordered list and append it directly inside of the matched element
-        this.list = $("<ul class='playlistGrid'></ul>");
+        this.list = $("<ul class='playlistGrid'><li><img src='img/ajax-loader.gif' style='width:20px;'/></ul>");
         $(this.element).append(this.list)
         this._fetchPlaylist();
     },
@@ -20,7 +20,9 @@ $.widget("ui.playlist", {
             me._playlist = playlistObj;
             //clear the playlist
             me.clear();
+            var atLeastOnePlaylist = false;
             for (var i in me._playlist) {
+                atLeastOnePlaylist = true;
                 var video = me._playlist[i];
                 var li = "<li>";
                 //the delete button
@@ -44,6 +46,10 @@ $.widget("ui.playlist", {
                 }
             });
             me.list.disableSelection();
+            //if there were no items found for this playlist, show a message stating that
+            if (atLeastOnePlaylist == false) {
+                me.list.append($("<li>No videos found</li>"));
+            }
         });
     },
     removeFromPlaylist: function(listItem, event) {

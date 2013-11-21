@@ -41,6 +41,7 @@ class Queries {
         $sql = "delete from video where video_id $notInStmt";
         $stmt = $pdo->prepare($sql);
         $success = $stmt->execute();
+        Queries::LogSql($sql, $success);
         return $success;
     }
 
@@ -58,8 +59,10 @@ class Queries {
         $stmt->bindParam(":username", $username);
         $stmt->bindParam(":playlistName", $playlistName);
 
-        $stmt->execute();
-        return Queries::fetchAllSingleColumn($stmt, "video_id");
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+
+        return Queries::FetchAllSingleColumn($stmt, "video_id");
     }
 
     public static function clearPlaylist($username, $playlistName) {
@@ -72,7 +75,9 @@ class Queries {
         $stmt = Queries::$stmtClearPlaylist;
         $stmt->bindParam(":username", $username);
         $stmt->bindParam(":playlistName", $playlistName);
-        return $stmt->execute();
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        return $success;
     }
 
     /**
@@ -92,7 +97,9 @@ class Queries {
         $stmt = Queries::$stmtAddPlaylistName;
         $stmt->bindParam(":username", $username);
         $stmt->bindParam(":name", $playlistName);
-        return $stmt->execute();
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        return $success;
     }
 
     /**
@@ -111,7 +118,9 @@ class Queries {
         $stmt = Queries::$stmtDeletePlaylistName;
         $stmt->bindParam(":username", $username);
         $stmt->bindParam(":name", $playlistName);
-        return $stmt->execute();
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        return $success;
     }
 
     /**
@@ -130,7 +139,9 @@ class Queries {
         $stmt = Queries::$stmtDeletePlaylist;
         $stmt->bindParam(":username", $username);
         $stmt->bindParam(":name", $playlistName);
-        return $stmt->execute();
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        return $success;
     }
 
     public static function setPlaylistItems($username, $playlistName, $videoIds) {
@@ -141,7 +152,9 @@ class Queries {
             $sql .= "$comma('$username', '$playlistName', $rank, $videoId)";
             $comma = ",";
         }
-        return DbManager::nonQuery($sql);
+        $success = DbManager::nonQuery($sql);
+        Queries::LogSql($sql, $success);
+        return $success;
     }
 
     public static function GetPlaylistNames($username) {
@@ -153,8 +166,9 @@ class Queries {
         }
         $stmt = Queries::$stmtGetPlaylistNames;
         $stmt->bindParam(":username", $username);
-        $stmt->execute();
-        return Queries::fetchAllSingleColumn($stmt, "name");
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        return Queries::FetchAllSingleColumn($stmt, "name");
     }
 
     /**
@@ -168,37 +182,10 @@ class Queries {
             Queries::$stmtGetAllVideoPaths = $stmt;
         }
         $stmt = Queries::$stmtGetAllVideoPaths;
-        $stmt->execute();
-        $list = [];
-        return Queries::fetchAllKeyValuePair($stmt, "video_id", "path");
-    }
-
-    private static function fetchAll($stmt) {
-        $result = [];
-        $val = $stmt->fetch(PDO::FETCH_ASSOC);
-        while ($val != null) {
-            $result[] = $val;
-            $val = $stmt->fetch(PDO::FETCH_ASSOC);
-        }
-        return $result;
-    }
-
-    private static function fetchAllSingleColumn($stmt, $colName) {
-        $result = [];
-        $list = DbManager::fetchAllAssociative($stmt);
-        foreach ($list as $item) {
-            $result[] = $item[$colName];
-        }
-        return $result;
-    }
-
-    private static function fetchAllKeyValuePair($stmt, $keyColName, $valueColName) {
-        $result = [];
-        $list = DbManager::fetchAllAssociative($stmt);
-        foreach ($list as $item) {
-            $result[$item[$keyColName]] = $item[$valueColName];
-        }
-        return $result;
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        $list = Queries::FetchAllKeyValuePair($stmt, "video_id", "path");
+        return $list;
     }
 
     /**
@@ -207,6 +194,7 @@ class Queries {
      * @param type $filePath -- the full filepath of the video
      * @param type $filetype -- the filetype of the video
      * @param type $mediaType -- the media type of the video (movie, tv show, tv episode   
+     * @return boolean - success or failure
      */
     public static function insertVideo($title, $plot, $mpaa, $releaseDate, $videoPath, $filetype, $mediaType, $metadataModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds) {
         $pdo = DbManager::getPdo();
@@ -228,7 +216,9 @@ class Queries {
         $stmt->bindParam(":videoSourcePath", $videoSourcePath);
         $stmt->bindParam(":videoSourceUrl", $videoSourceUrl);
         $stmt->bindParam(":runningTimeSeconds", $runningTimeSeconds);
-        $stmt->execute();
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        return $success;
     }
 
     /**
@@ -266,6 +256,7 @@ class Queries {
         $stmt->bindParam(":runningTimeSeconds", $runningTimeSeconds);
         $stmt->bindParam(":videoId", $videoId);
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         return $success;
     }
 
@@ -286,7 +277,9 @@ class Queries {
         $stmt->bindParam(":episodeNumber", $episodeNumber);
         $stmt->bindParam(":writer", $writer);
         $stmt->bindParam(":director", $director);
-        return $stmt->execute();
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        return $success;
     }
 
     /**
@@ -296,7 +289,9 @@ class Queries {
         $pdo = DbManager::getPdo();
         $sql = "truncate table video";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute();
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        return $success;
     }
 
     /**
@@ -306,7 +301,9 @@ class Queries {
         $pdo = DbManager::getPdo();
         $sql = "truncate table tv_episode";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute();
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        return $success;
     }
 
     /**
@@ -316,7 +313,9 @@ class Queries {
         $pdo = DbManager::getPdo();
         $sql = "delete from tv_episode where video_id not in (select video_id from video)";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute();
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        return $success;
     }
 
     /**
@@ -344,7 +343,9 @@ class Queries {
         $delSql = "delete from video where video_id in ($videoIdStr)";
         $delStmt = $pdo->prepare($delSql);
         $delSuccess = $delStmt->execute();
-        return $success && $delSuccess;
+        $success = $success && $delSuccess;
+        Queries::LogStmt($stmt, $success);
+        return $success;
     }
 
     public static function getTvShowVideoIdFromEpisodeTable($videoId) {
@@ -357,6 +358,7 @@ class Queries {
         $stmt = Queries::$stmtGetTvShowVideoIdFromEpisodeTable;
         $stmt->bindParam(":videoId", $videoId);
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         $videoId = $stmt->fetch();
         if ($success === true) {
             $tvShowVideoId = $videoId["tv_show_video_id"];
@@ -377,6 +379,7 @@ class Queries {
         $stmt = Queries::$stmtGetVideoIdByVideoPath;
         $stmt->bindParam(":videoPath", $videoPath);
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         $videoId = $stmt->fetch();
         if ($success === true) {
             $videoId = $videoId["video_id"];
@@ -397,6 +400,7 @@ class Queries {
         $stmt = Queries::$stmtGetVideoMetadataLastModifiedDate;
         $stmt->bindParam(":videoId", $videoId);
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         //if the stmt failed execution, exit failure
         if ($success === false) {
             return false;
@@ -417,6 +421,7 @@ class Queries {
             $sql .= " where media_type = '$type'";
         }
         $sources = DbManager::query($sql);
+        Queries::LogSql($sql, $sources);
         return $sources;
     }
 
@@ -438,6 +443,7 @@ class Queries {
             $stmt->bindParam(":mediaType", $mediaType);
             $stmt->bindParam(":securityType", $securityType);
             $success = $stmt->execute();
+            Queries::LogStmt($stmt, $success);
             return $success;
         }
         return false;
@@ -462,8 +468,8 @@ class Queries {
             $stmt->bindParam(":securityType", $securityType);
             $stmt->bindParam(":originalLocation", $originalLocation);
             $stmt->bindParam(":refreshVideos", $refreshVideos);
-
             $success = $stmt->execute();
+            Queries::LogStmt($stmt, $success);
             return $success;
         }
         return false;
@@ -483,6 +489,7 @@ class Queries {
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(":refreshVideos", $refreshVideos);
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         return $success;
     }
 
@@ -492,7 +499,9 @@ class Queries {
      * @return boolean - true if successful, false if failure
      */
     public static function deleteVideoSource($location) {
-        $success = DbManager::nonQuery("delete from video_source where location = '$location'");
+        $sql = "delete from video_source where location = '$location'";
+        $success = DbManager::nonQuery($sql);
+        Queries::LogSql($sql, $success);
         return $success;
     }
 
@@ -507,12 +516,16 @@ class Queries {
         $m = Enumerations::MediaType_Movie;
         $stmt->bindParam(":mediaType", $m);
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+
         $movieCount = $stmt->fetch();
         $movieCount = $movieCount[0];
         //get tv show count
         $s = Enumerations::MediaType_TvShow;
         $stmt->bindParam(":mediaType", $s);
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+
         $tvShowCount = $stmt->fetch();
         $tvShowCount = $tvShowCount[0];
 
@@ -520,6 +533,7 @@ class Queries {
         $e = Enumerations::MediaType_TvEpisode;
         $stmt->bindParam(":mediaType", $e);
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         $tvEpisodeCount = $stmt->fetch();
         $tvEpisodeCount = $tvEpisodeCount[0];
 
@@ -539,6 +553,7 @@ class Queries {
         $stmt->bindParam(":timeInSeconds", $timeInSeconds);
         $stmt->bindParam(":dateWatched", $dateWatched);
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         return $success;
     }
 
@@ -555,10 +570,11 @@ class Queries {
         $stmt = Queries::$stmtGetVideoIds;
         $stmt->bindParam(":mediaType", $mediaType);
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         if ($success == false) {
             return false;
         }
-        $videoIds = DbManager::fetchAllColumn($stmt, 0);
+        $videoIds = DbManager::FetchAllColumn($stmt, 0);
         return $videoIds;
     }
 
@@ -580,8 +596,10 @@ class Queries {
         $stmt->bindParam(":tvShowVideoId", $tvShowVideoId);
         $stmt->bindParam(":username", $username);
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+
         if ($success === true) {
-            $rows = Dbmanager::fetchAllClass($stmt);
+            $rows = Dbmanager::FetchAllClass($stmt);
             if (count($rows) > 0) {
                 return $rows[0];
             }
@@ -606,7 +624,8 @@ class Queries {
         $stmt->bindParam(":tvShowVideoId", $tvShowVideoId);
 
         $success = $stmt->execute();
-        return DbManager::fetchAllClass($stmt);
+        Queries::LogStmt($stmt, $success);
+        return DbManager::FetchAllClass($stmt);
     }
 
     public static function getVideoPathsBySourcePath($videoSourcePath, $mediaType) {
@@ -616,7 +635,8 @@ class Queries {
         $stmt->bindParam(":mediaType", $mediaType);
         $stmt->bindParam(":videoSourcePath", $videoSourcePath);
         $success = $stmt->execute();
-        $result = DbManager::fetchAllColumn($stmt, 0);
+        Queries::LogStmt($stmt, $success);
+        $result = DbManager::FetchAllColumn($stmt, 0);
         return $result;
     }
 
@@ -640,7 +660,8 @@ class Queries {
         $stmt = Queries::$stmtGetEpisodePathsByShowPath;
         $stmt->bindParam(":showPath", $showPath);
         $success = $stmt->execute();
-        $result = DbManager::fetchAllColumn($stmt, 0);
+        Queries::LogStmt($stmt, $success);
+        $result = DbManager::FetchAllColumn($stmt, 0);
         return $result;
     }
 
@@ -655,10 +676,10 @@ class Queries {
         }
         $stmt = Queries::$stmtGetVideos;
         $stmt->bindParam(":videoIds", $videoIds);
-
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         if ($success === true) {
-            $v = Dbmanager::fetchAllClass($stmt);
+            $v = Dbmanager::FetchAllClass($stmt);
             if (count($v) > 0) {
                 $v = $v[0];
                 return $v;
@@ -680,8 +701,9 @@ class Queries {
         $stmt->bindParam(":videoId", $videoId);
 
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         if ($success === true) {
-            $v = Dbmanager::fetchAllClass($stmt);
+            $v = Dbmanager::FetchAllClass($stmt);
             if (count($v) > 0) {
                 $v = $v[0];
                 return $v;
@@ -702,10 +724,10 @@ class Queries {
         }
         $stmt = Queries::$stmtGetTvEpisode;
         $stmt->bindParam(":videoId", $videoId);
-
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         if ($success === true) {
-            $v = Dbmanager::fetchAllClass($stmt);
+            $v = Dbmanager::FetchAllClass($stmt);
             if (count($v) > 0) {
                 $v = $v[0];
                 return $v;
@@ -726,10 +748,10 @@ class Queries {
         }
         $stmt = Queries::$stmtGetEpisodesInTvShow;
         $stmt->bindParam(":videoId", $tvShowVideoId);
-
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         if ($success === true) {
-            $v = Dbmanager::fetchAllClass($stmt);
+            $v = Dbmanager::FetchAllClass($stmt);
             if (count($v) > 0) {
                 return $v;
             }
@@ -756,8 +778,8 @@ class Queries {
         $stmt = Queries::$stmtGetVideoProgress;
         $stmt->bindParam(":videoId", $videoId);
         $stmt->bindParam(":username", $username);
-
         $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         if ($success === true) {
             $v = Dbmanager::fetchSingleItem($stmt);
             if ($v === false) {
@@ -768,6 +790,52 @@ class Queries {
         }
         //return 0 if no videos were found or an error occurred.
         return 0;
+    }
+
+    private static function FetchAll($stmt) {
+        $result = [];
+        $val = $stmt->fetch(PDO::FETCH_ASSOC);
+        while ($val != null) {
+            $result[] = $val;
+            $val = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        return $result;
+    }
+
+    private static function FetchAllSingleColumn($stmt, $colName) {
+        $result = [];
+        $list = DbManager::FetchAllAssociative($stmt);
+        foreach ($list as $item) {
+            $result[] = $item[$colName];
+        }
+        return $result;
+    }
+
+    private static function FetchAllKeyValuePair($stmt, $keyColName, $valueColName) {
+        $result = [];
+        $list = DbManager::FetchAllAssociative($stmt);
+        foreach ($list as $item) {
+            $result[$item[$keyColName]] = $item[$valueColName];
+        }
+        return $result;
+    }
+
+    private static function LogSql($sql, $bSuccess) {
+        if (config::$logQueries == true) {
+            $success = ($bSuccess == true) ? "<span style='color: green;font-weight:bold;'>Success</span>" : "<span style='color:red;font-weight:bold;'>Failure</span>";
+            writeToLog("Query: $success: $sql");
+        }
+    }
+
+    private static function LogStmt($stmt, $bSuccess) {
+        if (config::$logQueries == true) {
+
+            ob_start();
+            $success = ($bSuccess == true) ? "<span style='color: green;font-weight:bold;'>Success</span>" : "<span style='color:red;font-weight:bold;'>Failure</span>";
+            $stmt->debugDumpParams();
+            writeToLog("Query: $success: " . ob_get_contents());
+            ob_end_clean();
+        }
     }
 
 }

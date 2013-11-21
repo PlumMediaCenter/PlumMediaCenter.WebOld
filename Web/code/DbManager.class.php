@@ -90,7 +90,7 @@ class DbManager {
         $success = $stmt->execute();
         //if the stmt failed execution, exit failure
         if ($success === true) {
-            return DbManager::fetchAllClass($stmt);
+            return DbManager::FetchAllClass($stmt);
         } else {
             return [];
         }
@@ -132,7 +132,7 @@ class DbManager {
      * @param obj $stmt - the pdo handler for the statement. This MUST have already been executed
      * @return array of arrays
      */
-    public static function fetchAllAssociative($stmt) {
+    public static function FetchAllAssociative($stmt) {
         $result = [];
         $val = $stmt->fetch(PDO::FETCH_ASSOC);
         while ($val != null) {
@@ -147,12 +147,12 @@ class DbManager {
      * @param obj $stmt -the pdo handler for the statement. This MUST have already been executed
      * @return array of arrays
      */
-    public static function fetchAllClass($stmt) {
+    public static function FetchAllClass($stmt) {
         $result = $stmt->fetchAll(PDO::FETCH_CLASS);
         return $result;
     }
 
-    public static function fetchAllColumn($stmt, $colNum) {
+    public static function FetchAllColumn($stmt, $colNum) {
         $result = $stmt->fetchAll(PDO::FETCH_COLUMN, $colNum);
         return $result;
     }
@@ -229,6 +229,41 @@ class DbManager {
             }
         }
         return "$s ";
+    }
+
+    /**
+     * Replaces any parameter placeholders in a query with the value of that
+     * parameter. Useful for debugging. Assumes anonymous parameters from 
+     * $params are are in the same order as specified in $query
+     *
+     * @param string $query The sql query with parameter placeholders
+     * @param array $params The array of substitution parameters
+     * @return string The interpolated query
+     */
+    public static function InterpolateQuery($query, $params) {
+        $keys = array();
+        $values = $params;
+
+        # build a regular expression for each parameter
+        foreach ($params as $key => $value) {
+            if (is_string($key)) {
+                $keys[] = '/:' . $key . '/';
+            } else {
+                $keys[] = '/[?]/';
+            }
+
+            if (is_array($value))
+                $values[$key] = implode(',', $value);
+
+            if (is_null($value))
+                $values[$key] = 'NULL';
+        }
+        // Walk the array to see if we can add single-quotes to strings
+        array_walk($values, create_function('&$v, $k', 'if (!is_numeric($v) && $v!="NULL") $v = "\'".$v."\'";'));
+
+        $query = preg_replace($keys, $values, $query, 1, $count);
+
+        return $query;
     }
 
 }
