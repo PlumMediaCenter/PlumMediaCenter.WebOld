@@ -13,7 +13,8 @@ class Movie extends Video {
     protected function getLengthInSecondsFromMetadata() {
         //make sure the metadata has been loaded
         $this->loadMetadata();
-        return $this->runtime;
+        //runtime is in minutes
+        return $this->runtime * 60;
     }
 
     function getNfoReader() {

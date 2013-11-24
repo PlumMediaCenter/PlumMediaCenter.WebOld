@@ -4,11 +4,12 @@ include("code/Page.class.php");
 
 $p = new Page(__FILE__);
 $m = $p->getModel();
+$playlistName = null;
 //if a playlist name is present in the url, get the videoId of the first video in the playlist
-if(isset($_GET["playlistName"])){
-    //$p = new Playlist($_GET["playlistName"]);
+if (isset($_GET["playlistName"])) {
+    $playlistName = $_GET["playlistName"];
 }
 $videoId = isset($_GET["videoId"]) ? $_GET["videoId"] : -1;
-$m->init($videoId);
+$m->init($videoId, $playlistName);
 $p->show();
 ?>

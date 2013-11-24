@@ -33,7 +33,7 @@ class TvEpisode extends Video {
      * this function provides a way to load the tv show from within this tv episode if it has not already been set by the owning tv show
      * when this episode object was loaded
      */
-    private function getTvShowObject() {
+    public function getTvShowObject() {
         $this->tvShow = isset($this->tvShow) ? $this->tvShow : null;
         if ($this->tvShow == null) {
             $this->tvShow = new TvShow($this->videoSourceUrl, $this->videoSourcePath, $this->showFilePath);

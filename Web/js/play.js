@@ -1,25 +1,62 @@
 window.player = null;
 $(document).ready(function() {
     jwplayer("videoPlayer").setup({
-        flashplayer: "plugins/jwplayer/player.swf",
-        file: videoUrl,
-        image: posterUrl,
+        //  file: videoUrl,
+        // image: posterUrl,
         autostart: true,
+        primary: "flash",
+        provider: 'http',
+        playlist: jwPlaylist,
+//      listbar: {
+//          position: 'right',
+//          size: 320
+//      },
         events: {
+            onPlaylistItem: function(obj) {
+                //mark the last video that was being watched as complete
+                updateVideoPosition(previousVideoId(), -1, true);
+
+                var video = videoList[obj.index];
+                if (video.mediaType == enumerations.tvEpisode) {
+                    var title =
+                            "<a href='VideoInfo.php?videoId=" + video.videoId + "'>" +
+                            video.showName + "</a>"
+                            + " Season " + video.seasonNumber +
+                            " Episode " + video.episodeNumber + " - " + video.title;
+                    $("#playTitle").html(title);
+                }
+            },
             onComplete: function(eventName) {
-                updateVideoPosition(videoId, -1, true);
+                updateVideoPosition(currentVideoId(), -1, true);
             },
             onTime: onTime,
             onPlay: onPlay
-        },
-        provider: 'http'
+        }
+
     });
 
     //set the reference to the player object so we don't have to look for it again.
     window.player = jwplayer("videoPlayer");
-    resizePlayer();
+    //make the player full screen
+    setTimeout(resizePlayer, 300);
     $(window).resize(resizePlayer);
 });
+
+/**
+ * Gets the previous videoId, if one exists. Otherwise, returns -1
+ * @returns {Number}
+ */
+function previousVideoId() {
+    var idx = jwplayer().getPlaylistIndex();
+    var video = videoList[idx - 1];
+    var videoId = (video == undefined) ? -1 : video.videoId;
+    return videoId;
+}
+function currentVideoId() {
+    var idx = jwplayer().getPlaylistIndex();
+    var videoId = videoList[idx].videoId;
+    return videoId;
+}
 
 function resizePlayer() {
     //get the current width of the containerRelativer,set the jwplayer to that size
@@ -54,12 +91,12 @@ function onTime(obj) {
     }
 
     var positionInSeconds = obj.position;
-    //every minute, update the database with the current video's play position
+    //every so often, update the database with the current video's play position
     var nowTime = new Date();
     var timeSinceLastUpdate = nowTime - playPositionUpdateTime;
     if (timeSinceLastUpdate > 4000) {
         playPositionUpdateTime = new Date();
-        updateVideoPosition(videoId, positionInSeconds);
+        updateVideoPosition(currentVideoId(), positionInSeconds);
     }
 }
 

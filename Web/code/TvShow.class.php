@@ -114,7 +114,7 @@ class TvShow extends Video {
      */
     function loadEpisodesFromDatabase() {
         $this->seasons = [];
-        $episodeInfoList = Queries::GetTvEpisodeVideoIdsForShow($this->videoId);
+        $episodeInfoList = Queries::GetTvEpisodeVideoIdsForShow($this->getVideoId());
         foreach ($episodeInfoList as $info) {
             $episode = Video::GetVideo($info->video_id);
             //if this season does not exist, create it
@@ -124,6 +124,32 @@ class TvShow extends Video {
             $this->seasons[$episode->seasonNumber][] = $episode;
             $this->episodes[] = $episode;
         }
+    }
+
+    /**
+     * Returns an array of all tv episodes AFTER and INCLUDING the current episode
+     * @param TvEpisode $tvEpisode
+     * @return TvEpisode
+     */
+    function remainingEpisodes($tvEpisode) {
+        //load all tv episodes
+        if (count($this->episodes) == 0) {
+            $this->loadEpisodesFromDatabase();
+        }
+        $remainingEpisodes = [];
+        $sNum = $tvEpisode->seasonNumber;
+        $eNum = $tvEpisode->episodeNumber;
+        foreach ($this->episodes as $e) {
+            //if episode is in same season and is greater episode number, add it to list
+            if ($e->seasonNumber == $sNum && $e->episodeNumber >= $eNum) {
+                $remainingEpisodes[] = $e;
+            }
+            // if episode is greater season, add it to the list
+            else if ($e->seasonNumber > $sNum) {
+                $remainingEpisodes[] = $e;
+            }
+        }
+        return $remainingEpisodes;
     }
 
     /**
@@ -208,7 +234,7 @@ class TvShow extends Video {
     }
 
     function nextEpisode() {
-        $episodeVideoId = TvShow::getNextEpisodeToWatch($this->videoId);
+        $episodeVideoId = TvShow::GetNextEpisodeToWatch($this->videoId);
         $episode = Video::GetVideo($episodeVideoId);
         return $episode;
     }
@@ -219,7 +245,7 @@ class TvShow extends Video {
      * @param int $finishedBuffer - the number of seconds that a video must be near to the end of the video in order to retrieve the next episode
      * @return int  - negative 1 if failure, the video id of the next video if success
      */
-    static function getNextEpisodeToWatch($videoId, $finishedBuffer = 45) {
+    static function GetNextEpisodeToWatch($videoId, $finishedBuffer = 45) {
         //load this video
         $v = Video::GetVideo($videoId);
         //the video is a tv episode, get the tv show for that episode

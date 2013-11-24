@@ -14,10 +14,10 @@
                     ?>
                     <div class="tile">
                         <span>
-                            <a href="VideoInfo.php?videoId=<?php echo $movie->videoId; ?>" title="View movie information"><?php echo $movie->title; ?></a>
+                            <a title='Play Movie' href="Play.php?videoId=<?php echo $movie->videoId; ?>" title="View movie information"><?php echo $movie->title; ?></a>
                             <a style="cursor:pointer;" onclick="addToPlaylist(<?php echo $movie->videoId; ?>);" title="Add to a playlist">+</a>
                         </span>
-                        <a href="Play.php?videoId=<?php echo $movie->videoId; ?>"><img class="tileImg" src="<?php echo $movie->hdPosterUrl; ?>"/></a>
+                        <a href="VideoInfo.php?videoId=<?php echo $movie->videoId; ?>"><img class="tileImg" src="<?php echo $movie->hdPosterUrl; ?>"/></a>
                     </div>
                     <?php
                 }
@@ -34,7 +34,7 @@
                                                                                                 <!--<a class="tile" href="#<?php echo $modalId; ?>" role="button" data-toggle="modal">-->
                     <div class="tile" >
                         <span>
-                            <a href="VideoInfo.php?videoId=<?php echo $tvShow->videoId; ?>"><?php echo $tvShow->title; ?></a>
+                            <a title='Play Tv Show' href="Play.php?playType=series&videoId=<?php echo $tvShow->videoId; ?>"><?php echo $tvShow->title; ?></a>
                             <a style="cursor:pointer;" onclick="addToPlaylist(<?php echo $tvShow->videoId; ?>);" title="Add to a playlist">+</a>
                         </span>
 

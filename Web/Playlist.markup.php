@@ -3,7 +3,7 @@
 
 <?php foreach ($playlists as $key => $playlist) { ?>
     <div playlist-name='<?php echo $playlist; ?>' class="playlistArea" style="overflow:hidden;padding-bottom:20px;">
-        <h1 style="display:inline;"><a href="<?php echo "Play.php?playlistName=$playlist"; ?>" title="Start Playing Playlist"><?php echo $playlist; ?></a></h1>
+        <h1 style="display:inline;"><a href="<?php echo "Play.php?playType=playlist&playlistName=$playlist"; ?>" title="Start Playing Playlist"><?php echo $playlist; ?></a></h1>
         <a class="btn" style="display:inline;" onclick="if (confirm('Really delete this playlist?') == true) {
                         deletePlaylist('<?php echo $playlist; ?>');
                     }" >Delete</a>

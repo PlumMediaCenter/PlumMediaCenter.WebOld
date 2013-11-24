@@ -25,7 +25,7 @@ abstract class Video {
     protected $videoSourceUrl;
     protected $videoSourcePath;
     protected $fullPath;
-    protected $mediaType;
+    public $mediaType;
     public $title;
     public $plot = "";
     public $year;
@@ -144,15 +144,15 @@ abstract class Video {
         //if the lengthInSeconds has not yet been calculated, calculate it
         if ($this->lengthInSeconds == false && $force !== true) {
             //first, try to read the file, since it knows how long the video ACTUALLY is
-            $seconds = $this->getLengthInSecondsFromFile();
+            $this->lengthInSeconds = $this->getLengthInSecondsFromFile();
             //if the seconds value was valid, return it
-            if ($seconds !== false) {
-                return $seconds;
+            if ($this->lengthInSeconds !== false) {
+                return $this->lengthInSeconds;
             }
             //seconds was not able to be determined from the file. try reading it from the metadata.
-            $seconds = $this->getLengthInSecondsFromMetadata();
-            if ($seconds !== -1) {
-                return $seconds;
+            $this->lengthInSeconds = $this->getLengthInSecondsFromMetadata();
+            if ($this->lengthInSeconds !== -1) {
+                return $this->lengthInSeconds;
             } else {
                 return -1;
             }
@@ -184,8 +184,15 @@ abstract class Video {
      * @param int $videoId - the videoId of the video in question
      * @return int - the number of seconds into the video that the video was stopped at
      */
-    public static function GetVideoStartSeconds($videoId) {
-        return Queries::getVideoProgress(config::$globalUsername, $videoId);
+    public static function GetVideoStartSeconds($videoId, $finishedBuffer = 45) {
+        $v = Video::GetVideo($videoId);
+        $progress = Queries::getVideoProgress(Security::GetUsername(), $videoId);
+        $totalVideoLength = $v->getLengthInSeconds();
+        if (($progress + $finishedBuffer > $totalVideoLength) || ($progress == -1)) {
+            return 0;
+        } else {
+            return $progress;
+        }
     }
 
     /**
@@ -194,7 +201,7 @@ abstract class Video {
      * @return int - the number of seconds into the video that the video was stopped at
      */
     public function videoStartSeconds() {
-        return Queries::getVideoProgress(config::$globalUsername, $this->getVideoId());
+        Video::GetVideoStartSeconds($this->getVideoId());
     }
 
     /**
