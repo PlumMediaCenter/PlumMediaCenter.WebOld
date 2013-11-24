@@ -117,6 +117,10 @@ class TvShow extends Video {
         $episodeInfoList = Queries::GetTvEpisodeVideoIdsForShow($this->getVideoId());
         foreach ($episodeInfoList as $info) {
             $episode = Video::GetVideo($info->video_id);
+            //if no episode was able to be loaded, move on to the next item.
+            if($episode == false){
+                continue;
+            }
             //if this season does not exist, create it
             if (isset($this->seasons[$episode->seasonNumber]) == false) {
                 $this->seasons[$episode->seasonNumber] = [];
