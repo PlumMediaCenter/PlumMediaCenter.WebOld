@@ -1,12 +1,14 @@
 window.player = null;
 $(document).ready(function() {
+    
+    $(document).keydown(keyboardShortcuts);
     jwplayer("videoPlayer").setup({
-        //  file: videoUrl,
-        // image: posterUrl,
+        //file: "",
+        // image: "",
         autostart: true,
         primary: "flash",
-        provider: 'http',
         playlist: jwPlaylist,
+        startparam: "start",
 //      listbar: {
 //          position: 'right',
 //          size: 320
@@ -41,6 +43,16 @@ $(document).ready(function() {
     setTimeout(resizePlayer, 300);
     $(window).resize(resizePlayer);
 });
+
+function keyboardShortcuts(e){
+    switch(e.which){
+        //spacebar
+        case 32: 
+            //toggle playback
+            jwplayer().play();
+            break;
+    }
+}
 
 /**
  * Gets the previous videoId, if one exists. Otherwise, returns -1

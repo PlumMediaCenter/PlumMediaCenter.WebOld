@@ -5,8 +5,6 @@
 <script type="text/javascript">
     var player;
             var videoId = <?php echo $videoId; ?>;
-            var videoUrl = "<?php echo $videoUrl; ?>";
-            var posterUrl = "<?php echo $posterUrl; ?>";
             var startSeconds = <?php echo $startSeconds; ?>;
 //    $("#bodyPadding").hover(function() {
 //        $(".navbar").css("visibility", "visible");
@@ -27,7 +25,8 @@ foreach ($videoList as $video) {
                 image: "<?php echo $video->hdPosterUrl; ?>",
                 title: "<?php echo $video->title; ?>"
         }
-    <?php $comma = ",";
+    <?php
+    $comma = ",";
 }
 ?>
     ];
