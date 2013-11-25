@@ -1,5 +1,6 @@
 <?php
 
+include_once(dirname(__FILE__) . "/Security.class.php");
 include_once("database/Queries.class.php");
 include_once("SimpleImage.class.php");
 include_once("Enumerations.class.php");
@@ -186,6 +187,9 @@ abstract class Video {
      */
     public static function GetVideoStartSeconds($videoId, $finishedBuffer = 45) {
         $v = Video::GetVideo($videoId);
+        if ($v == false) {
+            return 0;
+        }
         $progress = Queries::getVideoProgress(Security::GetUsername(), $videoId);
         $totalVideoLength = $v->getLengthInSeconds();
         if (($progress + $finishedBuffer > $totalVideoLength) || ($progress == -1)) {
