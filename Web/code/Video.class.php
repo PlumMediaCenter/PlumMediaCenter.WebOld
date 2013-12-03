@@ -19,7 +19,7 @@ abstract class Video {
 
     abstract function getNfoReader();
 
-    const NoMetadata = "0000-00-00 00:00:00"; //this will never be a valid date, so use it for invalid metadata dates
+    const NoMetadata = "0000-00-00 00:00:00"; //this will never be a date found in the metadata, so use it for invalid metadata dates
     const SdImageWidth = 110; //110x150 
     const HdImageWidth = 210; // 210x270
 
@@ -185,18 +185,12 @@ abstract class Video {
      * @param int $videoId - the videoId of the video in question
      * @return int - the number of seconds into the video that the video was stopped at
      */
-    public static function GetVideoStartSeconds($videoId, $finishedBuffer = 45) {
+    public static function GetVideoStartSeconds($videoId, $finishedBuffer = null) {
         $v = Video::GetVideo($videoId);
         if ($v == false) {
             return 0;
         }
-        $progress = Queries::getVideoProgress(Security::GetUsername(), $videoId);
-        $totalVideoLength = $v->getLengthInSeconds();
-        if (($progress + $finishedBuffer > $totalVideoLength) || ($progress == -1)) {
-            return 0;
-        } else {
-            return $progress;
-        }
+        return $v->videoStartSeconds($finishedBuffer);
     }
 
     /**
@@ -204,8 +198,14 @@ abstract class Video {
      * @param int $videoId - the videoId of the video in question
      * @return int - the number of seconds into the video that the video was stopped at
      */
-    public function videoStartSeconds() {
-        Video::GetVideoStartSeconds($this->getVideoId());
+    public function videoStartSeconds($finishedBuffer = 45) {
+        $progress = Queries::getVideoProgress(Security::GetUsername(), $this->videoId);
+        $totalVideoLength = $this->getLengthInSeconds();
+        if (($progress + $finishedBuffer > $totalVideoLength) || ($progress == -1)) {
+            return 0;
+        } else {
+            return $progress;
+        }
     }
 
     /**

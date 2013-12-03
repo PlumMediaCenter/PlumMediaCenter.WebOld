@@ -146,6 +146,7 @@ class CreateDatabase {
 
     private function table_playlist() {
         $t = new Table(config::$dbName, "playlist");
+        $t->addColumn("item_id", "int", "not null", true);
         $t->addColumn("username", "char(128)");
         $t->addColumn("name", "char(128)");
         $t->addColumn("idx", "int");

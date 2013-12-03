@@ -7,7 +7,7 @@ class Playlist {
 
     private $name;
     private $username;
-    private $videoIds = [];
+    private $items = [];
 
     function __construct($username, $name) {
         $this->name = $name;
@@ -23,17 +23,17 @@ class Playlist {
     }
 
     /**
-     * Returns the list of videoIds in their proper order
+     * Returns the list of playlist items in their proper order
      */
-    function getPlaylist() {
-        return $this->videoIds;
+    function getPlaylistItems() {
+        return $this->items;
     }
 
     /**
      * Clear the local in memory list. This doese not clear from the database
      */
     function clear() {
-        $this->videoIds = [];
+        $this->items = [];
     }
 
     /**
@@ -49,11 +49,12 @@ class Playlist {
      * @param int $index - the index at which the videoId should be added. Zero based. Other items will be shifted
      */
     function add($videoId, $index = null) {
+        $item = new PlaylistItem(Playlist::UniqueItemId(), $videoId);
         if ($index == null) {
-            $this->videoIds[] = $videoId;
+            $this->items[] = $item;
         } else {
             //insert the videoId into the middle of the playlist
-            array_splice($this->videoIds, $index, 0, $videoId);
+            array_splice($this->items, $index, 0, [$item]);
         }
     }
 
@@ -65,6 +66,24 @@ class Playlist {
         foreach ($videoIdList as $videoId) {
             $this->add($videoId);
         }
+    }
+
+    function indexOf($itemId) {
+        foreach ($this->items as $index => $item) {
+            if ($item->itemId == $itemId) {
+                return $index;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Removes the item with the specified id
+     * @param integer $itemId
+     */
+    function removeItemById($itemId) {
+        $index = $this->indexOf($itemId);
+        $this->remove($index);
     }
 
     /**
@@ -83,15 +102,20 @@ class Playlist {
     }
 
     function loadFromDb() {
-        //clear the list of video ids
-        $this->videoIds = [];
-        $this->videoIds = Queries::getPlaylistVideoIds($this->username, $this->name);
+        //clear the list of items
+        $this->items = [];
+        $items = Queries::getPlaylistItems($this->username, $this->name);
+        foreach ($items as $itemRow) {
+            $item = new PlaylistItem($itemRow->item_id, $itemRow->video_id);
+            $this->items[] = $item;
+        }
+        return true;
     }
 
     function writeToDb() {
         $this->clearFromDb();
         Queries::AddPlaylistName($this->username, $this->name);
-        return Queries::setPlaylistItems($this->username, $this->name, $this->videoIds);
+        return Queries::setPlaylistItems($this->username, $this->name, $this->items);
     }
 
     /**
@@ -104,6 +128,21 @@ class Playlist {
         $pl = new Playlist($username, $playlistName);
         $pl->addRange($videoIds);
         return $pl->writeToDb();
+    }
+
+    static function GetFirstVideo($username, $playlistName) {
+        $p = new Playlist($username, $playlistName);
+        $p->loadFromDb();
+        $videoIds = $p->getPlaylist();
+        $videoId = (isset($videoIds[0]) == true) ? $videoIds[0] : -1;
+        $video = Video::GetVideo($videoId);
+        return $video;
+    }
+
+    static function RemoveItem($username, $playlistName, $playlistItemId) {
+        $p = new Playlist($username, $playlistName);
+        $success = $p->removeItemById($playlistItemId);
+        return $success;
     }
 
     /**
@@ -146,6 +185,33 @@ class Playlist {
 
     static function GetPlaylistNames($username) {
         return Queries::getPlaylistNames($username);
+    }
+
+    /**
+     * Generates a unique id based on the timestamp
+     * @return int
+     */
+    static function UniqueItemId() {
+        //get the current time
+        $time = time();
+        //wait until we get a NEW time, thus guarenteeing that this will always return a unique value
+        while ($time == time()) {
+            
+        }
+        $id = time();
+        return $id;
+    }
+
+}
+
+class PlaylistItem {
+
+    public $itemId;
+    public $videoId;
+
+    function __construct($itemId, $videoId) {
+        $this->itemId = $itemId;
+        $this->videoId = $videoId;
     }
 
 }

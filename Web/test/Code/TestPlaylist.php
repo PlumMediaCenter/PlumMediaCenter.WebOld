@@ -25,16 +25,16 @@ class TestPlaylist extends UnitTestCase {
     function testAdd() {
         $p = new Playlist($this->username, $this->playlistName);
         $p->add(12345);
-        $list = $p->getPlaylist();
+        $list = $p->getPlaylistItems();
         $this->assertEqual(1, count($list));
-        $this->assertEqual(12345, $list[0]);
+        $this->assertEqual(12345, $list[0]->videoId);
 
         //add another item
         $p->add(5);
-        $list = $p->getPlaylist();
+        $list = $p->getPlaylistItems();
         $this->assertEqual(2, count($list));
-        $this->assertEqual(12345, $list[0]);
-        $this->assertEqual(5, $list[1]);
+        $this->assertEqual(12345, $list[0]->videoId);
+        $this->assertEqual(5, $list[1]->videoId);
     }
 
     function testAddAtIndex() {
@@ -45,13 +45,13 @@ class TestPlaylist extends UnitTestCase {
         //add an item in between the first and second item, at index 1
         $p->add(2, 1);
 
-        $list = $p->getPlaylist();
+        $list = $p->getPlaylistItems();
         //verify there are 3 items in the list
         $this->assertEqual(3, count($list));
         //verify that they are in the correct order
-        $this->assertEqual(1, $list[0]);
-        $this->assertEqual(2, $list[1]);
-        $this->assertEqual(3, $list[2]);
+        $this->assertEqual(1, $list[0]->videoId);
+        $this->assertEqual(2, $list[1]->videoId);
+        $this->assertEqual(3, $list[2]->videoId);
     }
 
     function testWriteToDatabase() {
@@ -94,23 +94,23 @@ class TestPlaylist extends UnitTestCase {
     function testClear() {
         $p = new Playlist($this->username, $this->playlistName);
         $p->addRange(array(5, 6, 7));
-        $vals = $p->getPlaylist();
+        $vals = $p->getPlaylistItems();
         $this->assertEqual(3, count($vals));
 
         $p->clear();
-        $vals = $p->getPlaylist();
+        $vals = $p->getPlaylistItems();
         $this->assertEqual(0, count($vals));
     }
 
     function testRemove() {
         $p = new Playlist($this->username, $this->playlistName);
         $p->addRange(array(5, 6, 7));
-        $vals = $p->getPlaylist();
+        $vals = $p->getPlaylistItems();
         $this->assertEqual(3, count($vals));
 
         //remove the item at the end
         $this->assertTrue($p->remove(2));
-        $vals = $p->getPlaylist();
+        $vals = $p->getPlaylistItems();
         $this->assertEqual(2, count($vals));
         //make sure the correct item was removed
         $this->assertEqual(5, $vals[0]);
@@ -122,7 +122,7 @@ class TestPlaylist extends UnitTestCase {
 
         //remove the item at the middle
         $this->assertTrue($p->remove(1));
-        $vals = $p->getPlaylist();
+        $vals = $p->getPlaylistItems();
         $this->assertEqual(2, count($vals));
         //make sure the correct item was removed
         $this->assertEqual(5, $vals[0]);
@@ -134,7 +134,7 @@ class TestPlaylist extends UnitTestCase {
 
         //remove the item at the beginning
         $this->assertTrue($p->remove(0));
-        $vals = $p->getPlaylist();
+        $vals = $p->getPlaylistItems();
         $this->assertEqual(2, count($vals));
         //make sure the correct item was removed
         $this->assertEqual(6, $vals[0]);
@@ -229,7 +229,7 @@ class TestPlaylist extends UnitTestCase {
         //make sure that it loads correctly using the object
         $p = new Playlist($this->username, $this->playlistName);
         $p->loadFromDb();
-        $list = $p->getPlaylist();
+        $list = $p->getPlaylistItems();
         $this->assertEqual($list[0], 7);
         $this->assertEqual($list[1], 8);
         $this->assertEqual($list[2], 9);
@@ -241,7 +241,7 @@ class TestPlaylist extends UnitTestCase {
         //make sure that it loads correctly using the object
         $p = new Playlist($this->username, $this->playlistName);
         $p->loadFromDb();
-        $list = $p->getPlaylist();
+        $list = $p->getPlaylistItems();
         $this->assertEqual($list[0], 8);
         $this->assertEqual($list[1], 9);
 
@@ -265,7 +265,7 @@ class TestPlaylist extends UnitTestCase {
         $p->writeToDb();
 
         $p->loadFromDb();
-        $list = $p->getPlaylist();
+        $list = $p->getPlaylistItems();
         $this->assertEqual($list[0], 7);
         $this->assertEqual($list[1], 8);
     }

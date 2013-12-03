@@ -30,9 +30,9 @@ class TestMovie extends UnitTestCase {
     function testConstruct() {
         $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
         //make sure that the constructor loaded everything correctly
-        $this->assertEqual($v->videoSourceUrl, $this->videoSourceUrl);
-        $this->assertEqual($v->videoSourcePath, $this->videoSourcePath);
-        $this->assertEqual($v->fullPath, $this->fullPath);
+        $this->assertEqual($v->getVideoSourceUrl(), $this->videoSourceUrl);
+        $this->assertEqual($v->getVideoSourcePath(), $this->videoSourcePath);
+        $this->assertEqual($v->getFullPath(), $this->fullPath);
         $this->assertEqual($v->url, "http://localhost/videos/movies/FakeMovie1/FakeMovie1.mp4");
         //make sure the sdPoster url was generated
         $this->assertNotNull($v->sdPosterUrl);

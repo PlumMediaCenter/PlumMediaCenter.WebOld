@@ -118,7 +118,7 @@ class TvShow extends Video {
         foreach ($episodeInfoList as $info) {
             $episode = Video::GetVideo($info->video_id);
             //if no episode was able to be loaded, move on to the next item.
-            if($episode == false){
+            if ($episode == false) {
                 continue;
             }
             //if this season does not exist, create it
@@ -237,10 +237,26 @@ class TvShow extends Video {
         }
     }
 
-    function nextEpisode() {
-        $episodeVideoId = TvShow::GetNextEpisodeToWatch($this->videoId);
-        $episode = Video::GetVideo($episodeVideoId);
+    /**
+     * Determines the next episode to watch based on the watch_video table. 
+     * @param int $videoId - the videoId of the tv show that you wish to get the next video
+     * @param int $finishedBuffer - the number of seconds that a video must be near to the end of the video in order to retrieve the next episode
+     * @return video - false if failure, the next episode if success
+     */
+    function nextEpisode($finishedBuffer = 45) {
+        $episode = TvShow::GetNextEpisodeToWatch($this->videoId);
         return $episode;
+    }
+
+    /**
+     * Determines the next episode to watch based on the watch_video table. 
+     * @param int $videoId - the videoId of the tv show that you wish to get the next video
+     * @param int $finishedBuffer - the number of seconds that a video must be near to the end of the video in order to retrieve the next episode
+     * @return video - false if failure, the next episode if success
+     */
+    static function GetNextEpisodeToWatch($videoId, $finishedBuffer = 45) {
+        $videoId = TvShow::GetNextEpisodeIdToWatch($videoId, $finishedBuffer);
+        return Video::GetVideo($videoId);
     }
 
     /**
@@ -249,7 +265,7 @@ class TvShow extends Video {
      * @param int $finishedBuffer - the number of seconds that a video must be near to the end of the video in order to retrieve the next episode
      * @return int  - negative 1 if failure, the video id of the next video if success
      */
-    static function GetNextEpisodeToWatch($videoId, $finishedBuffer = 45) {
+    static function GetNextEpisodeIdToWatch($videoId, $finishedBuffer = 45) {
         //load this video
         $v = Video::GetVideo($videoId);
         //the video is a tv episode, get the tv show for that episode

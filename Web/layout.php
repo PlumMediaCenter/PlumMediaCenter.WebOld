@@ -17,18 +17,22 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
         <link rel="icon" href="favicon.ico" type="image/x-icon" />
         <script type="text/javascript">
             var username = "<?php echo Security::GetUsername(); ?>";
-            var enumerations = [];
+            var enumerations = <?php
+$c = new ReflectionClass("Enumerations");
+echo json_encode($c->getConstants());
+?>;
             enumerations.movie = "<?php echo Enumerations::MediaType_Movie; ?>";
             enumerations.tvShow = "<?php echo Enumerations::MediaType_TvShow; ?>";
             enumerations.tvEpisode = "<?php echo Enumerations::MediaType_TvEpisode; ?>";
+
 
             //determines how many pixels are avaible from below the navbar to the bottom of the nonscrollable portion of the screen.
             function displayHeight() {
                 return $("body").height() - $("#bodyPadding").height();
             }
             $(document).ready(function() {
-               $("#playlistAdder").playlistAdder({username: username});
-               $("#playlistAdder").playlistAdder("hide");
+                $("#playlistAdder").playlistAdder({username: username});
+                $("#playlistAdder").playlistAdder("hide");
             });
 
             function addToPlaylist(videoId) {
@@ -47,7 +51,7 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
                         <ul class="nav">
                             <li id="browseNav<?php echo Enumerations::MediaType_Movie; ?>" ><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_Movie; ?>">Movies</a></li>
                             <li id="browseNav<?php echo Enumerations::MediaType_TvShow; ?>"><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_TvShow; ?>">Tv Shows</a></li>
-                            <li id="adminNav"><a href="Playlist.php">Playlist</a></li>
+                            <!--<li id="adminNav"><a href="Playlist.php">Playlist</a></li>-->
                             <li id="adminNav"><a href="Admin.php">Admin</a></li>
                         </ul>
                     </div>

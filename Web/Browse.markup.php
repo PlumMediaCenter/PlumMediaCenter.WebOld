@@ -15,7 +15,7 @@
                     <div class="tile">
                         <span>
                             <a title='Play Movie' href="Play.php?videoId=<?php echo $movie->videoId; ?>" title="View movie information"><?php echo $movie->title; ?></a>
-                            <a style="cursor:pointer;" onclick="addToPlaylist(<?php echo $movie->videoId; ?>);" title="Add to a playlist">+</a>
+                            <!--<a style="cursor:pointer;" onclick="addToPlaylist(<?php echo $movie->videoId; ?>);" title="Add to a playlist">+</a>-->
                         </span>
                         <a href="VideoInfo.php?videoId=<?php echo $movie->videoId; ?>"><img class="tileImg" src="<?php echo $movie->hdPosterUrl; ?>"/></a>
                     </div>
@@ -35,7 +35,7 @@
                     <div class="tile" >
                         <span>
                             <a title='Play Tv Show' href="Play.php?playType=series&videoId=<?php echo $tvShow->videoId; ?>"><?php echo $tvShow->title; ?></a>
-                            <a style="cursor:pointer;" onclick="addToPlaylist(<?php echo $tvShow->videoId; ?>);" title="Add to a playlist">+</a>
+                            <!--<a style="cursor:pointer;" onclick="addToPlaylist(<?php echo $tvShow->videoId; ?>);" title="Add to a playlist">+</a>-->
                         </span>
 
                         <a href="VideoInfo.php?videoId=<?php echo $tvShow->videoId; ?>"><img src="<?php echo $tvShow->hdPosterUrl; ?>"/></a>

@@ -45,10 +45,10 @@ class Queries {
         return $success;
     }
 
-    public static function getPlaylistVideoIds($username, $playlistName) {
+    public static function getPlaylistItems($username, $playlistName) {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtGetPlaylistVideoIds == null) {
-            $sql = "select video_id "
+            $sql = "select item_id, video_id "
                     . "from playlist "
                     . "where username = :username and name = :playlistName "
                     . "order by idx asc";
@@ -62,7 +62,7 @@ class Queries {
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
 
-        return Queries::FetchAllSingleColumn($stmt, "video_id");
+        return Queries::FetchAll($stmt, "video_id");
     }
 
     public static function clearPlaylist($username, $playlistName) {
@@ -144,12 +144,12 @@ class Queries {
         return $success;
     }
 
-    public static function setPlaylistItems($username, $playlistName, $videoIds) {
+    public static function setPlaylistItems($username, $playlistName, $items) {
         //pdo is annoying for this kind of query. just make a normal query
-        $sql = "insert into playlist(username, name, idx, video_id) values";
+        $sql = "insert into playlist(username, name, item_id, idx, video_id) values";
         $comma = "";
-        foreach ($videoIds as $rank => $videoId) {
-            $sql .= "$comma('$username', '$playlistName', $rank, $videoId)";
+        foreach ($items as $rank => $item) {
+            $sql .= "$comma('$username', '$playlistName', $item->itemId, $rank, $item->videoId)";
             $comma = ",";
         }
         $success = DbManager::nonQuery($sql);

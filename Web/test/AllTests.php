@@ -9,7 +9,7 @@ $test->addFile(dirname(__FILE__) . '/Code/TestMovie.php');
 $test->addFile(dirname(__FILE__) . '/Code/NfoReader/TestMovieNfoReader.php');
 $test->addFile(dirname(__FILE__) . '/Code/NfoReader/TestTvEpisodeNfoReader.php');
 $test->addFile(dirname(__FILE__) . '/Code/NfoReader/TestTvShowNfoReader.php');
-$test->addFile(dirname(__FILE__) . '/Code/database/TestTable.php');
+//$test->addFile(dirname(__FILE__) . '/Code/database/TestTable.php');
 
 //$test->addFile(dirname(__FILE__) . '/TestFunctions.php');
 ?>

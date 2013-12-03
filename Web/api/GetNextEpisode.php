@@ -2,10 +2,14 @@
 
 include_once(dirname(__FILE__) . "/../code/TvShow.class.php");
 
+
 $tvSeriesVideoId = isset($_GET["videoId"]) ? $_GET["videoId"] : -1;
-$episodeVideoId = TvShow::getNextEpisodeToWatch($tvSeriesVideoId);
-$result = (object) [];
-$result->videoId = $episodeVideoId;
-$result->startSeconds = Video::GetVideoStartSeconds($episodeVideoId);
-echo json_encode($result);
+$episode = TvShow::GetNextEpisodeToWatch($tvSeriesVideoId);
+
+if ($episode == null) {
+    echo json_encode(false);
+} else {
+    $episode->startSeconds = $episode->videoStartSeconds();
+    echo json_encode($episode);
+}
 ?>

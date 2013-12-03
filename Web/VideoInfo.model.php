@@ -19,7 +19,8 @@ function printTvShowFileList($tvShow) {
     //get the list of all episodes of this tv series. 
     $episodeList = $tvShow->episodes;
 
-    $nextEpisodeId = TvShow::getNextEpisodeToWatch($tvShow->videoId);
+    $e = TvShow::GetNextEpisodeToWatch($tvShow->videoId);
+    $nextEpisodeId = $e->videoId;
     $currentSeasonNumber = -2;
     foreach ($episodeList as $episode) {
         $videoTitle = $episode->title;
@@ -42,7 +43,7 @@ function printTvShowFileList($tvShow) {
             <td class="transparent"><?php echo $episodeNumber; ?></td>
             <td class="transparent" style='display:none;'><?php echo $episodeId; ?></td>
             <td class="transparent" style='display:none;'><a class="playButton18" style="display:block;" href="<?php echo $playUrl; ?>" title="Play">Play</a></td>
-            <td class="transparent">  <a style="cursor:pointer;" onclick="$.getJSON('api/AddToPlaylist.php?playlistName=My Playlist&videoIds=<?php echo $episodeId; ?>');">+</a></td>
+            <!--<td class="transparent">  <a style="cursor:pointer;" onclick="$.getJSON('api/AddToPlaylist.php?playlistName=My Playlist&videoIds=<?php echo $episodeId; ?>');">+</a></td>-->
             <td class="transparent"><a class="play" href="<?php echo $playUrl; ?>"><?php echo $videoTitle; ?></a></td>
             <td class="transparent"><div class="progressbar">
                     <div class="percentWatched" style="width:<?php echo $percentWatched; ?>%">
