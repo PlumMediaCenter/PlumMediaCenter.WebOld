@@ -24,9 +24,7 @@ $(document).ready(function() {
                 }
             },
             securityType: {required: true},
-            baseUrl: {
-                required: true,
-                url2: true},
+            baseUrl: {required: true},
             mediaType: {
                 required: true,
             }
@@ -57,8 +55,8 @@ function openAddEdit(baseFilePath, baseUrl, mediaType, securityType) {
         $("input[name=originalLocation]").val("");
         $("input[name=location]").val("");
         $("input[name=baseUrl]").val("");
+        //$("input[name=securityType]").prop("checked", false);
         $("input[name=mediaType]").prop("checked", false);
-        $("input[name=securityType]").prop("checked", false);
     } else {
         $("input[name=originalLocation]").val(baseFilePath);
         $("input[name=location]").val(baseFilePath);

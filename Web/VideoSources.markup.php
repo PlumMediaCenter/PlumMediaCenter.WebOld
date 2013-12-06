@@ -45,11 +45,11 @@
             <div class="row">
                 <div class="span2">Security Type: </div>
                 <div class="span4">
-                    <input type="radio" id="securityTypePublic" name="securityType" value="<?php echo Enumerations::SecurityType_Public; ?>">
+                    <input type="radio" id="securityTypePublic" name="securityType" checked="checked" value="<?php echo Enumerations::SecurityType_Public; ?>">
                     <label for="securityTypePublic">No Security</label>
-                    &nbsp;
+<!--                    &nbsp;
                     <input type="radio" id="securityTypePrivate" name="securityType"  value="<?php echo Enumerations::SecurityType_LoginRequired; ?>">
-                    <label for="securityTypePrivate">Login Required</label>
+                    <label for="securityTypePrivate">Login Required</label>-->
 
                 </div>
             </div>
