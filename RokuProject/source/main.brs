@@ -1,7 +1,22 @@
 
 Function Main()
+    'random splash grid that is only here to keep the app from exiting
+    splashPort = CreateObject("roMessagePort")
+    splashGrid = CreateObject("roGridScreen")
+    splashGrid.SetMessagePort(splashPort) 
+    splashGrid.Show() 
+   
+   'temorarily erase the baseUrl
+    'Check the app configuration. If not configured, prompt the user for all necessary information
+    CheckConfiguration()
+
     'load the library from the remote json file
     LoadLibrary()
+    
+     'show the grid
+    port = CreateObject("roMessagePort")
+    grid = CreateObject("roGridScreen")
+    grid.SetMessagePort(port) 
     
     port = CreateObject("roMessagePort")
     grid = CreateObject("roGridScreen")
@@ -20,7 +35,7 @@ Function Main()
     movies = m.lib.movies
     gridList.push(tvShows)
     gridList.push(movies)
-    
+
     'Add Tv Shows
     tvShowCount = 0
     tvShowList = []
@@ -92,6 +107,7 @@ Function Main()
     grid.SetContentList(2, settingsList)
 
     grid.Show() 
+    splashGrid.close()
     'for testing purposes, immediately play the first movie in the list
     'PlayFirstEpisode()
     'ShowTvShowEpisodesGrid(1)
@@ -128,6 +144,23 @@ Function Main()
         End if
     End While
 End Function
+
+'
+' Checks that all of the roku configuration 
+'
+Sub CheckConfiguration()
+    print "Checking configuration settings"
+    bUrl = BaseUrl()
+    If bUrl = invalid Then
+        print "Base URL is NOT set. Prompting user to enter Base URL"
+        ShowMessage("Setup", "This app must be configured before it can be used. Please follow the instructions")
+        print "User clicked ok on the initial setup screen"
+         GetBaseUrlFromUser()
+      
+    Else 
+        print "Base URL is set.";bUrl
+    End If
+End Sub
 
 Sub PlayFirstMovie()
     PlayVideo(m.lib.movies[0])

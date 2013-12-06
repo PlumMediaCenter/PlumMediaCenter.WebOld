@@ -4,7 +4,7 @@
 ' Most of the time it doesn't seem that many registry items are needed, so this function
 ' just saves everyting in the 'Settings' category. 
 '
-Function GetRegVal(name) As Dynamic
+Function GetRegVal(name as String) As Dynamic
     section = "Settings"
     sec = CreateObject("roRegistrySection", section)
      if sec.Exists(name)  
@@ -25,18 +25,43 @@ Function SetRegVal(name as String, value as String) As Void
     sec.Flush()
 End Function
 
+
+'
+' Deletes a registry setting from the registry
+'
+Function DeleteRegVal(name as String) as Void
+    section = "Settings" 
+    sec = CreateObject("roRegistrySection", section)
+    sec.Delete(name)
+    sec.Flush()
+End Function
+
 '
 ' Performs a network request, returning the json result as an object
 ' @param string sUrl - the url to request
 ' @return object - the object created from the result json.
 '
 Function GetJSON(sUrl as String) as Object
-    'print "GetJSON: ";sUrl
     searchRequest = CreateObject("roUrlTransfer") 
     searchRequest.SetURL(sUrl)
     result = searchRequest.GetToString() 
     obj = ParseJson(result)
     return obj    
+End Function
+
+'
+' For some reason, brightscript doesn't like to convert json into a boolean value. 
+' Perform a web request and expect a boolean value back, either true or false.
+'
+Function GetJSONBoolean(sUrl as String) as Boolean
+  searchRequest = CreateObject("roUrlTransfer") 
+    searchRequest.SetURL(sUrl)
+    result = searchRequest.GetToString() 
+    If result = "true" Then
+        return true
+    Else
+        return false
+    End If
 End Function
 
 '
@@ -95,9 +120,11 @@ Function Confirm(message, yesText as String, noText as String) as Boolean
         If type(dlgMsg) = "roMessageDialogEvent"
             if dlgMsg.isButtonPressed()
                 If dlgMsg.GetIndex() = 0
+                    print "User chose ";noText 
                     Return False
                 End If
                 If dlgMsg.GetIndex() = 1
+                  print "User chose ";yesText 
                     Return True
                 End If
             Else If dlgMsg.isScreenClosed()
@@ -106,6 +133,7 @@ Function Confirm(message, yesText as String, noText as String) as Boolean
         End If
     End While
     'default to return false
+    print "User chose cancel or back, which means ";noText 
     Return false
 End Function
 

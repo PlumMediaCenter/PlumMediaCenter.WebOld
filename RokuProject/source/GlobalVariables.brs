@@ -4,7 +4,7 @@
 ' An example url: http://192.168.1.109/PlumVideoPlayer/
 ' @return string - the base url, if it was found in the registry
 '
-Function BaseUrl() as String
+Function BaseUrl() as Dynamic
     return GetRegVal("baseUrl")
 End Function
 

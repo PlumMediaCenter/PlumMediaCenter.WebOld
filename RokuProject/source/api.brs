@@ -5,7 +5,7 @@
 '
 Function API_GetLibrary() as Object
     'temporarily override the baseUrl value so we can get it in the registry without hvaing to go over to the roku
-    SetBaseUrl("http://192.168.1.109:8080/PlumVideoPlayer/Web/")
+    'SetBaseUrl("http://192.168.1.109:8080/PlumVideoPlayer/Web/")
     libraryUrl = BaseUrl() + "api/GetLibrary.php"
     'perform a blocking request to retrieve the library object
 
@@ -45,7 +45,6 @@ Function API_GetVideoProgress(videoId as String) as Integer
 End Function
 
 
-
 '
 'Set the current second number the video is playing at
 '
@@ -56,3 +55,19 @@ Sub API_SetVideoProgress(videoId as String, seconds as Integer)
     success = result.success
     print "API-SetVideoProgress: videoId=";videoId;", seconds=";strSeconds;", success=";success
 End Sub
+
+'
+' Determines if the server is currently visible or not. 
+'
+Function API_ServerExists() as Boolean
+    mBaseUrl = BaseUrl()
+    If mBaseUrl = invalid Then
+        Return false
+    End If
+    
+    url = mBaseUrl + "api/ServerExists.php"
+    result = GetJSONBoolean(url)
+    success = result
+    print "API-ServerExists: url=";url;" Success=";success
+    return success
+End Function
