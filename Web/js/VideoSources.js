@@ -1,19 +1,43 @@
 
 $(document).ready(function() {
-    //show/hide the public url input based on the security type selected    
-    $("#securityType").change(setBaseUrlVisibility);
-    //set the securityType value to be public by default
+//wire up the validation on the addEdit form
+    $("#videoSourcesForm").validate({
+        errorPlacement: function(error, element) {
+            if ($(element).is(":radio")) {
+                //grab the last radio in the list
+                var lastRadioButton = $("[name=" + $(element).attr("name") + "]").last();
+                error.insertAfter(lastRadioButton);
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        rules: {
+            location: {
+                required: true,
+                remote: {
+                    url: "ajax/PathExistsOnServer.php",
+                    data: {
+                        path: function() {
+                            return $("#location").val();
+                        }
+                    }
+                }
+            },
+            securityType: {required: true},
+            baseUrl: {
+                required: true,
+                url2: true},
+            mediaType: {
+                required: true,
+            }
+        },
+        messages: {
+            location: {
+                remote: "*Path does not exist on server"
+            }
+        }
+    });
 });
-
-function setBaseUrlVisibility() {
-    if ($("#securityType").val() == enumerations.SecurityType_Public) {
-        $("#baseUrlRow").show();
-    } else {
-        $("#baseUrlRow").hide();
-    }
-}
-
-
 function openAdd() {
     $("#addSourceBtn").show();
     $("#editSourceBtn").hide();
@@ -24,11 +48,11 @@ function openEdit(baseFilePath, baseUrl, mediaType, securityType) {
     $("#addSourceBtn").hide();
     $("#editSourceBtn").show();
     openAddEdit(baseFilePath, baseUrl, mediaType, securityType);
-
 }
 
 function openAddEdit(baseFilePath, baseUrl, mediaType, securityType) {
-    //if parameters were not provided, clear the inputs
+//$("#addSourceBtn, #editSourceBtn").disable();
+//if parameters were not provided, clear the inputs
     if (baseFilePath === undefined && baseUrl === undefined && mediaType === undefined && securityType === undefined) {
         $("input[name=originalLocation]").val("");
         $("input[name=location]").val("");
@@ -42,19 +66,19 @@ function openAddEdit(baseFilePath, baseUrl, mediaType, securityType) {
         $("#mediaType").val(mediaType);
         $("#securityType").val(securityType);
     }
-    //clear the message 
+//clear the message 
     $("#addEditMessage").html("");
-    setBaseUrlVisibility();
     //show the add/edit window
     $("#newSourceModal").modal();
 }
 
 function validateAddEdit() {
-    if ($("input[name=location]").val().length == 0 || $("input[name=baseUrl]").val().length == 0) {
-        $("#addEditMessage").html("*Please fill out all fields before clicking save");
-        return false;
-    }
-    return true;
+//    var allValid = true;
+//    if ($("input[name=location]").val().length == 0 || $("input[name=baseUrl]").val().length == 0) {
+//        $("#addEditMessage").html("*Please fill out all fields before clicking save");
+//        allValid = false;
+//        return false;
+//    }
 }
 
 

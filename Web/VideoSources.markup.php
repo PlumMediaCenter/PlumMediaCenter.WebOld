@@ -1,5 +1,9 @@
 <script type="text/javascript" src="js/VideoSources.js"></script>
-<form>
+<script type="text/javascript" src="plugins/jquery-validation/jquery.validate.min.js"></script>
+<script type="text/javascript" src="plugins/jquery-validation/additional-methods.min.js"></script>
+
+
+<form id="videoSourcesForm">
     <a  href="#newSourceModal" class="btn" role="button" onclick="openAdd();">Add New Source</a>
     <br/>    <br/>
 
@@ -31,36 +35,36 @@
         <div class="modal-body">
             <div class="row">
                 <div class="span2">Base File Path: </div>
-                <div class="span3">                  
-                    <input type="text" style="width:100%;margin-bottom:0px;" name="location" placeholder="ex: c:/videos/Movies/"/>
+                <div class="span4">                  
+                    <input type="text" style="width:100%;margin-bottom:0px;" id="location" name="location" placeholder="ex: c:/videos/Movies/"/>
                     <?php //this input is used as reference in the edit action....so we can find the correct row in the db to update. ?>
                     <input type="hidden" name="originalLocation"/>
-                    <div style="color: red;margin-bottom:10px;">*Please Include trailing slash</div>
+                    <!--<div id="locationError" style="color: red;margin-bottom:10px;">*Please Include trailing slash</div>-->
                 </div>
             </div>
             <div class="row">
                 <div class="span2">Security Type: </div>
-                <div class="span2">
-                    <select id="securityType" name="securityType">
-                        <option selected="selected" value="<?php echo Enumerations::SecurityType_Public; ?>">Public</option>
-                        <option value="<?php echo Enumerations::SecurityType_LoginRequired; ?>">Login Required</option>
-                    </select>
+                <div class="span4">
+                    <label for="securityTypePublic">No Security</label>
+                    <input type="radio" id="securityTypePublic" name="securityType" value="<?php echo Enumerations::SecurityType_Public; ?>">
+                    &nbsp;<label for="securityTypePrivate">Login Required</label>
+                    <input type="radio" id="securityTypePrivate" name="securityType"  value="<?php echo Enumerations::SecurityType_LoginRequired; ?>">
                 </div>
             </div>
             <div id="baseUrlRow" class="row" style="display:block;">
                 <div class="span2">Base URL: </div>
-                <div class="span3">                  
+                <div class="span4">                  
                     <input type="text" style="width:100%;margin-bottom:0px;" name="baseUrl" placeholder="ex: http://localhost/videos/movies/"/>
-                    <div style="color: red;margin-bottom:10px;">*Please Include trailing slash</div>
+                    <!--<div id="urlError" style="color: red;margin-bottom:10px;">*Please Include trailing slash</div>-->
                 </div>
             </div>
             <div class="row">
                 <div class="span2">Media Type: </div>
-                <div class="span2">
-                    <select id="mediaType" name="mediaType">
-                        <option value="<?php echo Enumerations::MediaType_Movie; ?>">Movies</option>
-                        <option value="<?php echo Enumerations::MediaType_TvShow; ?>">Tv Shows</option>
-                    </select>
+                <div class="span4">
+                    <label for="mediaTypeMovie">Movie</label>
+                    <input type="radio" id="mediaTypeMovie" name="mediaType" value="<?php echo Enumerations::MediaType_Movie; ?>">
+                    &nbsp;<label for="mediaTypeTvShow">Tv Show</label>
+                    <input type="radio" id="mediaTypeTvShow" name="mediaType"  value="<?php echo Enumerations::MediaType_TvShow; ?>">
                 </div>
             </div>
 

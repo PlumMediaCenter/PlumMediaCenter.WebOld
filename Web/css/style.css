@@ -223,3 +223,11 @@ input[type=radio], label{
     filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#7F00FF00', EndColorStr='#7F00FF00');
     background-color:white;
 }
+
+label{
+    width:100px;
+}
+
+.error{
+    color:red;
+}
