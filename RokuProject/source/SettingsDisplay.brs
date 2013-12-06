@@ -1,11 +1,9 @@
 Sub ShowSettings(n)
     If (n = 0) Then
-        jsonUrl = ShowGetBaseUrlFromUser()
-        SetRegVal("baseUrl", jsonUrl)
+        GetBaseUrlFromUser()
     Else If (n = 1) Then
         print "Refresh media list"
         Main()
-        
     End If
 End Sub
 

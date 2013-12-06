@@ -5,8 +5,7 @@ Function Main()
     splashGrid = CreateObject("roGridScreen")
     splashGrid.SetMessagePort(splashPort) 
     splashGrid.Show() 
-   
-   'temorarily erase the baseUrl
+
     'Check the app configuration. If not configured, prompt the user for all necessary information
     CheckConfiguration()
 
