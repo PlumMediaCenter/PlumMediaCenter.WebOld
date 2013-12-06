@@ -45,10 +45,12 @@
             <div class="row">
                 <div class="span2">Security Type: </div>
                 <div class="span4">
-                    <label for="securityTypePublic">No Security</label>
                     <input type="radio" id="securityTypePublic" name="securityType" value="<?php echo Enumerations::SecurityType_Public; ?>">
-                    &nbsp;<label for="securityTypePrivate">Login Required</label>
+                    <label for="securityTypePublic">No Security</label>
+                    &nbsp;
                     <input type="radio" id="securityTypePrivate" name="securityType"  value="<?php echo Enumerations::SecurityType_LoginRequired; ?>">
+                    <label for="securityTypePrivate">Login Required</label>
+
                 </div>
             </div>
             <div id="baseUrlRow" class="row" style="display:block;">
@@ -61,10 +63,11 @@
             <div class="row">
                 <div class="span2">Media Type: </div>
                 <div class="span4">
-                    <label for="mediaTypeMovie">Movie</label>
                     <input type="radio" id="mediaTypeMovie" name="mediaType" value="<?php echo Enumerations::MediaType_Movie; ?>">
-                    &nbsp;<label for="mediaTypeTvShow">Tv Show</label>
+                    <label for="mediaTypeMovie">Movie</label>
+                    &nbsp;
                     <input type="radio" id="mediaTypeTvShow" name="mediaType"  value="<?php echo Enumerations::MediaType_TvShow; ?>">
+                    <label for="mediaTypeTvShow">Tv Show</label>
                 </div>
             </div>
 

@@ -33,7 +33,7 @@ $(document).ready(function() {
         },
         messages: {
             location: {
-                remote: "*Path does not exist on server"
+                remote: "*Please enter a valid path that is accessible by the server."
             }
         }
     });
@@ -57,14 +57,14 @@ function openAddEdit(baseFilePath, baseUrl, mediaType, securityType) {
         $("input[name=originalLocation]").val("");
         $("input[name=location]").val("");
         $("input[name=baseUrl]").val("");
-        $("#mediaType").val("");
-        $("#securityType").val(enumerations.SecurityType_Public);
+        $("input[name=mediaType]").prop("checked", false);
+        $("input[name=securityType]").prop("checked", false);
     } else {
         $("input[name=originalLocation]").val(baseFilePath);
         $("input[name=location]").val(baseFilePath);
         $("input[name=baseUrl]").val(baseUrl);
-        $("#mediaType").val(mediaType);
-        $("#securityType").val(securityType);
+        $("input[name=mediaType]").prop("checked", false).addBack("[value=" + mediaType + "]").prop("checked", true);
+        $("input[name=securityType]").prop("checked", false).addBack("[value=" + securityType + "]").prop("checked", true);
     }
 //clear the message 
     $("#addEditMessage").html("");
