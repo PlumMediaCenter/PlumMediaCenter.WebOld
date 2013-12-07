@@ -5,14 +5,14 @@ include_once("Video.class.php");
 
 class Library {
 
-    public $movies;
+    public $movies = [];
     private $movieCount = 0;
-    public $tvShows;
+    public $tvShows = [];
     private $tvShowCount = 0;
-    public $tvEpisodes;
+    public $tvEpisodes = [];
     private $tvEpisodeCount = 0;
     //contains a list of all videos, a combination of movies, tv shows and tv episodes
-    private $videos;
+    private $videos = [];
 
     public function __construct() {
         //set the time limit for this script to be 10 minutes. If it takes any longer than that, there's something wrong
@@ -266,6 +266,24 @@ class Library {
         writeToLog("Update Library Summary: $newMovieCount new Movies. $newTvShowCount new Tv Shows. $newTvEpisodeCount new Tv Episodes.");
     }
 
-}
+    /**
+     * Returns a set of stats (counts) based on the library.
+     */
+    public static function GetVideoCounts() {
+        $stats = (object) [];
+        $stats->videoCount = null;
+        $stats->movieCount = null;
+        $stats->tvShowCount = null;
+        $stats->tvEpisodeCount = null;
+        $counts = Queries::GetVideoCounts();
+        if ($counts != false) {
+            $stats->videoCount = $counts->movieCount + $counts->tvEpisodeCount;
+            $stats->movieCount = $counts->movieCount;
+            $stats->tvShowCount = $counts->tvShowCount;
+            $stats->tvEpisodeCount = $counts->tvEpisodeCount;
+        }
+        return $stats;
+    }
 
+}
 ?>

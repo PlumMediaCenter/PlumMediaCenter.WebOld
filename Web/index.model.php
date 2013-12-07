@@ -1,7 +1,7 @@
 
 <?php
 
-include_once(dirname(__FILE__) . "/code/database/Queries.class.php");
+include_once(dirname(__FILE__) . "/code/Library.class.php");
 
 class indexModel extends Model {
 
@@ -11,8 +11,8 @@ class indexModel extends Model {
     public $tvEpisodeCount;
 
     function __construct() {
-        $counts = Queries::getVideoCounts();
-        $this->videoCount = $counts->movieCount + $counts->tvEpisodeCount;
+        $counts = Library::GetVideoCounts();
+        $this->videoCount = $counts->videoCount;
         $this->movieCount = $counts->movieCount;
         $this->tvShowCount = $counts->tvShowCount;
         $this->tvEpisodeCount = $counts->tvEpisodeCount;
