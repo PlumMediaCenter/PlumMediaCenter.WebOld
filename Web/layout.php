@@ -8,6 +8,7 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
     <head><title><?php echo $title != null ? $title : ""; ?></title>
         <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.color-2.1.0.min.js"></script>
+        <script type="text/javascript" src="js/jquery.utility.js"></script>
         <link href="plugins/jquery-ui-1.10.3.custom/css/dark-hive/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" media="screen">
         <script type="text/javascript" src="plugins/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"></script>
         <script type="text/javascript" src="plugins/bootstrap/js/bootstrap.min.js"></script>
