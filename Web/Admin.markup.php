@@ -31,6 +31,7 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
+        bootbox.setDefaults({animate: false});
         $("[name=metadataType]").click(function() {
             $("#metadataManagerBtn").attr("href", $("#metadataManagerBtn").attr("href-original") + "?mediaType=" + $(this).val());
         });
@@ -43,12 +44,12 @@
 
     function generateLibrary() {
         bootbox.alert("Generating Library. <img src='img/ajax-loader.gif'/>");
-        $.ajax({url: "api/GenerateLibrary.php", dataType: "json", success: function(result) {
+        $.ajax({url: "api/GenerateLibrary.php", dataType: "json", complete: function(result, status) {
                 bootbox.hideAll();
-                if (result.success == true) {
-                    bootbox.alert("Total Success: " + result.success);
+                if (status === "success") {
+                    bootbox.alert("Library has been successfully generated and is up to date.");
                 } else {
-                    bootbox.alert(result);
+                    bootbox.alert("There was an error generating library. Please see the <a href='Log.php'>log</a> for more information");
                 }
             }
         });
@@ -56,12 +57,12 @@
 
     function fetchMissingMetadataAndPosters() {
         bootbox.alert("Fetching missing metadata and posters. <img src='img/ajax-loader.gif'/>");
-        $.ajax({url: "api/FetchMissingMetadataAndPosters.php", dataType: "json", success: function(result) {
+        $.ajax({url: "api/FetchMissingMetadataAndPosters.php", dataType: "json", complete: function(result, status) {
                 bootbox.hideAll();
-                if (result.success == true) {
-                    bootbox.alert("Total Success: " + result.success);
+                if (status === "success") {
+                    bootbox.alert("Successfully fetched all missing metadata and posters");
                 } else {
-                    bootbox.alert(result);
+                    bootbox.alert("There was an error fetching missing metadata and posters. Please see the <a href='Log.php'>log</a> for more information");
                 }
             }
         });
