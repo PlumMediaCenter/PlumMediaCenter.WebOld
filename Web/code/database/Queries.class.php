@@ -1,5 +1,7 @@
 <?php
 
+include_once(dirname(__FILE__) . "/../functions.php");
+
 include_once(dirname(__FILE__) . "/../DbManager.class.php");
 include_once(dirname(__FILE__) . "/../Enumerations.class.php");
 
@@ -498,10 +500,13 @@ class Queries {
      * @param string $location - the location used as the primary key to identify the video source to delete
      * @return boolean - true if successful, false if failure
      */
-    public static function deleteVideoSource($location) {
-        $sql = "delete from video_source where location = '$location'";
-        $success = DbManager::nonQuery($sql);
-        Queries::LogSql($sql, $success);
+    public static function DeleteVideoSource($location) {
+        $pdo = DbManager::getPdo();
+        $sql = "delete from video_source where location = :location";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":location", $location);
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
         return $success;
     }
 
