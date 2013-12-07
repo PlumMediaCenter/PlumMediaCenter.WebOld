@@ -62,7 +62,13 @@ function getFoldersFromDirectory($baseDirectory) {
 function getVideosFromDir($dir) {
     ob_start();
     $files = array();
-    $arr = scandir($dir);
+    try {
+        $arr = scandir($dir);
+    } catch (Exception $e) {
+        writeToLog($e);
+        //return an empty list of videos
+        return [];
+    }
     if ($handle = opendir($dir)) {
         while (false !== ($file = readdir($handle))) {
             if ($file != "." && $file != "..") {
