@@ -1,5 +1,6 @@
 <?php
 include_once(dirname(__FILE__) . "/code/Security.class.php");
+Security::HandleLogin();
 include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
 ?>
 <!DOCTYPE HTML>
