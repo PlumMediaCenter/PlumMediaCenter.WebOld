@@ -510,10 +510,13 @@ class Queries {
         return $success;
     }
 
-    public static function getVideoCounts() {
+    public static function GetVideoCounts() {
         if (Queries::$stmtVideoCount == null) {
             $sql = "select count(*) from video where media_type=:mediaType";
             $pdo = DbManager::getPdo();
+            if($pdo == false){
+                return false;
+            }
             Queries::$stmtVideoCount = $pdo->prepare($sql);
         }
         $stmt = Queries::$stmtVideoCount;
@@ -521,10 +524,14 @@ class Queries {
         $m = Enumerations::MediaType_Movie;
         $stmt->bindParam(":mediaType", $m);
         $success = $stmt->execute();
+        //if the statement was unable to be executed, return failure
+        if ($success == false) {
+            return false;
+        }
         Queries::LogStmt($stmt, $success);
 
         $movieCount = $stmt->fetch();
-        $movieCount = $movieCount[0];
+        $movieCount = ($movieCount != null) ? $movieCount[0] : 0;
         //get tv show count
         $s = Enumerations::MediaType_TvShow;
         $stmt->bindParam(":mediaType", $s);
@@ -532,7 +539,7 @@ class Queries {
         Queries::LogStmt($stmt, $success);
 
         $tvShowCount = $stmt->fetch();
-        $tvShowCount = $tvShowCount[0];
+        $tvShowCount = ($tvShowCount != null) ? $tvShowCount[0] : 0;
 
         //get tv episode count
         $e = Enumerations::MediaType_TvEpisode;
@@ -540,7 +547,7 @@ class Queries {
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
         $tvEpisodeCount = $stmt->fetch();
-        $tvEpisodeCount = $tvEpisodeCount[0];
+        $tvEpisodeCount = ($tvEpisodeCount != null) ? $tvEpisodeCount[0] : 0;
 
         $counts = (object) array("movieCount" => $movieCount, "tvShowCount" => $tvShowCount, "tvEpisodeCount" => $tvEpisodeCount);
         return $counts;
@@ -570,6 +577,9 @@ class Queries {
         if (Queries::$stmtGetVideoIds == null) {
             $sql = "select video_id from video where media_type=:mediaType";
             $pdo = DbManager::getPdo();
+            if ($pdo == false) {
+                return [];
+            }
             Queries::$stmtGetVideoIds = $pdo->prepare($sql);
         }
         $stmt = Queries::$stmtGetVideoIds;
