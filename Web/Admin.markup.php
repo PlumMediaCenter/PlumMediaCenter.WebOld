@@ -20,6 +20,9 @@
 <br/>
 <br/>
 <a href='Log.php' class="btn">View Log</a>
+<br/>
+<br/>
+<a href='Setup.php' class="btn">Install/Update Database</a>
 
 <div id="videosJsonModal" class="modal hide" style="width: 1000px; margin-left: -500px;">
     <div class="modal-header">

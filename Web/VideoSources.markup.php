@@ -39,7 +39,7 @@
                     <input type="text" style="width:100%;margin-bottom:0px;" id="location" name="location" placeholder="ex: c:/videos/Movies/"/>
                     <?php //this input is used as reference in the edit action....so we can find the correct row in the db to update. ?>
                     <input type="hidden" name="originalLocation"/>
-                    <b>*NOTE: </b>This is a file path that the SERVER can see, not your local computer
+                    <br/><b>*NOTE: </b>This is a file path that the SERVER can see, not your local computer
                 </div>
             </div>
             <div class="row">
@@ -58,7 +58,9 @@
                 <div class="span2">Base URL: </div>
                 <div class="span4">                  
                     <input type="text" style="width:100%;margin-bottom:0px;" name="baseUrl" placeholder="ex: http://localhost/videos/movies/"/>
-                    <b>*NOTE: </b>This is a url that already exists. You must serve the videos over http using your web server.
+                    <br/><b>*NOTE: </b>This is a url that already exists. You must serve the videos over http using your web server.
+                    <br/>
+                     <br/>
                 </div>
             </div>
             <div class="row">

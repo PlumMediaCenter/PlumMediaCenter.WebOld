@@ -1,6 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__) . "/../config.php");
+require_once(dirname(__FILE__) . "/Security.class.php");
 
 /**
  * This is a Singleton class. You may only get an instance of this db class by calling getInstance()
@@ -19,8 +20,24 @@ class DbManager {
         $this->username = config::$dbUsername;
         $this->password = config::$dbPassword;
         $this->dbName = config::$dbName;
+        try {
+            $this->pdo = DbManager::getPdoInstance($this->host, $this->username, $this->password, $this->dbName);
+        } catch (Exception $e) {
+            
+        }
+    }
 
-        $this->pdo = new PDO("mysql:host=$this->host;dbname=$this->dbName", $this->username, $this->password, array(
+    /**
+     * Returns a new instance of a PDO. 
+     * @param string $host - the host that the database is running on
+     * @param string $username - the username to connect with
+     * @param string $password - the password to connect with
+     * @param string $dbName - the name of the database
+     * @return \PDO
+     */
+    private static function getPdoInstance($host, $username, $password, $dbName = null) {
+        $dbNameParam = ($dbName == null) ? "" : ";dbname=$dbName";
+        return new PDO("mysql:host=$host" . $dbNameParam, $username, $password, array(
             PDO::ATTR_PERSISTENT => true
         ));
     }
@@ -37,26 +54,44 @@ class DbManager {
     }
 
     /**
-     * Returns the pdo of the singleton database manager
+     * Returns an instance of a PDO. If no parameters are supplied, this will return the 
+     * singleton pdo created using the config settings
+     * @param string $host - the host that the database is running on
+     * @param string $username - the username to connect with
+     * @param string $password - the password to connect with
+     * @param string $dbName - the name of the database
      * @return PDO
      */
-    public static function getPdo() {
-        if (!self::$instance) {
-            self::$instance = new DbManager();
+    public static function getPdo($host = null, $username = null, $password = null, $dbName = null) {
+        if ($host == null || $username == null) {
+            //if the parameters were provided, return a one time pdo that is not the singleton
+            if (!self::$instance) {
+                self::$instance = new DbManager();
+            }
+            return self::$instance->pdo;
+        } else {
+            return DbManager::getPdoInstance($host, $username, $password, $dbName);
         }
-        return self::$instance->pdo;
     }
 
     /**
      * Determines if a database table exists.
      * @param string $tableName
+     * @param string $host - the host that the database is running on
+     * @param string $username - the username to connect with
+     * @param string $password - the password to connect with
+     * @param string $dbName - the name of the database
      * @return boolean - true if the table exists, false if the table does not exist
      */
-    public static function TableExists($tableName) {
-        $results = DbManager::query("show tables like '$tableName'");
-        if (count($results) > 0) {
-            return true;
-        } else {
+    public static function TableExists($tableName, $host = null, $username = null, $password = null, $dbName = null) {
+        try {
+            $results = DbManager::query("show tables like '$tableName'", $host, $username, $password, $dbName);
+            if (count($results) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -66,8 +101,8 @@ class DbManager {
      * @param string $sql - the query to execute
      * @return boolean success or failure
      */
-    public static function nonQuery($sql) {
-        $pdo = DbManager::getPdo();
+    public static function NonQuery($sql, $host = null, $username = null, $password = null, $dbName = null) {
+        $pdo = DbManager::getPdo($host, $username, $password, $dbName);
         $stmt = $pdo->prepare($sql);
         $success = $stmt->execute();
 
@@ -79,13 +114,13 @@ class DbManager {
         }
     }
 
-    /**
-     * Execute an sql statement without getting a return value
-     * @param string $sql - the query to execute
-     * @return array - the array of results, or an empty array if no results were found
-     */
-    public static function query($sql) {
-        $pdo = DbManager::getPdo();
+    public static function query($sql, $host = null, $username = null, $password = null, $dbName = null) {
+        $pdo = DbManager::getPdo($host, $username, $password, $dbName);
+        //if the pdo object could not be found, cancel the query gracefully
+        if ($pdo == null) {
+            writeToLog("Could not load the pdo object using host=$host username=$username password=***** dbName = $dbName");
+            return [];
+        }
         $stmt = $pdo->prepare($sql);
         $success = $stmt->execute();
         //if the stmt failed execution, exit failure
@@ -96,8 +131,8 @@ class DbManager {
         }
     }
 
-    public static function singleColumnQuery($sql) {
-        $result = DbManager::query($sql);
+    public static function singleColumnQuery($sql, $host = null, $username = null, $password = null, $dbName = null) {
+        $result = DbManager::query($sql, $host, $username, $password, $dbName);
         if ($result == false) {
             return false;
         } else {
@@ -118,8 +153,8 @@ class DbManager {
      * @param string $sql - the query to execute
      * @return array|boolean - the first and only row in a single row query, or false if rownum <> 1
      */
-    public static function queryGetSingleRow($sql) {
-        $results = DbManager::query($sql);
+    public static function queryGetSingleRow($sql, $host = null, $username = null, $password = null, $dbName = null) {
+        $results = DbManager::query($sql, $host, $username, $password, $dbName);
         if (count($results) === 1) {
             return $results[0];
         } else {
@@ -157,10 +192,13 @@ class DbManager {
         return $result;
     }
 
-    public static function GetSingleItem($sql) {
-        $result = DbManager::query($sql);
+    public static function GetSingleItem($sql, $host = null, $username = null, $password = null, $dbName = null) {
+        $result = DbManager::query($sql, $host, $username, $password, $dbName);
         if ($result !== null && count($result) > 0) {
-            return $result[0];
+            $result = $result[0];
+            foreach ($result as $key => $item) {
+                return $item;
+            }
         } else {
             return null;
         }
