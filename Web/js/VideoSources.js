@@ -67,7 +67,8 @@ $(document).ready(function() {
         messages: {
             location: {
                 remote: "*Please enter a valid path that is accessible by the server."
-            }
+            },
+            mediaType: {required: "<br/> This field is required"}
         }
     });
 
