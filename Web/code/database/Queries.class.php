@@ -32,6 +32,16 @@ class Queries {
     private static $stmtGetPlaylistNames = null;
     private static $stmtGetVideoIds = null;
 
+    public static function GetTvShowFirstEpisode($tvShowVideoId) {
+        $notInStmt = DbManager::NotIn($videoIdsToKeep, false);
+        $pdo = DbManager::getPdo();
+        $sql = "delete from video where video_id $notInStmt";
+        $stmt = $pdo->prepare($sql);
+        $success = $stmt->execute();
+        Queries::LogSql($sql, $success);
+        return $success;
+    }
+
     /**
      * Deletes any videos that are not in the list of videos to keep.
      * @param int[] $videoIdsToKeep - the list of videoIds to keep. Any video not in this list will be deleted.
@@ -268,7 +278,7 @@ class Queries {
             $sql = "insert into tv_episode(video_id, tv_show_video_id, season_number, episode_number, writer, director)" .
                     " values(:videoId, :tvShowVideoId, :seasonNumber, :episodeNumber, :writer, :director) " .
                     " on duplicate key update tv_show_video_id=:tvShowVideoId, season_number=:seasonNumber,
-                        episode_number=:episodeNumber, writer=:writer, director=:director;";
+                                    episode_number=:episodeNumber, writer=:writer, director=:director;";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtInsertTvEpisode = $stmt;
         }
@@ -435,7 +445,7 @@ class Queries {
             $pdo = DbManager::getPdo();
             if (Queries::$stmtAddVideoSource == null) {
                 $sql = "insert into video_source(location, base_url, media_type, security_type, refresh_videos) 
-                values(:location, :baseUrl, :mediaType, :securityType, true)";
+                            values(:location, :baseUrl, :mediaType, :securityType, true)";
                 $stmt = $pdo->prepare($sql);
                 Queries::$stmtAddVideoSource = $stmt;
             }
@@ -459,7 +469,7 @@ class Queries {
             $pdo = DbManager::getPdo();
             if (Queries::$stmtUpdateVideoSource == null) {
                 $sql = "update video_source set location=:location, base_url=:baseUrl, media_type=:mediaType, security_type=:securityType, refresh_videos=:refreshVideos
-                    where location=:originalLocation";
+                                where location=:originalLocation";
                 $stmt = $pdo->prepare($sql);
                 Queries::$stmtUpdateVideoSource = $stmt;
             }
@@ -514,7 +524,7 @@ class Queries {
         if (Queries::$stmtVideoCount == null) {
             $sql = "select count(*) from video where media_type=:mediaType";
             $pdo = DbManager::getPdo();
-            if($pdo == false){
+            if ($pdo == false) {
                 return false;
             }
             Queries::$stmtVideoCount = $pdo->prepare($sql);
@@ -557,8 +567,8 @@ class Queries {
         $dateWatched = date("Y-m-d H:i:s");
         $pdo = DbManager::getPdo();
         $sql = "insert into watch_video (username, video_id, time_in_seconds, date_watched)
-            values(:username, :videoId, :timeInSeconds, :dateWatched) 
-            on duplicate key update time_in_seconds=:timeInSeconds,date_watched=:dateWatched";
+                        values(:username, :videoId, :timeInSeconds, :dateWatched) 
+                        on duplicate key update time_in_seconds=:timeInSeconds,date_watched=:dateWatched";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(":username", $username);
         $stmt->bindParam(":videoId", $videoId);
@@ -596,17 +606,17 @@ class Queries {
     public static function getLastEpisodeWatched($username, $tvShowVideoId) {
         $pdo = DbManager::getPdo();
         $sql = "select w.video_id, w.time_in_seconds
-                from watch_video w, tv_episode e
-                where w.video_id = e.video_id
-                and e.tv_show_video_id = :tvShowVideoId
-                and w.username = :username
-                and w.date_watched = (
-                  select max(sw.date_watched) 
-                  from watch_video sw, tv_episode se
-                  where sw.video_id = se.video_id
-                  and se.tv_show_video_id = :tvShowVideoId
-                  and sw.username = :username
-                )";
+                            from watch_video w, tv_episode e
+                            where w.video_id = e.video_id
+                            and e.tv_show_video_id = :tvShowVideoId
+                            and w.username = :username
+                            and w.date_watched = (
+                              select max(sw.date_watched) 
+                              from watch_video sw, tv_episode se
+                              where sw.video_id = se.video_id
+                              and se.tv_show_video_id = :tvShowVideoId
+                              and sw.username = :username
+                            )";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(":tvShowVideoId", $tvShowVideoId);
         $stmt->bindParam(":username", $username);
@@ -630,8 +640,8 @@ class Queries {
         if (Queries::$stmtGetTvEpisodeVideoIdsForShow == null) {
             $pdo = DbManager::getPdo();
             $sql = "select video_id from tv_episode
-                where tv_show_video_id=:tvShowVideoId
-                order by season_number asc, episode_number asc";
+                            where tv_show_video_id=:tvShowVideoId
+                            order by season_number asc, episode_number asc";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtGetTvEpisodeVideoIdsForShow = $stmt;
         }
@@ -665,10 +675,10 @@ class Queries {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtGetEpisodePathsByShowPath == null) {
             $sql = "select path from video where video_id in (
-                        select video_id from tv_episode where tv_show_video_id = (
-                            select video_id from video where path = :showPath
-                        )
-                    )";
+                                    select video_id from tv_episode where tv_show_video_id = (
+                                        select video_id from video where path = :showPath
+                                    )
+                                )";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtGetEpisodePathsByShowPath = $stmt;
         }
@@ -685,7 +695,7 @@ class Queries {
         if (Queries::$stmtGetVideos == null) {
             $pdo = DbManager::getPdo();
             $sql = "select * from video 
-                where video_id in(:videoIds";
+                            where video_id in(:videoIds";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtGetVideos = $stmt;
         }
@@ -704,11 +714,11 @@ class Queries {
         return false;
     }
 
-    public static function getVideo($videoId) {
+    public static function GetVideo($videoId) {
         if (Queries::$stmtGetVideo == null) {
             $pdo = DbManager::getPdo();
             $sql = "select * from video 
-                where video_id=:videoId";
+                            where video_id=:videoId";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtGetVideo = $stmt;
         }
@@ -732,8 +742,8 @@ class Queries {
         if (Queries::$stmtGetTvEpisode == null) {
             $pdo = DbManager::getPdo();
             $sql = "select * from video v, tv_episode e
-                where v.video_id=:videoId
-                and v.video_id=e.video_id";
+                            where v.video_id=:videoId
+                            and v.video_id=e.video_id";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtGetTvEpisode = $stmt;
         }
@@ -752,12 +762,13 @@ class Queries {
         return false;
     }
 
-    public static function getEpisodesInTvShow($tvShowVideoId) {
+    public static function GetEpisodesInTvShow($tvShowVideoId) {
         if (Queries::$stmtGetEpisodesInTvShow == null) {
             $pdo = DbManager::getPdo();
             $sql = "select * from video v, tv_episode e
-                where e.tv_show_video_id=:videoId
-                and v.video_id=e.video_id";
+                            where e.tv_show_video_id=:videoId
+                            and v.video_id=e.video_id
+                            order by e.season_number asc, e.episode_number asc";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtGetEpisodesInTvShow = $stmt;
         }
@@ -784,9 +795,9 @@ class Queries {
         if (Queries::$stmtGetVideoProgress == null) {
             $pdo = DbManager::getPdo();
             $sql = "select time_in_seconds
-                    from watch_video
-                    where video_id = :videoId
-                    and username = :username";
+                                from watch_video
+                                where video_id = :videoId
+                                and username = :username";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtGetVideoProgress = $stmt;
         }

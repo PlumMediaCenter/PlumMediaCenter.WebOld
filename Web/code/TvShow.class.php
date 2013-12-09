@@ -270,17 +270,17 @@ class TvShow extends Video {
         $v = Video::GetVideo($videoId);
         //the video is a tv episode, get the tv show for that episode
         if ($v->mediaType == Enumerations::MediaType_TvEpisode) {
-            $tvSeriesVideoId = $v->getTvShowVideoIdFromVideoTable();
+            $tvShowVideoId = $v->getTvShowVideoIdFromVideoTable();
         } else
         //the video is a tv show. use this video id
         if ($v->mediaType == Enumerations::MediaType_TvShow) {
-            $tvSeriesVideoId = $videoId;
+            $tvShowVideoId = $videoId;
         } else {
             //the video associated with the videoId provided is not a tv episode or tv show, nothing more can be done
             return -1;
         }
 
-        $result = Queries::getLastEpisodeWatched(config::$globalUsername, $tvSeriesVideoId);
+        $result = Queries::getLastEpisodeWatched(config::$globalUsername, $tvShowVideoId);
         $lastVideoIdWatched = $result === false ? -1 : $result->video_id;
         $lastWatchedSecondsProgress = $result === false ? 0 : $result->time_in_seconds;
         //if there IS a last video watched, then see if the user hadn't finished it yet
@@ -316,7 +316,7 @@ class TvShow extends Video {
             $lastWatchedSeasonEpisodeString = str_pad($lastWatchedSeasonNumber, 3, "0", STR_PAD_LEFT) . "." . str_pad($lastWatchedEpisodeNumber, 4, "0", STR_PAD_LEFT);
         }
         //now that we have the info about the last episode watched, we need to get the list of all tv episodes that this series has 
-        $thisSeriesEpisodeList = Queries::getEpisodesInTvShow($tvSeriesVideoId);
+        $thisSeriesEpisodeList = Queries::GetEpisodesInTvShow($tvShowVideoId);
         //if there are no episodes associated with this series, nothing more can be done.
         if ($thisSeriesEpisodeList === false) {
             return -1;
@@ -346,33 +346,19 @@ class TvShow extends Video {
         if ($resultVideoId != -1) {
             return $resultVideoId;
         } else {
-
-            //we didn't find a valid video to play. this  that we must be at the end of the season. spin through and find the first episode.
-            $resultVideoId = -1;
-            //any valid value should be smaller than this initial value
-            $resultSeasonEpisodeString = "000.0000";
-            //spin through the list of all episodes in this series and find the next episode
-            foreach ($thisSeriesEpisodeList as $episode) {
-                //smash the season and episode numbers together as a string, so we can just do a string comparison
-                $sNum = $episode->season_number;
-                $eNum = $episode->episode_number;
-                $seasonEpisodeString = str_pad($sNum, 3, "0", STR_PAD_LEFT) . "." . str_pad($eNum, 4, "0", STR_PAD_LEFT);
-                //if the current string is greater than the last watched episode
-                if (strcmp($lastWatchedSeasonEpisodeString, $seasonEpisodeString) < 0) {
-                    //now that we have determined that the current string is larger than the last watched episode, 
-                    //find the smallest one of those
-                    if (strcmp($seasonEpisodeString, $resultSeasonEpisodeString) < 0) {
-                        //we have found a string that is smaller than our previous result, so keep that as the new next episode
-                        $resultVideoId = $episode->video_id;
-                        $resultSeasonEpisodeString = $seasonEpisodeString;
-                    }
-                }
-            }
-            //return the results. if no video was found, this number is -1. 
-            return $resultVideoId;
+            //return the FIRST episode, (takes us around the world when finishing a tv show
+            $v = TvShow::GetFirstEpisode($tvShowVideoId);
+            return ($v != false) ? $v->videoId : -1;
         }
         //shouldn't make it here, but if we do, return false for failure
         return false;
+    }
+
+    public static function GetFirstEpisode($tvShowVideoId) {
+        //get the list of all tv episodes in this tv show.
+        $e = Queries::GetEpisodesInTvShow($tvShowVideoId);
+        $videoId = ($e != false) ? $e[0]->video_id : -1;
+        return Video::GetVideo($videoId);
     }
 
     function getFolderName() {
@@ -686,5 +672,4 @@ class TvShow extends Video {
     }
 
 }
-
 ?>

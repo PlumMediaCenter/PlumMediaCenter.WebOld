@@ -20,7 +20,8 @@ function printTvShowFileList($tvShow) {
     $episodeList = $tvShow->episodes;
 
     $e = TvShow::GetNextEpisodeToWatch($tvShow->videoId);
-    $nextEpisodeId = $e->videoId;
+    //if e is false, then there is no next episode to watch. 
+    $nextEpisodeId = ($e != false) ? $e->videoId : -1;
     $currentSeasonNumber = -2;
     foreach ($episodeList as $episode) {
         $videoTitle = $episode->title;
