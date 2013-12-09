@@ -346,18 +346,36 @@ class TvShow extends Video {
         if ($resultVideoId != -1) {
             return $resultVideoId;
         } else {
-            //return the FIRST episode, (takes us around the world when finishing a tv show
-            $v = TvShow::GetFirstEpisode($tvShowVideoId);
+            //return the LAST episode. This means they have finished the series.
+            $v = TvShow::GetLastEpisode($tvShowVideoId);
             return ($v != false) ? $v->videoId : -1;
         }
         //shouldn't make it here, but if we do, return false for failure
         return false;
     }
 
+    /**
+     * Returns the first tv episode in this series
+     * @param int $tvShowVideoId - the videoId of the tv show
+     * @return Video
+     */
     public static function GetFirstEpisode($tvShowVideoId) {
         //get the list of all tv episodes in this tv show.
         $e = Queries::GetEpisodesInTvShow($tvShowVideoId);
         $videoId = ($e != false) ? $e[0]->video_id : -1;
+        return Video::GetVideo($videoId);
+    }
+
+    /**
+     * Returns the last tv episode in this series
+     * @param int $tvShowVideoId - the videoId of the tv show
+     * @return Video
+     */
+    public static function GetLastEpisode($tvShowVideoId) {
+        //get the list of all tv episodes in this tv show.
+        $e = Queries::GetEpisodesInTvShow($tvShowVideoId);
+        $idx = count($e);
+        $videoId = ($e != false) ? $e[$idx - 1]->video_id : -1;
         return Video::GetVideo($videoId);
     }
 
