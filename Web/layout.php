@@ -20,7 +20,7 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
         <script type="text/javascript">
             var username = "<?php echo Security::GetUsername(); ?>";
             var enumerations = <?php
-$c = new ReflectionClass("Enumerations");
+            $c = new ReflectionClass("Enumerations");
 echo json_encode($c->getConstants());
 ?>;
             enumerations.movie = "<?php echo Enumerations::MediaType_Movie; ?>";
@@ -48,7 +48,8 @@ echo json_encode($c->getConstants());
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
-                    <a class="brand" href="index.php">Plum Video Player</a>
+
+                    <a class="brand" href="index.php">  <img src="img/logo.png" style="height:20px;"> Plum Video Player</a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li id="browseNav<?php echo Enumerations::MediaType_Movie; ?>" ><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_Movie; ?>">Movies</a></li>
