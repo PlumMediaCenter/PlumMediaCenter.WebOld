@@ -22,7 +22,7 @@ Function GetBaseUrlFromUser() as Dynamic
     print "Prompting user for Base Url"
      while true
          msg = wait(0, screen.GetMessagePort()) 
-         'print "message received"
+         print "message received"; msg
          If type(msg) = "roKeyboardScreenEvent"
              If msg.isScreenClosed()
                  Return invalid
@@ -49,10 +49,13 @@ Function GetBaseUrlFromUser() as Dynamic
                             return GetBaseUrlFromUser()
                         End If
                     End If
+                Else
+                    print "User cancled entering the base url"
+                    Return false 
                  End If
              End If
          End If
      End While 
      Return invalid
- End Function
+End Function
 
