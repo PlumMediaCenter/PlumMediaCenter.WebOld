@@ -29,6 +29,11 @@ Function API_GetNextEpisode(tvShowVideoId as String) as String
     url = BaseUrl() + "api/GetNextEpisode.php?videoId=" + tvShowVideoId
     result = GetJson(url)
     episodeId = result.videoId
+    If episodeId = invalid Then
+        episodeId = "-1"
+    Else
+        episodeId = episodeId.ToSTr()
+    End If
     print "API-GetNextEpisode: showId=";tvShowVideoId;", result=";episodeId
     return episodeId
 End Function
