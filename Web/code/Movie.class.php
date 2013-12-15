@@ -337,8 +337,8 @@ class Movie extends Video {
         ob_end_clean();
 
         //write the contents to the destination file
-        $success = file_put_contents("$nfoPath", $contents);
-
+        $bytesWritten = file_put_contents("$nfoPath", $contents);
+        $success = $bytesWritten !== false;
         return $success;
     }
 

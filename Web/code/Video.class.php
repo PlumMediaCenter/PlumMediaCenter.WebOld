@@ -51,6 +51,11 @@ abstract class Video {
         $this->videoSourcePath = str_replace("\\", "/", realpath($videoSourcePath)) . "/";
         $this->fullPath = str_replace("\\", "/", realpath($fullPath));
 
+        //if this video does not exist, throw a new exception
+        if (file_exists($this->fullPath) === false) {
+            throw new Exception("Video file does not exist at path $this->fullPath");
+        }
+
         //calculate anything extra that is needed
         $this->url = Video::EncodeUrl($this->getUrl());
         $this->sdPosterUrl = $this->getActualSdPosterUrl();

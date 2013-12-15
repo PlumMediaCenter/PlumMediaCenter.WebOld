@@ -241,8 +241,12 @@ class DbManager {
      * @param type $list
      * @param type $wrapInQuotes
      * @param type $inLength
+     * @return boolean|string - false if failure, the in stmt if success
      */
     public static function NotIn($list, $wrapInQuotes = null, $inLength = 1000) {
+        if(count($list) == 0){
+            return false;
+        }
         $q = $wrapInQuotes == true ? "'" : "";
         $lists = [];
         $listIndex = 0;

@@ -27,6 +27,19 @@ class TestMovie extends UnitTestCase {
         return $this->video;
     }
 
+    /**
+     * Make sure that movie files that do not exist throw an exception
+     */
+    function testPathNotFoundMovie() {
+        try {
+            $v = $this->loadMovie("path_that_doesnt_exist/movie.mp4");
+            //this assert should never be called
+            $this->assertTrue(false);
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+        }
+    }
+
     function testConstruct() {
         $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
         //make sure that the constructor loaded everything correctly
