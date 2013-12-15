@@ -477,14 +477,14 @@ class TvEpisode extends Video {
         echo $doc->saveXML();
 
 
-//            //get the xml file contents
+        //get the xml file contents
         $contents = ob_get_contents();
         //close the output buffer
         ob_end_clean();
-        //replace any solo ampersands with escaped 
         //write the contents to the destination file
-        file_put_contents("$metadataDestination", $contents);
-        return true;
+        $bytesWritten = file_put_contents("$metadataDestination", $contents);
+        $success = $bytesWritten !== false;
+        return $success;
     }
 
 }

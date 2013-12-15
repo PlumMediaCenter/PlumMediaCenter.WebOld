@@ -685,9 +685,11 @@ class TvShow extends Video {
         ob_end_clean();
 
         //write the contents to the destination file
-        file_put_contents($this->getNfoPath(), $contents);
-        return true;
+        $bytesWritten = file_put_contents($this->getNfoPath(), $contents);
+        $success = $bytesWritten !== false;
+        return $success;
     }
 
 }
+
 ?>
