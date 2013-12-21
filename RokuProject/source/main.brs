@@ -1,10 +1,10 @@
 
 Function Main()
+    'temporarily show the keyboard screen   
+    'Keyboard("Enter the url of the PlumVideoPlayer web server")
     'random splash grid that is only here to keep the app from exiting
-    splashPort = CreateObject("roMessagePort")
-    splashGrid = CreateObject("roGridScreen")
-    splashGrid.SetMessagePort(splashPort) 
-    splashGrid.Show() 
+    screenFacade = CreateObject("roPosterScreen")
+    screenFacade.show()
 
     'Check the app configuration. If not configured, prompt the user for all necessary information
     CheckConfiguration()
@@ -94,7 +94,7 @@ Function Main()
     'set video.json
     s = CreateObject("roAssociativeArray")
     s.ContentType = "movie"
-    s.Title = "Set video.json Url"
+    s.Title = "Set PlumVideoServer url"
     s.Description = "Set the video.json url for this application"
     settingsList.push(s)
     'refresh list
@@ -104,13 +104,8 @@ Function Main()
     s.Description = "Refresh the page with the latest videos from the server"
     settingsList.push(s)
     grid.SetContentList(2, settingsList)
-
-    grid.Show() 
-    splashGrid.close()
-    'for testing purposes, immediately play the first movie in the list
-    'PlayFirstEpisode()
-    'ShowTvShowEpisodesGrid(1)
     
+    grid.Show() 
     while true
         msg = wait(0, port)
         If type(msg) = "roGridScreenEvent" Then
@@ -142,6 +137,10 @@ Function Main()
             End if
         End if
     End While
+    
+    'exit the app gently so that the screen doesn't flash to black
+    screenFacade.showMessage("")
+    sleep(25)
 End Function
 
 '

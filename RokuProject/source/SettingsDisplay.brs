@@ -10,7 +10,7 @@ End Sub
 Function GetBaseUrlFromUser() as Dynamic
     print "Setting up Base URL Promt Screen"
     screen = CreateObject("roKeyboardScreen")
-    screen.SetText("http://192.168.1.109:8080/PlumVideoPlayer/Web/")
+    screen.SetText("http://10.0.0.2/PlumVideoPlayer/Web/")
     port = CreateObject("roMessagePort") 
     screen.SetMessagePort(port)
     screen.SetTitle("PlumVideoPlayer Web URL")
@@ -22,7 +22,7 @@ Function GetBaseUrlFromUser() as Dynamic
     print "Prompting user for Base Url"
      while true
          msg = wait(0, screen.GetMessagePort()) 
-         print "message received"; msg
+         print "message received";msg
          If type(msg) = "roKeyboardScreenEvent"
              If msg.isScreenClosed()
                  Return invalid
