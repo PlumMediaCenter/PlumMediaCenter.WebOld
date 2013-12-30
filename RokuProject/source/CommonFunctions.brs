@@ -76,6 +76,14 @@ Sub FireNonBlockingRequest(sUrl as String)
     searchRequest.AsyncGetToString() 
 End Sub
 
+Function GetNewMessageScreen(messageTitle as String, message as String) as Object
+    dialog = CreateObject("roMessageDialog")
+    dialog.SetTitle(messageTitle)
+    dialog.SetText(message)
+    dialog.Show()
+    return dialog
+End Function
+
 Sub ShowMessage(messageTitle as String, message as String)
     port = CreateObject("roMessagePort")
     dialog = CreateObject("roMessageDialog")
