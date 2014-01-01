@@ -592,7 +592,7 @@ class Queries {
      */
     public static function GetVideoIds($mediaType) {
         if (Queries::$stmtGetVideoIds == null) {
-            $sql = "select video_id from video where media_type=:mediaType";
+            $sql = "select video_id from video where media_type=:mediaType order by title asc";
             $pdo = DbManager::getPdo();
             if ($pdo == false) {
                 return [];
