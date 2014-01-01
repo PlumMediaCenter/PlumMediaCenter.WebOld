@@ -81,6 +81,7 @@ Function GetNewMessageScreen(messageTitle as String, message as String) as Objec
     dialog.SetTitle(messageTitle)
     dialog.SetText(message)
     dialog.Show()
+    dialog.ShowBusyAnimation() 
     return dialog
 End Function
 

@@ -1,16 +1,18 @@
-Sub ShowSettings(n)
+Function ShowSettings(n)
     If (n = 0) Then
         success = GetBaseUrlFromUser()
             If success <> invalid Then
             'refresh the video grid
             print "reload the video grid now that the user has redefined the server url."
             ShowVideoGrid()
+            return True
         End if
     Else If (n = 1) Then
         print "Refresh media list"
         ShowVideoGrid()
+        Return True
     End If
-End Sub
+End Function
 
 Function GetBaseUrlFromUser() as Dynamic
     print "Setting up Base URL Promt Screen"
@@ -44,7 +46,7 @@ Function GetBaseUrlFromUser() as Dynamic
                     'save the base url to the registry
                     SetBaseUrl(sBaseUrl)
                     print "User said that the PlumVideoPlayer url was ";sBaseUrl
-                    messageScreen = GetNewMessageScreen("Waiting...", "Verifying that the server exists at the provided url...")
+                    messageScreen = GetNewMessageScreen("", "Verifying that the server exists at the provided url...")
                     'see if the server exists at the url the user specified
                     serverExists = API_ServerExists()
                     messageScreen.close()

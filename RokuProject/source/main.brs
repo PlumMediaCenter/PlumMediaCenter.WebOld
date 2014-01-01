@@ -1,16 +1,18 @@
 
 Function Main()
+    'set the main theme of the application
+    SetTheme()
+
     'add a default facade screen to the app so that the app will only close once this screen has been closed 
-    screenFacade = CreateObject("roParagraphScreen")
-    screenFacade.AddParagraph("")
+    screenFacade = CreateObject("roGridScreen")
     screenFacade.show()
-    
+     
     'Check the app configuration. If not configured, prompt the user for all necessary information
     CheckConfiguration()
     
     'Check to make sure that the server specified in the configuration actually exists
     print "Verifying that the server exists."
-    messageScreen = GetNewMessageScreen("Waiting...", "Verifying that the server exists at the provided url...")
+    messageScreen = GetNewMessageScreen("", "Verifying that the server exists at the provided url...")
     serverExists = API_ServerExists() 
     messageScreen.close()
     
@@ -39,7 +41,7 @@ Function ShowVideoGrid()
     'grab the videoGrid from the global variables
     grid = m.videoGrid
     
-    messageScreen = GetNewMessageScreen("Loading", "Loading videos...")
+    messageScreen = GetNewMessageScreen("", "Loading videos...")
 
     'load the library from the server. This will replace the global library object with a new one from the server
     LoadLibrary()
@@ -74,8 +76,17 @@ Function ShowVideoGrid()
         o.ShortDescriptionLine2 = "[ShortDescriptionLine2]"
         o.Description = show.plot
         o.Rating = show.mpaa
+        'o.Length = 1000
+        o.NumEpisodes = show.episodeCount
         'o.StarRating = "75"
         o.ReleaseDate = show.year
+        o.TextAttrs = { 
+            Color:"#FFCCCCCC", 
+            Font:"Small", 
+            HAlign:"HCenter", 
+            VAlign:"VCenter", 
+            Direction:"LeftToRight" 
+        }
         'o.Length = 5400
         o.Actors = []
         
@@ -151,7 +162,10 @@ Function ShowVideoGrid()
                 col = msg.GetData()
                 'if the settings item was selected
                 If row = 2 Then
-                    ShowSettings(col)
+                    close = ShowSettings(col)
+                    If close = True Then
+                        Return -1
+                    End If
                 Else
                     video = gridList[row][col]
                     If row = 0 Then 
@@ -211,9 +225,12 @@ Sub LoadLibrary()
 End Sub
 
 Function ShowTvShowEpisodesGrid(showIndex as integer)
-    messageScreen =  GetNewMessageScreen("Loading", "Retrieving tv episodes...")
+    messageScreen =  GetNewMessageScreen("", "Retrieving tv episodes...")
     port = CreateObject("roMessagePort")
-    grid = CreateObject("roGridScreen")
+    If m.tvShowGrid = invalid Then
+        m.tvShowGrid = CreateObject("roGridScreen")
+    End If
+    grid = m.tvShowGrid
     grid.SetMessagePort(port) 
     'set the grid to wide so the episode pictures look better
     grid.SetGridStyle("flat-landscape")
@@ -280,7 +297,7 @@ Function ShowTvShowEpisodesGrid(showIndex as integer)
     End For
     'focus the grid on the episode that was marked as 'next'. 
     print "Next Episode grid indexes:: ";nextEpisodeSeasonIndex; " - ";nextEpisodeIndex 
-    grid.SetFocusedListItem(nextEpisodeSeasonIndex,nextEpisodeIndex)    
+    grid.SetFocusedListItem(nextEpisodeSeasonIndex, nextEpisodeIndex)    
     'hide the message
     messageScreen.Close()
     grid.Show() 
@@ -289,6 +306,7 @@ Function ShowTvShowEpisodesGrid(showIndex as integer)
         print msg
         If type(msg) = "roGridScreenEvent" then
             If msg.isScreenClosed() then
+                m.tvShowGrid = invalid
                 Return -1
             Else If msg.isListItemFocused()
                 print "Focused msg: ";msg.GetMessage();"row: ";msg.GetIndex();
@@ -299,7 +317,9 @@ Function ShowTvShowEpisodesGrid(showIndex as integer)
                 row = msg.GetIndex()
                 col = msg.GetData()
                 PlayVideo(gridList[row][col])
-            endif
+                'whenever the video has finished playing, reload this grid
+                Return ShowTvShowEpisodesGrid(showIndex)
+            End If
         endif
     End While
 End Function
