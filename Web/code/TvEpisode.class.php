@@ -13,7 +13,7 @@ class TvEpisode extends Video {
     public $episodeNumber;
     public $showName;
     public $showFilePath;
-    public $tvShow;
+    private $tvShow;
 
     function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
         parent::__construct($videoSourceUrl, $videoSourcePath, $fullPath);

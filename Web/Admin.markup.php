@@ -1,4 +1,4 @@
-<?php ?>
+<?php include_once(dirname(__FILE__) . "/code/database/CreateDatabase.class.php"); ?>
 <a onclick="generateLibrary();" class="btn">Generate/Update library</a>
 <br/>
 <br/>
@@ -13,16 +13,12 @@
 <br/>
 <br/>
 <a class="btn" onclick="fetchMissingMetadataAndPosters();">Fetch and Generate Missing Metadata and Posters</a>
-
-<br/>
-<br/>
-<a href="#videosJsonModal" class="btn" role="button" data-toggle="modal" onclick="getVideosJson();">View library.json</a>
 <br/>
 <br/>
 <a href='Log.php' class="btn">View Log</a>
 <br/>
 <br/>
-<a href='Setup.php' class="btn">Install/Update Database</a>
+<a href='Setup.php' class="btn">Install/Update Database</a> Current database model version: <?php echo CreateDatabase::CurrentDbVersion(); ?>. Latest available db model version: <?php echo CreateDatabase::LatestDbVersion(); ?>. 
 
 <div id="videosJsonModal" class="modal hide" style="width: 1000px; margin-left: -500px;">
     <div class="modal-header">
@@ -39,11 +35,6 @@
             $("#metadataManagerBtn").attr("href", $("#metadataManagerBtn").attr("href-original") + "?mediaType=" + $(this).val());
         });
     });
-    function getVideosJson() {
-        $.getJSON("api/library.json", function(json) {
-            $("#videosJsonModalContent").html("<pre>" + JSON.stringify(json, undefined, 2) + "</pre>");
-        });
-    }
 
     function generateLibrary() {
         bootbox.alert("Generating Library. <img src='img/ajax-loader.gif'/>");

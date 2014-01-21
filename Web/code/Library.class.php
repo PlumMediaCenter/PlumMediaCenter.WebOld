@@ -94,7 +94,7 @@ class Library {
      * Loads an array of all tv shows found in the database. All metadata is loaded into the tv show objects. 
      * @return TvShow[] - returns the tv shows in the library that was loaded from the database
      */
-    public function loadTvShowsFromDatabase() {
+    public function loadTvShowsFromDatabase($bLoadEpisodes = true) {
         $this->tvShows = [];
         $this->tvEpisodes = [];
         $this->tvShowCount = 0;
@@ -102,12 +102,13 @@ class Library {
         $videoIds = Queries::GetVideoIds(Enumerations::MediaType_TvShow);
         foreach ($videoIds as $videoId) {
             $tvShow = Video::GetVideo($videoId);
+
             $this->tvShows[] = $tvShow;
             $this->videos[] = $tvShow;
             $this->tvShowCount++;
+            //load all of the episodes for this tv show OR fetch number of episodes in db if we didn't fetch episodes
+            ($bLoadEpisodes) ? $tvShow->loadEpisodesFromDatabase() : $tvShow->fetchEpisodeCountFromDb();
 
-            //load all of the episodes for this tv show
-            $tvShow->loadEpisodesFromDatabase();
             $this->videos = array_merge($this->videos, $tvShow->episodes);
             $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
             $this->tvEpisodeCount += $tvShow->episodeCount;
@@ -121,17 +122,21 @@ class Library {
      */
     public function writeToDb() {
         //writes every video to the database. If it is a new video, it will automatically be added. If it is an existing
-        //video, it will be updated
+        //video, it will be updated. if a video is in the db but is no longer present in the filesystem, it will be deleted.
         $libraryVideoIds = [];
         $totalSuccess = true;
         foreach ($this->videos as $video) {
             $totalSuccess = $totalSuccess && $video->writeToDb();
             $libraryVideoIds[] = $video->getVideoId();
         }
-
+        //get a list of all videoIds from the database
+        $allIds = Queries::GetAllVideoIds();
+        $deleteIds = array_diff($allIds, $libraryVideoIds);
+        foreach ($deleteIds as $videoId) {
+            Video::DeleteVideo($videoId);
+        }
         //delete any videos from the database that are not in this library
-        $totalSuccess = $totalSuccess && Queries::DeleteVideosNotInThisList($libraryVideoIds);
-
+        //$totalSuccess = $totalSuccess && Queries::DeleteVideosNotInThisList($libraryVideoIds);
         //return success or failure. If at least one item failed, this will be returned as a failure
         return $totalSuccess;
     }
@@ -158,9 +163,7 @@ class Library {
         foreach ($movieSources as $source) {
             //get a list of each video in this movies source folder
             $listOfAllFilesInSource = getVideosFromDir($source->location);
-
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
-                //writeToLog("New Movie: $fullPathToFile");
                 //create a new Movie object
                 $video = new Movie($source->base_url, $source->location, $fullPathToFile);
                 $this->movies[] = $video;
@@ -213,6 +216,11 @@ class Library {
         return true;
     }
 
+    public function sort() {
+        usort($this->movies, array("Video", "CompareTo"));
+        usort($this->tvShows, array("Video", "CompareTo"));
+    }
+
     /**
      * Writes the entire library to a json file that can be consumed by any application that knows its form.
      * @return boolean - success or failure
@@ -227,7 +235,7 @@ class Library {
         $videoList["tvShows"] = $this->tvShows;
         $videoJson = json_encode($videoList, JSON_PRETTY_PRINT);
         $success = file_put_contents(dirname(__FILE__) . "/../api/library.json", $videoJson);
-        return $success;
+        return $success !== false;
     }
 
     /**
@@ -286,4 +294,5 @@ class Library {
     }
 
 }
+
 ?>

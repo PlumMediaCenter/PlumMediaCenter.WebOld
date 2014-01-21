@@ -110,6 +110,15 @@ class TvShow extends Video {
     }
 
     /**
+     * Fetches the number of episodes that this tv show has in the database. This is usually called 
+     * instead of loading episodes from the db.
+     */
+    function fetchEpisodeCountFromDb() {
+        $count = DbManager::getSingleItem("select count(video_id) from tv_episode where tv_show_video_id=$this->videoId");
+        $this->episodeCount = intval($count);
+    }
+
+    /**
      * Loads the episodes associated with this tv show into this tv show based on information found in the db
      */
     function loadEpisodesFromDatabase() {
@@ -128,6 +137,7 @@ class TvShow extends Video {
             $this->seasons[$episode->seasonNumber][] = $episode;
             $this->episodes[] = $episode;
         }
+        $this->episodeCount = count($this->episodes);
     }
 
     /**
@@ -164,7 +174,7 @@ class TvShow extends Video {
         //get the list of videos from this tv series 
         $videosList = getVideosFromDir($this->fullPath);
 
-        $this->episodeCount = count($videosList);
+
         //spin through every folder in the source location
         foreach ($videosList as $fullPathToFile) {
             //create a new Episode object
@@ -201,6 +211,7 @@ class TvShow extends Video {
             $newSeasonList[] = $newSeason;
         }
         $this->seasons = $newSeasonList;
+        $this->episodeCount = count($this->episodes);
     }
 
     /**
@@ -212,6 +223,7 @@ class TvShow extends Video {
         $reader = $this->getNfoReader();
         $this->year = $reader->year !== null ? $reader->year : "";
         $this->runtime = $reader->runtime;
+        $this->genres = $reader->genres;
     }
 
     /**

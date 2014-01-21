@@ -12,23 +12,6 @@ function handleError($errno, $errstr, $errfile, $errline, array $errcontext) {
 //declare a custom error handler so we can try catch warnings 
 set_error_handler('handleError');
 
-function getLibrary() {
-    $lib = null;
-    $path = dirname(__FILE__) . "/../api/library.json";
-    if (file_exists($path) === true) {
-//load the json file into memory
-        $json = $string = file_get_contents($path);
-        $lib = json_decode($json);
-    }
-    if ($lib == null) {
-        $lib = [];
-        $lib["movies"] = [];
-        $lib["tvShows"] = [];
-        $lib = (object) $lib;
-    }
-    return $lib;
-}
-
 /**
  *  Gets a list of all directories found within the $baseDirectory provided
  * @param type $baseDirectory - the full path to the directory that will be searched

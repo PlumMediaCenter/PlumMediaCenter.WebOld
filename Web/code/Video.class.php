@@ -22,6 +22,16 @@ abstract class Video {
     const NoMetadata = "0000-00-00 00:00:00"; //this will never be a date found in the metadata, so use it for invalid metadata dates
     const SdImageWidth = 110; //110x150 
     const HdImageWidth = 210; // 210x270
+    const baseQuery = "select   media_type as mediaType,  
+                                title as title, 
+                                plot as plot,  
+                                release_date as year,  
+                                url as url,  
+                                sd_poster_url as sdPosterUrl, 
+                                hd_poster_url as hdPosterUrl, 
+                                mpaa as mpaa, 
+                                video_id as videoId 
+                                from video";
 
     protected $videoSourceUrl;
     protected $videoSourcePath;
@@ -36,6 +46,7 @@ abstract class Video {
     public $mpaa = "N/A";
     public $actorList = [];
     public $videoId = null;
+    public $genres = [];
     protected $metadata;
     protected $onlineVideoDatabaseId;
     protected $metadataFetcher;
@@ -113,7 +124,21 @@ abstract class Video {
         $video->plot = $v->plot;
         $video->mpaa = $v->mpaa;
         $video->year = $v->release_date;
+
         return $video;
+    }
+
+    /**
+     * Loads the genres for this video 
+     */
+    public function loadGenres() {
+        $genres = Queries::GetVideoGenres($this->videoId);
+        if ($genres != false) {
+            $this->genres = $genres;
+        } else {
+            $this->genres = [];
+        }
+        return $this->genres;
     }
 
     /**
@@ -455,13 +480,16 @@ abstract class Video {
         $videoId = $this->getVideoId();
         //if this is a video that does not yet exist in the database, create a new video
         if ($videoId === -1) {
-            $success = Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds());
+            //insert into this video into the video table
+            $success = Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->url, $this->getHdPosterUrl(), $this->getSdPosterUrl());
         } else {
             //this is an existing video that needs to be updated. update it
-            $success = Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds());
+            $success = Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->url, $this->getHdPosterUrl(), $this->getSdPosterUrl());
         }
         $this->videoId = $this->getVideoId(true);
         if ($this->videoId != -1 && $success === true) {
+            //insert genres
+            Queries::insertVideoGenres($this->videoId, $this->genres);
             return true;
         } else {
             return false;
@@ -601,6 +629,26 @@ abstract class Video {
             }
         }
         return $this->metadataFetcher;
+    }
+
+    /**
+     * Delete a video from this application. 
+     * @param int $videoId
+     */
+    public static function DeleteVideo($videoId) {
+        $s = DbManager::NonQuery("delete from video_genre where video_id = $videoId");
+        $s = $s && DbManager::NonQuery("delete from watch_video where video_id = $videoId");
+        $s = $s && DbManager::NonQuery("delete from tv_episode where video_id = $videoId");
+        $s = $s && DbManager::NonQuery("delete from video where video_id = $videoId");
+        return $s;
+    }
+
+    /**
+     * compares two videos to sort them by title alphabetically
+     * @param Video $video
+     */
+    public static function CompareTo($video1, $video2) {
+        return strcmp($video1->title, $video2->title);
     }
 
 }

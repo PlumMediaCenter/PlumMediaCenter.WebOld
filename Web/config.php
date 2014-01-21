@@ -8,7 +8,7 @@ class config {
     public static $dbName = "plumvideoplayer";
     public static $dbUsername = "plumvideoplayer";
     public static $dbPassword = "plumvideoplayer";
-    public static $logQueries = true;
+    public static $logQueries = false;
     public static $tvdbUrl = 'http://thetvdb.com';
     public static $tvdbApiKey = '3352E255A2DE009D';
     public static $tmdbApiKey = '90dbc17887e30eae3095d213fa803190';
