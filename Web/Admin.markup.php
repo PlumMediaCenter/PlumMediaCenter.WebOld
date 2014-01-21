@@ -1,24 +1,26 @@
 <?php include_once(dirname(__FILE__) . "/code/database/CreateDatabase.class.php"); ?>
-<a onclick="generateLibrary();" class="btn">Generate/Update library</a>
 <br/>
 <br/>
-<a href='VideoSources.php' class="btn">Add/Remove Video Sources</a>
+<a onclick="generateLibrary();" class="btn btn-default">Generate/Update library</a>
 <br/>
 <br/>
-<a id="metadataManagerBtn" href-original="MetadataManager.php" href="MetadataManager.php" class="btn">Manage Metadata</a>
+<a href='VideoSources.php' class="btn btn-default">Add/Remove Video Sources</a>
+<br/>
+<br/>
+<a id="metadataManagerBtn" href-original="MetadataManager.php" href="MetadataManager.php" class="btn btn-default">Manage Metadata</a>
 <input id="allMetadataType" checked="checked" type="radio" value="" name="metadataType"/> <label for="movieMetadataType">All Media</label>&nbsp;&nbsp;&nbsp;
 <input id="movieMetadataType" type="radio" value="<?php echo Enumerations::MediaType_Movie; ?>" name="metadataType"/><label for="movieMetadataType">Movies Only</label>&nbsp;&nbsp;&nbsp;
 <input id="tvShowMetadataType" type="radio" value="<?php echo Enumerations::MediaType_TvShow; ?>" name="metadataType"/><label for="movieMetadataType">Tv Shows/Episodes Only</label>
 
 <br/>
 <br/>
-<a class="btn" onclick="fetchMissingMetadataAndPosters();">Fetch and Generate Missing Metadata and Posters</a>
+<a class="btn btn-default" onclick="fetchMissingMetadataAndPosters();">Fetch and Generate Missing Metadata and Posters</a>
 <br/>
 <br/>
-<a href='Log.php' class="btn">View Log</a>
+<a href='Log.php' class="btn btn-default">View Log</a>
 <br/>
 <br/>
-<a href='Setup.php' class="btn">Install/Update Database</a> Current database model version: <?php echo CreateDatabase::CurrentDbVersion(); ?>. Latest available db model version: <?php echo CreateDatabase::LatestDbVersion(); ?>. 
+<a href='Setup.php' class="btn btn-default">Install/Update Database</a> Current database model version: <?php echo CreateDatabase::CurrentDbVersion(); ?>. Latest available db model version: <?php echo CreateDatabase::LatestDbVersion(); ?>. 
 
 <div id="videosJsonModal" class="modal hide" style="width: 1000px; margin-left: -500px;">
     <div class="modal-header">

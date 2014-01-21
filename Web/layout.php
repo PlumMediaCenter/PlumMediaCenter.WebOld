@@ -91,11 +91,9 @@ echo json_encode($c->getConstants());
                 </ul>
             </div>
         </nav>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <?php echo isset($body) ? $body : ""; ?>
-                </div>
+        <div class="row" style="margin:0px;">
+            <div class="col-lg-12">
+                <?php echo isset($body) ? $body : ""; ?>
             </div>
         </div>
     </body>

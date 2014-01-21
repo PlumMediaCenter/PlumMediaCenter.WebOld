@@ -247,3 +247,7 @@ label{
     font-size:20px;
     text-align:center;
 }
+
+label, input[type=radio]{
+    cursor:pointer;
+}
