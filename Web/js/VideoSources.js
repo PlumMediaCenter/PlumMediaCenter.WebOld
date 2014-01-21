@@ -99,7 +99,8 @@ $(document).ready(function() {
             $("input[name=originalLocation]").val(location);
             $("input[name=location]").val(location);
             $("input[name=baseUrl]").val(baseUrl);
-            $("input[name=mediaType]").prop("checked", false).addBack("[value=" + mediaType + "]").prop("checked", true);
+            $("input[name=mediaType]").prop("checked", false);
+            $("input[name=mediaType][value=" + mediaType + "]").prop("checked", true);
             $("input[name=securityType]").prop("checked", false).addBack("[value=" + securityType + "]").prop("checked", true);
         }
 //clear the message 

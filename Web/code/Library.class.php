@@ -69,7 +69,8 @@ class Library {
     public function loadFromDatabase() {
         $this->videos = [];
         $success = $this->loadMoviesFromDatabase();
-        $success = $success && $this->loadTvShowsFromDatabase();
+        $showsSuccess = $this->loadTvShowsFromDatabase();
+        $success = $success && $showsSuccess;
         return $success;
     }
 

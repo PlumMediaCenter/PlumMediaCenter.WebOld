@@ -497,6 +497,20 @@ class Queries {
     }
 
     /**
+     * Returns an array of videoIds of videos found under the source path provided
+     * @param string $location
+     * @return int[]
+     */
+    public static function GetVideoIdsInSource($videoSourcePath) {
+        $pdo = DbManager::getPdo();
+        $sql = "select video_id from video where video_source_path like :videoSourcePath";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":videoSourcePath", $videoSourcePath);
+        $stmt->execute();
+        return Dbmanager::FetchAllColumn($stmt, 0);
+    }
+
+    /**
      * Deletes a video source from the video_source table
      * @param string $location - the location used as the primary key to identify the video source to delete
      * @return boolean - true if successful, false if failure
