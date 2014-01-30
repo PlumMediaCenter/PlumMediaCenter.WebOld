@@ -10,7 +10,7 @@ Function Main()
     'Check the app configuration. If not configured, prompt the user for all necessary information
     CheckConfiguration()
     
-    'Check to make sure that the server specified in the configuration actually exists
+    'make sure that the server specified in the configuration actually exists
     print "Verifying that the server exists."
     messageScreen = GetNewMessageScreen("", "Verifying that the server exists at the provided url...")
     serverExists = API_ServerExists() 
@@ -148,7 +148,9 @@ Function ShowVideoGrid()
     'hide the message screen now that the grid has been shown
     messageScreen.Close()
     while true
+        print "next wait"
         msg = wait(0, port)
+        print "message received";msg
         If type(msg) = "roGridScreenEvent" Then
             If msg.isScreenClosed() Then
                 Return -1
@@ -169,12 +171,10 @@ Function ShowVideoGrid()
                 Else
                     video = gridList[row][col]
                     If row = 0 Then 
-                        If video.episodeCount < 1 Then
-                            ShowMessage("", "This show has no episodes")
-                        Else
-                           ShowTvShowEpisodesGrid(col)
-                        End if
+                        print "Show episodes for selected tv show"
+                        ShowTvShowEpisodesGrid(video.videoId)
                     Else
+                        print "play video"
                         PlayVideo(video)
                     End if
                 End if
@@ -193,7 +193,7 @@ Sub CheckConfiguration()
         print "PlumVideoPlayer api url is not set. Prompting user to enter url."
         ShowMessage("Setup", "This app must be configured before it can be used. Please follow the instructions")
         print "User clicked ok on the initial setup screen"
-        GetServerUrlFromUser()
+        GetBaseUrlFromUser()
     Else 
         print "Base URL is set.";bUrl
     End If
@@ -224,103 +224,88 @@ Sub LoadLibrary()
     m.lib = lib
 End Sub
 
-Function ShowTvShowEpisodesGrid(showIndex as integer)
+Function ShowTvShowEpisodesGrid(tvShowVideoId as Integer)
+    print "Show tv episodes"
     messageScreen =  GetNewMessageScreen("", "Retrieving tv episodes...")
     port = CreateObject("roMessagePort")
-    If m.tvShowGrid = invalid Then
-        m.tvShowGrid = CreateObject("roGridScreen")
-    End If
-    grid = m.tvShowGrid
-    grid.SetMessagePort(port) 
-    'set the grid to wide so the episode pictures look better
-    grid.SetGridStyle("flat-landscape")
-    'hold the season lists in a 2d array for easier reference when playing them
-    
-    gridList = []
-    show = m.lib.tvShows[showIndex]
+    If m.episodeScreen = invalid Then
+        m.episodeScreen = CreateObject("roPosterScreen")
+    End If     
+    show = API_GetTvShow(tvShowVideoId)    
     'get the video id of the video that should be focused in the episode grid as the one to watch
-    nextEpisodeVideoId = API_GetNextEpisode(show.videoId)
+    nextEpisodeVideoId = API_GetNextEpisodeId(show.videoId)
     
-    seasonList = []
-    rowTitles = []
+    eScreen = m.episodeScreen
+    eScreen.SetMessagePort(port) 
+    episodeList = []
+   
     'these two should be populated if there is a tv episode that should be played next. otherwise, it defaults to the first episode in the list
-    nextEpisodeSeasonIndex = 0
     nextEpisodeIndex = 0
-    seasonIndex = 0
     episodeIndex = 0 
-    For Each season in show.seasons
-        episodeIndex = 0 
-        epList = []
-        For Each episode in season
-            'if this is the episode to watch, save its position for later when we create the grid
-            If episode.videoId = nextEpisodeVideoId Then
-                nextEpisodeSeasonIndex = seasonIndex
-                nextEpisodeIndex = episodeIndex
-            End If
-            o = CreateObject("roAssociativeArray")
-            o.ContentType = "movie"
-            o.Title = Str(episode.episodeNumber) + ". " + episode.title
-            o.SDPosterUrl = episode.sdPosterUrl
-            o.HDPosterUrl = episode.hdPosterUrl
-            o.ShortDescriptionLine1 = "[ShortDescriptionLine1]"
-            o.ShortDescriptionLine2 = "[ShortDescriptionLine2]"
-            o.Description = episode.plot
-            o.Rating = episode.mpaa
-            'o.StarRating = "75"
-            o.ReleaseDate = episode.year
-            'o.Length = 5400
-            o.Actors = []
-            o.url = episode.url
-            o.videoId = episode.videoId
-            For Each actor in episode.actorList
-                name = actor.name
-                o.Actors.push(name)
-            End For
-            o.Director = "[Director]"
-            epList.Push(o)
-            episodeIndex = episodeIndex + 1
+    For Each episode in show.episodes
+        'if this is the episode to watch, save its position for later when we create the grid
+        If episode.videoId = nextEpisodeVideoId Then
+            nextEpisodeIndex = episodeIndex
+        End If
+        runtimeStr = ""
+       ' If (episode.runtime <> -1) Then
+       '     episodeRuntimeMinutes = episode.runtime / 60
+       '     runtimeStr = episodeRuntimeMinutes.ToStr()
+       ' End If
+        o = CreateObject("roAssociativeArray")
+        o.ContentType = "movie"
+        o.Title = Str(episode.episodeNumber) + ". " + episode.title
+        o.SDPosterUrl = episode.sdPosterUrl
+        o.HDPosterUrl = episode.hdPosterUrl
+        o.ShortDescriptionLine1 = "S" + episode.seasonNumber.ToStr() + ":E" + episode.episodeNumber.ToStr() + " - " + episode.title
+        o.ShortDescriptionLine2 =  runtimeStr + " minutes"
+        o.Description = episode.plot
+        o.Rating = episode.mpaa
+        'o.StarRating = "75"
+        o.ReleaseDate = episode.year
+        'o.EpisodeNumber = episode.seasonNumber.ToStr()  + ":" +  episode.episodeNumber.ToStr()
+        o.Length = episode.runtime
+        o.Actors = []
+        o.url = episode.url
+        o.videoId = episode.videoId
+        For Each actor in episode.actorList
+            name = actor.name
+            o.Actors.push(name)
         End For
-        seasonList.push(epList)
-        seasonIndex = seasonIndex + 1
-        'add the season number that the last episode in this list had...they should all be the same season
-        rowTitles.push("Season " + Str(episode.seasonNumber) )
+        o.Director = "[Director]"
+        episodeList.Push(o)
+        episodeIndex = episodeIndex + 1
     End For
    
-    grid.SetupLists(seasonList.Count())
-    grid.SetListNames(rowTitles) 
-    i = 0
-    'spin through the list of seasons and add each list to the grid
-    For Each season in seasonList
-        gridList.push(season)
-        grid.SetContentList(i, season) 
-        i = i + 1
-    End For
+   'add the list of episodes to the posterScreen
+    eScreen.SetContentList(episodeList)
+    'set the grid to wide so the episode pictures look better
+    eScreen.SetListStyle("flat-episodic-16x9")
+    eScreen.SetListDisplayMode("scale-to-fit")
+    eScreen.SetBreadcrumbText(show.title, "")
     'focus the grid on the episode that was marked as 'next'. 
-    print "Next Episode grid indexes:: ";nextEpisodeSeasonIndex; " - ";nextEpisodeIndex 
-    grid.SetFocusedListItem(nextEpisodeSeasonIndex, nextEpisodeIndex)    
+    print "Next Episode grid indexes:: ";nextEpisodeIndex 
+    eScreen.SetFocusedListItem(nextEpisodeIndex)    
     'hide the message
     messageScreen.Close()
-    grid.Show() 
+    print "show episode screen"
+    eScreen.Show() 
     while true
         msg = wait(0, port)
-        print msg
-        If type(msg) = "roGridScreenEvent" then
-            If msg.isScreenClosed() then
-                m.tvShowGrid = invalid
-                Return -1
-            Else If msg.isListItemFocused()
-                print "Focused msg: ";msg.GetMessage();"row: ";msg.GetIndex();
-                print " col: ";msg.GetData()
-             Else If msg.isListItemSelected()
-                print "Selected msg: ";msg.GetMessage();"row: ";msg.GetIndex();
-                print " col: ";msg.GetData()
-                row = msg.GetIndex()
-                col = msg.GetData()
-                PlayVideo(gridList[row][col])
-                'whenever the video has finished playing, reload this grid
-                Return ShowTvShowEpisodesGrid(showIndex)
-            End If
-        endif
+        If msg.isScreenClosed() then
+            m.episodeScreen = invalid
+            Return -1
+        Else If msg.isListItemFocused()
+            print "Focused msg: ";msg.GetMessage();"row: ";msg.GetIndex();
+            print " col: ";msg.GetData()
+         Else If msg.isListItemSelected()
+            print "Selected Episode Index: ";msg.GetIndex()
+            episodeIndex = msg.GetIndex()
+            episode = episodeList[episodeIndex]
+            PlayVideo(episode)
+            'whenever the video has finished playing, reload this grid
+            Return ShowTvShowEpisodesGrid(tvShowVideoId)
+        End If
     End While
 End Function
 

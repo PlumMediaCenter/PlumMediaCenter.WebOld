@@ -11,5 +11,5 @@ $baseQuery = Video::baseQuery;
 $library["movies"] = DbManager::Query("$baseQuery where media_type = '" . Enumerations::MediaType_Movie . "' order by title asc");
 $library["tvShows"] = DbManager::Query("$baseQuery where media_type =  '" . Enumerations::MediaType_TvShow . "'  order by title asc");
 
-echo json_encode($library, JSON_PRETTY_PRINT);
+echo json_encode($library, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
 ?>

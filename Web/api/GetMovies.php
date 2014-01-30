@@ -8,5 +8,5 @@ include_once($basePath . "code/Library.class.php");
 
 $l = new Library();
 $movies = $l->loadMoviesFromDatabase();
-echo json_encode($movies, JSON_PRETTY_PRINT);
+echo json_encode($movies, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
 ?>

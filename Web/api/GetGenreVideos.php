@@ -8,5 +8,5 @@ $genreVideos = DbManager::query(Video::baseQuery . " where video_id in("
                 . " from video_genre "
                 . " where genre_name = '$genreName'"
                 . ")");
-echo json_encode($genreVideos);
+echo json_encode($genreVideos, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
 ?>

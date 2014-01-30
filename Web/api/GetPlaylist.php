@@ -8,5 +8,5 @@ $playlistName = isset($_GET["playlistName"]) ? $_GET["playlistName"] : "";
 $p = new Playlist($username, $playlistName);
 $p->loadFromDb();
 
-echo json_encode($p->getPlaylistVideos());
+echo json_encode($p->getPlaylistVideos(), JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
 ?>

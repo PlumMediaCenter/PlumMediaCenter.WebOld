@@ -13,7 +13,7 @@ include_once("TvEpisode.class.php");
 
 class TvShow extends Video {
 
-    public $seasons = [];
+    private $seasons = [];
     //holds each episode in a list instead of grouped by seasons
     public $episodes = [];
     public $episodeCount = 0;

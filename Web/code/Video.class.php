@@ -47,12 +47,12 @@ abstract class Video {
     public $actorList = [];
     public $videoId = null;
     public $genres = [];
+    public $runtime = -1;
     protected $metadata;
     protected $onlineVideoDatabaseId;
     protected $metadataFetcher;
     protected $filetype = null;
     protected $metadataLoaded = false;
-    protected $runtime = -1;
     protected $runtimeInSeconds = 0;
     protected $nfoReader = null;
 
@@ -64,7 +64,7 @@ abstract class Video {
 
         //if this video does not exist, throw a new exception
         if (file_exists($this->fullPath) === false) {
-            throw new Exception("Video file does not exist at path $this->fullPath");
+            //throw new Exception("Video file does not exist at path $this->fullPath");
         }
 
         //calculate anything extra that is needed
@@ -124,7 +124,7 @@ abstract class Video {
         $video->plot = $v->plot;
         $video->mpaa = $v->mpaa;
         $video->year = $v->release_date;
-
+        $video->runtime = $v->running_time_seconds;
         return $video;
     }
 
@@ -636,11 +636,11 @@ abstract class Video {
      * @param int $videoId
      */
     public static function DeleteVideo($videoId) {
-        $s = DbManager::NonQuery("delete from video_genre where video_id = $videoId");
-        $s = $s && DbManager::NonQuery("delete from watch_video where video_id = $videoId");
-        $s = $s && DbManager::NonQuery("delete from tv_episode where video_id = $videoId");
-        $s = $s && DbManager::NonQuery("delete from video where video_id = $videoId");
-        return $s;
+        $s1 = DbManager::NonQuery("delete from video_genre where video_id = $videoId");
+        $s2 = DbManager::NonQuery("delete from watch_video where video_id = $videoId");
+        $s3 = DbManager::NonQuery("delete from tv_episode where video_id = $videoId");
+        $s4 = DbManager::NonQuery("delete from video where video_id = $videoId");
+        return $s1 && $s2 && $s3 && $s4;
     }
 
     /**

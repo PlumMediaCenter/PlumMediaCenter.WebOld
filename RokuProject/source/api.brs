@@ -25,24 +25,57 @@ Function API_GetLibrary() as Object
     return lib
 End Function
 
-Function API_GetNextEpisode(tvShowVideoId as String) as String
-    url = BaseUrl() + "api/GetNextEpisode.php?videoId=" + tvShowVideoId
+'
+' Gets the next episode videoId for the specified tv show
+'
+Function API_GetNextEpisode(tvShowVideoId as Integer) as Object
+    url = BaseUrl() + "api/GetNextEpisode.php?videoId=" + tvShowVideoId.ToStr()
+    print "API-GetNextEpisode: ";url
     result = GetJson(url)
-    episodeId = result.videoId
-    If episodeId = invalid Then
-        episodeId = "-1"
+    If result = invalid Then
+        print "API-GetNextEpisode: invalid"
     Else
-        episodeId = episodeId.ToSTr()
+        print "API-GetNextEpisode: success"
     End If
-    print "API-GetNextEpisode: showId=";tvShowVideoId;", result=";episodeId
+    return result
+End Function
+
+'
+' Wraps the API_GetNextEpisode call and only returns the episode videoId
+'
+Function API_GetNextEpisodeId(tvShowVideoId as Integer) as Integer
+    episode = API_GetNextEpisode(tvShowVideoId)
+    episodeId = -1
+    If episode = invalid Then
+        episodeId = -1
+    Else
+        episodeId = episode.videoId
+    End If
+    print "API-GetNextEpisodeId: EpisodeId->";episodeId
     return episodeId
+End Function
+
+'
+' Returns an object containing the tv show with the videoId requested, as well as all of the episodes in that show
+'
+Function API_GetTvShow(tvShowVideoId as Integer) as Object
+    url = BaseUrl() + "api/GetTvShow.php?videoId=" + tvShowVideoId.ToStr()
+    print "API-GetTvShow: ";url
+    result = GetJson(url)
+    If result <> invalid Then
+        print "API-GetTvShow: showId=";tvShowVideoId;", success"
+    Else
+        print "API-GetTvShow: showId=";tvShowVideoId;", result=invalid"
+    End If
+    return result
 End Function
 
 '
 'Get the current second number to start a video at 
 '
-Function API_GetVideoProgress(videoId as String) as Integer
-    url = BaseUrl() + "api/GetVideoProgress.php?videoId=" + videoId
+Function API_GetVideoProgress(videoId as Integer) as Integer
+    url = BaseUrl() + "api/GetVideoProgress.php?videoId=" + videoId.ToStr()
+    print "API-GetVideoProgress: ";url
     progress = GetJson(url)
     startSeconds = progress.startSeconds
     print "API-GetVideoProgress: videoId=";videoId;". result (startSeconds)=";startSeconds
@@ -53,12 +86,13 @@ End Function
 '
 'Set the current second number the video is playing at
 '
-Sub API_SetVideoProgress(videoId as String, seconds as Integer)
+Sub API_SetVideoProgress(videoId as Integer, seconds as Integer)
     strSeconds = seconds.ToStr()
-    url = BaseUrl() + "api/SetVideoProgress.php?videoId=" + videoId + "&seconds=" + strSeconds
+    strVideoId = videoId.ToStr()
+    url = BaseUrl() + "api/SetVideoProgress.php?videoId=" + strVideoId + "&seconds=" + strSeconds
     result = GetJSON(url)
     success = result.success
-    print "API-SetVideoProgress: videoId=";videoId;", seconds=";strSeconds;", success=";success
+    print "API-SetVideoProgress: videoId=";strVideoId;", seconds=";strSeconds;", success=";success
 End Sub
 
 '

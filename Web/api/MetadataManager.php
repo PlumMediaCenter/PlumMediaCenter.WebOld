@@ -46,5 +46,5 @@ if ($success === true) {
 } else {
     
 }
-echo json_encode($result);
+echo json_encode($result, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
 ?>

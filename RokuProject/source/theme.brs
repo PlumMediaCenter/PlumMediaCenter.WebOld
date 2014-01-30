@@ -9,6 +9,17 @@ Sub SetTheme()
     greyBackgroundColor = "#363636"
     GridScreenOverhangHeightHD = "100"
     GridScreenOverhangHeightSD = "62"
+    
+    'dark color pattern
+    charcoal = "#293647"
+    lime = "#c2cc4f"
+    lightGrey = "#d6d1e8"
+    pink = "#b93976"
+    purple = "#361f6d"
+    teal = "#127aa1"
+    
+    
+    'light color pattern
     lightBlue = "#dbf2fa"
     solidBlue = "#7ddcf0"
     lavender = "#95669c"

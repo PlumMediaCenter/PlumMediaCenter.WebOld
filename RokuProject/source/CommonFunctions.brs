@@ -212,3 +212,33 @@ Function GetHourMinuteSecondString(pSeconds) As String
     End If
     return resultString.Trim()
 End Function
+
+Function SortAssociativeArray(aa as Object) as Dynamic
+    resultKeys = []
+    For Each key in aa
+        keyInserted = false
+        'determine where in the result this item belongs
+        newResult = []
+        For Each sortedKey in resultKeys
+            'if this new key belongs at the beginning of the list, put it there
+            If key < sortedKey Then
+                newResult.push(key)
+                newResult.push(sortedKey)
+                keyInserted = true
+            Else
+                newResult.push(sortedKey)
+            End If
+        End For
+        If keyInserted = false Then
+            newResult.push(key)
+        End If
+        resultKeys = newResult
+    End For
+    
+    'actually construct the result array
+    finalResult = []
+    For Each sortKey in resultKeys
+        finalResult = aa[sortKey]
+    End For
+    Return finalResult
+End Function

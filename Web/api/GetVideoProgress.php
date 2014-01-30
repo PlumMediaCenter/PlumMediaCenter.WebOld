@@ -7,5 +7,5 @@ $seconds = Video::GetVideoStartSeconds($videoId);
 $result = (object) [];
 $result->videoId = $videoId;
 $result->startSeconds = $seconds;
-echo json_encode($result);
+echo json_encode($result, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
 ?>
