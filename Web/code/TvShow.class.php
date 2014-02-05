@@ -55,6 +55,14 @@ class TvShow extends Video {
     }
 
     /**
+     * Returns a reference to the list of episodes separated by season
+     * @return video[][] - 2d array index by season number and episode number
+     */
+    function getSeasons() {
+        return $this->seasons;
+    }
+
+    /**
      * Set the list of tv episodes for this show based on
      * @param array of objects - $seasons - arrays of episodes grouped  into seasons
      */
@@ -401,7 +409,7 @@ class TvShow extends Video {
     protected function getMetadataFetcherClass() {
         return new TvShowMetadataFetcher();
     }
-
+    
     /**
      * Goes to TheTvDb and retrieves all available information about this tv episode. 
      * It then stores that information into an .nfo file named the same as the video file name .

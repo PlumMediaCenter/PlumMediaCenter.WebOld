@@ -1,11 +1,4 @@
-/* 
-    Document   : style
-    Created on : Jul 3, 2013, 3:17:58 PM
-    Author     : bplumb
-    Description:
-        Purpose of the stylesheet follows.
-*/
-html{
+html, body{
     height:100%;
 }
 .brand{
@@ -17,7 +10,6 @@ a{
 body{
     padding:0px;
     border:0px solid red;
-    height:100%;
 }
 
 #bodyPadding{

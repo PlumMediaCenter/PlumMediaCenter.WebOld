@@ -1,7 +1,7 @@
 <?php
 
-include_once(dirname(__FILE__) . "/../Code/Enumerations.class.php");
-include_once(dirname(__FILE__) . "/../Code/Library.class.php");
+include_once(dirname(__FILE__) . "/../code/Enumerations.class.php");
+include_once(dirname(__FILE__) . "/../code/Library.class.php");
 
 $result = [];
 $result[Enumerations::MediaType_Movie] = [];

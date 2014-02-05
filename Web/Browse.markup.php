@@ -31,7 +31,7 @@
                 foreach ($tvShows as $tvShow) {
                     $modalId = "modal-" . md5($tvShow->title);
                     ?>
-                                                                                                <!--<a class="tile" href="#<?php echo $modalId; ?>" role="button" data-toggle="modal">-->
+                <!--<a class="tile" href="#<?php echo $modalId; ?>" role="button" data-toggle="modal">-->
                     <div class="tile" >
                         <span>
                             <a title='Play Tv Show' href="Play.php?playType=series&videoId=<?php echo $tvShow->videoId; ?>"><?php echo $tvShow->title; ?></a>
@@ -48,7 +48,8 @@
                         </div>
                         <div class="modal-body">
                             <?php
-                            foreach ($tvShow->seasons as $key => $season) {
+                            $seasons = $tvShow->getSeasons();
+                            foreach ($seasons as $key => $season) {
                                 $seasonNum = -1;
                                 //get the season number
                                 if (count($season) > 0) {

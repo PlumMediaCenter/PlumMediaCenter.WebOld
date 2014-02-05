@@ -764,6 +764,10 @@ class Queries {
         //return false if no videos were found or an error occurred.
         return false;
     }
+    
+    public static function DeleteOrphanedGenres(){
+        return DbManager::NonQuery("delete from genre where genre_name not in(select distinct genre_name from video_genre)");
+    }
 
     /**
      * Fetches an array of genres that this video is labeled as

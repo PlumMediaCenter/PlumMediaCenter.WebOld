@@ -1,4 +1,5 @@
 <?php
+
 include_once("code/Security.class.php");
 include_once("code/functions.php");
 include_once("code/Model.class.php");
@@ -63,8 +64,10 @@ class Page {
         if ($content != null) {
             echo $content;
         } else {
-            //load the markup
-            include($this->markupPath);
+            if (file_exists($this->markupPath)) {
+                //load the markup
+                include($this->markupPath);
+            }
         }
         global $body;
         $body = ob_get_contents();

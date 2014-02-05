@@ -1,8 +1,7 @@
 <?php
 
-include_once("code/Library.class.php");
-include_once("code/Bench/Bench.class.php");
-$l = new Library();
-$l->loadFromDatabase();
-$l->sort();
+include_once("code/Page.class.php");
+$p = new Page(__FILE__);
+$m = $p->getModel();
+$p->show();
 ?>

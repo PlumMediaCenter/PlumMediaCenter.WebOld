@@ -11,6 +11,7 @@ class Library {
     private $tvShowCount = 0;
     public $tvEpisodes = [];
     private $tvEpisodeCount = 0;
+    private $genres = [];
     //contains a list of all videos, a combination of movies, tv shows and tv episodes
     private $videos = [];
 
@@ -25,6 +26,15 @@ class Library {
      */
     public function getMovieCount() {
         return $this->movieCount;
+    }
+
+    private function clear() {
+        $this->movies = [];
+        $this->tvShows = [];
+        $this->tvEpisodes = [];
+        $this->movieCount = 0;
+        $this->tvShowCount = 0;
+        $this->tvEpisodeCount = 0;
     }
 
     /**
@@ -67,8 +77,8 @@ class Library {
      * Loads all movies and tv shows from the database
      */
     public function loadFromDatabase() {
-        $this->videos = [];
-        $success = $this->loadMoviesFromDatabase();
+        $this->clear();
+        $this->tvShows = $success = $this->loadMoviesFromDatabase();
         $showsSuccess = $this->loadTvShowsFromDatabase();
         $success = $success && $showsSuccess;
         return $success;
@@ -107,6 +117,7 @@ class Library {
             $this->tvShows[] = $tvShow;
             $this->videos[] = $tvShow;
             $this->tvShowCount++;
+
             //load all of the episodes for this tv show OR fetch number of episodes in db if we didn't fetch episodes
             ($bLoadEpisodes) ? $tvShow->loadEpisodesFromDatabase() : $tvShow->fetchEpisodeCountFromDb();
 
@@ -118,38 +129,16 @@ class Library {
     }
 
     /**
-     * Forces every video loaded into memory in this library object to be written to the database. 
-     * Then any videos that are no longer in this library are removed from the database
-     */
-    public function writeToDb() {
-        //writes every video to the database. If it is a new video, it will automatically be added. If it is an existing
-        //video, it will be updated. if a video is in the db but is no longer present in the filesystem, it will be deleted.
-        $libraryVideoIds = [];
-        $totalSuccess = true;
-        foreach ($this->videos as $video) {
-            $totalSuccess = $totalSuccess && $video->writeToDb();
-            $libraryVideoIds[] = $video->getVideoId();
-        }
-        //get a list of all videoIds from the database
-        $allIds = Queries::GetAllVideoIds();
-        $deleteIds = array_diff($allIds, $libraryVideoIds);
-        foreach ($deleteIds as $videoId) {
-            Video::DeleteVideo($videoId);
-        }
-        //delete any videos from the database that are not in this library
-        //$totalSuccess = $totalSuccess && Queries::DeleteVideosNotInThisList($libraryVideoIds);
-        //return success or failure. If at least one item failed, this will be returned as a failure
-        return $totalSuccess;
-    }
-
-    /**
      * Loads this library object totally from the filesystem. This means scanning each video source directory for 
      * videos. 
      */
     public function loadFromFilesystem() {
+        $this->clear();
+
         //for each movie
-        $success = $this->loadMoviesFromFilesystem();
-        $success = $success && $this->loadTvShowsFromFilesystem();
+        $loadMoviesSuccess = $this->loadMoviesFromFilesystem();
+        $loadTvShowsSuccess = $this->loadTvShowsFromFilesystem();
+        $success = $loadMoviesSuccess && $loadTvShowsSuccess;
         return $success;
     }
 
@@ -202,7 +191,7 @@ class Library {
                 $tvShow->loadTvEpisodesFromFilesystem();
 
                 //if this tv show has at least one season (which means it has at least one episode), then add it to the list
-                if (count($tvShow->seasons) > 0) {
+                if (count($tvShow->episodes) > 0) {
                     $this->tvShows[] = $tvShow;
                     $this->videos[] = $tvShow;
                     $this->tvShowCount++;
@@ -273,6 +262,38 @@ class Library {
             }
         }
         writeToLog("Update Library Summary: $newMovieCount new Movies. $newTvShowCount new Tv Shows. $newTvEpisodeCount new Tv Episodes.");
+    }
+
+    /**
+     * Forces every video loaded into memory in this library object to be written to the database. 
+     * Then any videos that are no longer in this library are removed from the database
+     */
+    public function writeToDb() {
+        //writes every video to the database. If it is a new video, it will automatically be added. If it is an existing
+        //video, it will be updated. if a video is in the db but is no longer present in the filesystem, it will be deleted.
+        $libraryVideoIds = [];
+        $totalSuccess = true;
+        foreach ($this->videos as $video) {
+            $totalSuccess = $totalSuccess && $video->writeToDb();
+            $libraryVideoIds[] = $video->getVideoId();
+        }
+        //get a list of all videoIds from the database
+        $allIds = Queries::GetAllVideoIds();
+        $deleteIds = array_diff($allIds, $libraryVideoIds);
+        //we can assume that all tv shows were added before tv episodes, so sorting this array in descending order will
+        //force all tv episodes to be deleted before their tv show, thus allowing us to spin through the whole list
+        //without worrying about referencial integrity.
+        arsort($deleteIds);
+        foreach ($deleteIds as $videoId) {
+            Video::DeleteVideo($videoId);
+        }
+
+        //delete any videos from the database that are not in this library
+        //$totalSuccess = $totalSuccess && Queries::DeleteVideosNotInThisList($libraryVideoIds);
+        //return success or failure. If at least one item failed, this will be returned as a failure
+        //delete any orphaned genres
+
+        return $totalSuccess;
     }
 
     /**

@@ -45,6 +45,11 @@ echo json_encode($c->getConstants());
                 $("#playlistAdder").playlistAdder('show', videoId);
             }
         </script>
+        <style type="text/css">
+            .dropdown-backdrop {
+                position: static;
+            }
+        </style>
     </head>
     <body>
         <div id="bodyPadding"></div>

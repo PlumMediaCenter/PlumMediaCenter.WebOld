@@ -209,8 +209,9 @@ class CreateDatabase {
             //create the database, if it doesn't already exist
             $success = $dbh->exec("CREATE DATABASE `$db`;");
             $success = $dbh->exec("CREATE USER '$user'@'$host' IDENTIFIED BY '$pass';");
-            $success = $dbh->exec("GRANT ALL ON `$db`.* TO '$user'@'$host';");
-            $success = $dbh->exec("GRANT ALL ON `$db`.* TO '$user'@'192.168.1.%';");
+            $success = $dbh->exec("GRANT ALL ON `$db`.* TO '$user'@'127.0.0.1' with grant option;");
+            $success = $dbh->exec("GRANT ALL ON `$db`.* TO '$user'@'localhost' with grant option;");
+            $success = $dbh->exec("GRANT ALL ON `$db`.* TO '$user'@'%' with grant option;");
             $success = $dbh->exec("FLUSH PRIVILEGES;");
         } catch (PDOException $e) {
             writeToLog($e);
