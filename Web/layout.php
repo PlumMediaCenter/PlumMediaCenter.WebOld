@@ -4,9 +4,11 @@ Security::HandleLogin();
 include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
 ?>
 <!DOCTYPE HTML>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"> 
 <html>
-    <head><title><?php echo $title != null ? $title : ""; ?></title>
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title><?php echo $title != null ? $title : ""; ?></title>
         <link rel="icon" href="favicon.ico" type="image/x-icon" />
         <link href="js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="css/style.css" rel="stylesheet" media="screen">
