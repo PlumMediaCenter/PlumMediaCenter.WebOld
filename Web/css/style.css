@@ -20,7 +20,17 @@ body{
 #containerRelativer{
     position:relative;
 }
+.mless{
+    margin:0px;
+}
 
+.bold{
+    font-weight: bold;
+}
+.center{
+    text-align:center;
+    margin:auto;
+}
 
 .radio{
     padding-left:0px;
@@ -208,33 +218,37 @@ label{
     white-space: nowrap;
 }
 
-.tile{
+#body-row{
+    margin:0px;
+}
+
+#body-col{
+    padding:0px;
+}
+
+div.video-tile{
     /* display: inline; */
     display: inline-block;
     *zoom: 1;
     *display: inline;
     cursor:pointer;
     margin: 0px;
-    width:205px;
-    height:330px;
+    width:150px;
+    height:220px;
     overflow:hidden;
     padding:0px;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
+    border: 1px solid transparent;
 }
 
-.tile img{
-    width:205px;
+div.video-tile img.poster{
+    width:100%;
     cursor:pointer;
     border:0px solid white;
 }
-.tile:hover{
-    background-color:#CCCCCC;
-    border-left:5px solid #CCCCCC;
-    border-right:5px solid #CCCCCC;
-
+div.video-tile:hover{
+    border:1px solid #CCCCCC;
 }
-.tile span{
+div.video-tile span{
     display:block;
     font-size:20px;
     text-align:center;
@@ -242,4 +256,19 @@ label{
 
 label, input[type=radio]{
     cursor:pointer;
+}
+
+#video-info-row{
+}
+#video-info-poster-col{
+    text-align:center;
+}
+
+#video-info-poster{
+    margin:auto;
+}
+
+.row{
+    margin:0px;
+    padding:0px;
 }

@@ -101,30 +101,39 @@ abstract class Video {
      * @return Movie|TvShow|TvEpisode $video
      */
     public static function GetVideo($videoId) {
-
-        $v = Queries::getVideo($videoId);
+        $videoRow = Queries::getVideo($videoId);
         //if no video was found, nothing more can be done
-        if ($v === false) {
+        if ($videoRow === false) {
             return false;
         }
-        switch ($v->media_type) {
+       return Video::GetVideoFromDataRow($videoRow);
+    }
+    
+    /**
+     * Converts a row from the video table into a video object
+     * @param [] $row
+     * @return Movie\TvShow\TvEpisode
+     */
+    public static function GetVideoFromDataRow($row){
+        $video = null;
+        switch ($row->media_type) {
             case Enumerations::MediaType_Movie:
-                $video = new Movie($v->video_source_url, $v->video_source_path, $v->path);
+                $video = new Movie($row->video_source_url, $row->video_source_path, $row->path);
                 break;
             case Enumerations::MediaType_TvShow:
-                $video = new TvShow($v->video_source_url, $v->video_source_path, $v->path);
+                $video = new TvShow($row->video_source_url, $row->video_source_path, $row->path);
                 break;
             case Enumerations::MediaType_TvEpisode:
-                $video = new TvEpisode($v->video_source_url, $v->video_source_path, $v->path);
+                $video = new TvEpisode($row->video_source_url, $row->video_source_path, $row->path);
                 break;
         }
-        $video->videoId = intval($v->video_id);
-        $video->title = $v->title;
-        $video->runtimeInSeconds = $v->running_time_seconds;
-        $video->plot = $v->plot;
-        $video->mpaa = $v->mpaa;
-        $video->year = $v->release_date;
-        $video->runtime = $v->running_time_seconds;
+        $video->videoId = intval($row->video_id);
+        $video->title = $row->title;
+        $video->runtimeInSeconds = $row->running_time_seconds;
+        $video->plot = $row->plot;
+        $video->mpaa = $row->mpaa;
+        $video->year = $row->release_date;
+        $video->runtime = $row->running_time_seconds;
         return $video;
     }
 

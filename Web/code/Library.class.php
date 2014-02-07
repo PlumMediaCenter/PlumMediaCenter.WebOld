@@ -14,6 +14,7 @@ class Library {
     private $genres = [];
     //contains a list of all videos, a combination of movies, tv shows and tv episodes
     private $videos = [];
+    public $moviesAndTvShows = [];
 
     public function __construct() {
         //set the time limit for this script to be 10 minutes. If it takes any longer than that, there's something wrong
@@ -29,6 +30,8 @@ class Library {
     }
 
     private function clear() {
+        $this->moviesAndTvShows = [];
+        $this->videos = [];
         $this->movies = [];
         $this->tvShows = [];
         $this->tvEpisodes = [];
@@ -78,54 +81,33 @@ class Library {
      */
     public function loadFromDatabase() {
         $this->clear();
-        $this->tvShows = $success = $this->loadMoviesFromDatabase();
-        $showsSuccess = $this->loadTvShowsFromDatabase();
-        $success = $success && $showsSuccess;
-        return $success;
-    }
-
-    /**
-     * Populates the movies array with all movies found in the database. All metadata is loaded into the movies. 
-     * @return Movie[] - returns the array of movies loaded from the database
-     */
-    public function loadMoviesFromDatabase() {
-        $this->movies = [];
-        $this->movieCount = 0;
-        $videoIds = Queries::GetVideoIds(Enumerations::MediaType_Movie);
+        $videoIds = Queries::GetMovieAndTvShowVideoIds(Enumerations::MediaType_Movie);
         foreach ($videoIds as $videoId) {
-            $movie = Video::GetVideo($videoId);
-            $this->movies[] = $movie;
-            $this->videos[] = $movie;
-            $this->movieCount++;
+            $video = Video::GetVideo($videoId);
+            $this->moviesAndTvShows[] = $video;
+
+            if ($video->mediaType == Enumerations::MediaType_Movie) {
+                $this->movies[] = $video;
+                $this->videos[] = $video;
+                $this->movieCount++;
+            } else {
+                //tell the tv show to scan subdirectories for tv episodes
+                $video->loadTvEpisodesFromFilesystem();
+
+                //if this tv show has at least one season (which means it has at least one episode), then add it to the list
+                if (count($video->episodes) > 0) {
+                    $this->tvShows[] = $video;
+                    $this->videos[] = $video;
+                    $this->tvShowCount++;
+
+                    //include episodes
+                    $this->videos = array_merge($this->videos, $video->episodes);
+                    $this->tvEpisodes = array_merge($this->tvEpisodes, $video->episodes);
+                    $this->tvEpisodeCount+= $video->episodeCount;
+                }
+            }
         }
-        return $this->movies;
-    }
-
-    /**
-     * Loads an array of all tv shows found in the database. All metadata is loaded into the tv show objects. 
-     * @return TvShow[] - returns the tv shows in the library that was loaded from the database
-     */
-    public function loadTvShowsFromDatabase($bLoadEpisodes = true) {
-        $this->tvShows = [];
-        $this->tvEpisodes = [];
-        $this->tvShowCount = 0;
-        $this->tvEpisodeCount = 0;
-        $videoIds = Queries::GetVideoIds(Enumerations::MediaType_TvShow);
-        foreach ($videoIds as $videoId) {
-            $tvShow = Video::GetVideo($videoId);
-
-            $this->tvShows[] = $tvShow;
-            $this->videos[] = $tvShow;
-            $this->tvShowCount++;
-
-            //load all of the episodes for this tv show OR fetch number of episodes in db if we didn't fetch episodes
-            ($bLoadEpisodes) ? $tvShow->loadEpisodesFromDatabase() : $tvShow->fetchEpisodeCountFromDb();
-
-            $this->videos = array_merge($this->videos, $tvShow->episodes);
-            $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
-            $this->tvEpisodeCount += $tvShow->episodeCount;
-        }
-        return $this->tvShows;
+        return true;
     }
 
     /**
@@ -158,6 +140,7 @@ class Library {
                 $video = new Movie($source->base_url, $source->location, $fullPathToFile);
                 $this->movies[] = $video;
                 $this->videos[] = $video;
+                $this->moviesAndTvShows[] = $video;
                 $this->movieCount++;
             }
         }
@@ -185,21 +168,21 @@ class Library {
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
                 //if the current file is a video file that we can add to our library
                 //create a new Movie object
-                $tvShow = new TvShow($source->base_url, $source->location, $fullPathToFile);
-
+                $video = new TvShow($source->base_url, $source->location, $fullPathToFile);
+                $this->moviesAndTvShows[] = $video;
                 //tell the tv show to scan subdirectories for tv episodes
-                $tvShow->loadTvEpisodesFromFilesystem();
+                $video->loadTvEpisodesFromFilesystem();
 
                 //if this tv show has at least one season (which means it has at least one episode), then add it to the list
-                if (count($tvShow->episodes) > 0) {
-                    $this->tvShows[] = $tvShow;
-                    $this->videos[] = $tvShow;
+                if (count($video->episodes) > 0) {
+                    $this->tvShows[] = $video;
+                    $this->videos[] = $video;
                     $this->tvShowCount++;
 
                     //include episodes
-                    $this->videos = array_merge($this->videos, $tvShow->episodes);
-                    $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
-                    $this->tvEpisodeCount+= $tvShow->episodeCount;
+                    $this->videos = array_merge($this->videos, $video->episodes);
+                    $this->tvEpisodes = array_merge($this->tvEpisodes, $video->episodes);
+                    $this->tvEpisodeCount+= $video->episodeCount;
                 }
             }
         }
@@ -313,6 +296,36 @@ class Library {
             $stats->tvEpisodeCount = $counts->tvEpisodeCount;
         }
         return $stats;
+    }
+
+    public static function SearchByTitle($searchString, $caseSensitiveSearch = true) {
+        //split the search string by spaces
+        $searchTerms = explode(" ", $searchString);
+        $cleanedTerms = [];
+
+
+        foreach ($searchTerms as $term) {
+            $t = trim($term);
+            //if the term is not empty, add it to the list
+            if (strlen($t) > 0) {
+                $cleanedTerms[] = $t;
+            }
+        }
+        $colname = "v.title";
+        $colname = ($caseSensitiveSearch) ? $colname : "lower($colname)";
+        //create an in statement with the terms
+        $inStmt = DbManager::GenerateLikeStatement($cleanedTerms, $colname, "or");
+        $inStmt = ($caseSensitiveSearch) ? $inStmt : strtolower($inStmt);
+        $q = "select * from video v " .
+                " where media_type in('" . Enumerations::MediaType_Movie . "', '" . Enumerations::MediaType_TvShow . "') and " .
+                "($inStmt)";
+        $results = DbManager::Query($q);
+        //create video objects out of the results
+        $videos = [];
+        foreach ($results as $row) {
+            $videos[] = Video::GetVideoFromDataRow($row);
+        }
+        return $videos;
     }
 
 }

@@ -1,6 +1,5 @@
-<?php include_once(dirname(__FILE__) . "/code/database/CreateDatabase.class.php"); ?>
-<br/>
-<br/>
+<?php include_once(dirname(__FILE__) . "/code/database/CreateDatabase.class.php");?>
+<p id="admin-stats" class="center bold"><?php echo "$model->movieCount Movies &bull; $model->tvShowCount Tv Shows &bull; $model->tvEpisodeCount Tv Episodes"; ?></p>
 <a onclick="generateLibrary();" class="btn btn-default">Generate/Update library</a>
 <br/>
 <br/>

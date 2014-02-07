@@ -54,7 +54,9 @@ class Page {
     }
 
     function show($layout = "layout.php", $content = null) {
-        extract((array) $this->getModel());
+        global $model;
+        $model = $this->getModel();
+        extract((array) $model);
         //if the title is not set, set it
         if (isset($title) == false) {
             $title = "Plum Video Player";

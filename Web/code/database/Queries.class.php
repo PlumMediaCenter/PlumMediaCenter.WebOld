@@ -604,6 +604,30 @@ class Queries {
         $videoIds = DbManager::FetchAllColumn($stmt, 0);
         return $videoIds;
     }
+    
+     /**
+     * Returns an array of all videoIds that are of tv show and movie types
+     */
+    public static function GetMovieAndTvShowVideoIds() {
+        if (isset(Queries::$statements[__FUNCTION__]) == false) {
+            $sql = "select video_id from video where media_type in('" . Enumerations::MediaType_Movie . "', "
+                    . "'" . Enumerations::MediaType_TvShow . "') order by title asc";
+            $pdo = DbManager::getPdo();
+            if ($pdo == false) {
+                return [];
+            }
+            $stmt = $pdo->prepare($sql);
+            Queries::$statements[__FUNCTION__] = $stmt;
+        }
+        $stmt = Queries::$statements[__FUNCTION__];
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        if ($success == false) {
+            return false;
+        }
+        $videoIds = DbManager::FetchAllColumn($stmt, 0);
+        return $videoIds;
+    }
 
     /**
      * Returns an array of all videoIds that are of the specified media type

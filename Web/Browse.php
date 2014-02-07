@@ -10,9 +10,6 @@ $p = new Page(__FILE__);
 $m = $p->getModel();
 $lib = new Library();
 $lib->loadFromDatabase();
-//$lib = getLibrary();
-$m->movies = $lib->movies;
-$m->tvShows = $lib->tvShows;
-$m->mediaType = isset($_GET["mediaType"]) ? $_GET["mediaType"] : null;
+$m->videos = $lib->moviesAndTvShows;
 $p->show();
 ?>

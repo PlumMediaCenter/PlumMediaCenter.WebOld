@@ -10,8 +10,9 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title><?php echo $title != null ? $title : ""; ?></title>
         <link rel="icon" href="favicon.ico" type="image/x-icon" />
-        <link href="js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-        <link href="css/style.css" rel="stylesheet" media="screen">
+        <link rel="stylesheet" media="screen" href="js/lib/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" media="screen" href="css/style.css">
+
         <link href="plugins/jquery-ui-1.10.3.custom/css/dark-hive/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" media="screen">
         <script type="text/javascript" src="js/lib/respond/respond.min.js"></script>
         <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
@@ -48,15 +49,18 @@ echo json_encode($c->getConstants());
             }
         </script>
         <style type="text/css">
-            .dropdown-backdrop {
-                position: static;
+            #navbar-search.form-control{
+            }
+            #navbar-search-container{
+                width:80%;
+                float:left;
             }
         </style>
     </head>
     <body>
-        <div id="bodyPadding"></div>
+        <!--<div id="bodyPadding"></div>-->
         <div id="playlistAdder"></div>
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <nav class="navbar navbar-inverse" role="navigation">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -67,39 +71,37 @@ echo json_encode($c->getConstants());
                 </button>
                 <a class="navbar-brand"  href="index.php"> <img src="img/logo.png" style="height:20px;"> Plum Video Player</a>
             </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li id="browseNav<?php echo Enumerations::MediaType_Movie; ?>" ><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_Movie; ?>">Movies</a></li>
-                    <li id="browseNav<?php echo Enumerations::MediaType_TvShow; ?>"><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_TvShow; ?>">Tv Shows</a></li>
+                    <li id="browseNav"><a href="Browse.php">Browse</a></li>
                     <li id="browseNavGenre"><a href="BrowseGenre.php">Genres</a></li>
-                    <!--<li id="adminNav"><a href="Playlist.php">Playlist</a></li>-->
                     <li id="adminNav"><a href="Admin.php">Admin</a></li>
                 </ul>
-                <form class="navbar-form navbar-right" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search">
+                <form class="navbar-form navbar-right" action="Search.php" method="get" role="search">
+                    <div  class="form-group">
+                        <div id="navbar-search-container">
+                            <input id="search" name="q" class="form-control" type="text" placeholder="Search"/>
+                        </div>
+                        <button type="submit" name="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
                     </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
                     <div class="clearfix"></div>
                 </form>
                 <ul class="nav navbar-nav navbar-right ">
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span><b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Account Settings</a></li>
                             <li><a href="#">Another action</a></li>
                             <li><a href="#">Something else here</a></li>
                             <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
+                            <li><a href="#">Log In / Log Out</a></li>
                         </ul>
                     </li>
                 </ul>
             </div>
         </nav>
-        <div class="row" style="margin:0px;">
-            <div class="col-lg-12">
+        <div id='body-row' class="row">
+            <div id='body-col' class="col-lg-12">
                 <?php echo isset($body) ? $body : ""; ?>
             </div>
         </div>

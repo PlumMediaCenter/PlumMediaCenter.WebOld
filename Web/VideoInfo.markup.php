@@ -12,23 +12,23 @@
     var video = <?php echo $videoJson; ?>;
 </script>
 
-<div class="row">
-    <div class="col-md-3">
-        <a href="Play.php?videoId=<?php echo $video->videoId; ?>">
-            <img src="<?php echo $video->hdPosterUrl; ?>" style="float:left;">
+<div id="video-info-row" class="row">
+    <div id="video-info-poster-col" class="col-md-3">
+        <a href="Play.php?videoId=<?php echo $video->videoId; ?>" >
+            <img id="video-info-poster" src="<?php echo $video->hdPosterUrl; ?>"/>
         </a>
     </div>
-    <div class="col-lg-9">
+    <div id="video-info-col" class="col-md-6">
         <!-- Title -->
-        <div class="row-fluid">
+        <div class="row">
             <div class="col-md-12">
-                <h1><?php echo $video->title; ?></h1>
+                <h1 class="center mless"><?php echo $video->title; ?></h1>
             </div>
         </div>
         <!-- Genres -->
-        <div class="row-fluid">
+        <div class="row">
             <div class="col-md-12">
-                <b>
+                <p class="center bold">
                     <?php
                     $bul = "";
                     foreach ($video->genres as $genre) {
@@ -36,22 +36,24 @@
                         $bul = "&bull;";
                     }
                     ?>
-                </b>
+                </p>
             </div>
         </div>
         <!-- Rating -->
-        <div class="row-fluid">
+        <div class="row">
             <div class="col-md-12">
-                Rating: <?php echo $video->mpaa; ?>
+                <p class="center">
+                   Rated <?php echo $video->mpaa; ?>
+                </p>
             </div>
         </div>
-        <div class="row-fluid">
+        <div class="row">
             <div class="col-md-12">
                 <?php echo $video->plot; ?>
             </div>
         </div>
     </div>    
-
+    <div class="col-md-3"></div>
 </div>
 <div class="row">
     <div class="col-md-5" style="border:0px solid red;">

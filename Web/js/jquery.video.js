@@ -6,12 +6,10 @@
         },
         _create: function() {
             var v = this.options.video;
-            this.element.addClass("tile");
-            var videoMarkup = "<span>" +
-                    " <a title = 'Play Movie' href = 'Play.php?videoId=" + v.videoId + "' > " + v.title + "</a> " +
-                    " </span> " +
+            this.element.addClass("video-tile");
+            var videoMarkup = 
                     " <a href = 'VideoInfo.php?videoId=" + v.videoId + "' > " +
-                    " <img class='tileImg' src = '" + v.hdPosterUrl + "' > </a> " +
+                    " <img class='poster' src = '" + v.hdPosterUrl + "' > </a> " +
                     " ";
             this.element.html(videoMarkup);
         }
