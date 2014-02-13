@@ -1,7 +1,7 @@
 <?php
 
 function handleError($errno, $errstr, $errfile, $errline, array $errcontext) {
-// error was suppressed with the @-operator
+    // error was suppressed with the @-operator
     if (0 === error_reporting()) {
         return false;
     }
@@ -106,21 +106,21 @@ function color($text, $color) {
 }
 
 function saveImageFromUrl($imageUrl, $imageDest) {
-//if there was no image url, return false
+    //if there was no image url, return false
     if ($imageUrl == null) {
         return false;
     }
-//if there was no image url, return false
+    //if there was no image url, return false
     if (strlen($imageUrl) < 1) {
         return false;
     }
     $content = @file_get_contents($imageUrl);
-//if the result was not failure and was longer than empty, save the file
+    //if the result was not failure and was longer than empty, save the file
     if ($content !== false && strlen($content) > 0) {
         $result = file_put_contents($imageDest, $content);
-//if we successfully wrote to the image
+        //if we successfully wrote to the image
         if ($result !== false) {
-//if the file we just wrote is not an image (say we got html content back instead of image, delete it
+            //if the file we just wrote is not an image (say we got html content back instead of image, delete it
             if (exif_imagetype($imageDest) == false) {
                 unlink($imageDest);
                 return false;
@@ -128,7 +128,7 @@ function saveImageFromUrl($imageUrl, $imageDest) {
             return true;
         }
     }
-//if function makes it to here, something went wrong, return false
+    //if function makes it to here, something went wrong, return false
     return false;
 }
 
@@ -187,71 +187,45 @@ function printVideoMetadataRow($v) {
     echo getVideoMetadataRow($v);
 }
 
-/**
- *  Returns the metadata row in string form
- * @param Video $v
- * @return type
- */
-function getVideoMetadataRow($v) {
-    ob_start();
-    $vSuccess = $v->nfoFileExists() && $v->posterExists() && $v->sdPosterExists() && $v->hdPosterExists();
-    $txtSuccess = $vSuccess === true ? "true" : "false";
-    ?>
-    <tr style="cursor:pointer;" data-complete="<?php echo $txtSuccess; ?>" class="videoRow <?php echo $vSuccess ? "success" : "error"; ?>" mediatype="<?php echo $v->getMediaType(); ?>" baseurl="<?php echo htmlspecialchars($v->getVideoSourceUrl()); ?>" basepath="<?php echo htmlspecialchars($v->getVideoSourcePath()); ?>" fullpath="<?php echo htmlspecialchars($v->getFullPath()); ?>">
-        <?php if ($v->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
-            <td><?php echo $v->showName; ?></td>
-        <?php } ?>
-        <td><?php echo $v->title; ?></td>
-        <td><?php echo $v->nfoFileExists() ? color("Yes", "green") : color("No", "red"); ?></td>
-        <td><?php echo $v->posterExists() ? color("Yes", "green") : color("No", "red"); ?></td>
-        <td><?php echo $v->sdPosterExists() ? color("Yes", "green") : color("No", "red"); ?></td>
-        <td><?php echo $v->hdPosterExists() ? color("Yes", "green") : color("No", "red"); ?></td>
-    </tr>
-    <?php
-    $row = ob_get_contents();
-    ob_end_clean();
-    return $row;
-}
-
 function getBaseUrl() {
     return BASE_URL;
     $context = trim($context);
     $pos = strpos($context, "/");
 
-//if the first character of $context is the slash, remove it
+    //if the first character of $context is the slash, remove it
     if ($pos !== false && $pos === 0) {
         $context = substr($context, 1);
     }
 
-//if the url was not provided, use the current url
+    //if the url was not provided, use the current url
     if ($url === null) {
         $url = url();
     }
-//context should be a series of folder names with slashes in between and a slash at the end. 
-//The actual url may have a filename at the end of it. if this is the case, remove the filename
+    //context should be a series of folder names with slashes in between and a slash at the end. 
+    //The actual url may have a filename at the end of it. if this is the case, remove the filename
     $endingSlashPos = strrpos($url, "/");
-//if the ending slash position is NOT at the end of the string, then there is a filename at the end of this url. remove it.
+    //if the ending slash position is NOT at the end of the string, then there is a filename at the end of this url. remove it.
     if ($endingSlashPos === false || $endingSlashPos + 1 !== strlen($url)) {
         $url = dirname($url) . "/";
     }
 
-//if the context has a filename in front of it, remove the filename
-//context should be a series of folder names with slashes in between and a slash at the end. 
-//The actual url may have a filename at the end of it. if this is the case, remove the filename
+    //if the context has a filename in front of it, remove the filename
+    //context should be a series of folder names with slashes in between and a slash at the end. 
+    //The actual url may have a filename at the end of it. if this is the case, remove the filename
     $endingSlashPos = strrpos($context, "/");
-//if the ending slash position is NOT at the end of the string, then there is a filename at the end of this url. remove it.
+    //if the ending slash position is NOT at the end of the string, then there is a filename at the end of this url. remove it.
     if ($endingSlashPos === false || $endingSlashPos + 1 !== strlen($context)) {
         $context = dirname($context) . "/";
     }
-//$url =str_replace($context, '', $url);
-//now walk backwards in each portion of the context, piece by piece. This allows us to provide a context that may be more detailed than 
-//the url requires (such as going to a root directory insted of rootDirectory/FileName
+    //$url =str_replace($context, '', $url);
+    //now walk backwards in each portion of the context, piece by piece. This allows us to provide a context that may be more detailed than 
+    //the url requires (such as going to a root directory insted of rootDirectory/FileName
     $contexts = explode("/", $context);
     foreach ($contexts as $c) {
         $c = "$c/";
         $len = strlen($c);
         $pos = strpos($url, $c);
-//if the current context portion is at the end of the url, rip it off
+        //if the current context portion is at the end of the url, rip it off
         if ($pos + $len === strlen($url)) {
             $url = substr($url, 0, $pos);
         }
@@ -288,7 +262,7 @@ function fileUrl($fullFilePath) {
 
 //used from http://nadeausoftware.com/node/79
 function url_remove_dot_segments($path) {
-// multi-byte character explode
+    // multi-byte character explode
     $inSegs = preg_split('!/!u', $path);
     $outSegs = array();
     foreach ($inSegs as $seg) {
@@ -302,38 +276,9 @@ function url_remove_dot_segments($path) {
     $outPath = implode('/', $outSegs);
     if ($path[0] == '/')
         $outPath = '/' . $outPath;
-// compare last multi-byte character against '/'
+    // compare last multi-byte character against '/'
     if ($outPath != '/' &&
             (mb_strlen($path) - 1) == mb_strrpos($path, '/', 'UTF-8'))
         $outPath .= '/';
     return $outPath;
 }
-
-function printVideoTable($videoList) {
-    ?>
-    <div class="tableScrollArea">
-        <table class="table table-sort">
-            <thead>
-                <tr title="sort">
-                    <?php if (isset($videoList[0]) && $videoList[0]->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
-                        <th>Series</th>
-                    <?php } ?>
-                    <th>Title</th>
-                    <th>nfo exists</th>
-                    <th>Poster Exists</th>
-                    <th>SD Poster</th>
-                    <th>HD Poster</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($videoList as $v) {
-                    printVideoMetadataRow($v);
-                }
-                ?>
-            </tbody>
-        </table>
-    </div>
-    <?php
-}
-?>

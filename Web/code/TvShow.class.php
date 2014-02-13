@@ -1,13 +1,8 @@
 <?php
 
-include_once(dirname(__FILE__) . "/../config.php");
-
-include_once("MetadataFetcher/TvShowMetadataFetcher.class.php");
-include_once("NfoReader/TvShowNfoReader.class.php");
-
-include_once(dirname(__FILE__) . "/../plugins/php-mp4info/MP4Info.php");
-
-
+include_once('MetadataFetcher/TvShowMetadataFetcher.class.php');
+include_once('NfoReader/TvShowNfoReader.class.php');
+include_once('lib/php-mp4info/MP4Info.php');
 include_once("Video.class.php");
 include_once("TvEpisode.class.php");
 
@@ -300,7 +295,7 @@ class TvShow extends Video {
             return -1;
         }
 
-        $result = Queries::getLastEpisodeWatched(config::$globalUsername, $tvShowVideoId);
+        $result = Queries::getLastEpisodeWatched(Security::GetUsername(), $tvShowVideoId);
         $lastVideoIdWatched = $result === false ? -1 : $result->video_id;
         $lastWatchedSecondsProgress = $result === false ? 0 : $result->time_in_seconds;
         //if there IS a last video watched, then see if the user hadn't finished it yet
