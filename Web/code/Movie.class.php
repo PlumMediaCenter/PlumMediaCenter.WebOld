@@ -87,7 +87,7 @@ class Movie extends Video {
         $id = $adapter->imdbId();
         $filenameAndPath = $this->fullPath;
         $trailer = $adapter->trailerUrl();
-        $genreList = $adapter->genreList();
+        $genreList = $adapter->genres();
         $credits = "";
         $directorList = $adapter->directorList();
         $actorList = $adapter->cast();

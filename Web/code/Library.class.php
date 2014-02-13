@@ -76,7 +76,7 @@ class Library {
         return $this->tvEpisodeCount;
     }
 
-    /**
+    /** 
      * Loads all movies and tv shows from the database
      */
     public function loadFromDatabase() {

@@ -14,40 +14,15 @@ class MetadataManagerModel {
     public $tvShowsLoaded = false;
     public $tvEpisodesLoaded = false;
 
-    public function __construct($mediaType = null) {
+    public function __construct() {
         $l = new Library();
-        $this->movies = [];
-        $this->tvShows = [];
-        $this->tvEpisodes = [];
-
-        //if a media type is specified, only load that media type
-        if (($mediaType != null) &&
-                ($_GET["mediaType"] === Enumerations::MediaType_Movie ||
-                $_GET["mediaType"] === Enumerations::MediaType_TvShow ||
-                $_GET["mediaType"] === Enumerations::MediaType_TvEpisode)
-        ) {
-            $this->selectedTab = $_GET["mediaType"];
-            switch ($_GET["mediaType"]) {
-                case Enumerations::MediaType_Movie:
-                    $this->movies = $l->loadMoviesFromDatabase();
-                    $this->moviesLoaded = true;
-                    break;
-                default:
-                    $this->tvShows = $l->loadTvShowsFromDatabase();
-                    $this->tvEpisodes = $l->tvEpisodes;
-                    $this->tvShowsLoaded = true;
-                    $this->tvEpisodesLoaded = true;
-                    break;
-            }
-        } else {
-            $l->loadFromDatabase();
-            $this->movies = $l->movies;
-            $this->tvShows = $l->tvShows;
-            $this->tvEpisodes = $l->tvEpisodes;
-            $this->moviesLoaded = true;
-            $this->tvShowsLoaded = true;
-            $this->tvEpisodesLoaded = true;
-        }
+        $l->loadFromDatabase();
+        $this->movies = $l->movies;
+        $this->tvShows = $l->tvShows;
+        $this->tvEpisodes = $l->tvEpisodes;
+        $this->moviesLoaded = true;
+        $this->tvShowsLoaded = true;
+        $this->tvEpisodesLoaded = true;
     }
 
 }

@@ -2,7 +2,7 @@
 <script type = "text/javascript" src = "<?php urlContent("~/Scripts/jquery.tablesorter.min.js"); ?>"></script>
 <script type="text/javascript" src="<?php urlContent("~/Scripts/MetadataManager/Index.js"); ?>"></script>
 <script type="text/javascript">
-    var mediaType = "<?php echo $model->selectedTab;?>";
+    var mediaType = "<?php echo $model->selectedTab; ?>";
     var moviesLoaded = <?php echo $model->moviesLoaded ? "true" : "false"; ?>;
     var tvShowsLoaded = <?php echo $model->tvShowsLoaded ? "true" : "false"; ?>;
     var tvEpisodesLoaded = <?php echo $model->tvEpisodesLoaded ? "true" : "false"; ?>;
@@ -20,11 +20,11 @@
     <label for="showMissing" style="margin-left:10px;">Missing something</label>
     <input type="radio" id="showMissing" value="missing" name="showRows"/>
     <div class="buttonArea" style="height:20px;">
-        <a class="btn btn-default action" onclick="action('<?php echo Enumerations::MetadataManagerAction_FetchMetadata; ?>');">Fetch Metadata</a>
-        <a class="btn  btn-default action" onclick="action('<?php echo Enumerations::MetadataManagerAction_ReloadMetadata; ?>');">Reload Metadata</a>
-        <a class="btn  btn-default action" style="display:none;" onclick="action('<?php echo Enumerations::MetadataManagerAction_FetchPoster; ?>');">Fetch Poster</a>
-        <a class="btn  btn-default action" onclick="action('<?php echo Enumerations::MetadataManagerAction_GeneratePosters; ?>');">Generate SD and HD Posters</a>
-        <a class="btn btn-default  action" onclick="action('<?php echo Enumerations::MetadataManagerAction_FetchAndGeneratePosters; ?>');">Fetch and Generate Sd and HD Poster</a>
+        <a class="btn btn-default actionBtn"  data-action="<?php echo Enumerations::MetadataManagerAction_FetchMetadata; ?>">Fetch Metadata</a>
+        <a class="btn btn-default actionBtn" data-action="<?php echo Enumerations::MetadataManagerAction_ReloadMetadata; ?>">Reload Metadata</a>
+        <a class="btn btn-default actionBtn hide" data-action="<?php echo Enumerations::MetadataManagerAction_FetchPoster; ?>">Fetch Poster</a>
+        <a class="btn btn-default actionBtn" data-action="<?php echo Enumerations::MetadataManagerAction_GeneratePosters; ?>">Generate SD and HD Posters</a>
+        <a class="btn btn-default  actionBtn" data-action="<?php echo Enumerations::MetadataManagerAction_FetchAndGeneratePosters; ?>">Fetch and Generate Sd and HD Poster</a>
     </div>
     <div id="tablesArea" class="tab-content" style="border:1px solid black; min-height: 300px; overflow:auto;margin-top:10px;">
         <div id="moviesPane" class="tab-pane  <?php echo $model->selectedTab == Enumerations::MediaType_Movie ? "active" : ""; ?>">

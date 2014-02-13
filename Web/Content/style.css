@@ -294,4 +294,6 @@ label, input[type=radio]{
     text-align:center;
 }
 
-#waitModal
+.modal{
+    overflow: auto;
+}

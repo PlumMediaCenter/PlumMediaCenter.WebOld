@@ -8,13 +8,14 @@ Security::HandleLogin();
         <title><?php echo $title; ?></title>
         <link rel="icon" href="<?php urlContent("~/favicon.ico"); ?>" type="image/x-icon" />
         <link rel="stylesheet" media="screen" href="<?php urlContent("~/Scripts/lib/bootstrap/css/bootstrap.min.css"); ?>">
-        <link rel="stylesheet" media="screen" href="<?php urlContent("~/Content/style.css"); ?>">
         <link href="<?php urlContent("~/Scripts/lib/jquery-ui-1.10.3.custom/css/dark-hive/jquery-ui-1.10.3.custom.min.css"); ?>" rel="stylesheet" media="screen">
+        <link rel="stylesheet" media="screen" href="<?php urlContent("~/Content/style.css"); ?>">
 
         <script type="text/javascript">
             //this variable will be used to hold any 'global' variables that may need to be referenced by other components.
             //this prevents pollution of the global namespace.
             var app = {};
+            var baseUrl = "<?php echo baseUrl();?>";
         </script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/respond/respond.min.js"); ?>"></script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/jquery-1.10.2.min.js"); ?>"></script>
@@ -22,7 +23,6 @@ Security::HandleLogin();
         <script type="text/javascript" src="<?php urlContent("~/Scripts/jquery.utility.js"); ?>"></script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"); ?>"></script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/bootstrap/js/bootstrap.min.js"); ?>"></script>
-        <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/bootbox/bootbox.min.js"); ?>"></script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/plumapi.js"); ?>"></script>
         <script type="text/javascript"> window.plumapi.baseUrl = "<?php urlContent("~/"); ?>";</script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/jquery.playlistadder.js"); ?>"></script>

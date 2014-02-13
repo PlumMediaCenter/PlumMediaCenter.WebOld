@@ -2,26 +2,6 @@
 <script type="text/javascript" src="<?php urlContent("~/Scripts/Admin/Index.js");?>"></script>
 <script type="text/javascript">
 
-    $(document).ready(function() {
-        bootbox.setDefaults({animate: false});
-        $("[name=metadataType]").click(function() {
-            $("#metadataManagerBtn").attr("href", $("#metadataManagerBtn").attr("href-original") + "?mediaType=" + $(this).val());
-        });
-    });
-
-    function generateLibrary() {
-        bootbox.alert("Generating Library. <img src='img/ajax-loader.gif'/>");
-        $.ajax({url: "api/GenerateLibrary.php", dataType: "json", complete: function(result, status) {
-                bootbox.hideAll();
-                if (status === "success") {
-                    bootbox.alert("Library has been successfully generated and is up to date.");
-                } else {
-                    bootbox.alert("There was an error generating library. Please see the <a href='Log.php'>log</a> for more information");
-                }
-            }
-        });
-    }
-
     function fetchMissingMetadataAndPosters() {
         bootbox.alert("Fetching missing metadata and posters. <img src='img/ajax-loader.gif'/>");
         $.ajax({url: "api/FetchMissingMetadataAndPosters.php", dataType: "json", complete: function(result, status) {
@@ -44,10 +24,7 @@
 <a href='VideoSources.php' class="btn btn-default">Add/Remove Video Sources</a>
 <br/>
 <br/>
-<a id="metadataManagerBtn" href-original="MetadataManager.php" href="MetadataManager.php" class="btn btn-default">Manage Metadata</a>
-<input id="allMetadataType" checked="checked" type="radio" value="" name="metadataType"/> <label for="movieMetadataType">All Media</label>&nbsp;&nbsp;&nbsp;
-<input id="movieMetadataType" type="radio" value="<?php echo Enumerations::MediaType_Movie; ?>" name="metadataType"/><label for="movieMetadataType">Movies Only</label>&nbsp;&nbsp;&nbsp;
-<input id="tvShowMetadataType" type="radio" value="<?php echo Enumerations::MediaType_TvShow; ?>" name="metadataType"/><label for="movieMetadataType">Tv Shows/Episodes Only</label>
+<a id="metadataManagerBtn" href="<?php urlAction("MetadataManager/Index");?>" class="btn btn-default">Manage Metadata</a>
 
 <br/>
 <br/>

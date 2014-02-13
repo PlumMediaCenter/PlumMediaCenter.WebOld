@@ -5,9 +5,9 @@ include_once(basePath() . '/Code/TvEpisode.class.php');
 
 class MetadataManagerController {
 
-    function Index($mediaType = null) {
+    function Index() {
         include_once(basePath() . "/Models/MetadataManager/MetadataManagerModel.php");
-        $model = new MetadataManagerModel($mediaType);
+        $model = new MetadataManagerModel();
         return view($model);
     }
 
