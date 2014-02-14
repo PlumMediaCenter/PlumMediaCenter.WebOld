@@ -7,8 +7,8 @@
         _create: function() {
             var v = this.options.video;
             this.element.addClass("video-tile");
-            var videoMarkup = 
-                    " <a href = 'VideoInfo.php?videoId=" + v.videoId + "' > " +
+            var videoMarkup =
+                    " <a href = " + baseUrl + "/Home/VideoInfo?videoId=" + v.videoId + "' > " +
                     " <img class='poster' src = '" + v.hdPosterUrl + "' > </a> " +
                     " ";
             this.element.html(videoMarkup);

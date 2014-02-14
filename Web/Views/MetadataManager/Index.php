@@ -1,4 +1,5 @@
 <?php section("head"); ?>
+.
 <script type = "text/javascript" src = "<?php urlContent("~/Scripts/jquery.tablesorter.min.js"); ?>"></script>
 <script type="text/javascript" src="<?php urlContent("~/Scripts/MetadataManager/Index.js"); ?>"></script>
 <script type="text/javascript">

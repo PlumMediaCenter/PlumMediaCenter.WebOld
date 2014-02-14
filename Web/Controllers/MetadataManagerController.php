@@ -36,7 +36,9 @@ class MetadataManagerController {
     }
 
     function ReloadMetadata($baseUrl, $basePath, $fullPath, $mediaType) {
+        /* @var $v Video */
         $v = new $mediaType($baseUrl, $basePath, $fullPath);
+        $v->loadMetadata(true);
         $success = $v->writeToDb();
         return $this->result($success, $baseUrl, $basePath, $fullPath, $mediaType);
     }

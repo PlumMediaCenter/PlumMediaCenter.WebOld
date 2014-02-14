@@ -132,7 +132,21 @@ function basePath() {
     return $bPath;
 }
 
+/**
+ * Echoes the result of getUrlContent
+ * @param type $contentUrl
+ */
 function urlContent($contentUrl) {
+
+    echo GetUrlContent($contentUrl);
+}
+
+/**
+ * Converts the contentUrl to a fully qualified url
+ * @param string $contentUrl
+ * @return string
+ */
+function getUrlContent($contentUrl) {
     //if the contentUrl contains ~, then replace that with the base web url
     if (strpos($contentUrl, "~") !== false) {
         $contentUrl = str_replace("~/", "", $contentUrl);
@@ -141,7 +155,18 @@ function urlContent($contentUrl) {
     } else {
         $newUrl = $contentUrl;
     }
-    echo $newUrl;
+    return $newUrl;
+}
+
+/**
+ * Converts a controller/action into a full url. Echoes that result
+ * @param string $actionString - in the format of either "Action" or "Controller/Action". If controller is omitted,
+ *                                  then the calling controller will be used
+ * @param string $controllerName - the name of the controller. If omitted, the calling controller will be assumed
+ * @param array $parameters - a list of GET parameters to include in the url
+ */
+function urlAction($actionString, $parameters = []) {
+    echo getUrlAction($actionString, $parameters);
 }
 
 /**
@@ -151,7 +176,7 @@ function urlContent($contentUrl) {
  * @param string $controllerName - the name of the controller. If omitted, the calling controller will be assumed
  * @param array $parameters - a list of GET parameters to include in the url
  */
-function urlAction($actionString, $parameters = []) {
+function getUrlAction($actionString, $parameters = []) {
     //parse the action string. 
     $actionParts = explode("/", $actionString);
     //if there are two parts, both the controller AND the action were provided
@@ -201,7 +226,7 @@ function urlAction($actionString, $parameters = []) {
         $parameterString = "?$parameterString";
     }
     $url = baseUrl() . "/$controllerName/$actionName" . $parameterString;
-    echo $url;
+    return $url;
 }
 
 /**

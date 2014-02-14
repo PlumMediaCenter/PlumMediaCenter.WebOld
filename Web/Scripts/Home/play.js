@@ -141,13 +141,13 @@ function displayVideoTitle(video) {
 //display the title of the video
     if (video.mediaType == enumerations.tvEpisode) {
         var title =
-                "<a href='VideoInfo.php?videoId=" + video.videoId + "'>" +
+                "<a href='" + baseUrl + "/Home/VideoInfo?videoId=" + video.videoId + "'>" +
                 video.showName + "</a>"
                 + " Season " + video.seasonNumber +
                 " Episode " + video.episodeNumber + " - " + video.title;
         $("#playTitle").html(title);
     } else {
-        var title = "<a href='VideoInfo.php?videoId=" + video.videoId + "'>" +
+        var title = "<a href='" + baseUrl + "/Home/VideoInfo?videoId=" + video.videoId + "'>" +
                 video.title +
                 "</a>";
         $("#playTitle").html(title);

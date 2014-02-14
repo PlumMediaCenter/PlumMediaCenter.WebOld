@@ -36,17 +36,7 @@ body{
     padding-left:0px;
 }
 
-.table-sort th.headerSortUp { 
-    background-image: url(../img/tablesort/asc.png); 
-} 
-.table-sort th.headerSortDown { 
-    background-image: url(../img/tablesort/desc.png); 
-} 
-.table-sort th{
-    cursor:pointer;
-    background-image: url(../img/tablesort/bg.png); 
-    padding-left:30px !important;
-}
+.
 
 .videoRow .sd{
     height: 80px;
@@ -220,6 +210,8 @@ label{
 
 #body-row{
     margin:0px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #body-col{

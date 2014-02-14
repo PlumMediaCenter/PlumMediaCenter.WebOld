@@ -18,8 +18,8 @@ class AdminController {
         return view($model);
     }
 
-    function MetadataManager() {
-   
+    function Setup(){
+        return view();
     }
 
 }

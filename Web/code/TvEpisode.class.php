@@ -37,8 +37,18 @@ class TvEpisode extends Video {
         $this->tvShow = isset($this->tvShow) ? $this->tvShow : null;
         if ($this->tvShow == null) {
             $this->tvShow = new TvShow($this->videoSourceUrl, $this->videoSourcePath, $this->showFilePath);
+            $this->tvShow->getVideoId();
         }
         return $this->tvShow;
+    }
+
+    /**
+     * Returns the videoId of the tv show that this episode is associated with
+     * @return int - the videoId of the tv show that this episode belongs to
+     */
+    public function getTvShowVideoId() {
+        $tvShow = $this->getTvShowObject();
+        return $tvShow->getVideoId();
     }
 
     protected function getLengthInSecondsFromMetadata() {
