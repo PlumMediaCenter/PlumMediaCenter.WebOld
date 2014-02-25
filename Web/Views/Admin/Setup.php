@@ -1,7 +1,7 @@
 <?php
 include_once("code/database/Queries.class.php");
 include_once("config.php");
-
+$layout = null;
 $success = null;
 //if the generateDatabase button was clicked, generate the database
 if (isset($_POST["setup"])) {

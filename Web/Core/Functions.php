@@ -38,11 +38,14 @@ function view($theModel = null, $routeString = null) {
     //include the view
     ob_start();
     include($viewPath);
-    $sections["body"] = ob_get_contents();
+    $sections['body'] = ob_get_contents();
     ob_end_clean();
     //layout should have been included in the _Viewstart.php or the view page. 
     if ($layout != null) {
         include("$root/Views/$layout");
+    }else{
+        //if the layout is null, write the body immediately
+        echo $sections['body'];
     }
 }
 
@@ -51,7 +54,7 @@ function view($theModel = null, $routeString = null) {
  * @param string $routeString
  * @param type $routeValues
  */
-function redirectToAction($routeString, $routeValues = null) {
+function RedirectToAction($routeString, $routeValues = null) {
     $routeString = _getRoute($routeString);
     $redirectUrl = getUrlAction($routeString, $routeValues);
     header("Location: $redirectUrl", true, 301);
@@ -111,8 +114,8 @@ function baseUrl() {
         $port = ((!$ssl && $port == '80') || ($ssl && $port == '443')) ? '' : ':' . $port;
         $host = isset($s['HTTP_X_FORWARDED_HOST']) ? $s['HTTP_X_FORWARDED_HOST'] : isset($s['HTTP_HOST']) ? $s['HTTP_HOST'] : $s['SERVER_NAME'];
 
-        $scriptName = $s["SCRIPT_NAME"];
-        $baseUrl = str_replace("/index.php", "", $scriptName);
+        $scriptName = $s['SCRIPT_NAME'];
+        $baseUrl = str_replace('/index.php', '', $scriptName);
         $baseUrl = $protocol . '://' . $host . $baseUrl;
     }
     return $baseUrl;
@@ -126,7 +129,7 @@ function baseUrl() {
 function basePath() {
     global $basePath;
     if ($basePath == null) {
-        $fullPathToIndex = $_SERVER["SCRIPT_FILENAME"];
+        $fullPathToIndex = $_SERVER['SCRIPT_FILENAME'];
         $basePath = dirname($fullPathToIndex);
     }
     return $basePath;
@@ -147,8 +150,8 @@ function urlContent($contentUrl) {
  */
 function getUrlContent($contentUrl) {
     //if the contentUrl contains ~, then replace that with the base web url
-    if (strpos($contentUrl, "~") !== false) {
-        $contentUrl = str_replace("~/", "", $contentUrl);
+    if (strpos($contentUrl, '~') !== false) {
+        $contentUrl = str_replace('~/', '', $contentUrl);
         $bUrl = baseUrl();
         $newUrl = "$bUrl/$contentUrl";
     } else {
@@ -179,7 +182,7 @@ function getUrlAction($actionString, $parameters = []) {
     //if the parameters item is null, set it to an empty array
     $parameters = ($parameters == null)? []: $parameters;
     //parse the action string. 
-    $actionParts = explode("/", $actionString);
+    $actionParts = explode('/', $actionString);
     //if there are two parts, both the controller AND the action were provided
     if (count($actionParts) === 2) {
         $controllerName = $actionParts[0];
@@ -205,11 +208,11 @@ function getUrlAction($actionString, $parameters = []) {
     }
 
     //create the querystring parameters string, if any values were provided
-    $parameterString = "";
-    $amp = "";
+    $parameterString = '';
+    $amp = '';
     foreach ($parameters as $key => $val) {
         $parameterString .= $amp . "$key=$val";
-        $amp = "&";
+        $amp = '&';
     }
 
     //prepend the question mark if any parameters were present
@@ -226,7 +229,7 @@ function getUrlAction($actionString, $parameters = []) {
  */
 function _controllerFromBacktrace() {
     $route = _routeFromBacktrace();
-    $parts = explode("/", $route);
+    $parts = explode('/', $route);
     return $parts[0];
 }
 
@@ -243,7 +246,7 @@ function _getRoute($routeString) {
         $returnRouteString = _routeFromBacktrace();
     } else {
         //if the viewString does not have a slash in it, we need to get the controller name.
-        if (strpos($routeString, "/") === false) {
+        if (strpos($routeString, '/') === false) {
             $controllerName = _controllerFromBacktrace();
             $returnRouteString = "$controllerName/$routeString";
         } else {
@@ -270,7 +273,7 @@ function _routeFromBacktrace() {
         if (isset($currentCaller['file']) == true) {
 
             $path = $currentCaller['file'];
-            $pos = strrpos($path, "Controller.php");
+            $pos = strrpos($path, 'Controller.php');
             //if $callerPath ends in Controller.php, then this is the controller file. Now see if 
             if ($pos === strlen($path) - 14) {
                 $controllerName = _controllerNameFromPath($path);
@@ -290,7 +293,7 @@ function _routeFromBacktrace() {
             $className = $currentCaller['class'];
             //the current caller is a class.
             //if the current caller class name ends in "Controller"
-            $pos = strrpos($className, "Controller");
+            $pos = strrpos($className, 'Controller');
             //if $callerPath ends in 'Controller', then this is the controller file. Now see if 
             if ($pos === strlen($className) - 10) {
                 $controllerName = substr($className, 0, $pos);
@@ -360,7 +363,7 @@ function actionExists($controllerName = null, $actionName = null) {
 function partial($viewPath, $viewModel = null) {
     global $model;
 
-    $relativeViewPath = str_replace("~/", "", $viewPath);
+    $relativeViewPath = str_replace('~/', '', $viewPath);
     $fullViewPath = basePath() . '/' . $relativeViewPath;
     if (file_exists($fullViewPath) === true) {
         //store the parent model

@@ -17,7 +17,7 @@ class VideoSourcesController {
         if ($sourcePath != null) {
             Queries::deleteVideoSource($sourcePath);
         }
-        return redirectToAction("Index");
+        return RedirectToAction("Index");
     }
 
     /**
@@ -33,7 +33,7 @@ class VideoSourcesController {
         } else {
             Queries::updateVideoSource($originalLocation, $location, $baseUrl, $mediaType, $securityType);
         }
-        return redirectToAction("Index");
+        return RedirectToAction("Index");
     }
 
     /**

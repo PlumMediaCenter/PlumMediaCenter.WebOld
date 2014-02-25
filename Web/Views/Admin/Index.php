@@ -34,7 +34,7 @@
 <a href='Log.php' class="btn btn-default">View Log</a>
 <br/>
 <br/>
-<a href='Setup.php' class="btn btn-default">Install/Update Database</a> Current database model version: <?php echo $model->currentDbVersion; ?>. Latest available db model version: <?php echo $model->latestDbVersion; ?>. 
+<a href="<?php urlAction('Setup');?>" class="btn btn-default">Install/Update Database</a> Current database model version: <?php echo $model->currentDbVersion; ?>. Latest available db model version: <?php echo $model->latestDbVersion; ?>. 
 
 <div id="videosJsonModal" class="modal hide" style="width: 1000px; margin-left: -500px;">
     <div class="modal-header">
