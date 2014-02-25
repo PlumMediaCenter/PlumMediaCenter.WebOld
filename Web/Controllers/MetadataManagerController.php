@@ -6,7 +6,7 @@ include_once(basePath() . '/Code/TvEpisode.class.php');
 class MetadataManagerController {
 
     function Index() {
-        include_once(basePath() . "/Models/MetadataManager/MetadataManagerModel.php");
+        include_once(basePath() . "/Models/MetadataManagerModel.php");
         $model = new MetadataManagerModel();
         return view($model);
     }

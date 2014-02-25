@@ -109,7 +109,7 @@ $(document).ready(function() {
         //show the add/edit window
         $("#newSourceModal").modal();
     }
-
+    
     function deleteVideoSource(sourcePath) {
         if (confirm("Really delete this video source?")) {
             $.ajax({

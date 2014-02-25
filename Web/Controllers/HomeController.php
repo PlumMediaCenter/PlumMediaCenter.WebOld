@@ -41,14 +41,14 @@ class HomeController extends Controller {
     }
 
     function Play($videoId) {
-        include_once(basePath() . '/Models/Home/PlayModel.php');
+        include_once(basePath() . '/Models/PlayModel.php');
         $model = new PlayModel();
         $model->init($videoId);
         return View($model);
     }
 
     function PlayPlaylist($playlistName) {
-        include_once(basePath() . '/Models/Home/PlayModel.php');
+        include_once(basePath() . '/Models/PlayModel.php');
         $model = new PlayModel();
         $model->initPlaylist($playlistName);
     }

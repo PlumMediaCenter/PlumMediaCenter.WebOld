@@ -418,7 +418,7 @@ class Queries {
      * Gets an associative array of the video sources
      * @return associative array of video sources
      */
-    public static function getVideoSources($type = null) {
+    public static function GetVideoSources($type = null) {
         $sql = "select location, base_url,  media_type, security_type, refresh_videos from video_source";
         if ($type != null) {
             $sql .= " where media_type = '$type'";
