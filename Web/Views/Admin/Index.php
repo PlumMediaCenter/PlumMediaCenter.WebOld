@@ -21,7 +21,7 @@
 <a id="generateLibraryBtn" class="btn btn-default">Generate/Update library</a>
 <br/>
 <br/>
-<a href='VideoSources.php' class="btn btn-default">Add/Remove Video Sources</a>
+<a href="<?php urlAction('VideoSources/Index');?>" class="btn btn-default">Add/Remove Video Sources</a>
 <br/>
 <br/>
 <a id="metadataManagerBtn" href="<?php urlAction("MetadataManager/Index");?>" class="btn btn-default">Manage Metadata</a>

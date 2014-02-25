@@ -18,7 +18,7 @@ class AdminController {
         return view($model);
     }
 
-    function Setup(){
+    function Setup() {
         return view();
     }
 

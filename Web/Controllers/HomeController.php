@@ -13,7 +13,7 @@ class HomeController extends Controller {
     }
 
     function Browse() {
-        return $this->Index();
+        return redirectToAction("Index");
     }
 
     function Genre() {

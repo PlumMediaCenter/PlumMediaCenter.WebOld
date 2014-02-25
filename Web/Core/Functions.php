@@ -2,9 +2,12 @@
 
 global $sections;
 global $currentSectionName;
+global $baseUrl;
+global $basePath;
 $sections = [];
-
 $currentSectionName = null;
+$baseUrl = null;
+$basePath = null;
 
 /**
  * This is the function that actually performs the rendering. It loads the view, the layout, and combines them
@@ -12,33 +15,24 @@ $currentSectionName = null;
  * @param string $viewString - the view to display. Must be the relative path from within the views folder. I.e. /Home/Index 
  * 
  */
-function view($theModel = null, $viewString = null) {
+function view($theModel = null, $routeString = null) {
     global $sections;
     global $model;
     //save the model to the global variable scope as the model for this view
     $model = $theModel;
-    //get the action name and controller name of the action that called this function
-    $callers = debug_backtrace();
-    $actionName = $callers[1]['function'];
-    $controllerName = str_replace('Controller', '', $callers[1]["class"]);
 
-    //if no view information was provided, retrieve the controller/action that called View and look for its corresponding view
-    if ($viewString == null) {
-        $viewString = "$controllerName/$actionName";
-    } else {
-        //if the viewString does not have a slash in it, we need to get the controller name.
-        if (strpos($viewString, "/") === false) {
-            $viewString = "$controllerName/$viewString";
-        }
-    }
+    $routeString = _getRoute($routeString);
+
     $root = dirname(__FILE__) . '/..';
-    $viewString = ($viewString == null) ? "Home/Index" : $viewString;
-    $viewPath = "$root/Views/$viewString.php";
+
+    $viewPath = "$root/Views/$routeString.php";
     if (!file_exists($viewPath)) {
         throw new Exception("Unable to find view at path '$viewPath'");
     }
-    //include the _Viewstart file at the beginning of the return of every view
-    include("$root/Views/_Viewstart.php");
+    if (file_exists("$root/Views/_Viewstart.php")) {
+        //include the _Viewstart file at the beginning of the return of every view
+        include("$root/Views/_Viewstart.php");
+    }
     //get the layout option 
     $layout = (isset($layout)) ? $layout : null;
     //include the view
@@ -50,6 +44,18 @@ function view($theModel = null, $viewString = null) {
     if ($layout != null) {
         include("$root/Views/$layout");
     }
+}
+
+/**
+ * Redirects the page to the specified action
+ * @param string $routeString
+ * @param type $routeValues
+ */
+function redirectToAction($routeString, $routeValues = null) {
+    $routeString = _getRoute($routeString);
+    $redirectUrl = getUrlAction($routeString, $routeValues);
+    header("Location: $redirectUrl", true, 301);
+    exit;
 }
 
 /**
@@ -94,12 +100,9 @@ function renderSection($sectionName, $isOptional = true) {
     }
 }
 
-global $bUrl;
-$bUrl = null;
-
 function baseUrl() {
-    global $bUrl;
-    if ($bUrl == null) {
+    global $baseUrl;
+    if ($baseUrl == null) {
         $s = $_SERVER;
         $ssl = (!empty($s['HTTPS']) && $s['HTTPS'] == 'on') ? true : false;
         $sp = strtolower($s['SERVER_PROTOCOL']);
@@ -110,13 +113,10 @@ function baseUrl() {
 
         $scriptName = $s["SCRIPT_NAME"];
         $baseUrl = str_replace("/index.php", "", $scriptName);
-        $bUrl = $protocol . '://' . $host . $baseUrl;
+        $baseUrl = $protocol . '://' . $host . $baseUrl;
     }
-    return $bUrl;
+    return $baseUrl;
 }
-
-global $bPath;
-$bPath = null;
 
 /**
  * Returns the base file path to the root of this application. For example, assuming your root 
@@ -124,12 +124,12 @@ $bPath = null;
  * /var/www/myapp or C:\apache\www\myapp
  */
 function basePath() {
-    global $bPath;
-    if ($bPath == null) {
+    global $basePath;
+    if ($basePath == null) {
         $fullPathToIndex = $_SERVER["SCRIPT_FILENAME"];
-        $bPath = dirname($fullPathToIndex);
+        $basePath = dirname($fullPathToIndex);
     }
-    return $bPath;
+    return $basePath;
 }
 
 /**
@@ -137,7 +137,6 @@ function basePath() {
  * @param type $contentUrl
  */
 function urlContent($contentUrl) {
-
     echo GetUrlContent($contentUrl);
 }
 
@@ -177,6 +176,8 @@ function urlAction($actionString, $parameters = []) {
  * @param array $parameters - a list of GET parameters to include in the url
  */
 function getUrlAction($actionString, $parameters = []) {
+    //if the parameters item is null, set it to an empty array
+    $parameters = ($parameters == null)? []: $parameters;
     //parse the action string. 
     $actionParts = explode("/", $actionString);
     //if there are two parts, both the controller AND the action were provided
@@ -194,17 +195,7 @@ function getUrlAction($actionString, $parameters = []) {
     }
     //if the controller name is null, try to figure out which controller to use
     if ($controllerName == null) {
-        $callers = debug_backtrace();
-        //this is the view that called urlAction
-        $callerPath = $callers[2]['file'];
-        //replace any windows slashes with unix ones
-        $callerPath = str_replace('\\', '/', $callerPath);
-        $basePath = basePath();
-        $relativeCallerPath = str_replace($basePath . '/', '', $callerPath);
-        //split the remainder of the path by slashes and the second item is our controller (first is Views/)
-        $parts = explode("/", $relativeCallerPath);
-        $controllerFilename = $parts[1];
-        $controllerName = str_replace('Controller.php', '', $controllerFilename);
+        $controllerName = _controllerFromBacktrace();
     }
 
     //at this point, we can safely assume that we have a controller name and an action name
@@ -227,6 +218,114 @@ function getUrlAction($actionString, $parameters = []) {
     }
     $url = baseUrl() . "/$controllerName/$actionName" . $parameterString;
     return $url;
+}
+
+/**
+ * Returns the controller name from the backtrace
+ * @return string - the controller name that is being executed
+ */
+function _controllerFromBacktrace() {
+    $route = _routeFromBacktrace();
+    $parts = explode("/", $route);
+    return $parts[0];
+}
+
+/**
+ * Analyzes the routeString provided and generates a Controller/Action string based on the values provided
+ * and suppliments with any backtrace route available
+ * @param type $routeString
+ */
+function _getRoute($routeString) {
+    $returnRouteString = null;
+    //if no view information was provided, retrieve the controller/action that called View and look for its corresponding view
+    if ($routeString == null) {
+        //get the action name and controller name of the action that called this function
+        $returnRouteString = _routeFromBacktrace();
+    } else {
+        //if the viewString does not have a slash in it, we need to get the controller name.
+        if (strpos($routeString, "/") === false) {
+            $controllerName = _controllerFromBacktrace();
+            $returnRouteString = "$controllerName/$routeString";
+        } else {
+            $returnRouteString = $routeString;
+        }
+    }
+    return $returnRouteString;
+}
+
+/**
+ * Investigates the backtrace until a controller and action can be found. 
+ * @throws Exception
+ */
+function _routeFromBacktrace() {
+    $controllerName = null;
+    $actionName = null;
+
+    $callers = debug_backtrace();
+    $callerCount = count($callers);
+    //spin through the list of callers and find the first one that ends with Controller.php
+    for ($i = 0; $i < $callerCount; $i++) {
+        $currentCaller = $callers[$i];
+        //if the currentCaller is NOT a class
+        if (isset($currentCaller['file']) == true) {
+
+            $path = $currentCaller['file'];
+            $pos = strrpos($path, "Controller.php");
+            //if $callerPath ends in Controller.php, then this is the controller file. Now see if 
+            if ($pos === strlen($path) - 14) {
+                $controllerName = _controllerNameFromPath($path);
+                $controllerClassName = $controllerName . 'Controller';
+                //if the function in this caller is an action, this is the caller we are looking for
+                $potentialActionName = $currentCaller['function'];
+
+                //if the discovered controller has a method with the discovered action name, this is
+                //the controller and action we are looking for
+                if (method_exists($controllerClassName, $potentialActionName)) {
+                    $controllerName = _controllerNameFromPath($currentCaller['file']);
+                    $actionName = $currentCaller['function'];
+                    break;
+                }
+            }
+        } else {
+            $className = $currentCaller['class'];
+            //the current caller is a class.
+            //if the current caller class name ends in "Controller"
+            $pos = strrpos($className, "Controller");
+            //if $callerPath ends in 'Controller', then this is the controller file. Now see if 
+            if ($pos === strlen($className) - 10) {
+                $controllerName = substr($className, 0, $pos);
+                $actionName = $currentCaller['function'];
+            }
+        }
+    }
+
+    if ($controllerName === null) {
+        throw new Exception("Unable to determine active controller.");
+    }
+    return "$controllerName/$actionName";
+}
+
+/**
+ * Extracts the controller name from a full path
+ * @param string $path - the full path to use to extract the controller name from
+ * @return string - the extracted controller name 
+ * @throws Exception
+ */
+function _controllerNameFromPath($path) {
+    //replace any windows slashes with unix ones
+    $cleansedPath = str_replace('\\', '/', $path);
+    $basePath = basePath();
+    $relativePath = str_replace($basePath . '/', '', $cleansedPath);
+    //split the remainder of the path by slashes and the second item is our controller (first is Views/)
+    $parts = explode("/", $relativePath);
+    $controllerFilename = $parts[1];
+    $count = null;
+    $controllerName = str_replace('Controller.php', '', $controllerFilename, $count);
+    if ($count === 0) {
+        throw new Exception("Unable to extract a controller name from '$path'");
+    } else {
+        return $controllerName;
+    }
 }
 
 /**
