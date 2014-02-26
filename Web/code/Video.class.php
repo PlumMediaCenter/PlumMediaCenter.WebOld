@@ -60,7 +60,11 @@ abstract class Video {
         //save the important stuff
         $this->videoSourceUrl = $videoSourceUrl;
         $this->videoSourcePath = str_replace("\\", "/", realpath($videoSourcePath)) . "/";
-        $this->fullPath = str_replace("\\", "/", realpath($fullPath));
+        $fullPathRealPath = realpath($fullPath);
+        if($fullPathRealPath === false){
+            throw new Exception("Unable to construct a video object at path $fullPath: path does not exist");
+        }
+        $this->fullPath = str_replace("\\", "/", $fullPathRealPath);
 
         //if this video does not exist, throw a new exception
         if (file_exists($this->fullPath) === false) {
