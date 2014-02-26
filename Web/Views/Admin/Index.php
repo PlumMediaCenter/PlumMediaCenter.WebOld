@@ -21,7 +21,7 @@
 <a id="generateLibraryBtn" class="btn btn-default">Generate/Update library</a>
 <br/>
 <br/>
-<a href="<?php urlAction('VideoSources/Index');?>" class="btn btn-default">Manage Video Sources</a> (<?php echo $model->videoSourceCount;?>)
+<a href="<?php urlAction('VideoSources/Index');?>" class="btn btn-default">Manage Video Sources (<?php echo $model->videoSourceCount;?>)</a> 
 <br/>
 <br/>
 <a id="metadataManagerBtn" href="<?php urlAction("MetadataManager/Index");?>" class="btn btn-default">Manage Metadata</a>

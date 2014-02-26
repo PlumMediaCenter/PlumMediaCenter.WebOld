@@ -76,14 +76,21 @@ class Library {
         return $this->tvEpisodeCount;
     }
 
-    /** 
+    /**
      * Loads all movies and tv shows from the database
      */
     public function loadFromDatabase() {
         $this->clear();
         $videoIds = Queries::GetMovieAndTvShowVideoIds(Enumerations::MediaType_Movie);
         foreach ($videoIds as $videoId) {
-            $video = Video::GetVideo($videoId);
+            //if we were able to successfully load a video, then continue with this video. otherwise,
+            //skip this video and try the next one.
+            try {
+                $video = Video::GetVideo($videoId);
+            } catch (Exception $e) {
+                continue;
+            }
+
             $this->moviesAndTvShows[] = $video;
 
             if ($video->mediaType == Enumerations::MediaType_Movie) {
