@@ -6,7 +6,9 @@ $(document).ready(function() {
         $("#addNewSourceBtn").click(openAdd);
         //bind delete button functionality
         $(".deleteSource").click(function() {
-            deleteVideoSource($(this).attr("data-location"));
+            if (confirm("Really delete this video source?") == false) {
+                return false;
+            }
         });
 
         //bind edit button functionality
@@ -109,21 +111,5 @@ $(document).ready(function() {
         //show the add/edit window
         $("#newSourceModal").modal();
     }
-    
-    function deleteVideoSource(sourcePath) {
-        if (confirm("Really delete this video source?")) {
-            $.ajax({
-                url: pageVars.deleteSourceUrl,
-                dataType: "json",
-                data: {sourcePath: sourcePath},
-                complete: function(result) {
-                    if (result.responseJSON != undefined && result.responseJSON == true) {
-                        window.location.reload();
-                    } else {
-                        alert("Unable to delete video source");
-                    }
-                }
-            });
-        }
-    }
+
 });
