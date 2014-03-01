@@ -1,4 +1,4 @@
-<?php section("head"); ?>
+<?php section("scripts"); ?>
 <script type="text/javascript" src="<?php urlContent("~/Scripts/Admin/Index.js");?>"></script>
 <script type="text/javascript">
 

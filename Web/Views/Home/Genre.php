@@ -1,3 +1,4 @@
+<?php section("scripts");?>
 <script type="text/javascript" src="<?php urlContent('~/Scripts/jquery.video.js'); ?>"></script>
 <script type="text/javascript" src="<?php urlContent('~/Scripts/jquery.genreVideoList.js'); ?>"></script>
 <script type = "text/javascript" >
@@ -16,5 +17,6 @@
         });
     });
 </script>
+<?php endSection();?>
 
 <div id="genreBox"></div>

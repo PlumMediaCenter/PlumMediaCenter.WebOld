@@ -1,6 +1,6 @@
 <?php
 $title = "Manage Video Sources";
-section("head");
+section("scripts");
 ?>
 
 <script type="text/javascript" src="<?php urlContent('~/Scripts/VideoSources.js'); ?>"></script>

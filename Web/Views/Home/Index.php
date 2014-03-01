@@ -1,7 +1,4 @@
-<?php section("head"); ?>
-<script type="text/javascript">
-    var info = "This content should be written to the head element";
-</script>
+<?php section("scripts"); ?>
 <?php endSection(); ?>
 <div id="video-container">
     <?php

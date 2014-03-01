@@ -1,7 +1,8 @@
 (function($, undefined) {
-    window.plumapi = (window.plumapi == undefined) ? {} : window.plumapi;
-    plumapi.baseUrl = undefined;
-
+    var defaults = {
+        baseUrl: undefined
+    };
+    window.plumapi = (window.plumapi === undefined) ? defaults : $.extend(defaults, window.plumapi);
 
     plumapi.deleteVideoSource = function(sourcePath, callback) {
         plumapi._call("DeleteVideoSource", {sourcePath: sourcePath}, callback);

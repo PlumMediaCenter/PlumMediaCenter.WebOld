@@ -1,6 +1,5 @@
 <?php include_once(basePath() . '/Code/TvShow.class.php'); ?>
 <?php section("head"); ?>
-<script type="text/javascript" src="<?php urlContent("~/Scripts/Home/VideoInfo.js"); ?>"></script>
 <style type="text/css">
     .selected{
         background-color:grey;
@@ -10,16 +9,22 @@
         color:white
     }
 </style>
+<?php endSection();
+
+section("scripts");
+?>
+<script type="text/javascript" src="<?php urlContent("~/Scripts/Home/VideoInfo.js"); ?>"></script>
+
 <script type="text/javascript">
     var video = <?php json($model->video); ?>;
 </script>
 <?php endSection(); ?>
 <div id="video-info-row" class="row">
     <div id="video-info-poster-col" class="col-md-3">
-        <?php if ($model->video->mediaType == Enumerations\MediaType::TvEpisode) { ?>
+<?php if ($model->video->mediaType == Enumerations\MediaType::TvEpisode) { ?>
             <a href="<?php urlAction("Home/VideoInfo", ['videoId' => $model->video->getTvShowVideoId()]); ?>">
                 Back to Season: '<?php echo $model->video->showName; ?>'
-            <?php } ?>
+<?php } ?>
             <a href="<?php urlAction("Home/Play", ["videoId" => $model->video->videoId]); ?>" >
                 <img id="video-info-poster" src="<?php echo $model->video->hdPosterUrl; ?>"/>
             </a>
@@ -55,7 +60,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <?php echo $model->video->plot; ?>
+<?php echo $model->video->plot; ?>
             </div>
         </div>
     </div>    

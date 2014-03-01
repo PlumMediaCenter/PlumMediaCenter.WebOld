@@ -1,5 +1,13 @@
 $(document).ready(function() {
     window.app = (window.app === undefined) ? {} : app;
+
+    /**
+     * determines how many pixels are avaible from below the navbar to the bottom of the nonscrollable portion of the screen.
+     */
+    app.displayHeight = function() {
+        return $("body").height() - $("#bodyPadding").height();
+    };
+
     /**
      * Shows/hides the waiting gif and an optional message
      * @param {boolean} bShow - if false, hide message. if true, show message.
@@ -21,7 +29,7 @@ $(document).ready(function() {
      * @param {string} message - an optional message to display. If undefined, uses "Please wait."
      */
     app.message = function(bShow, message) {
-       bShow = (bShow === false) ? false : true;
+        bShow = (bShow === false) ? false : true;
         message = (message === undefined) ? "Message" : message;
         $("#message").html(message);
         if (bShow) {
