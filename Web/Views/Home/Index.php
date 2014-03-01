@@ -6,7 +6,7 @@
 <div id="video-container">
     <?php
     foreach ($model->videos as $video) {
-        if ($video->mediaType == Enumerations::MediaType_Movie) {
+        if ($video->mediaType == Enumerations\MediaType::Movie) {
             ?>
             <div class="video-tile">
                 <span>

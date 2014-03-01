@@ -17,7 +17,7 @@ class TvEpisode extends Video {
 
     function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
         parent::__construct($videoSourceUrl, $videoSourcePath, $fullPath);
-        $this->mediaType = Enumerations::MediaType_TvEpisode;
+        $this->mediaType = Enumerations\MediaType::TvEpisode;
         $this->seasonNumber = $this->getSeasonNumber();
         $this->episodeNumber = $this->getEpisodeNumber();
         $this->showName = $this->getShowName();

@@ -12,7 +12,7 @@ section("head");
         deleteSourceUrl: "<?php urlAction('VideoSources/Delete'); ?>",
         pathExistsOnServerUrl: "<?php urlAction('VideoSources/PathExistsOnServer'); ?>"
     });
-    var enumerations = {SecurityType_Public: "<?php echo Enumerations::SecurityType_Public; ?>"};
+    var enumerations = {SecurityType_Public: "<?php echo Enumerations\SecurityType::Anonymous; ?>"};
 </script>
 <?php endSection(); ?>
 <form id="videoSourcesForm" method="post" action="<?php urlAction('VideoSources/AddEditSource'); ?>">
@@ -36,7 +36,7 @@ section("head");
                 <td><?php echo $src->security_type; ?></td>
                 <td><a href='<?php echo $src->base_url; ?>'><?php echo $src->base_url; ?></a></td>
                 <td><a class="btn  btn-default editSource" data-location="<?php echo $src->location; ?>" data-base-url="<?php echo $src->base_url; ?>" data-media-type="<?php echo $src->media_type; ?>" data-security-type="<?php echo $src->security_type; ?>">Edit</a></td>
-                <td><a class="close deleteSource" href="<?php urlAction("Delete", ["sourcePath" => $src->location]); ?>" aria-hidden="true">&times;</a></td>
+                <td><a class="close deleteSource" href="<?php urlAction("Delete", ["sourcePath" => $src->location], true); ?>" aria-hidden="true">&times;</a></td>
             </tr>
         <?php } ?>
     </table>
@@ -59,10 +59,10 @@ section("head");
                         <br/>
                         <div class="col-xs-3">Security Type: </div>
                         <div class="col-xs-9">
-                            <input type="radio" id="securityTypePublic" name="securityType" checked="checked" value="<?php echo Enumerations::SecurityType_Public; ?>">
+                            <input type="radio" id="securityTypePublic" name="securityType" checked="checked" value="<?php echo Enumerations\SecurityType::Anonymous; ?>">
                             <label for="securityTypePublic">No Security</label>
                             <!--                    &nbsp;
-                                                <input type="radio" id="securityTypePrivate" name="securityType"  value="<?php echo Enumerations::SecurityType_LoginRequired; ?>">
+                                                <input type="radio" id="securityTypePrivate" name="securityType"  value="<?php echo Enumerations\SecurityType::LoginRequired; ?>">
                                                 <label for="securityTypePrivate">Login Required</label>-->
                         </div>
                     </div>
@@ -78,10 +78,10 @@ section("head");
                     <div class="row">
                         <div class="col-xs-3">Media Type: </div>
                         <div class="col-xs-9">
-                            <input type="radio" id="mediaTypeMovie" name="mediaType" value="<?php echo Enumerations::MediaType_Movie; ?>">
+                            <input type="radio" id="mediaTypeMovie" name="mediaType" value="<?php echo Enumerations\MediaType::Movie; ?>">
                             <label for="mediaTypeMovie">Directory full of movies</label>
                             &nbsp;<br/>
-                            <input type="radio" id="mediaTypeTvShow" name="mediaType"  value="<?php echo Enumerations::MediaType_TvShow; ?>">
+                            <input type="radio" id="mediaTypeTvShow" name="mediaType"  value="<?php echo Enumerations\MediaType::TvShow; ?>">
                             <label for="mediaTypeTvShow">Directory full of Tv Shows (Each in its own tv show folder)</label>
                         </div>
                     </div>

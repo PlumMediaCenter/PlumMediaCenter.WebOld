@@ -18,8 +18,8 @@ Security::HandleLogin();
             var baseUrl = "<?php echo baseUrl();?>";
         </script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/respond/respond.min.js"); ?>"></script>
-        <script type="text/javascript" src="<?php urlContent("~/Scripts/jquery-1.10.2.min.js"); ?>"></script>
-        <script type="text/javascript" src="<?php urlContent("~/Scripts/jquery.color-2.1.0.min.js"); ?>"></script>
+        <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jquery/jquery-1.10.2.min.js"); ?>"></script>
+        <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jquery-color/jquery.color-2.1.0.min.js"); ?>"></script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/jquery.utility.js"); ?>"></script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"); ?>"></script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/bootstrap/js/bootstrap.min.js"); ?>"></script>
@@ -27,18 +27,10 @@ Security::HandleLogin();
         <script type="text/javascript"> window.plumapi.baseUrl = "<?php urlContent("~/"); ?>";</script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/jquery.playlistadder.js"); ?>"></script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/Shared/shared.js"); ?>"></script>
-
+        <?php partial("~/Views/Shared/_Enumerations.php");?>
         <script type="text/javascript">
             var username = "<?php echo Security::GetUsername(); ?>";
-            var enumerations = <?php
-$c = new ReflectionClass("Enumerations");
-echo json_encode($c->getConstants());
-?>;
-            enumerations.movie = "<?php echo Enumerations::MediaType_Movie; ?>";
-            enumerations.tvShow = "<?php echo Enumerations::MediaType_TvShow; ?>";
-            enumerations.tvEpisode = "<?php echo Enumerations::MediaType_TvEpisode; ?>";
-
-
+            
             //determines how many pixels are avaible from below the navbar to the bottom of the nonscrollable portion of the screen.
             function displayHeight() {
                 return $("body").height() - $("#bodyPadding").height();

@@ -15,6 +15,8 @@ class Library {
     //contains a list of all videos, a combination of movies, tv shows and tv episodes
     private $videos = [];
     public $moviesAndTvShows = [];
+    
+    public $invalidVideos = [];
 
     public function __construct() {
         //set the time limit for this script to be 10 minutes. If it takes any longer than that, there's something wrong
@@ -81,19 +83,20 @@ class Library {
      */
     public function loadFromDatabase() {
         $this->clear();
-        $videoIds = Queries::GetMovieAndTvShowVideoIds(Enumerations::MediaType_Movie);
+        $videoIds = Queries::GetMovieAndTvShowVideoIds(Enumerations\MediaType::Movie);
         foreach ($videoIds as $videoId) {
             //if we were able to successfully load a video, then continue with this video. otherwise,
             //skip this video and try the next one.
             try {
                 $video = Video::GetVideo($videoId);
             } catch (Exception $e) {
+                $this->invalidVideoIds[] = $videoId;
                 continue;
             }
 
             $this->moviesAndTvShows[] = $video;
 
-            if ($video->mediaType == Enumerations::MediaType_Movie) {
+            if ($video->mediaType == Enumerations\MediaType::Movie) {
                 $this->movies[] = $video;
                 $this->videos[] = $video;
                 $this->movieCount++;
@@ -136,7 +139,7 @@ class Library {
      */
     public function loadMoviesFromFilesystem() {
         //list of all video sources
-        $movieSources = Queries::getVideoSources(Enumerations::MediaType_Movie);
+        $movieSources = Queries::getVideoSources(Enumerations\MediaType::Movie);
         $this->movies = [];
         $this->movieCount = 0;
         foreach ($movieSources as $source) {
@@ -163,7 +166,7 @@ class Library {
         $this->tvEpisodes = [];
         $this->tvEpisodeCount = 0;
         $this->tvShowCount = 0;
-        $tvShowSources = Queries::getVideoSources(Enumerations::MediaType_TvShow);
+        $tvShowSources = Queries::getVideoSources(Enumerations\MediaType::TvShow);
         //for every tv show file location, get all tv shows from that location
         foreach ($tvShowSources as $source) {
             //get a list of every folder in the current video source directory, since the required tv show structure is
@@ -239,13 +242,13 @@ class Library {
         foreach ($this->videos as $video) {
             if ($video->isNew()) {
                 switch ($video->getMediaType()) {
-                    case Enumerations::MediaType_Movie:
+                    case Enumerations\MediaType::Movie:
                         $newMovieCount++;
                         break;
-                    case Enumerations::MediaType_TvShow:
+                    case Enumerations\MediaType::TvShow:
                         $newTvShowCount++;
                         break;
-                    case Enumerations::MediaType_TvEpisode:
+                    case Enumerations\MediaType::TvEpisode:
                         $newTvEpisodeCount++;
                         break;
                 }
@@ -324,7 +327,7 @@ class Library {
         $inStmt = DbManager::GenerateLikeStatement($cleanedTerms, $colname, "or");
         $inStmt = ($caseSensitiveSearch) ? $inStmt : strtolower($inStmt);
         $q = "select * from video v " .
-                " where media_type in('" . Enumerations::MediaType_Movie . "', '" . Enumerations::MediaType_TvShow . "') and " .
+                " where media_type in('" . Enumerations\MediaType::Movie . "', '" . Enumerations\MediaType::TvShow . "') and " .
                 "($inStmt)";
         $results = DbManager::Query($q);
         //create video objects out of the results

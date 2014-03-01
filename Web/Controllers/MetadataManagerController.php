@@ -69,7 +69,7 @@ class MetadataManagerController {
         $txtSuccess = $vSuccess === true ? "true" : "false";
         ?>
         <tr style="cursor:pointer;" data-complete="<?php echo $txtSuccess; ?>" class="videoRow <?php echo $vSuccess ? "success" : "error"; ?>" mediatype="<?php echo $v->getMediaType(); ?>" baseurl="<?php echo htmlspecialchars($v->getVideoSourceUrl()); ?>" basepath="<?php echo htmlspecialchars($v->getVideoSourcePath()); ?>" fullpath="<?php echo htmlspecialchars($v->getFullPath()); ?>">
-            <?php if ($v->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
+            <?php if ($v->getMediaType() == Enumerations\MediaType::TvEpisode) { ?>
                 <td><?php echo $v->showName; ?></td>
             <?php } ?>
             <td><?php echo $v->title; ?></td>
@@ -83,5 +83,4 @@ class MetadataManagerController {
         ob_end_clean();
         return $row;
     }
-
 }

@@ -429,56 +429,6 @@ class Queries {
     }
 
     /**
-     * Adds a new video source to the vide_source table
-     */
-    public static function addVideoSource($location, $baseUrl, $mediaType, $securityType) {
-        if ($location != null && $baseUrl != null && $mediaType != null && $securityType != null) {
-            $pdo = DbManager::getPdo();
-            if (isset(Queries::$statements[__FUNCTION__]) == false) {
-                $sql = "insert into video_source(location, base_url, media_type, security_type, refresh_videos) 
-                            values(:location, :baseUrl, :mediaType, :securityType, true)";
-                $stmt = $pdo->prepare($sql);
-                Queries::$statements[__FUNCTION__] = $stmt;
-            }
-            $stmt = Queries::$statements[__FUNCTION__];
-            $stmt->bindParam(":location", $location);
-            $stmt->bindParam(":baseUrl", $baseUrl);
-            $stmt->bindParam(":mediaType", $mediaType);
-            $stmt->bindParam(":securityType", $securityType);
-            $success = $stmt->execute();
-            Queries::LogStmt($stmt, $success);
-            return $success;
-        }
-        return false;
-    }
-
-    /**
-     * Updates an existing video source in the database
-     */
-    public static function updateVideoSource($originalLocation, $newLocation, $baseUrl, $mediaType, $securityType, $refreshVideos = 1) {
-        if ($originalLocation != null && $newLocation != null && $baseUrl != null && $mediaType != null && $securityType != null) {
-            $pdo = DbManager::getPdo();
-            if (isset(Queries::$statements[__FUNCTION__]) == false) {
-                $sql = "update video_source set location=:location, base_url=:baseUrl, media_type=:mediaType, security_type=:securityType, refresh_videos=:refreshVideos
-                                where location=:originalLocation";
-                $stmt = $pdo->prepare($sql);
-                Queries::$statements[__FUNCTION__] = $stmt;
-            }
-            $stmt = Queries::$statements[__FUNCTION__];
-            $stmt->bindParam(":location", $newLocation);
-            $stmt->bindParam(":baseUrl", $baseUrl);
-            $stmt->bindParam(":mediaType", $mediaType);
-            $stmt->bindParam(":securityType", $securityType);
-            $stmt->bindParam(":originalLocation", $originalLocation);
-            $stmt->bindParam(":refreshVideos", $refreshVideos);
-            $success = $stmt->execute();
-            Queries::LogStmt($stmt, $success);
-            return $success;
-        }
-        return false;
-    }
-
-    /**
      * Updates the refresh_videos column in the video_source table. This is usually done once all videos have been refreshed for that video source
      * @param string $location - the location of the video source used as the primary key for the table
      * @param boolean $refreshVideos - the flag to be set to either true or false 
@@ -510,21 +460,6 @@ class Queries {
         return Dbmanager::FetchAllColumn($stmt, 0);
     }
 
-    /**
-     * Deletes a video source from the video_source table
-     * @param string $location - the location used as the primary key to identify the video source to delete
-     * @return boolean - true if successful, false if failure
-     */
-    public static function DeleteVideoSource($location) {
-        $pdo = DbManager::getPdo();
-        $sql = "delete from video_source where location = :location";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(":location", $location);
-        $success = $stmt->execute();
-        Queries::LogStmt($stmt, $success);
-        return $success;
-    }
-
     public static function GetVideoCounts() {
         if (isset(Queries::$statements[__FUNCTION__]) == false) {
             $sql = "select count(*) from video where media_type=:mediaType";
@@ -537,7 +472,7 @@ class Queries {
         }
         $stmt = Queries::$statements[__FUNCTION__];
         //get movie count
-        $m = Enumerations::MediaType_Movie;
+        $m = Enumerations\MediaType::Movie;
         $stmt->bindParam(":mediaType", $m);
         $success = $stmt->execute();
         //if the statement was unable to be executed, return failure
@@ -549,7 +484,7 @@ class Queries {
         $movieCount = $stmt->fetch();
         $movieCount = ($movieCount != null) ? $movieCount[0] : 0;
         //get tv show count
-        $s = Enumerations::MediaType_TvShow;
+        $s = Enumerations\MediaType::TvShow;
         $stmt->bindParam(":mediaType", $s);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
@@ -558,7 +493,7 @@ class Queries {
         $tvShowCount = ($tvShowCount != null) ? $tvShowCount[0] : 0;
 
         //get tv episode count
-        $e = Enumerations::MediaType_TvEpisode;
+        $e = Enumerations\MediaType::TvEpisode;
         $stmt->bindParam(":mediaType", $e);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
@@ -610,8 +545,8 @@ class Queries {
      */
     public static function GetMovieAndTvShowVideoIds() {
         if (isset(Queries::$statements[__FUNCTION__]) == false) {
-            $sql = "select video_id from video where media_type in('" . Enumerations::MediaType_Movie . "', "
-                    . "'" . Enumerations::MediaType_TvShow . "') order by title asc";
+            $sql = "select video_id from video where media_type in('" . Enumerations\MediaType::Movie . "', "
+                    . "'" . Enumerations\MediaType::TvShow . "') order by title asc";
             $pdo = DbManager::getPdo();
             if ($pdo == false) {
                 return [];

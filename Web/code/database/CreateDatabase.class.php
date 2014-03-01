@@ -142,11 +142,12 @@ class CreateDatabase {
         writeToLog("Creating watch_video table");
         DbManager::NonQuery(" 
             create table watch_video(
+                id int primary key auto_increment, 
                 username varchar(128) not null,
                 video_id int not null,
                 time_in_seconds int(10) not null,
                 date_watched datetime not null,
-                primary key (username, video_id),
+                unique key (username, video_id),
                 foreign key (video_id) references video (video_id)
         )");
         writeToLog("Creating tv_episode_v view");
@@ -178,20 +179,22 @@ class CreateDatabase {
     }
 
     private function db001_001() {
-        $t = DbManager::NonQuery("create table genre("
-                        . "genre_name varchar(100) primary key"
-                        . ")");
-        $t = $t && DbManager::NonQuery("create table video_genre("
-                        . "video_id int not null,"
-                        . "genre_name varchar(100) not null,"
-                        . "primary key(video_id, genre_name),"
-                        . "foreign key(video_id) references video(video_id),"
-                        . "foreign key(genre_name) references genre(genre_name)"
-                        . ")");
-        $t = $t && DbManager::NonQuery("alter table video "
-                        . "add column sd_poster_url varchar(2000) not null,"
-                        . "add column hd_poster_url varchar(2000) not null, "
-                        . "change column url url varchar(2000) not null");
+        $t = DbManager::NonQuery('create table genre('
+                        . 'genre_name varchar(100) primary key'
+                        . ')');
+        $t = $t && DbManager::NonQuery('
+            create table video_genre( 
+                id int primary key auto_increment, 
+                video_id int not null, 
+                genre_name varchar(100) not null, 
+                unique key(video_id, genre_name), 
+                foreign key(video_id) references video(video_id), 
+                foreign key(genre_name) references genre(genre_name) 
+        )');
+        $t = $t && DbManager::NonQuery('alter table video '
+                        . 'add column sd_poster_url varchar(2000) not null,'
+                        . 'add column hd_poster_url varchar(2000) not null, '
+                        . 'change column url url varchar(2000) not null');
         return $t;
     }
 

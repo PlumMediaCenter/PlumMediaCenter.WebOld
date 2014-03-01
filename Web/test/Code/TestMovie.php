@@ -55,7 +55,7 @@ class TestMovie extends UnitTestCase {
 
     function testMediaType() {
         $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
-        $this->assertEqual($v->getMediaType(), Enumerations::MediaType_Movie);
+        $this->assertEqual($v->getMediaType(), Enumerations\MediaType::Movie);
     }
 
     /**

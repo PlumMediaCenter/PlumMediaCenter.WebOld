@@ -1,11 +1,11 @@
 <?php
-
+include_once(basePath() . "/Code/VideoSource.class.php");
 include_once(basePath() . "/Code/database/Queries.class.php");
 
 class VideoSourcesController {
 
     function Index() {
-        $sources = Queries::getVideoSources();
+        $sources = VideoSource::GetAll();
         return view((object) ['sources' => $sources]);
     }
 
@@ -14,8 +14,9 @@ class VideoSourcesController {
      * @param type $sourcePath
      */
     function Delete($sourcePath) {
+
         if ($sourcePath != null) {
-            Queries::deleteVideoSource($sourcePath);
+            VideoSource::DeleteVideoSource($sourcePath);
         }
         return RedirectToAction("Index");
     }
@@ -29,9 +30,9 @@ class VideoSourcesController {
      */
     function AddEditSource($location, $baseUrl, $mediaType, $securityType, $originalLocation) {
         if (empty($originalLocation) === true) {
-            Queries::addVideoSource($location, $baseUrl, $mediaType, $securityType);
+            VideoSource::Add($location, $baseUrl, $mediaType, $securityType);
         } else {
-            Queries::updateVideoSource($originalLocation, $location, $baseUrl, $mediaType, $securityType);
+            VideoSource::Update($originalLocation, $location, $baseUrl, $mediaType, $securityType);
         }
         return RedirectToAction("Index");
     }

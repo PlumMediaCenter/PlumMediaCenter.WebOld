@@ -16,7 +16,7 @@
 <?php endSection(); ?>
 <div id="video-info-row" class="row">
     <div id="video-info-poster-col" class="col-md-3">
-        <?php if ($model->video->mediaType == Enumerations::MediaType_TvEpisode) { ?>
+        <?php if ($model->video->mediaType == Enumerations\MediaType::TvEpisode) { ?>
             <a href="<?php urlAction("Home/VideoInfo", ['videoId' => $model->video->getTvShowVideoId()]); ?>">
                 Back to Season: '<?php echo $model->video->showName; ?>'
             <?php } ?>
@@ -64,7 +64,7 @@
 <div class="row">
     <div class="col-md-5" style="border:0px solid red;">
         <?php
-        if ($model->video->getMediaType() == Enumerations::MediaType_TvShow) {
+        if ($model->video->getMediaType() == Enumerations\MediaType::TvShow) {
             ?>
             <table class='table'>
                 <thead>

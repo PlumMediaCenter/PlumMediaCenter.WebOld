@@ -1,28 +1,46 @@
 <?php
 
-class Enumerations {
-    //GeneratePosters
+namespace Enumerations;
 
-    const GeneratePosters_None = "none";
-    const GeneratePosters_Missing = "missing";
-    const GeneratePosters_All = "all";
-    //Media Type
-    const MediaType_Movie = "Movie";
-    const MediaType_TvShow = "TvShow";
-    const MediaType_TvEpisode = "TvEpisode";
-    //
-    const MetadataManagerAction_GeneratePosters = "GeneratePosters";
-    const MetadataManagerAction_ReloadMetadata = "ReloadMetadata";
-    const MetadataManagerAction_FetchMetadata = "FetchMetadata";
-    const MetadataManagerAction_FetchPoster = "FetchPoster";
-    const MetadataManagerAction_FetchAndGeneratePosters = "FetchAndGeneratePosters";
-    //
-    const SecurityType_Public = "Public";
-    const SecurityType_LoginRequired = "LoginRequired";
-    //PlayType
-    const PlayType_Single = "Single";
-    const PlayType_TvShow = "TvShow";
-    const PlayType_Playlist = "Playlist";
+Class GeneratePosters {
+
+    const None = "none";
+    const Missing = "missing";
+    const All = "all";
+
+}
+
+class MediaType {
+
+    const Movie = "Movie";
+    const TvShow = "TvShow";
+    const TvEpisode = "TvEpisode";
+
+}
+
+class MetadataManagerAction {
+
+    const GeneratePosters = "GeneratePosters";
+    const ReloadMetadata = "ReloadMetadata";
+    const FetchMetadata = "FetchMetadata";
+    const FetchPoster = "FetchPoster";
+    const FetchAndGeneratePosters = "FetchAndGeneratePosters";
+
+}
+
+class SecurityType {
+
+    const Anonymous = "Anonymous";
+    const LoginRequired = "LoginRequired";
+
+}
+
+class PlayType {
+
+    const Single = "Single";
+    const TvShow = "TvShow";
+    const Playlist = "Playlist";
+
 }
 
 ?>

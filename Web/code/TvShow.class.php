@@ -19,7 +19,7 @@ class TvShow extends Video {
         if (substr($this->fullPath, -1) != "/") {
             $this->fullPath .= "/";
         }
-        $this->mediaType = Enumerations::MediaType_TvShow;
+        $this->mediaType = Enumerations\MediaType::TvShow;
     }
 
     function getUrl() {
@@ -181,7 +181,7 @@ class TvShow extends Video {
         //spin through every folder in the source location
         foreach ($videosList as $fullPathToFile) {
             //create a new Episode object
-            $episode = new TvEpisode($this->videoSourceUrl, $this->videoSourcePath, $fullPathToFile, Enumerations::MediaType_Movie);
+            $episode = new TvEpisode($this->videoSourceUrl, $this->videoSourcePath, $fullPathToFile, Enumerations\MediaType::Movie);
 
             $episode->runtime = $this->getLengthInSeconds();
             //give the video the show's file path
@@ -284,11 +284,11 @@ class TvShow extends Video {
         //load this video
         $v = Video::GetVideo($videoId);
         //the video is a tv episode, get the tv show for that episode
-        if ($v->mediaType == Enumerations::MediaType_TvEpisode) {
+        if ($v->mediaType == Enumerations\MediaType::TvEpisode) {
             $tvShowVideoId = $v->getTvShowVideoIdFromVideoTable();
         } else
         //the video is a tv show. use this video id
-        if ($v->mediaType == Enumerations::MediaType_TvShow) {
+        if ($v->mediaType == Enumerations\MediaType::TvShow) {
             $tvShowVideoId = $videoId;
         } else {
             //the video associated with the videoId provided is not a tv episode or tv show, nothing more can be done

@@ -9,7 +9,7 @@ class MetadataManagerModel {
     public $movies;
     public $tvShows;
     public $tvEpisodes;
-    public $selectedTab = Enumerations::MediaType_Movie;
+    public $selectedTab = Enumerations\MediaType::Movie;
     public $moviesLoaded = false;
     public $tvShowsLoaded = false;
     public $tvEpisodesLoaded = false;

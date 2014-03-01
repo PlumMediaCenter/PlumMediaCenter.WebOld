@@ -84,7 +84,7 @@ abstract class Video {
 
     /**
      * Returns the media type of this video. It could be Movie, Tv Show, or Tv Episode
-     * @return Enumerations::MediaType - the media type of the video
+     * @return Enumerations\MediaType - the media type of the video
      */
     public function getMediaType() {
         return $this->mediaType;
@@ -121,13 +121,13 @@ abstract class Video {
     public static function GetVideoFromDataRow($row){
         $video = null;
         switch ($row->media_type) {
-            case Enumerations::MediaType_Movie:
+            case Enumerations\MediaType::Movie:
                 $video = new Movie($row->video_source_url, $row->video_source_path, $row->path);
                 break;
-            case Enumerations::MediaType_TvShow:
+            case Enumerations\MediaType::TvShow:
                 $video = new TvShow($row->video_source_url, $row->video_source_path, $row->path);
                 break;
-            case Enumerations::MediaType_TvEpisode:
+            case Enumerations\MediaType::TvEpisode:
                 $video = new TvEpisode($row->video_source_url, $row->video_source_path, $row->path);
                 break;
         }

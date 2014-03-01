@@ -9,6 +9,9 @@ class HomeController extends Controller {
         include_once(basePath() . '/Code/Library.class.php');
         $lib = new Library();
         $lib->loadFromDatabase();
+        if (count($lib->invalidVideos) > 0) {
+            message("$lib->invalidVideos were unable to be loaded. Please regenerate library to fix this problem");
+        }
         return View((object) ['videos' => $lib->moviesAndTvShows]);
     }
 
@@ -34,7 +37,7 @@ class HomeController extends Controller {
         include_once(basePath() . '/Code/Video.class.php');
         $video = Video::GetVideo($videoId);
         //if this is a tv show, load the episodes from the database
-        if ($video->getMediaType() == Enumerations::MediaType_TvShow) {
+        if ($video->getMediaType() == Enumerations\MediaType::TvShow) {
             $video->loadEpisodesFromDatabase();
         }
         return View((object) ['video' => $video]);

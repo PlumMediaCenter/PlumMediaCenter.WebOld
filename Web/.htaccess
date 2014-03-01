@@ -2,11 +2,11 @@
 # more here: http://httpd.apache.org/docs/2.2/content-negotiation.html
 Options -MultiViews
 
-# Activates URL rewriting (like myproject.com/controller/action/1/2/3)
 RewriteEngine On
-
-# Disallows others to look directly into /public/ folder
 Options -Indexes
+
+RewriteCond %{QUERY_STRING}     ^twitch-mvc-ignore-route=true$    [NC]
+RewriteRule ^(.+)$ index.php?url=$1 [L,NC,QSA]
 
 # General rewrite rules
 RewriteCond %{REQUEST_FILENAME} !-d

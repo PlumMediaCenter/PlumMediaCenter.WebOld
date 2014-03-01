@@ -67,8 +67,8 @@ class APIController extends Controller {
         include_once(basePath() . '/Code/Video.class.php');
         $library = [];
         $baseQuery = Video::baseQuery;
-        $library["movies"] = DbManager::Query("$baseQuery where media_type = '" . Enumerations::MediaType_Movie . "' order by title asc");
-        $library["tvShows"] = DbManager::Query("$baseQuery where media_type =  '" . Enumerations::MediaType_TvShow . "'  order by title asc");
+        $library["movies"] = DbManager::Query("$baseQuery where media_type = '" . Enumerations\MediaType::Movie . "' order by title asc");
+        $library["tvShows"] = DbManager::Query("$baseQuery where media_type =  '" . Enumerations\MediaType::TvShow . "'  order by title asc");
         return json($library);
     }
 

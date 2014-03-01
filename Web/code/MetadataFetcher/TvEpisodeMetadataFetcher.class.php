@@ -1,8 +1,9 @@
 <?php
 
-include_once('MetadataFetcher.class.php');
-include_once('TvShowMetadataFetcher.class.php');
-include_once(basePath() . '/Code/lib/TVDB/TVDB.class.php');
+include_once(dirname(__FILE__) . '/MetadataFetcher.class.php');
+include_once(dirname(__FILE__) . '/../lib/TVDB/TVDB.class.php');
+
+include_once(dirname(__FILE__) . '/TvShowMetadataFetcher.class.php');
 
 class TvEpisodeMetadataFetcher extends MetadataFetcher {
 

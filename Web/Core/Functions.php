@@ -40,10 +40,16 @@ function view($theModel = null, $routeString = null) {
     include($viewPath);
     $sections['body'] = ob_get_contents();
     ob_end_clean();
+
+    //force no cache
+    header("Pragma: no-cache");
+    header("cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+    //
     //layout should have been included in the _Viewstart.php or the view page. 
     if ($layout != null) {
         include("$root/Views/$layout");
-    }else{
+    } else {
         //if the layout is null, write the body immediately
         echo $sections['body'];
     }
@@ -59,6 +65,10 @@ function RedirectToAction($routeString, $routeValues = null) {
     $redirectUrl = getUrlAction($routeString, $routeValues);
     header("Location: $redirectUrl", true, 301);
     exit;
+}
+
+function message($message, $messageType) {
+    
 }
 
 /**
@@ -166,9 +176,11 @@ function getUrlContent($contentUrl) {
  *                                  then the calling controller will be used
  * @param string $controllerName - the name of the controller. If omitted, the calling controller will be assumed
  * @param array $parameters - a list of GET parameters to include in the url
+ * @param boolean $forceNoCache - appends a unique value to the end of the querystring to make sure that the 
+ *                                browser doesn't load a cached version of the resource at the provided action
  */
-function urlAction($actionString, $parameters = []) {
-    echo getUrlAction($actionString, $parameters);
+function urlAction($actionString, $parameters = [], $forceNoCache = false) {
+    echo getUrlAction($actionString, $parameters, $forceNoCache);
 }
 
 /**
@@ -177,10 +189,17 @@ function urlAction($actionString, $parameters = []) {
  *                                  then the calling controller will be used
  * @param string $controllerName - the name of the controller. If omitted, the calling controller will be assumed
  * @param array $parameters - a list of GET parameters to include in the url
+ * @param boolean $forceNoCache - appends a unique value to the end of the querystring to make sure that the 
+ *                                browser doesn't load a cached version of the resource at the provided action
  */
-function getUrlAction($actionString, $parameters = []) {
+function getUrlAction($actionString, $parameters = [], $forceNoCache = false) {
     //if the parameters item is null, set it to an empty array
-    $parameters = ($parameters == null)? []: $parameters;
+    $parameters = ($parameters == null) ? [] : $parameters;
+
+    if ($forceNoCache == true) {
+        $guid = guid();
+        $parameters["__nocache"] = $guid;
+    }
     //parse the action string. 
     $actionParts = explode('/', $actionString);
     //if there are two parts, both the controller AND the action were provided
@@ -385,4 +404,26 @@ function partial($viewPath, $viewModel = null) {
  */
 function json($object) {
     echo json_encode($object, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
+}
+
+/**
+ * A guid function that works in all php versions. Thanks to Kristof_Polleunis http://ca2.php.net/com_create_guid#52354
+ * @return string
+ */
+function guid() {
+    if (function_exists('com_create_guid')) {
+        return com_create_guid();
+    } else {
+        mt_srand((double) microtime() * 10000); //optional for php 4.2.0 and up.
+        $charid = strtoupper(md5(uniqid(rand(), true)));
+        $hyphen = chr(45); // "-"
+        $uuid = chr(123)// "{"
+                . substr($charid, 0, 8) . $hyphen
+                . substr($charid, 8, 4) . $hyphen
+                . substr($charid, 12, 4) . $hyphen
+                . substr($charid, 16, 4) . $hyphen
+                . substr($charid, 20, 12)
+                . chr(125); // "}"
+        return $uuid;
+    }
 }

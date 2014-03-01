@@ -252,9 +252,11 @@ div.video-tile img.poster{
     cursor:pointer;
     border:0px solid white;
 }
+
 div.video-tile:hover{
-    border:1px solid #CCCCCC;
+    border:2px solid #CCCCCC;
 }
+
 div.video-tile span{
     display:block;
     font-size:20px;
@@ -267,6 +269,7 @@ label, input[type=radio]{
 
 #video-info-row{
 }
+
 #video-info-poster-col{
     text-align:center;
 }

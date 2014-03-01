@@ -2,7 +2,7 @@
     <table class="table table-sort">
         <thead>
             <tr title="sort">
-                <?php if ($model->type == Enumerations::MediaType_TvEpisode) { ?>
+                <?php if ($model->type == Enumerations\MediaType::TvEpisode) { ?>
                     <th>Series</th>
                 <?php } ?>
                 <th>Title</th>
