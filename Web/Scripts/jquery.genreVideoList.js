@@ -4,6 +4,7 @@
         options: {
             genreName: null,
             max: -1,
+            baseUrl: undefined
         },
         genreContainer: null,
         _create: function() {
@@ -32,7 +33,7 @@
         addVideo: function(video) {
             var $v = $("<div></div>")
             this.genreContainer.append($v);
-            $v.video({video: video});
+            $v.video({video: video, baseUrl: this.options.baseUrl});
         }
     });
 })(jQuery, undefined);

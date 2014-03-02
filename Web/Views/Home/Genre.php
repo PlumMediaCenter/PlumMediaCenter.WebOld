@@ -11,7 +11,7 @@
                 //get the new div for this genre        
                 var genreVideoList = $genreBox.find("#" + val);
                 //create a new genreVideoList jquery widget object to handle the genres
-                genreVideoList.genreVideoList({genreName: val});
+                genreVideoList.genreVideoList({genreName: val, baseUrl: app.baseUrl});
                 $genreBox.append("<div class='clearfix'></div>");
             });
         });
