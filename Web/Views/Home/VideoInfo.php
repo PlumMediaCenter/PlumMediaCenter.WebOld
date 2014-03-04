@@ -27,6 +27,8 @@ section("scripts");
 <?php } ?>
             <a href="<?php urlAction("Home/Play", ["videoId" => $model->video->videoId]); ?>" >
                 <img id="video-info-poster" src="<?php echo $model->video->hdPosterUrl; ?>"/>
+                <br/>
+                <span class="glyphicon glyphicon-play"></span>
             </a>
     </div>
     <div id="video-info-col" class="col-md-6">

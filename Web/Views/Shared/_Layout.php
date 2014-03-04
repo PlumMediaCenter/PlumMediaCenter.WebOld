@@ -25,7 +25,7 @@ Security::HandleLogin();
     <body>
         <div id="playlistAdder"></div>
         <?php partial('~/Views/Shared/_Navbar.php'); ?>
-        <div id='body-row' class="row">
+        <div id='bodyRow' class="row">
             <div id='body-col' class="col-lg-12">
                 <?php renderSection('body'); ?>
             </div>
@@ -60,8 +60,14 @@ Security::HandleLogin();
             //this prevents pollution of the global namespace.
             var app = {
                 username: "<?php echo Security::GetUsername(); ?>",
-                baseUrl: "<?php echo baseUrl(); ?>"
+                baseUrl: "<?php echo baseUrl(); ?>",
+                bodyRowHeight: function() {
+                    var windowHeight = $(window).height();
+                    var bodyRowOffset = $("#bodyRow").offset().top;
+                    return windowHeight - bodyRowOffset;
+                }
             };
+
             window.plumapi = {baseUrl: "<?php urlContent("~/"); ?>"};
         </script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jquery/jquery-1.10.2.min.js"); ?>"></script>

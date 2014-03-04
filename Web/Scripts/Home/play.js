@@ -137,8 +137,10 @@ function playVideo(video) {
 function showPlaybackFinished() {
     // $("#playbackFinished").show();
 }
+
 function displayVideoTitle(video) {
-//display the title of the video
+    var baseUrl = app.baseUrl;
+    //display the title of the video
     if (video.mediaType == enumerations.tvEpisode) {
         var title =
                 "<a href='" + baseUrl + "/Home/VideoInfo?videoId=" + video.videoId + "'>" +
@@ -156,7 +158,7 @@ function displayVideoTitle(video) {
 
 function keyboardShortcuts(e) {
     switch (e.which) {
-//spacebar
+        //spacebar
         case 32:
             //toggle playback
             jwplayer().play();
@@ -165,10 +167,10 @@ function keyboardShortcuts(e) {
 }
 
 function resizePlayer() {
-//get the current width of the containerRelativer,set the jwplayer to that size
-    var w = $("#containerRelativer").width();
-    var h = displayHeight() - 40;
-    player.resize(w, h);
+    var $bodyRow = $("#bodyRow");
+    var width = $bodyRow.width();
+    var height = app.bodyRowHeight() - 50;
+    player.resize(width, height);
 }
 
 var startVideoWhereWeLeftOffProcessed = false;

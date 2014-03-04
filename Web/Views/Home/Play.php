@@ -1,4 +1,4 @@
-<?php section("Scripts");?>
+<?php section("scripts");?>
 <script type="text/javascript" src="<?php urlContent("~/Scripts/Home/play.js"); ?>"></script>
 <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jwplayer6/jwplayer.js"); ?>"></script>
 
