@@ -31,6 +31,29 @@ body{
     text-align:center;
     margin:auto;
 }
+#backToBrowse{
+    position:absolute;
+    top:0px;
+    left:0px;
+}
+
+#playTitle{
+    margin:0px; 
+    padding:0px;
+    line-height:0px;
+    width:100%;
+    display:inline-block; 
+    font-size: 15px; 
+    text-align:center;
+}
+
+#mainNavbar.collapsible{
+    top:0px;
+    left:0px;
+    right:0px;
+    position:absolute;
+    z-index:10000000;
+}
 
 .radio{
     padding-left:0px;

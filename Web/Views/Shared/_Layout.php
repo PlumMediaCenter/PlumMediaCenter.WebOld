@@ -24,7 +24,7 @@ Security::HandleLogin();
     </head>
     <body>
         <div id="playlistAdder"></div>
-        <?php partial('~/Views/Shared/_Navbar.php'); ?>
+            <?php partial('~/Views/Shared/_Navbar.php'); ?>
         <div id='bodyRow' class="row">
             <div id='body-col' class="col-lg-12">
                 <?php renderSection('body'); ?>

@@ -1,3 +1,13 @@
+<?php section("head");?>
+<style type="text/css">
+    body{
+        background-color: white;
+    }
+    #mainNavbar{
+        display:none;
+    }
+</style>
+<?php endSection();?>
 <?php section("scripts");?>
 <script type="text/javascript" src="<?php urlContent("~/Scripts/Home/play.js"); ?>"></script>
 <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jwplayer6/jwplayer.js"); ?>"></script>
@@ -17,7 +27,9 @@
 
 </script>
 <?php endSection();?>
-<h2 id="playTitle" style="margin:0px; padding:0px;line-height:0px;width:100%;display:inline-block; font-size: 15px; text-align:center;"></h2>
+<div id="backToBrowse">
+    <h2 id="playTitle" style=""></h2>
+</div>
 <div id="videoPlayer" style="width:100%;">JW Player goes here</div>
 <div id="playbackFinished"><h1>Playback has finished. Please select another video to watch.</h1></div>
 
