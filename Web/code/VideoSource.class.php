@@ -2,33 +2,6 @@
 
 class VideoSource {
 
-    /**
-     * Adds a new video source to the vide_source table
-     */
-    public static function Add($location, $baseUrl, $mediaType, $securityType) {
-        $loc = new orm\VideoSource();
-        $loc->location = $location;
-        $loc->baseUrl = $baseUrl;
-        $loc->mediaType = $mediaType;
-        $loc->securityType = $securityType;
-        $success = $loc->save();
-        return $success;
-    }
-
-    
-    /**
-     * Updates an existing video source in the database
-     */
-    public static function Update($originalLocation, $newLocation, $baseUrl, $mediaType, $securityType) {
-        $loc = orm\VideoSource::find($originalLocation);
-        $loc->location = $newLocation;
-        $loc->baseUrl = $baseUrl;
-        $loc->mediaType = $mediaType;
-        $loc->securityType = $securityType;
-        $loc->refreshVideos = true;
-        $success = $loc->save();
-        return $success;
-    }
 
     /**
      * Deletes a video source from the video_source table

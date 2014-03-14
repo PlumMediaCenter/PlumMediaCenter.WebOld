@@ -1,4 +1,5 @@
 <?php
+
 include_once(basePath() . "/Code/VideoSource.class.php");
 include_once(basePath() . "/Code/database/Queries.class.php");
 
@@ -16,7 +17,13 @@ class VideoSourcesController {
     function Delete($sourcePath) {
 
         if ($sourcePath != null) {
-            VideoSource::DeleteVideoSource($sourcePath);
+            $loc = orm\VideoSource::find($sourcePath);
+            $success = $loc->delete();
+            if($success === true){
+                Notify::Add("Deleted the the video source at '$sourcePath'", Notify::NOTIFY_STATUS_TYPE_SUCCESS);
+            }else{
+                Notify::Add("Unable to delete the source at '$sourcePath': ", Notify::NOTIFY_STATUS_TYPE_ERROR);
+            }
         }
         return RedirectToAction("Index");
     }
@@ -30,9 +37,20 @@ class VideoSourcesController {
      */
     function AddEditSource($location, $baseUrl, $mediaType, $securityType, $originalLocation) {
         if (empty($originalLocation) === true) {
-            VideoSource::Add($location, $baseUrl, $mediaType, $securityType);
+            $loc = new orm\VideoSource();
+            $loc->location = $location;
+            $loc->baseUrl = $baseUrl;
+            $loc->mediaType = $mediaType;
+            $loc->securityType = $securityType;
+            $success = $loc->save();
         } else {
-            VideoSource::Update($originalLocation, $location, $baseUrl, $mediaType, $securityType);
+            $loc = orm\VideoSource::find($originalLocation);
+            $loc->location = $location;
+            $loc->baseUrl = $baseUrl;
+            $loc->mediaType = $mediaType;
+            $loc->securityType = $securityType;
+            $loc->refreshVideos = true;
+            $success = $loc->save();
         }
         return RedirectToAction("Index");
     }

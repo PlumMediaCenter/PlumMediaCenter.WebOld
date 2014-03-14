@@ -1,5 +1,7 @@
 <?php
 
+include_once("Notify.class.php");
+
 /**
  * 
  * @param MvcRoute[] $routes

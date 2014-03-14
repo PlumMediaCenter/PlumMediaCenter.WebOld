@@ -22,6 +22,8 @@ ActiveRecord\Config::initialize(function($cfg) {
 $test = new TestSuite('Video test');
 
 $test->addFile(dirname(__FILE__) . '/Code/TestVideoSource.php');
+$test->addFile(dirname(__FILE__) . '/TestNotify.php');
+
 //$test->addFile(dirname(__FILE__) . '/Code/TestMovie.php');
 
 //$test->addFile(dirname(__FILE__) . '/Code/NfoReader/TestMovieNfoReader.php');
