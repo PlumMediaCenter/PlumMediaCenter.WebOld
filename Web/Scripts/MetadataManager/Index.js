@@ -88,7 +88,7 @@
             //draw a box on top of this row
 
             $.ajax(
-                    baseUrl + "/MetadataManager/" + action, {
+                    app.baseUrl + "/MetadataManager/" + action, {
                         dataType: "json",
                         data:
                                 {

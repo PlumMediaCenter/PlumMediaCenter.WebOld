@@ -1,7 +1,7 @@
 <?php
 
 include_once(dirname(__FILE__) . '/MetadataFetcher.class.php');
-include_once(dirname(__FILE__) . '/../lib/TMDB_v3/tmdb_v3.php');
+include_once(dirname(__FILE__) . '/../lib/TMDB4PHP/Client.php');
 
 /**
  * 
@@ -10,35 +10,59 @@ include_once(dirname(__FILE__) . '/../lib/TMDB_v3/tmdb_v3.php');
  */
 class MovieMetadataFetcher extends MetadataFetcher {
 
-    private $tmdb;
     private $tmdbId;
+    private $countryCode;
+    private $tmdb;
+    private $movieAsset;
     private $info;
     private $release;
-    private $trailer;
-    private $cast;
+    private $trailers;
+    private $castAndCrew;
     private $posters;
 
-    function __construct() {
-        $this->tmdb = new TMDBv3(config::$tmdbApiKey, null);
+    function __construct($apiKey = null, $countryCode = "US") {
+        if ($apiKey === null) {
+            $apiKey = config::$tmdbApiKey;
+        }
+        $this->countryCode = $countryCode;
+
+        $this->tmdb = TMDB\Client::getInstance($apiKey);
+    }
+
+    private function clean() {
+        $this->tmdbId = null;
+        $this->movieAsset = null;
+        $this->info = null;
+        $this->release = null;
+        $this->trailers = null;
+        $this->cast = null;
+        $this->posters = null;
     }
 
     /**
-     * Searched tmdb to find the tmdb id of the first video in the search results matching the provided movie title.
-     * Then sets the tmdb id of the movie we want to fetch metadata for. This search function does not actually do the searching.
-     * The searching is performed once the metadata starts being requested. In this way, only the metadata actually being used
-     * will be fetched.
-     * @param type $id - the tmdb id
+     * Search TMDB for a movie with the specified title and optionally the year, 
+     * return a result
+     * @param string $title - The title of the video. Required
+     * @param string|int $year - the year the video was released...optional.
+     * @return type
      */
-    function searchByTitle($title) {
+    function searchByTitle($title, $year = null) {
+        $this->clean();
         $this->fetchSuccess = false;
 
-        $searchResults = $this->tmdb->searchMovie($title, 1, false);
-        if ($searchResults["total_results"] > 0) {
-            $firstItemId = $searchResults["results"][0]["id"];
-            $this->tmdbId = $firstItemId;
-            $this->fetchSuccess = true;
+        if ($year === null) {
+            $results = $this->tmdb->search('movie', array('query' => $title));
+        } else {
+            $results = $this->tmdb->search('movie', array('query' => $title, 'year' => $year));
         }
 
+        if (count($results) > 0) {
+            foreach ($results as $id => $movie) {
+                $this->tmdbId = $id;
+                $this->fetchSuccess = true;
+                break;
+            }
+        }
         return $this->fetchSuccess;
     }
 
@@ -49,6 +73,7 @@ class MovieMetadataFetcher extends MetadataFetcher {
      * @param type $id - the tmdb id
      */
     function searchById($id) {
+        $this->clean();
         $this->fetchSuccess = false;
         $this->tmdbId = $id;
     }
@@ -58,33 +83,26 @@ class MovieMetadataFetcher extends MetadataFetcher {
      */
     function preFetchAll() {
         $this->fetchSuccess = false;
-        $this->fetchCast();
+        $this->fetchCastAndCrew();
         $this->fetchInfo();
         $this->fetchRelease();
         $this->fetchTrailers();
     }
 
-    /**
-     * Fetch the cast metadata
-     */
-    private function fetchCast() {
-        if ($this->cast == null) {
-            $this->cast = $this->tmdb->movieCast($this->tmdbId);
-            if (count($this->cast) > 0) {
-                $this->fetchSuccess = true;
-            }
+    private function movieAsset() {
+        if ($this->movieAsset === null) {
+            $this->movieAsset = new \TMDB\structures\Movie($this->tmdbId);
         }
+        return $this->movieAsset;
     }
 
     /**
      * Fetch the info metadata
      */
     private function fetchInfo() {
-        if ($this->info == null) {
-            $this->info = $this->tmdb->movieDetail($this->tmdbId);
-            if (count($this->info) > 0) {
-                $this->fetchSuccess = true;
-            }
+        if ($this->info === null) {
+            $this->info = $this->movieAsset();
+            $this->fetchSuccess = true;
         }
     }
 
@@ -94,12 +112,22 @@ class MovieMetadataFetcher extends MetadataFetcher {
     private function fetchRelease() {
         if ($this->release == null) {
             $this->release = [];
-            $releases = $this->tmdb->movieRelease($this->tmdbId);
+            $movieAsset = $this->movieAsset();
+            $releases = $movieAsset->releases();
+            $countries = $releases->countries;
             if (count($releases) > 0) {
                 $this->fetchSuccess = true;
 
-                //just grab the first release in the list, should usually be the US
-                $this->release = $releases["countries"][0];
+                //default to the first release found. 
+                $selectedRelease = $countries[0];
+                //find the release with the country code matching ours
+                foreach ($countries as $key => $release) {
+                    if ($release->iso_3166_1 === $this->countryCode) {
+                        $selectedRelease = $release;
+                    }
+                }
+                //at this point, we have the first release or the release with our specified country code. 
+                $this->release = $selectedRelease;
             }
         }
     }
@@ -108,14 +136,25 @@ class MovieMetadataFetcher extends MetadataFetcher {
      * Fetch the trailers metadata
      */
     private function fetchTrailers() {
-        if ($this->trailer === null) {
-            $this->trailer = "";
-
-            $trailers = $this->tmdb->movieTrailer($this->tmdbId);
+        if ($this->trailers === null) {
+            $this->trailers = [];
+            $trailers = $this->movieAsset()->trailers();
             if (count($trailers)) {
                 $this->fetchSuccess = true;
 
-                $this->trailer = "http://www.youtube.com/watch?v=" . $trailers["youtube"][0]["source"];
+                $this->trailer = "http://www.youtube.com/watch?v=" . $trailers->youtube[0]->source;
+            }
+        }
+    }
+
+    /**
+     * Fetch the cast metadata
+     */
+    private function fetchCastAndCrew() {
+        if ($this->castAndCrew == null) {
+            $this->castAndCrew = $this->movieAsset()->casts();
+            if (count($this->castAndCrew) > 0) {
+                $this->fetchSuccess = true;
             }
         }
     }
@@ -124,8 +163,9 @@ class MovieMetadataFetcher extends MetadataFetcher {
         if ($this->posters == null) {
             $this->posters = [];
             if ($this->tmdbId != null) {
-                $this->posters = $this->tmdb->moviePoster($this->tmdbId);
-                if (count($this->posters) > 0) {
+                $images = $this->movieAsset()->images();
+                if (count($images->posters) > 0) {
+                    $this->posters = $images->posters;
                     $this->fetchSuccess = true;
                 }
             }
@@ -134,57 +174,56 @@ class MovieMetadataFetcher extends MetadataFetcher {
 
     function title() {
         $this->fetchInfo();
-        return count($this->info) > 0 ? $this->info["title"] : null;
+        return ($this->info !== null) ? $this->info->title : null;
     }
 
     function originalTitle() {
         $this->fetchInfo();
-        return count($this->info) > 0 ? $this->info["original_title"] : null;
+        return ($this->info !== null) ? $this->info->original_title : null;
     }
 
     function rating() {
-        // return $this->info["rating"];
-        return 10.0;
+        return ($this->info !== null) ? $this->info->vote_average : null;
     }
 
     function year() {
         $this->fetchRelease();
-        return count($this->info) > 0 ? $this->info["release_date"] : null;
+        return ($this->info !== null) ? $this->info->release_date : null;
     }
 
     function votes() {
         $this->fetchInfo();
-        return count($this->info) > 0 ? $this->info["vote_count"] : null;
+        return ($this->info !== null) ? $this->info->vote_count : null;
     }
 
     function plot() {
         $this->fetchInfo();
-        return count($this->info) > 0 ? $this->info["overview"] : null;
+        return ($this->info !== null) ? $this->info->overview : null;
     }
 
     function storyline() {
         $this->fetchInfo();
-        return count($this->info) > 0 ? $this->info["overview"] : null;
+        return ($this->info !== null) ? $this->info->overview : null;
     }
 
     function tagline() {
         $this->fetchInfo();
-        return count($this->info) > 0 ? $this->info["tagline"] : null;
+        return ($this->info !== null) ? $this->info->tagline : null;
     }
 
     function runtime() {
         $this->fetchInfo();
-        return count($this->info) > 0 ? $this->info["runtime"] : null;
-    }
-
-    function mpaa() {
-        $this->fetchRelease();
-        return count($this->release) > 0 ? $this->release["certification"] : null;
+        return ($this->info !== null) ? $this->info->runtime : null;
     }
 
     function imdbId() {
         $this->fetchInfo();
-        return count($this->info) > 0 ? $this->info["imdb_id"] : null;
+        return ($this->info !== null) ? $this->info->imdb_id : null;
+    }
+
+    function mpaa() {
+        $this->fetchRelease();
+        return ($this->release !== null) ? $this->release->certification : null;
     }
 
     function trailerUrl() {
@@ -195,9 +234,9 @@ class MovieMetadataFetcher extends MetadataFetcher {
     function genres() {
         $this->fetchInfo();
         $genres = [];
-        if (count($this->info) > 0) {
-            foreach ($this->info["genres"] as $g) {
-                $genres[] = $g["name"];
+        if ($this->info !== null) {
+            foreach ($this->info->genres as $genre) {
+                $genres[] = $genre->name;
             }
         }
         return $genres;
@@ -205,11 +244,11 @@ class MovieMetadataFetcher extends MetadataFetcher {
 
     function directorList() {
         $directorList = [];
-        $this->fetchCast();
-        if (count($this->cast) > 0) {
-            foreach ($this->cast["crew"] as $c) {
-                if (strpos(strtoupper($c["job"]), "DIRECTOR") !== false) {
-                    $directorList[] = $c["name"];
+        $this->fetchCastAndCrew();
+        if ($this->castAndCrew !== null) {
+            foreach ($this->castAndCrew['crew'] as $crewMember) {
+                if (strpos(strtoupper($crewMember->job), "DIRECTOR") !== false) {
+                    $directorList[] = $crewMember->name;
                 }
             }
         }
@@ -221,15 +260,15 @@ class MovieMetadataFetcher extends MetadataFetcher {
      * @return array with the following items in each: name, character
      */
     function cast() {
-        $this->fetchCast();
+        $this->fetchCastAndCrew();
         $castList = [];
         $i = 0;
-        if (count($this->cast) > 0) {
+        if (count($this->castAndCrew) > 0) {
 
-            foreach ($this->cast["cast"] as $c) {
-                $directorList[] = $c["name"];
-                $castList[$i]["name"] = $c["name"];
-                $castList[$i++]["role"] = $c["character"];
+            foreach ($this->castAndCrew["cast"] as $castMember) {
+                $castList[] = [];
+                $castList[$i]["name"] = $castMember->name;
+                $castList[$i++]["role"] = $castMember->character;
             }
         }
         return $castList;
@@ -241,6 +280,8 @@ class MovieMetadataFetcher extends MetadataFetcher {
     }
 
     function posterUrl() {
+
+        $poster = $this->movieAsset()->poster();
         $this->fetchImages();
         //if there are no posters for this video, quit.
         if (!isset($this->posters)) {
@@ -251,11 +292,12 @@ class MovieMetadataFetcher extends MetadataFetcher {
         }
         //grab the first image in the list
         $img = $this->posters[0];
-        $filepath = $img["file_path"];
+        $filepath = $img->file_path;
         $size = "original";
-        $url = $this->tmdb->getImageURL() . $img["file_path"];
+        $url = $this->tmdb->image_url("poster", 1280, $img->file_path);
         return $url;
     }
 
 }
+
 ?>

@@ -12,7 +12,7 @@ abstract class MetadataFetcher {
 
     abstract function posterUrl();
 
-    abstract function searchByTitle($title);
+    abstract function searchByTitle($title, $year);
 
     abstract function searchById($id);
 

@@ -79,12 +79,13 @@ section("scripts");
                         <div class="col-xs-3">Media Type: </div>
                         <div class="col-xs-9">
                             <input type="radio" id="mediaTypeMovie" name="mediaType" value="<?php echo Enumerations\MediaType::Movie; ?>">
-                            <label for="mediaTypeMovie">Directory full of movies</label>
+                            <label for="mediaTypeMovie">Directory full of movies (Each movie is in its own folder)</label>
                             &nbsp;<br/>
                             <input type="radio" id="mediaTypeTvShow" name="mediaType"  value="<?php echo Enumerations\MediaType::TvShow; ?>">
                             <label for="mediaTypeTvShow">Directory full of Tv Shows (Each in its own tv show folder)</label>
                         </div>
                     </div>
+                    
                 </div>
                 <div class="modal-footer">
                     <span style="color:red; float:left;" id="addEditMessage"></span>

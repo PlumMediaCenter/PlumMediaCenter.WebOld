@@ -284,8 +284,15 @@ abstract class Video {
     }
 
     public function getVideoName() {
-        //For now, just return the filename without the extension.
-        return pathinfo($this->fullPath, PATHINFO_FILENAME);
+        //the video name is the name of its containing folder
+        $folderName = pathinfo(pathinfo($this->fullPath, PATHINFO_DIRNAME) . "/", PATHINFO_FILENAME);
+        //rip any year in parenthesies off the end
+        $matches = null;
+        $folderName = preg_replace("/(\(\d\d\d\d\))/i", "", $folderName);
+        //trim spaces from either side of the name
+        $folderName = trim($folderName);
+        return $folderName;
+
     }
 
     protected function getUrl() {

@@ -17,6 +17,8 @@ class Notify {
      * @return array[Notification] - an array of Notification
      */
     private static function GetList() {
+        //supress any session warnings
+        $oldErrorReportingLevel = error_reporting(E_ERROR | E_PARSE);
         //put your code here
         session_start();
         if (isset($_SESSION[Notify::SESSION_VARIABLE_NAME])) {
@@ -24,6 +26,8 @@ class Notify {
         } else {
             $messages = [];
         }
+        //restore error reporting to its previous state
+        error_reporting($oldErrorReportingLevel);
 
         return $messages;
     }

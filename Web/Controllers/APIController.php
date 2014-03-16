@@ -17,7 +17,7 @@ class APIController extends Controller {
         return json($success);
     }
 
-    function FetchMissingMetadataAndPosters() {
+    function FetchMissingMetadata() {
         require_once(basePath() . '/Code/Library.class.php');
 
         //allow up to half hour for this script to run

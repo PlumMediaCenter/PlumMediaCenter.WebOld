@@ -1,19 +1,6 @@
 <?php section("scripts"); ?>
 <script type="text/javascript" src="<?php urlContent("~/Scripts/Admin/Index.js");?>"></script>
 <script type="text/javascript">
-
-    function fetchMissingMetadataAndPosters() {
-        bootbox.alert("Fetching missing metadata and posters. <img src='img/ajax-loader.gif'/>");
-        $.ajax({url: "api/FetchMissingMetadataAndPosters.php", dataType: "json", complete: function(result, status) {
-                bootbox.hideAll();
-                if (status === "success") {
-                    bootbox.alert("Successfully fetched all missing metadata and posters");
-                } else {
-                    bootbox.alert("There was an error fetching missing metadata and posters. Please see the <a href='Log.php'>log</a> for more information");
-                }
-            }
-        });
-    }
 </script>
 <?php endSection(); ?>
 
@@ -28,7 +15,7 @@
 
 <br/>
 <br/>
-<a class="btn btn-default" onclick="fetchMissingMetadataAndPosters();">Fetch and Generate Missing Metadata and Posters</a>
+<a id="fetchMissingMetadataBtn" class="btn btn-default">Fetch and Generate Missing Metadata and Posters</a>
 <br/>
 <br/>
 <a href='Log.php' class="btn btn-default">View Log</a>

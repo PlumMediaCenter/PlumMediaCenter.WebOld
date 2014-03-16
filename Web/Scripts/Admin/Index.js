@@ -1,5 +1,4 @@
 $(document).ready(function() {
-    bindEvents();
     function generateLibrary() {
         app.wait(true, "Generating library. Please wait.");
         plumapi.generateLibrary(function(returnVal) {
@@ -12,10 +11,23 @@ $(document).ready(function() {
         });
     }
 
+    function fetchMissingMetadata() {
+        app.wait(true, "Fetching missing metadata and posters.");
+        plumapi.FetchMissingMetadata(function(result, status) {
+            app.wait(false);
+            if (status === "success") {
+                app.message(true, "Successfully fetched all missing metadata and posters");
+            } else {
+                app.message(true, "There was an error fetching missing metadata and posters. Please see the <a href='Log.php'>log</a> for more information");
+            }
+        });
+    }
+
     /**
      * Wires all events to elements that have them
      */
-    function bindEvents() {
+    (function() {
         $("#generateLibraryBtn").click(generateLibrary);
-    }
+        $("#fetchMissingMetadataBtn").click(fetchMissingMetadata);
+    })();
 });

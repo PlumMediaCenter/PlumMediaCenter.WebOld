@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require_once(dirname(__FILE__) . '/../config.php');
 require_once(dirname(__FILE__) . '/../Code/Enumerations.class.php');
 require_once(dirname(__FILE__) . '/../Core/Functions.php');
@@ -18,13 +19,14 @@ ActiveRecord\Config::initialize(function($cfg) {
         config::$dbName));
 });
 
-
 $test = new TestSuite('Video test');
 
 $test->addFile(dirname(__FILE__) . '/Code/TestVideoSource.php');
 $test->addFile(dirname(__FILE__) . '/TestNotify.php');
 
-//$test->addFile(dirname(__FILE__) . '/Code/TestMovie.php');
+$test->addFile(dirname(__FILE__) . '/Code/TestMovie.php');
+$test->addFile(dirname(__FILE__) . '/Code/MetadataFetcher/TestMovieMetadataFetcher.php');
+
 
 //$test->addFile(dirname(__FILE__) . '/Code/NfoReader/TestMovieNfoReader.php');
 //$test->addFile(dirname(__FILE__) . '/Code/NfoReader/TestTvEpisodeNfoReader.php');
@@ -32,4 +34,5 @@ $test->addFile(dirname(__FILE__) . '/TestNotify.php');
 //$test->addFile(dirname(__FILE__) . '/Code/database/TestTable.php');
 
 //$test->addFile(dirname(__FILE__) . '/TestFunctions.php');
+echo ob_get_contents();
 ?>

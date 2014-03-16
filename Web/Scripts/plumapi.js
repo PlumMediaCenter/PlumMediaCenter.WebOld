@@ -8,8 +8,8 @@
         plumapi._call("DeleteVideoSource", {sourcePath: sourcePath}, callback);
     };
 
-    plumapi.fetchMissingMetadataAndPosters = function(callback) {
-        plumapi._call("FetchMissingMetadataAndPosters", {}, callback);
+    plumapi.FetchMissingMetadata = function(callback) {
+        plumapi._call("FetchMissingMetadata", {}, callback);
     };
 
     /**
