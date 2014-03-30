@@ -7,16 +7,24 @@
             var sNum = parseInt($this.attr("data-season-number"));
             var eNum = parseInt($this.attr("data-episode-number"));
             showEpisodeInfo(sNum, eNum);
+
+            //scroll to the episode info after a timeout so that the browser has time to 
+            //render the height of the episode info first
+            setTimeout(function() {
+                var offset = $("#episodeInfo").offset();
+                $("body").scrollTop(offset.top);
+            }, 100);
+
         });
         $("img").error(function() {
             $(this).css({visibility: "hidden"});
         });
         $(document).keydown(keydown);
 
-        //'click' the current episode row, if one exists
-        $("tr.nextEpisodeRow").click();
-        //scroll the window back to the top, since displaying 
-
+        if (page.mediaType === enumerations.MediaType.TvShow) {
+            //show the episode info of the next episode to be played
+            showEpisodeInfo(page.nextEpisodeToWatch.seasonNumber, page.nextEpisodeToWatch.episodeNumber);
+        }
     });
 
     function keydown(e) {
@@ -94,13 +102,6 @@
         //highlight the selected row so we know which row is selected
         $row.addClass("selected");
         $("#episodeInfo").removeClass("hide").html(html);
-
-        //scroll to the episode info after a timeout so that the browser has time to 
-        //render the height of the episode info first
-        setTimeout(function() {
-            var offset = $("#episodeInfo").offset();
-            $("body").scrollTop(offset.top);
-        }, 100);
 
 //        $("body").animate({
 //            scrollTop: offset.top,

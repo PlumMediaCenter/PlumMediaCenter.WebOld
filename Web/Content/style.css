@@ -222,8 +222,8 @@ label{
 
 #bodyRow{
     margin:0px;
-    padding-left: 10px;
-    padding-right: 10px;
+     padding-left: 10px; 
+     padding-right: 10px; 
 }
 
 #body-col{
@@ -324,9 +324,10 @@ label, input[type=radio]{
     vertical-align: middle;
 }
 
-
-
-table tr.selected{
+/*
+* Selected row 
+*/
+.selected, table#videoInfoEpisodeTable.table-striped>tbody>tr.selected, table#videoInfoEpisodeTable.table-striped>tbody>tr.selected td{
     background-color:grey;
     color:white;
 }
@@ -336,7 +337,7 @@ table#videoInfoEpisodeTable tr.selected .progress{
 }
 
 #videoInfoEpisodeTable .progress{
-    background: red;
+    background: #DFEBCA;
     position: relative;
 }
 
@@ -349,6 +350,11 @@ table#videoInfoEpisodeTable tr.selected .progress{
     font-weight:bold;
     left: 0px;
     right: 0px;
+}
+
+.progressbarContainer {
+    padding-top: 10px;
+    margin-bottom: -10px;
 }
 
 table tr.selected a, table tr.selected a:visited{

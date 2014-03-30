@@ -8,7 +8,25 @@ section("scripts");
 <script type="text/javascript" src="<?php urlContent("~/Scripts/Home/VideoInfo.js"); ?>"></script>
 <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jquery-hoverIntent/jquery.hoverIntent.minified.js"); ?>"></script>
 <script type="text/javascript">
+<?php
+$nextEpisodeSeasonNumber = -1;
+$nextEpisodeEpisodeNumber = -1;
+if ($model->video->getMediaType() == Enumerations\MediaType::TvShow) {
+    $nextEpisodeToWatch = TvShow::GetNextEpisodeToWatch($model->video->videoId);
+    $nextEpisodeSeasonNumber = $nextEpisodeToWatch->seasonNumber;
+    $nextEpisodeEpisodeNumber = $nextEpisodeToWatch->episodeNumber;
+}
+?>
     var video = <?php json($model->video); ?>;
+    var page = {};
+    $.extend(page, {
+        mediaType: "<?php echo $model->video->mediaType;?>",
+        nextEpisodeToWatch: {
+            seasonNumber: <?php echo $nextEpisodeSeasonNumber; ?>,
+            episodeNumber: <?php echo $nextEpisodeEpisodeNumber; ?>
+        }
+    });
+
 </script>
 <?php endSection(); ?>
 <div id="video-info-row" class="row">
@@ -82,10 +100,9 @@ section("scripts");
                 </thead>
                 <tbody>
                     <?php
+                    $e = $nextEpisodeToWatch;
                     //get the list of all episodes of this tv series. 
                     $episodeList = $model->video->episodes;
-
-                    $e = TvShow::GetNextEpisodeToWatch($model->video->videoId);
                     //if e is false, then there is no next episode to watch. 
                     $nextEpisodeId = ($e != false) ? $e->videoId : -1;
                     $currentSeasonNumber = -2;
@@ -95,7 +112,6 @@ section("scripts");
                         $seasonNumber = $episode->seasonNumber;
                         $episodeNumber = $episode->episodeNumber;
                         $percentWatched = $episode->progressPercent();
-                        $percentWatched = 80;
                         $playUrl = getUrlAction('Home/Play') . "?videoId=$episodeId";
                         if ($seasonNumber != $currentSeasonNumber) {
                             $currentSeasonNumber = $seasonNumber;
@@ -122,7 +138,7 @@ section("scripts");
                             <td>
                                 <div class="progressbarContainer">
                                     <div class="progress">
-                                        <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $percentWatched; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percentWatched; ?>%;">
+                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<?php echo $percentWatched; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percentWatched; ?>%;">
                                             <span class="sr-only"><?php echo $percentWatched; ?>%</span>
                                         </div>
                                         <span class="percent"><?php echo $percentWatched; ?>%</span>
