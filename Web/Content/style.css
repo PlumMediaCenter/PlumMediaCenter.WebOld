@@ -17,6 +17,10 @@ body{
     width:100%;
 }
 
+.rounded{
+    border-radius: 4px;
+}
+
 #containerRelativer{
     position:relative;
 }
@@ -103,15 +107,14 @@ input[type=radio], label{
 
 #episodeInfo{
     background-color: white;
-    border:0px solid black;
-    width:500px;
-    min-height:250px;
-    display:none;
+    border: 1px solid black;
+    /* display:none; */
     padding:20px;
     padding-top:7px;
-}
-#episodeInfo *{
     color:black;
+    text-align:center;
+    margin: auto;
+    margin-bottom: 10px;
 }
 
 .nextEpisodeRow{
@@ -128,16 +131,6 @@ input[type=radio], label{
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000');
 }
 
-.progressbar{
-    width:100px;
-    border-top:1px solid black;
-    border-bottom:1px solid black;
-    background-color:red;
-    height:10px;
-    margin-left:20px;
-    margin-right:10px;
-    position:relative;
-}
 
 .percentWatched{
     height:100%;
@@ -146,19 +139,17 @@ input[type=radio], label{
 }
 
 .percentWatchedText{
-    position:absolute;
-    top:0px;
+    margin-top: 0px;
+    vertical-align: middle;
+    top: 50%;
+    top: 0px;
     left:0px;
     width:100%;
-    height:100%;
     background-color:transparent;
     text-align:center;
     padding:0px;
     margin:0px;
     font-size: 10px;
-    background-color:transparent;
-    line-height:10px;
-
 }
 
 #videoInfo{
@@ -275,9 +266,11 @@ div.video-tile img.poster{
     cursor:pointer;
     border:0px solid white;
 }
-
+div.video-tile{
+    border:3px solid transparent;
+}
 div.video-tile:hover{
-    border:2px solid #CCCCCC;
+    border:3px solid #CCCCCC;
 }
 
 div.video-tile span{
@@ -312,4 +305,52 @@ label, input[type=radio]{
 
 .modal{
     overflow: auto;
+}
+
+#videoInfoPlayVideoBtn{
+    margin-top:5px;
+    width:200px;
+}
+
+#videoInfoEpisodeTable .playButtonWidth{
+    width:10px;
+}
+
+#videoInfoEpisodeTable tr{
+    cursor:pointer;
+}
+
+#videoInfoEpisodeTable td{
+    vertical-align: middle;
+}
+
+
+
+table tr.selected{
+    background-color:grey;
+    color:white;
+}
+
+table#videoInfoEpisodeTable tr.selected .progress{
+    color:black;
+}
+
+#videoInfoEpisodeTable .progress{
+    background: red;
+    position: relative;
+}
+
+#videoInfoEpisodeTable .progress .percent{
+    position: absolute;
+    top: 1px;
+    color: black;
+    text-align: center;
+    margin:auto;
+    font-weight:bold;
+    left: 0px;
+    right: 0px;
+}
+
+table tr.selected a, table tr.selected a:visited{
+    color:white
 }

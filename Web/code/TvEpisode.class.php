@@ -74,6 +74,10 @@ class TvEpisode extends Video {
     function getTvShowVideoIdFromTvEpisodeTable() {
         return Queries::getTvShowVideoIdFromEpisodeTable($this->videoId);
     }
+    
+    function getVideoName(){
+        return pathinfo($this->fullPath, PATHINFO_FILENAME);
+    }
 
     /**
      * Overrides the parent function in order to generate the standard size for tv episode tiles

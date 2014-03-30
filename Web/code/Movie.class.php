@@ -45,6 +45,8 @@ class Movie extends Video {
         //we are assuming that the reader has already been loaded with the metadata file, since this function should only be called from the parent
         $reader = $this->getNfoReader();
         $this->year = $reader->year !== null ? $reader->year : "";
+        $date = DateTime::createFromFormat("Y-m-d", "$reader->year-01-01");
+        $this->releaseDate = $date;
         $this->runtime = $reader->runtime;
         $this->genres = $reader->genres;
     }

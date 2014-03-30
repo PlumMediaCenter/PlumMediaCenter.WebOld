@@ -70,7 +70,7 @@ Security::HandleLogin();
 
             window.plumapi = {baseUrl: "<?php urlContent("~/"); ?>"};
         </script>
-        <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jquery/jquery-1.10.2.min.js"); ?>"></script>
+        <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jquery/jquery-1.11.0.min.js"); ?>"></script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jquery-color/jquery.color-2.1.0.min.js"); ?>"></script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/jquery.utility.js"); ?>"></script>
         <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"); ?>"></script>

@@ -10,7 +10,8 @@ $(document).ready(function() {
         //file: "",
         // image: "",
         autostart: true,
-        primary: "flash",
+        //default to try the html5 video mode first, then fallback to flash
+        primary: "html5",
         playlist: jwPlaylist,
         startparam: "start",
         wmode : 'transparent',

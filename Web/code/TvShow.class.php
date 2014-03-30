@@ -397,6 +397,15 @@ class TvShow extends Video {
     function getFolderName() {
         return pathinfo($this->fullPath, PATHINFO_FILENAME);
     }
+    
+    /**
+     * This is the name of the tv show. We are assuming that it is the name of the folder, unless 
+     * metadata has told us otherwise.
+     * @return type
+     */
+    function getVideoName(){
+        return $this->getFolderName();
+    }
 
     /**
      * Returns a new instance of the metadata fetcher for this video type. 

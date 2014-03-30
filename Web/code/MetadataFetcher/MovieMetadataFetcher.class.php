@@ -62,6 +62,8 @@ class MovieMetadataFetcher extends MetadataFetcher {
                 $this->fetchSuccess = true;
                 break;
             }
+        } else {
+            throw new Exception("No movie with title '$title' found in the TMDB database.");
         }
         return $this->fetchSuccess;
     }
@@ -92,6 +94,11 @@ class MovieMetadataFetcher extends MetadataFetcher {
     private function movieAsset() {
         if ($this->movieAsset === null) {
             $this->movieAsset = new \TMDB\structures\Movie($this->tmdbId);
+        }
+        //if this item has no id (which it should because we just passed it one), then 
+        //the id of the movie was not valid.
+        if (isset($this->movieAsset->id) === false) {
+            throw new Exception("No movie with id $this->tmdbId was found in the tmdb database");
         }
         return $this->movieAsset;
     }

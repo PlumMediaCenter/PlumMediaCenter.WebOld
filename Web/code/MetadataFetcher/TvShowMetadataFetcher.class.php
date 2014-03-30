@@ -7,7 +7,7 @@ class TvShowMetadataFetcher extends MetadataFetcher {
 
     private $tvShowObject;
 
-    function searchByTitle($title, $year) {
+    function searchByTitle($title, $year = null) {
         $this->tvShowObject = TvShowMetadataFetcher::GetSearchByTitle($title);
         $this->fetchSuccess = $this->tvShowObject != null;
         return $this->fetchSuccess;

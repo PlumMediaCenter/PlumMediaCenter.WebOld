@@ -15,7 +15,6 @@ class Library {
     //contains a list of all videos, a combination of movies, tv shows and tv episodes
     private $videos = [];
     public $moviesAndTvShows = [];
-    
     public $invalidVideos = [];
 
     public function __construct() {
@@ -49,14 +48,19 @@ class Library {
     public function fetchMissingMetadataAndPosters() {
         /* @var $video Video   */
         foreach ($this->videos as $video) {
-            if ($video->nfoFileExists() == false) {
-                $video->fetchMetadata();
-            }
-            if ($video->posterExists() == false) {
-                $video->fetchPoster();
-            }
-            if ($video->sdPosterExists() == false || $video->hdPosterExists() == false) {
-                $video->generatePosters();
+            //wrap each fetch in a try/catch so that a bad video doesn't break the process for the rest
+            try {
+                if ($video->nfoFileExists() == false) {
+                    $video->fetchMetadata();
+                }
+                if ($video->posterExists() == false) {
+                    $video->fetchPoster();
+                }
+                if ($video->sdPosterExists() == false || $video->hdPosterExists() == false) {
+                    $video->generatePosters();
+                }
+            } catch (Exception $e) {
+                writeToLog("Unable to fetch metadata for video at '" . $video->getFullPath() . "'");
             }
         }
         return true;

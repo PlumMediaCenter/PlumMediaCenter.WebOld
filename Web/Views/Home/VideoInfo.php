@@ -1,34 +1,30 @@
 <?php include_once(basePath() . '/Code/TvShow.class.php'); ?>
 <?php section("head"); ?>
-<style type="text/css">
-    .selected{
-        background-color:grey;
-        color:white;
-    }
-    .selected a, .selected a:visited{
-        color:white
-    }
-</style>
-<?php endSection();
 
+<?php
+endSection();
 section("scripts");
 ?>
 <script type="text/javascript" src="<?php urlContent("~/Scripts/Home/VideoInfo.js"); ?>"></script>
-
+<script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jquery-hoverIntent/jquery.hoverIntent.minified.js"); ?>"></script>
 <script type="text/javascript">
     var video = <?php json($model->video); ?>;
 </script>
 <?php endSection(); ?>
 <div id="video-info-row" class="row">
     <div id="video-info-poster-col" class="col-md-3">
-<?php if ($model->video->mediaType == Enumerations\MediaType::TvEpisode) { ?>
+        <?php if ($model->video->mediaType == Enumerations\MediaType::TvEpisode) { ?>
             <a href="<?php urlAction("Home/VideoInfo", ['videoId' => $model->video->getTvShowVideoId()]); ?>">
                 Back to Season: '<?php echo $model->video->showName; ?>'
-<?php } ?>
+            <?php } ?>
             <a href="<?php urlAction("Home/Play", ["videoId" => $model->video->videoId]); ?>" >
-                <img id="video-info-poster" src="<?php echo $model->video->hdPosterUrl; ?>"/>
-                <br/>
-                <span class="glyphicon glyphicon-play"></span>
+                <img id="video-info-poster" class="rounded" src="<?php echo $model->video->hdPosterUrl; ?>"/>
+            </a>  <br/>
+            <a href="<?php urlAction("Home/Play", ["videoId" => $model->video->videoId]); ?>" >
+                <button id="videoInfoPlayVideoBtn" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-play"></span>
+                    Play
+                </button>
             </a>
     </div>
     <div id="video-info-col" class="col-md-6">
@@ -56,13 +52,14 @@ section("scripts");
         <div class="row">
             <div class="col-md-12">
                 <p class="center">
-                    Rated <?php echo $model->video->mpaa; ?>
+                    <?php echo ($model->video->year !== "0000-00-00") ? $model->video->year : ""; ?>
+                    <?php echo $model->video->mpaa; ?>
                 </p>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-<?php echo $model->video->plot; ?>
+                <?php echo $model->video->plot; ?>
             </div>
         </div>
     </div>    
@@ -73,12 +70,12 @@ section("scripts");
         <?php
         if ($model->video->getMediaType() == Enumerations\MediaType::TvShow) {
             ?>
-            <table class='table'>
+            <table id="videoInfoEpisodeTable" class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Episode</th>
+                        <th class="episodeNumberWidth">#</th>
                         <th style='display:none;'>VID</th>
-                        <th  style='display:none;'>Play</th>
+                        <th class="playButtonWidth">Play</th>
                         <th style='display:none;'>Add To Playlist</th>
                         <th>Title</th><th>Progress</th>
                     </tr>
@@ -95,9 +92,10 @@ section("scripts");
                     foreach ($episodeList as $episode) {
                         $videoTitle = $episode->title;
                         $episodeId = $episode->getVideoId();
-                        $episodeNumber = $episode->episodeNumber;
                         $seasonNumber = $episode->seasonNumber;
+                        $episodeNumber = $episode->episodeNumber;
                         $percentWatched = $episode->progressPercent();
+                        $percentWatched = 80;
                         $playUrl = getUrlAction('Home/Play') . "?videoId=$episodeId";
                         if ($seasonNumber != $currentSeasonNumber) {
                             $currentSeasonNumber = $seasonNumber;
@@ -107,18 +105,27 @@ section("scripts");
                             <?php
                         }
                         ?>
-                        <tr data-video-id="<?php echo $episodeId; ?>" id="episodeRow_<?php echo $episodeId; ?>" 
+                        <tr id="episodeRow_<?php echo $episodeId; ?>"                             
                             class="episodeRow <?php echo $nextEpisodeId == $episodeId ? "nextEpisodeRow" : ""; ?>" 
-                            style="border:1px solid black;" episodeId="<?php echo $episodeId; ?>">
-                            <td class="transparent"><?php echo $episodeNumber; ?></td>
-                            <td class="transparent" style='display:none;'><?php echo $episodeId; ?></td>
-                            <td class="transparent" style='display:none;'><a class="playButton18" style="display:block;" href="<?php echo $playUrl; ?>" title="Play">Play</a></td>
+                            data-video-id="<?php echo $episodeId; ?>"  
+                            data-season-number="<?php echo $seasonNumber; ?>"
+                            data-episode-number="<?php echo $episodeNumber; ?>"
+                            >
+                            <td><?php echo $episodeNumber; ?></td>
+                            <td class="hide"><?php echo $episodeId; ?></td>
+                            <td  class="playButtonWidth"><a class="btn btn-primary" href="<?php echo $playUrl; ?>">
+                                    <span class="glyphicon glyphicon-play"></span>
+                                </a>
+                            </td>
                             <!--<td class="transparent">  <a style="cursor:pointer;" onclick="$.getJSON('api/AddToPlaylist.php?playlistName=My Playlist&videoIds=<?php echo $episodeId; ?>');">+</a></td>-->
-                            <td class="transparent"><a class="play" href="<?php echo $playUrl; ?>"><?php echo $videoTitle; ?></a></td>
-                            <td class="transparent"><div class="progressbar">
-                                    <div class="percentWatched" style="width:<?php echo $percentWatched; ?>%">
-                                    </div>
-                                    <div class="percentWatchedText"><?php echo $percentWatched; ?>%
+                            <td class="transparent"><?php echo $videoTitle; ?></td>
+                            <td>
+                                <div class="progressbarContainer">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $percentWatched; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percentWatched; ?>%;">
+                                            <span class="sr-only"><?php echo $percentWatched; ?>%</span>
+                                        </div>
+                                        <span class="percent"><?php echo $percentWatched; ?>%</span>
                                     </div>
                                 </div>
                             </td>
@@ -130,15 +137,9 @@ section("scripts");
             </tbody>
         </table>
     </div>
-    <div class="col-md-7" style="border:0px solid red;">
-        <div id="episodeInfo" class="shadow">
-            <h1 id="title" style="text-align:center;"></h1>
-            <img align="right" id="episodePoster"/>
-            <p>Season <span id="seasonNumber"></span> Episode <span id="episodeNumber"></span>
-                <br/><b>Rating: </b><span id="mpaa"></span>
-                <br/><b>Release Date:</b> <span id="year"></span>
-            </p>
-            <div id="plot"></div>
+    <div class="col-md-7" >
+        <div id="episodeInfo" class="hide">
+
         </div>
     </div>
 </div>

@@ -28,8 +28,7 @@ class APIController extends Controller {
         $result->successLoadingFromDatabase = $l->loadFromDatabase();
         $result->successFetchingMetadataAndPosters = $l->fetchMissingMetadataAndPosters();
         $result->successWritingToDb = $l->writeToDb();
-        $result->successWritingLibraryJson = $l->writeLibraryJson();
-        $result->success = $result->successLoadingFromDatabase && $result->successWritingToDb && $result->successFetchingMetadataAndPosters && $result->successWritingLibraryJson;
+        $result->success = $result->successLoadingFromDatabase && $result->successWritingToDb && $result->successFetchingMetadataAndPosters;
         return json($result);
     }
 

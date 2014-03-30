@@ -40,6 +40,7 @@ abstract class Video {
     public $title;
     public $plot = "";
     public $year;
+    public $releaseDate;
     public $url;
     public $sdPosterUrl;
     public $hdPosterUrl;
@@ -61,7 +62,7 @@ abstract class Video {
         $this->videoSourceUrl = $videoSourceUrl;
         $this->videoSourcePath = str_replace("\\", "/", realpath($videoSourcePath)) . "/";
         $fullPathRealPath = realpath($fullPath);
-        if($fullPathRealPath === false){
+        if ($fullPathRealPath === false) {
             throw new Exception("Unable to construct a video object at path $fullPath: path does not exist");
         }
         $this->fullPath = str_replace("\\", "/", $fullPathRealPath);
@@ -110,15 +111,15 @@ abstract class Video {
         if ($videoRow === false) {
             return false;
         }
-       return Video::GetVideoFromDataRow($videoRow);
+        return Video::GetVideoFromDataRow($videoRow);
     }
-    
+
     /**
      * Converts a row from the video table into a video object
      * @param [] $row
      * @return Movie\TvShow\TvEpisode
      */
-    public static function GetVideoFromDataRow($row){
+    public static function GetVideoFromDataRow($row) {
         $video = null;
         switch ($row->media_type) {
             case Enumerations\MediaType::Movie:
@@ -136,8 +137,12 @@ abstract class Video {
         $video->runtimeInSeconds = $row->running_time_seconds;
         $video->plot = $row->plot;
         $video->mpaa = $row->mpaa;
-        $video->year = $row->release_date;
         $video->runtime = $row->running_time_seconds;
+
+       //compute the year
+        $releaseDate = DateTime::createFromFormat("Y-m-d", $row->release_date);
+        $year = intval( $releaseDate->format("Y"));
+        $video->year = ($year === -1) ? null : $year;
         return $video;
     }
 
@@ -292,7 +297,6 @@ abstract class Video {
         //trim spaces from either side of the name
         $folderName = trim($folderName);
         return $folderName;
-
     }
 
     protected function getUrl() {
@@ -392,7 +396,7 @@ abstract class Video {
         if ($this->hdPosterExists() == true) {
             return Video::EncodeUrl($this->getHdPosterUrl());
         } else {
-            $url = fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".hd.jpg";
+            $url = fileUrl(__FILE__) . "/../Content/Images/posters/" . $this->getBlankPosterName() . ".hd.jpg";
             $url = url_remove_dot_segments($url);
             return Video::EncodeUrl($url);
         }
@@ -402,7 +406,7 @@ abstract class Video {
         if ($this->sdPosterExists() == true) {
             return Video::EncodeUrl($this->getSdPosterUrl());
         } else {
-            $url = fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".sd.jpg";
+            $url = fileUrl(__FILE__) . "/../Content/Images/posters/" . $this->getBlankPosterName() . ".sd.jpg";
             $url = url_remove_dot_segments($url);
             return Video::EncodeUrl($url);
         }
@@ -412,7 +416,7 @@ abstract class Video {
         if ($this->PosterExists() == true) {
             return Video::EncodeUrl($this->getPosterUrl());
         } else {
-            $url = fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".jpg";
+            $url = fileUrl(__FILE__) . "/../Content/Images/posters/" . $this->getBlankPosterName() . ".jpg";
             $url = url_remove_dot_segments($url);
             return Video::EncodeUrl($url);
         }
@@ -645,7 +649,8 @@ abstract class Video {
             if ($id != null) {
                 $this->metadataFetcher->searchById($id);
             } else {
-                $this->metadataFetcher->searchByTitle($this->getVideoName());
+                $videoName = $this->getVideoName();
+                $this->metadataFetcher->searchByTitle($videoName);
             }
         }
         return $this->metadataFetcher;

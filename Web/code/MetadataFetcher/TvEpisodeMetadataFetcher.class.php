@@ -16,7 +16,7 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher {
      * Search by season name and by preset season and episode numbers. you MUST set the episode and season numbers before calling this
      * @param string $title - the show title
      */
-    function searchByTitle($title, $year) {
+    function searchByTitle($title, $year = null) {
         $this->searchByShowNameAndSeasonAndEpisodeNumber($title, $this->seasonNumber, $this->episodeNumber);
     }
 

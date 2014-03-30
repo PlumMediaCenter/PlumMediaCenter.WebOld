@@ -201,11 +201,13 @@ class Queries {
             $stmt = $pdo->prepare($sql);
             Queries::$statements[__FUNCTION__] = $stmt;
         }
+        $releaseDateStr = $releaseDate->format("Y-m-d");
+
         $stmt = Queries::$statements[__FUNCTION__];
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":plot", $plot);
         $stmt->bindParam(":mpaa", $mpaa);
-        $stmt->bindParam(":releaseDate", $releaseDate);
+        $stmt->bindParam(":releaseDate", $releaseDateStr);
         $stmt->bindParam(":path", $path);
         $stmt->bindParam(":filetype", $filetype);
         $stmt->bindParam(":mediaType", $mediaType);
@@ -242,11 +244,12 @@ class Queries {
             $stmt = $pdo->prepare($sql);
             Queries::$statements[__FUNCTION__] = $stmt;
         }
+        $releaseDateStr = $releaseDate->format("Y-m-d");
         $stmt = Queries::$statements[__FUNCTION__];
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":plot", $plot);
         $stmt->bindParam(":mpaa", $mpaa);
-        $stmt->bindParam(":releaseDate", $releaseDate);
+        $stmt->bindParam(":releaseDate", $releaseDateStr);
         $stmt->bindParam(":path", $path);
         $stmt->bindParam(":fileType", $fileType);
         $stmt->bindParam(":mediaType", $mediaType);
@@ -539,8 +542,8 @@ class Queries {
         $videoIds = DbManager::FetchAllColumn($stmt, 0);
         return $videoIds;
     }
-    
-     /**
+
+    /**
      * Returns an array of all videoIds that are of tv show and movie types
      */
     public static function GetMovieAndTvShowVideoIds() {
@@ -723,8 +726,8 @@ class Queries {
         //return false if no videos were found or an error occurred.
         return false;
     }
-    
-    public static function DeleteOrphanedGenres(){
+
+    public static function DeleteOrphanedGenres() {
         return DbManager::NonQuery("delete from genre where genre_name not in(select distinct genre_name from video_genre)");
     }
 
