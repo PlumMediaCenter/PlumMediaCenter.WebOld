@@ -2,8 +2,10 @@
 var player;
 var previousPlaylistIndex = 0;
 var currentPlaylistIndex = 0;
+var seekBurstSeconds = 30;
+var seekPosition;
 $(document).ready(function() {
-    
+
     //display the video title on the page
     $(document).keydown(keyboardShortcuts);
     jwplayer("videoPlayer").setup({
@@ -14,7 +16,7 @@ $(document).ready(function() {
         primary: "html5",
         playlist: jwPlaylist,
         startparam: "start",
-        wmode : 'transparent',
+        wmode: 'transparent',
         //      listbar: {
         //          position: 'right',
         //          size: 320
@@ -27,6 +29,8 @@ $(document).ready(function() {
                 //keep track of which index was the previous index
                 previousPlaylistIndex = currentPlaylistIndex;
                 currentPlaylistIndex = obj.index;
+                
+                var seekPosition = 0;
             },
             onComplete: function(eventName) {
                 //tell the db that this video has just been finished
@@ -125,15 +129,17 @@ $(document).ready(function() {
             title: video.title,
             video: video
         };
-        var playlist = player.getPlaylist();
-        //add this video to the playlist
-        playlist.push(playlistItem);
-        // displayVideoTitle(video);
-        //re-add the playlist to the jwplayer, and set the last video in the playlist as the next video
-        player.load(playlist);
-
-        //tell the player to play the item we JUST ADDED
-        player.playlistItem(playlist.length - 1);
+        player.load(playlistItem);
+        player.play();
+//        var playlist = player.getPlaylist();
+//        //add this video to the playlist
+//        playlist.push(playlistItem);
+//        // displayVideoTitle(video);
+//        //re-add the playlist to the jwplayer, and set the last video in the playlist as the next video
+//        player.load(playlist);
+//
+//        //tell the player to play the item we JUST ADDED
+//        player.playlistItem(playlist.length - 1);
     }
 
     function showPlaybackFinished() {
@@ -160,11 +166,38 @@ $(document).ready(function() {
 
     function keyboardShortcuts(e) {
         switch (e.which) {
-            //spacebar
-            case 32:
+            case 32://spacebar key
                 //toggle playback
                 jwplayer().play();
                 break;
+            case 70: //f key
+                //toggle fullscreen
+                if (player.getFullscreen() === true) {
+                    player.setFullscreen(false);
+                } else {
+                    player.setFullscreen(true);
+                }
+                break;
+            case 39: //right arrow key
+            //seek forward n seconds
+            var position = player.getPosition();
+            var newPosition = position + seekBurstSeconds;
+            if (position <= seekPosition) {
+                newPosition = seekPosition + seekBurstSeconds;
+            }
+            seekPosition = newPosition;
+            player.seek(seekPosition);
+            break;
+        case 37: //left arrow key
+             //seek backwards n seconds
+            var position = player.getPosition();
+            var newPosition = position - seekBurstSeconds;
+            if (position >= seekPosition) {
+                newPosition = seekPosition - seekBurstSeconds;
+            }
+            seekPosition = newPosition;
+            player.seek(seekPosition);
+            break;
         }
     }
 
