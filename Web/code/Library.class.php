@@ -1,6 +1,7 @@
 <?php
 
 include_once("database/Queries.class.php");
+include_once("VideoSource.class.php");
 include_once("Video.class.php");
 
 class Library {
@@ -143,7 +144,7 @@ class Library {
      */
     public function loadMoviesFromFilesystem() {
         //list of all video sources
-        $movieSources = Queries::getVideoSources(Enumerations\MediaType::Movie);
+        $movieSources = VideoSource::GetByType(Enumerations\MediaType::Movie);
         $this->movies = [];
         $this->movieCount = 0;
         foreach ($movieSources as $source) {
@@ -170,7 +171,7 @@ class Library {
         $this->tvEpisodes = [];
         $this->tvEpisodeCount = 0;
         $this->tvShowCount = 0;
-        $tvShowSources = Queries::getVideoSources(Enumerations\MediaType::TvShow);
+        $tvShowSources = VideoSource::GetByType(Enumerations\MediaType::TvShow);
         //for every tv show file location, get all tv shows from that location
         foreach ($tvShowSources as $source) {
             //get a list of every folder in the current video source directory, since the required tv show structure is
@@ -342,6 +343,32 @@ class Library {
         return $videos;
     }
 
+    /**
+     * Scans all source folders for media files and synchronizes the database with the watch folders 
+     * @return boolean
+     */
+    function generateLibrary() {
+        //list of all video sources
+        $movieSources = VideoSource::GetByType(Enumerations\MediaType::Movie);
+       
+        //retrieve every movie in the database
+        $moviesInDb = \orm\Video::find('all', array('select'=>'path'));
+        $this->movies = [];
+        $this->movieCount = 0;
+        foreach ($movieSources as $source) {
+            //get a list of each video in this movies source folder
+            $listOfAllFilesInSource = getVideosFromDir($source->location);
+            foreach ($listOfAllFilesInSource as $fullPathToFile) {
+                //create a new Movie object
+                $video = new Movie($source->base_url, $source->location, $fullPathToFile);
+                $this->movies[] = $video;
+                $this->videos[] = $video;
+                $this->moviesAndTvShows[] = $video;
+                $this->movieCount++;
+            }
+        }
+        return true;
+    }
 }
 
 ?>

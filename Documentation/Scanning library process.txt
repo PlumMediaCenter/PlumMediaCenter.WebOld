@@ -1,0 +1,18 @@
+-get list of movie sources
+-get list of movies from db
+-get list of movies from sources on filesystem
+-get list of deleted movies (found in db, but not found in filesystem)
+-get list of new movies (found on filesystem but NOT in database)
+-get list of existing movies (found in db and in filesystem)
+-determine if existing videos have changed
+	-compare video file modified time with one from db
+		-if time is different, recalculate time duration of mp4 file
+	-check for existing *.nfo file (repeat for poster)
+		-if nfo file exists, 
+			-if nfo file modified time is different than the db 
+				-load nfo metadata into video
+				-update file modified time for video
+		-if no nfo file exists, 
+			-retrieve metadata from online service
+			-if global setting is set, save metadata to nfo file
+	

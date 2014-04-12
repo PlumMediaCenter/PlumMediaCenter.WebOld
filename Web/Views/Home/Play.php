@@ -11,6 +11,8 @@
 <?php section("scripts");?>
 <script type="text/javascript" src="<?php urlContent("~/Scripts/Home/play.js"); ?>"></script>
 <script type="text/javascript" src="<?php urlContent("~/Scripts/lib/jwplayer6/jwplayer.js"); ?>"></script>
+<script type="text/javascript" src="<?php urlContent("~/Scripts/lib/screenfull/screenfull.min.js"); ?>"></script>
+
 
 <script type="text/javascript">
     var playType = "<?php echo $model->playType; ?>";

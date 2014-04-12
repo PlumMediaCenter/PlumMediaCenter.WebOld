@@ -299,10 +299,12 @@ abstract class Video {
         return $folderName;
     }
 
+    
     protected function getUrl() {
+        //get the relative path to the video
         $relativePath = str_replace($this->videoSourcePath, "", $this->fullPath);
         $url = $this->videoSourceUrl . $relativePath;
-        //encode the url and then restore the forward slashes and colons
+        
         return $url;
     }
 

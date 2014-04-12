@@ -3,10 +3,12 @@
 class AdminController {
 
     function Index() {
-        include_once(basePath() . "/code/Library.class.php");
+        include_once(basePath() . "/code/Library.class.php");       
+        include_once(basePath() . "/code/VideoSource.class.php");
         include_once(basePath() . "/code/database/Queries.class.php");
         include_once(basePath() . "/code/database/CreateDatabase.class.php");
         include_once(basePath() . "/Models/AdminModel.php");
+
 
         $counts = Library::GetVideoCounts();
         $model = new AdminModel();
@@ -17,7 +19,7 @@ class AdminController {
         $model->movieCount = $counts->movieCount;
         $model->tvShowCount = $counts->tvShowCount;
         $model->tvEpisodeCount = $counts->tvEpisodeCount;
-        $model->videoSourceCount = count(Queries::GetVideoSources());
+        $model->videoSourceCount = count(VideoSource::Count());
         return view($model);
     }
 

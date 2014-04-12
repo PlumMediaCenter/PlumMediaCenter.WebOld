@@ -18,6 +18,10 @@ class VideoSource {
         return VideoSource::GetByType();
     }
     
+    public static function Count(){
+        return orm\VideoSource::count();
+    }
+    
     /**
      * Gets a list of VideoSource objects that fit the specified type
      * @param Enumerations\MediaType $mediaType
@@ -26,9 +30,9 @@ class VideoSource {
         if($mediaType === null){
             $sources = orm\VideoSource::all();
         }else{
-            $sources = orm\VideoSource::find_by_mediaType($mediaType);
+            $sources = orm\VideoSource::find_all_by_mediaType($mediaType);
         }
-        return $sources;
+        return $sources != null? $sources: array();
     }
 
 }

@@ -8,7 +8,7 @@ include_once(dirname(__FILE__) . '/../lib/TMDB4PHP/Client.php');
  *
  * @author bplumb
  */
-class MovieMetadataFetcher extends MetadataFetcher {
+class MovieMetadataFetcher extends MetadataFetcher{
 
     private $tmdbId;
     private $countryCode;

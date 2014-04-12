@@ -1,16 +1,8 @@
 <?php
 
-abstract class MetadataFetcher {
+include_once(dirname(__FILE__) . '/../Interfaces/iVideo.php');
 
-    abstract function title();
-
-    abstract function rating();
-
-    abstract function plot();
-
-    abstract function mpaa();
-
-    abstract function posterUrl();
+abstract class MetadataFetcher implements iVideo{
 
     abstract function searchByTitle($title, $year);
 

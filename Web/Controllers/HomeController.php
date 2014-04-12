@@ -56,4 +56,10 @@ class HomeController extends Controller {
         $model->initPlaylist($playlistName);
     }
 
+    function Test() {
+        include_once(dirname(__file__) . "/../Code/NewLibrary.class.php");
+        $l = new NewLibrary();
+        $l->generateLibrary();
+    }
+
 }

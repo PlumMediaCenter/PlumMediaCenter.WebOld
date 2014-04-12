@@ -201,7 +201,8 @@ class Queries {
             $stmt = $pdo->prepare($sql);
             Queries::$statements[__FUNCTION__] = $stmt;
         }
-        $releaseDateStr = $releaseDate->format("Y-m-d");
+       // $releaseDateStr = $releaseDate->format("Y-m-d");
+        $releaseDateStr = $releaseDate . "";
 
         $stmt = Queries::$statements[__FUNCTION__];
         $stmt->bindParam(":title", $title);
@@ -244,7 +245,11 @@ class Queries {
             $stmt = $pdo->prepare($sql);
             Queries::$statements[__FUNCTION__] = $stmt;
         }
-        $releaseDateStr = $releaseDate->format("Y-m-d");
+//        $releaseDateStr = "";
+//        if($releaseDate != null && is_numeric($releaseDate) === false ){
+//            $releaseDateStr = $releaseDate->format("Y-m-d");
+//        }
+        $releaseDateStr = $releaseDate . "";
         $stmt = Queries::$statements[__FUNCTION__];
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":plot", $plot);
@@ -415,20 +420,6 @@ class Queries {
             $videoId = $stmt->fetch();
             return $videoId["metadata_last_modified_date"];
         }
-    }
-
-    /**
-     * Gets an associative array of the video sources
-     * @return associative array of video sources
-     */
-    public static function GetVideoSources($type = null) {
-        $sql = "select location, base_url,  media_type, security_type, refresh_videos from video_source";
-        if ($type != null) {
-            $sql .= " where media_type = '$type'";
-        }
-        $sources = DbManager::query($sql);
-        Queries::LogSql($sql, $sources);
-        return $sources;
     }
 
     /**
