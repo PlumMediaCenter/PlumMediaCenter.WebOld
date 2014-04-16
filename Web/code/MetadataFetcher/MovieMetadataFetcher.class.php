@@ -125,16 +125,21 @@ class MovieMetadataFetcher extends MetadataFetcher {
             if (count($releases) > 0) {
                 $this->fetchSuccess = true;
 
-                //default to the first release found. 
-                $selectedRelease = $countries[0];
-                //find the release with the country code matching ours
-                foreach ($countries as $key => $release) {
-                    if ($release->iso_3166_1 === $this->countryCode) {
-                        $selectedRelease = $release;
+                if (count($countries) > 0) {
+                    //default to the first release found. 
+                    $selectedRelease = $countries[0];
+                    //find the release with the country code matching ours
+                    foreach ($countries as $key => $release) {
+                        if ($release->iso_3166_1 === $this->countryCode) {
+                            $selectedRelease = $release;
+                        }
                     }
+                    //at this point, we have the first release or the release with our specified country code. 
+                    $this->release = $selectedRelease;
+                }else{
+                    //mark the release fetch as a failure
+                    $this->release = false;
                 }
-                //at this point, we have the first release or the release with our specified country code. 
-                $this->release = $selectedRelease;
             }
         }
     }
@@ -198,7 +203,7 @@ class MovieMetadataFetcher extends MetadataFetcher {
      * @return \DateTime
      */
     function releaseDate() {
-        $this->fetchRelease();
+        $this->fetchInfo();
         $dateTime = ($this->info !== null) ? $this->info->release_date : null;
         if ($dateTime !== null) {
             $dateTime = new DateTime($dateTime);
@@ -256,7 +261,7 @@ class MovieMetadataFetcher extends MetadataFetcher {
 
     function mpaa() {
         $this->fetchRelease();
-        return ($this->release !== null) ? $this->release->certification : null;
+        return ($this->release !== null && $this->release !== false) ? $this->release->certification : null;
     }
 
     function trailerUrl() {
