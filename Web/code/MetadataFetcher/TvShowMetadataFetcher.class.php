@@ -62,6 +62,11 @@ class TvShowMetadataFetcher extends MetadataFetcher {
         return $this->fetchSuccess ? $this->tvShowObject->firstAired : null;
     }
 
+    function releaseDate() {
+        $firstAired = $this->firstAired();
+        return $firstAired === null ? null : new DateTime($firstAired);
+    }
+
     function genres() {
         return $this->fetchSuccess ? $this->tvShowObject->genres : null;
     }
@@ -96,6 +101,11 @@ class TvShowMetadataFetcher extends MetadataFetcher {
 
     function runtime() {
         return $this->fetchSuccess ? $this->tvShowObject->runtime : null;
+    }
+    
+    function runningTimeSeconds(){
+        $runtime = $this->runtime();
+        return $runtime === null? null: $runtime * 60;
     }
 
     function seriesName() {

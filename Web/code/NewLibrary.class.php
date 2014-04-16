@@ -2,8 +2,8 @@
 
 include_once("database/Queries.class.php");
 include_once("VideoSource.class.php");
-include_once(dirname(__FILE__) . "/FileSystemVideo/FileSystemVideo.class.php");
-include_once(dirname(__FILE__) . "/FileSystemVideo/FileSystemMovie.class.php");
+include_once(dirname(__FILE__) . "/Video/FileSystemVideo/FileSystemVideo.class.php");
+include_once(dirname(__FILE__) . "/Video/FileSystemVideo/FileSystemMovie.class.php");
 
 class NewLibrary {
 
@@ -63,11 +63,11 @@ class NewLibrary {
         
         //write new movies to the db
         foreach($newMovies as $newMovie){
+            //this process includes looking for an nfo file. If it finds one, use that info. Otherwise, look to the net
             $newMovie->loadMetadata();
+            //save the new movie to the database
+            $newMovie->save();
         }
-        
-        
-        
     }
 
 }

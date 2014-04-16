@@ -29,8 +29,7 @@ $(document).ready(function() {
                 //keep track of which index was the previous index
                 previousPlaylistIndex = currentPlaylistIndex;
                 currentPlaylistIndex = obj.index;
-                
-                var seekPosition = 0;
+                seekPosition = 0;
             },
             onComplete: function(eventName) {
                 //tell the db that this video has just been finished
@@ -43,7 +42,8 @@ $(document).ready(function() {
                 playNextVideo();
             },
             onTime: onTime,
-            onPlay: onPlay
+            onPlay: onPlay,
+            onSeek: onSeek
         }
 
     });
@@ -52,6 +52,12 @@ $(document).ready(function() {
     //anytime the window is resized, resize the player accordingly
     $(window).resize(resizePlayer);
 
+
+    function onSeek(obj) {
+        if (obj.position !== seekPosition && obj.offset !== seekPosition) {
+            seekPosition = offset;
+        }
+    }
     /**
      * Returns the currently playing video object
      * @returns video object
@@ -179,25 +185,25 @@ $(document).ready(function() {
                 }
                 break;
             case 39: //right arrow key
-            //seek forward n seconds
-            var position = player.getPosition();
-            var newPosition = position + seekBurstSeconds;
-            if (position <= seekPosition) {
-                newPosition = seekPosition + seekBurstSeconds;
-            }
-            seekPosition = newPosition;
-            player.seek(seekPosition);
-            break;
-        case 37: //left arrow key
-             //seek backwards n seconds
-            var position = player.getPosition();
-            var newPosition = position - seekBurstSeconds;
-            if (position >= seekPosition) {
-                newPosition = seekPosition - seekBurstSeconds;
-            }
-            seekPosition = newPosition;
-            player.seek(seekPosition);
-            break;
+                //seek forward n seconds
+                var position = player.getPosition();
+                var newPosition = position + seekBurstSeconds;
+                if (position <= seekPosition) {
+                    newPosition = seekPosition + seekBurstSeconds;
+                }
+                seekPosition = newPosition;
+                player.seek(seekPosition);
+                break;
+            case 37: //left arrow key
+                //seek backwards n seconds
+                var position = player.getPosition();
+                var newPosition = position - seekBurstSeconds;
+                if (position >= seekPosition) {
+                    newPosition = seekPosition - seekBurstSeconds;
+                }
+                seekPosition = newPosition;
+                player.seek(seekPosition);
+                break;
         }
     }
 

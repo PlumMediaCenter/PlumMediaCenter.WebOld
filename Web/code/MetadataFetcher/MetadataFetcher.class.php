@@ -1,6 +1,6 @@
 <?php
 
-include_once(dirname(__FILE__) . '/../Interfaces/iVideo.php');
+include_once(dirname(__FILE__) . '/../Interfaces/iVideoMetadata.php');
 
 abstract class MetadataFetcher implements iVideo{
 

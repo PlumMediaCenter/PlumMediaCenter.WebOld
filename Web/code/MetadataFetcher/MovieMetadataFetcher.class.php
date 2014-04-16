@@ -8,7 +8,7 @@ include_once(dirname(__FILE__) . '/../lib/TMDB4PHP/Client.php');
  *
  * @author bplumb
  */
-class MovieMetadataFetcher extends MetadataFetcher{
+class MovieMetadataFetcher extends MetadataFetcher {
 
     private $tmdbId;
     private $countryCode;
@@ -193,9 +193,17 @@ class MovieMetadataFetcher extends MetadataFetcher{
         return ($this->info !== null) ? $this->info->vote_average : null;
     }
 
-    function year() {
+    /**
+     * The date the movie was originally released
+     * @return \DateTime
+     */
+    function releaseDate() {
         $this->fetchRelease();
-        return ($this->info !== null) ? $this->info->release_date : null;
+        $dateTime = ($this->info !== null) ? $this->info->release_date : null;
+        if ($dateTime !== null) {
+            $dateTime = new DateTime($dateTime);
+        }
+        return $dateTime;
     }
 
     function votes() {
@@ -218,9 +226,27 @@ class MovieMetadataFetcher extends MetadataFetcher{
         return ($this->info !== null) ? $this->info->tagline : null;
     }
 
+    /**
+     * The runtime of the movie in minutes
+     * @return integer - The runtime of the movie in minutes
+     */
     function runtime() {
         $this->fetchInfo();
-        return ($this->info !== null) ? $this->info->runtime : null;
+        $runtimeMinutes = ($this->info !== null) ? $this->info->runtime : null;
+        if ($runtimeMinutes === null) {
+            $intRuntimeMinutes = null;
+        } else {
+            $intRuntimeMinutes = intval($runtimeMinutes);
+        }
+        return $intRuntimeMinutes;
+    }
+
+    /**
+     * The runtime of the video in seconds
+     */
+    function runningTimeSeconds() {
+        $runtimeMinutes = $this->runtime();
+        return ($runtimeMinutes === null) ? null : $runtimeMinutes * 60;
     }
 
     function imdbId() {

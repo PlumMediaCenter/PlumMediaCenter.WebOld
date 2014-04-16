@@ -1,5 +1,7 @@
 <?php
 
+include_once(dirname(__FILE__) . '/../../MetadataFetcher/MovieMetadataFetcher.class.php');
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -30,6 +32,14 @@ class FileSystemMovie extends FileSystemVideo {
     }
 
     /**
+     * Returns the full url to the video file
+     * @return string - the full url to the video file
+     */
+    public function getVideoUrl() {
+        return $this->getContainingFolderUrl() . "/" . pathinfo($this->path, PATHINFO_FILENAME) . "." . pathinfo($this->path, PATHINFO_EXTENSION);
+    }
+
+    /**
 
 
       /**
@@ -52,15 +62,6 @@ class FileSystemMovie extends FileSystemVideo {
             "$containingFolderPath/folder.png"
         );
         return $posterFilenames;
-    }
-
-    /**
-     * Gets the full url to the parent folder of this video. 
-     * @return string - the full url to the parent folder of this video
-     */
-    protected function getContainingFolderUrl() {
-        $containingFolderUrl = dirname($this->url);
-        return $containingFolderUrl;
     }
 
     /**
@@ -99,8 +100,7 @@ class FileSystemMovie extends FileSystemVideo {
      * @return MovieMetadataFetcher
      */
     protected function getMetadataFetcher() {
-        include_once(dirname(__FILE__) . "/MetadataFetcher/MovieMetadataFetcher.class.php");
-        $metadataFetcher = $this->getMetadataFetcherClass();
+        $metadataFetcher = new MovieMetadataFetcher();
         $foldername = pathinfo(dirname($this->path), PATHINFO_FILENAME);
         $metadataFetcher->searchByTitle($foldername);
         return $metadataFetcher;
