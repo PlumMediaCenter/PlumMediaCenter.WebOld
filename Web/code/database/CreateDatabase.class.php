@@ -179,17 +179,18 @@ class CreateDatabase {
     }
 
     private function db001_001() {
-        $t = DbManager::NonQuery('create table genre('
-                        . 'genre_name varchar(100) primary key'
-                        . ')');
+        $t = DbManager::NonQuery(
+            'create or replace view genre as
+                select distinct name 
+                from video_genre 
+                order by name asc');
         $t = $t && DbManager::NonQuery('
             create table video_genre( 
                 id int primary key auto_increment, 
                 video_id int not null, 
-                genre_name varchar(100) not null, 
-                unique key(video_id, genre_name), 
-                foreign key(video_id) references video(video_id), 
-                foreign key(genre_name) references genre(genre_name) 
+                name varchar(100) not null, 
+                unique key(video_id, name), 
+                foreign key(video_id) references video(video_id)
         )');
         $t = $t && DbManager::NonQuery('alter table video '
                         . 'add column sd_poster_url varchar(2000) not null,'

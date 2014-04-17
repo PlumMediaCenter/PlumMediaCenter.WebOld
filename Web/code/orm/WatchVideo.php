@@ -8,7 +8,7 @@ namespace orm;
  * @property int $timeInSeconds
  * @property DateTime $dateWatched
  */
-class WatchVideo extends ActiveRecord\Model {
+class WatchVideo extends \ActiveRecord\Model {
 
     static $table_name = "watch_video";
     static $primary_key = "id";

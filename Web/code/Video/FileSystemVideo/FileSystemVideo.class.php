@@ -20,6 +20,7 @@ abstract class FileSystemVideo {
     protected $metadataLoaded = false;
     protected $sourceUrl;
     protected $sourcePath;
+    protected $genres;
     public $path;
     protected $url;
     protected $posterPath;
@@ -200,6 +201,8 @@ abstract class FileSystemVideo {
         $this->releaseDate = $iVideoMetadata->releaseDate();
         $this->metadataRunningTimeSeconds = $iVideoMetadata->runningTimeSeconds();
         $this->metadataLoaded = true;
+
+        $this->genres = $iVideoMetadata->genres();
     }
 
     /**
@@ -316,6 +319,15 @@ abstract class FileSystemVideo {
         $v->sdPosterUrl = $this->getSdPosterUrl();
         $v->hdPosterUrl = $this->getHdPosterUrl();
         $v->save();
+
+        //save each genre
+        foreach ($this->genres as $genre) {
+            //save this genre to this movie
+            $vg = new \orm\VideoGenre();
+            $vg->name = $genre;
+            $vg->videoId = $v->id;
+            $vg->save();
+        }
     }
 
 }

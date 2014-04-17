@@ -136,7 +136,7 @@ class MovieMetadataFetcher extends MetadataFetcher {
                     }
                     //at this point, we have the first release or the release with our specified country code. 
                     $this->release = $selectedRelease;
-                }else{
+                } else {
                     //mark the release fetch as a failure
                     $this->release = false;
                 }
@@ -269,6 +269,10 @@ class MovieMetadataFetcher extends MetadataFetcher {
         return strlen($this->trailer) > 0 ? $this->trailer : null;
     }
 
+    /**
+     * The list of genres for this video
+     * @return string[] - a list of the genres for this video
+     */
     function genres() {
         $this->fetchInfo();
         $genres = [];

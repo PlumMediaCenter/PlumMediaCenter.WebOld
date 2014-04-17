@@ -1,4 +1,5 @@
 <?php
+
 namespace orm;
 
 /**
@@ -35,5 +36,4 @@ class Video extends \ActiveRecord\Model {
         'videoSourcePath' => 'video_source_path',
         'videoSourceUrl' => 'video_source_url'
     );
-
 }

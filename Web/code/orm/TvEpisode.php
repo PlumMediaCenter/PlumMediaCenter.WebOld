@@ -9,7 +9,7 @@ namespace orm;
  * @property int $episodeNumber
  * @property String $director
  */
-class TvEpisode extends ActiveRecord\Model {
+class TvEpisode extends \ActiveRecord\Model {
 
     static $table_name = "tv_episode";
     static $primary_key = "video_id";
