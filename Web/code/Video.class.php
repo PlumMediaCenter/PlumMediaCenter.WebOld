@@ -139,9 +139,9 @@ abstract class Video {
         $video->mpaa = $row->mpaa;
         $video->runtime = $row->running_time_seconds;
 
-       //compute the year
+        //compute the year
         $releaseDate = DateTime::createFromFormat("Y-m-d", $row->release_date);
-        $year = intval( $releaseDate->format("Y"));
+        $year = ($releaseDate === false) ? null : intval($releaseDate->format("Y"));
         $video->year = ($year === -1) ? null : $year;
         return $video;
     }
@@ -299,12 +299,11 @@ abstract class Video {
         return $folderName;
     }
 
-    
     protected function getUrl() {
         //get the relative path to the video
         $relativePath = str_replace($this->videoSourcePath, "", $this->fullPath);
         $url = $this->videoSourceUrl . $relativePath;
-        
+
         return $url;
     }
 
@@ -398,7 +397,7 @@ abstract class Video {
         if ($this->hdPosterExists() == true) {
             return Video::EncodeUrl($this->getHdPosterUrl());
         } else {
-            $url = fileUrl(__FILE__) . "/../Content/Images/posters/" . $this->getBlankPosterName() . ".hd.jpg";
+            $url = fileUrl(__FILE__) . "/../Content/Images/posters/blankPosters/" . $this->getBlankPosterName() . ".hd.jpg";
             $url = url_remove_dot_segments($url);
             return Video::EncodeUrl($url);
         }

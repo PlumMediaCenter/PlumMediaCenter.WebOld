@@ -18,17 +18,20 @@ abstract class FileSystemVideo {
     protected $posterFilenames;
     protected $mediaType;
     protected $metadataLoaded = false;
-    protected $sourceUrl;
-    protected $sourcePath;
-    protected $genres;
-    public $path;
-    protected $url;
     protected $posterPath;
     protected $posterUrl;
+    protected $nfoReader = null;
+
+    /** Database Fields */
     protected $title;
     protected $plot;
     protected $mpaa;
     protected $releaseDate;
+    protected $genres;
+    protected $sourceUrl;
+    protected $sourcePath;
+    protected $path;
+    protected $url;
 
     function __construct($path, $sourcePath, $sourceUrl) {
         //save the sourceUrl
@@ -52,8 +55,18 @@ abstract class FileSystemVideo {
         $relativePath = str_replace($this->sourcePath, "", $this->path);
         $this->url = $this->sourceUrl . $relativePath;
 
+        //retrieve the poster path if the video has a poster in its folder with it
         $this->posterPath = $this->getExistingPosterPath();
+
         $this->posterUrl = $this->getPosterUrl();
+    }
+
+    /**
+     * Getter for the $path property
+     * @return string - the path to the video
+     */
+    function getPath() {
+        return $this->path;
     }
 
     /**
@@ -66,9 +79,9 @@ abstract class FileSystemVideo {
         $possiblePosterFilenames = $this->getPossiblePosterFilenames();
         $basePath = $this->getContainingFolderPath();
         foreach ($possiblePosterFilenames as $posterFilename) {
-            $posterFilePath = $basePath . $posterFilename;
+            $posterFilePath = "$basePath/$posterFilename";
             if (file_exists($posterFilePath) === true) {
-                return $posterFilename;
+                return $posterFilePath;
             }
         }
         return null;
@@ -79,7 +92,7 @@ abstract class FileSystemVideo {
      * @return string 
      */
     protected function getContainingFolderPath() {
-        $containingFolderPath = dirname($this->path) . "/";
+        $containingFolderPath = dirname($this->path);
         return $containingFolderPath;
     }
 
@@ -90,11 +103,27 @@ abstract class FileSystemVideo {
     protected abstract function getFilename();
 
     /**
-     * Returns an array of possible names of poster files
+     *  Returns an array of possible names of poster files.
+     *      Checks for files in this order:
+     *      <filename>-poster.(jpg/png)
+     *      poster.(jpg/png)
+     *      folder.jpg
      * @return string - an array of possible allowed filenames of posters for this video, in 
      *                  priority order from highest priority to lowest priority.
      */
-    protected abstract function getPossiblePosterFilenames();
+    protected function getPossiblePosterFilenames() {
+        $containingFolderPath = $this->getContainingFolderPath();
+        $filename = $this->getFilename();
+        $posterFilenames = array(
+            "$filename.jpg",
+            "$filename.png",
+            "poster.jpg",
+            "poster.png",
+            "folder.png",
+            "folder.jpg"
+        );
+        return $posterFilenames;
+    }
 
     /**
      * Gets the url to the poster for this video. This will ALWAYS return a url. So if 
@@ -107,7 +136,7 @@ abstract class FileSystemVideo {
      * Returns the full url to the video file
      * @return string - the full url to the video file
      */
-    public abstract function getVideoUrl();
+    public abstract function getUrl();
 
     /**
      * Retrieves the name of the blank poster that will be used if no poster was found for this video
@@ -129,7 +158,7 @@ abstract class FileSystemVideo {
      * @return string - the url to the folder containing all of the blank posters
      */
     protected function getBlankPosterBaseUrl() {
-        $url = fileUrl(__FILE__) . "/../Content/Images/posters/";
+        $url = fileUrl(__FILE__) . "/../Content/Images/posters/blankPosters";
         $url = url_remove_dot_segments($url);
         return FileSystemVideo::EncodeUrl($url);
     }
@@ -154,11 +183,11 @@ abstract class FileSystemVideo {
         //check to see if there is an nfo file with the same name as this video in the same directory.
         $filename = pathinfo($this->path, PATHINFO_FILENAME);
         $containingFolderPath = $this->getContainingFolderPath();
-        $sameNameNfoPath = $containingFolderPath . "$filename.nfo";
+        $sameNameNfoPath = "$containingFolderPath/$filename.nfo";
         if (file_exists($sameNameNfoPath) === true) {
-            $nfoPath - $sameNameNfoPath;
+            $nfoPath = $sameNameNfoPath;
         } else {//look for ANY nfo file in the folder.
-            $files = glob("$containingFolderPath*.nfo");
+            $files = glob("$containingFolderPath/*.nfo");
             foreach ($files as $nfoFilePath) {
                 $nfoPath = $nfoFilePath;
                 break;
@@ -184,25 +213,25 @@ abstract class FileSystemVideo {
      */
     public function loadMetadata() {
 
-        $iVideoMetadata = null;
+        $iVideoMetadataMetadata = null;
 
         $nfoPath = $this->getExistingNfoPath();
         //no nfo file was found. look online for the metadata
         if ($nfoPath === null) {
-            $iVideoMetadata = $this->getMetadataFetcher();
+            $iVideoMetadataMetadata = $this->getMetadataFetcher();
         } else {
-            $iVideoMetadata = $this->getNfoReader();
+            $iVideoMetadataMetadata = $this->getNfoReader();
         }
 
         //extract all of the video information from the fetcher or reader
-        $this->title = $iVideoMetadata->title();
-        $this->plot = $iVideoMetadata->plot();
-        $this->mpaa = $iVideoMetadata->mpaa();
-        $this->releaseDate = $iVideoMetadata->releaseDate();
-        $this->metadataRunningTimeSeconds = $iVideoMetadata->runningTimeSeconds();
+        $this->title = $iVideoMetadataMetadata->title();
+        $this->plot = $iVideoMetadataMetadata->plot();
+        $this->mpaa = $iVideoMetadataMetadata->mpaa();
+        $this->releaseDate = $iVideoMetadataMetadata->releaseDate();
+        $this->metadataRunningTimeSeconds = $iVideoMetadataMetadata->runningTimeSeconds();
         $this->metadataLoaded = true;
 
-        $this->genres = $iVideoMetadata->genres();
+        $this->genres = $iVideoMetadataMetadata->genres();
     }
 
     /**
@@ -262,15 +291,7 @@ abstract class FileSystemVideo {
      * @return \DateTime
      */
     public function getMetadataLastModifiedDate() {
-        $modifiedDate = null;
-        $nfoPath = $this->getExistingNfoPath();
-        if (file_exists($nfoPath) === true) {
-            $modifiedDate = filemtime($nfoPath);
-            if ($modifiedDate !== null) {
-                $modifiedDate = new DateTime($modifiedDate);
-            }
-        }
-        return $modifiedDate;
+        return $this->getModifiedDate($this->getExistingNfoPath());
     }
 
     /**
@@ -278,13 +299,20 @@ abstract class FileSystemVideo {
      * @return \DateTime
      */
     public function getPosterLastModifiedDate() {
+        return $this->getModifiedDate($this->getExistingPosterPath());
+    }
+
+    /**
+     * Returns the date of the last time the file at the path in the parameter was modified
+     * @param string $path - the full path to the file
+     * @return \DateTime
+     */
+    private function getModifiedDate($path) {
         $modifiedDate = null;
-        $posterPath = $this->getExistingPosterPath();
-        if (file_exists($posterPath) === true) {
-            $modifiedDate = filemtime($posterPath);
-            if ($modifiedDate !== null) {
-                $modifiedDate = new DateTime($modifiedDate);
-            }
+        $filemtimeValue = filemtime($path);
+        if ($filemtimeValue !== false) {
+            $modifiedDate = new DateTime();
+            $modifiedDate->setTimestamp($filemtimeValue);
         }
         return $modifiedDate;
     }
@@ -307,7 +335,7 @@ abstract class FileSystemVideo {
         $v->runningTimeSeconds = $this->getRunningTimeSeconds();
         $v->plot = $this->plot;
         $v->path = $this->path;
-        $v->url = $this->getVideoUrl();
+        $v->url = $this->getUrl();
         $v->filetype = $this->getFiletype();
         $v->metadataLastModifiedDate = $this->getMetadataLastModifiedDate();
         $v->posterLastModifiedDate = $this->getPosterLastModifiedDate();

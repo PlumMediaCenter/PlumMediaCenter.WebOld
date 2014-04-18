@@ -4,6 +4,7 @@ include_once("database/Queries.class.php");
 include_once("VideoSource.class.php");
 include_once(dirname(__FILE__) . "/Video/FileSystemVideo/FileSystemVideo.class.php");
 include_once(dirname(__FILE__) . "/Video/FileSystemVideo/FileSystemMovie.class.php");
+include_once(dirname(__FILE__) . "/Video/DbVideo/DbVideo.class.php");
 
 class NewLibrary {
 
@@ -16,7 +17,7 @@ class NewLibrary {
         $movieSources = VideoSource::GetByType(Enumerations\MediaType::Movie);
 
         //get list of movies from db
-        $moviesInDb = \orm\Video::find('all', array('select' => 'path'));
+        $moviesInDb = \orm\Video::find('all', array('select' => 'path, video_id'));
 
         //get list of movies from sources
         $moviesInFs = array();
@@ -32,7 +33,7 @@ class NewLibrary {
         }
 
         //Get list of deleted movies (found in db but NOT found in filesystem)
-        $deletedMoviesFromDb = array();
+        $moviesInDbButDeletedFromFs = array();
         $existingMovies = array_filter($moviesInDb);
         foreach ($moviesInDb as $dbKey => $movieInDb) {
             $videoHasBeenFound = false;
@@ -41,7 +42,7 @@ class NewLibrary {
                 if ($movieInFs === null) {
                     continue;
                 }
-                if ($movieInDb->path === $movieInFs->path) {
+                if ($movieInDb->path === $movieInFs->getPath()) {
                     $videoHasBeenFound = true;
                     //remove the video from the filesystem list
                     $moviesInFs[$fsKey] = null;
@@ -52,7 +53,7 @@ class NewLibrary {
             //the video was not found. it has been deleted. put it into the delete list
             if ($videoHasBeenFound === false) {
                 //add to list of movies to delete
-                $deletedMoviesFromDb[] = $movieInDb;
+                $moviesInDbButDeletedFromFs[] = $movieInDb;
                 //remove from list of movies from db
                 $moviesInDb[$dbKey] = null;
             }
@@ -60,13 +61,19 @@ class NewLibrary {
 
         //the remaining videos in $moviesInFs are new movies
         $newMovies = array_filter($moviesInFs);
-        
+
         //write new movies to the db
-        foreach($newMovies as $newMovie){
+        foreach ($newMovies as $newMovie) {
             //this process includes looking for an nfo file. If it finds one, use that info. Otherwise, look to the net
             $newMovie->loadMetadata();
             //save the new movie to the database
             $newMovie->save();
+        }
+
+        //delete the movies from the db that were removed from the filesystem
+        /* @var  $movieToDeleteFromDb \orm\Video */
+        foreach ($moviesInDbButDeletedFromFs as $movieToDeleteFromDb) {
+            DbVideo::Delete($movieToDeleteFromDb->videoId);
         }
     }
 

@@ -1,6 +1,8 @@
 <?php
 
-abstract class NfoReader {
+include_once(dirname(__FILE__) . '/../Interfaces/iVideoMetadata.php');
+
+abstract class NfoReader implements iVideoMetadata {
 
     //each child will parse the file and load their properties into the class
     abstract protected function parseFile();

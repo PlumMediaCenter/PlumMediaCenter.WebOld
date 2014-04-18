@@ -12,7 +12,9 @@ class MovieNfoReader extends NfoReader {
         $this->sortTitle = $this->val("sorttitle");
         $this->set = $this->val("set");
         $this->rating = $this->val("rating");
-        $this->year = $this->val("year");
+        $year = $this->val("year");
+        //year should be a 4 digit number
+        $this->year = (strlen($year) === 4) ? intval($year) : null;
         $this->top250 = $this->val("top250");
         $this->votes = $this->val("votes");
         $this->outline = $this->val("outline");
@@ -125,6 +127,44 @@ class MovieNfoReader extends NfoReader {
     public $directors;
     public $actors;
 
+    /* iVideoMetadata implementation */
+
+    public function title() {
+        return $this->title;
+    }
+
+    public function rating() {
+        return $this->rating;
+    }
+
+    public function plot() {
+        return $this->plot;
+    }
+
+    public function mpaa() {
+        return $this->mpaa;
+    }
+
+    public function genres() {
+        return $this->genres;
+    }
+
+    public function releaseDate() {
+        $dateTime = null;
+        if ($this->year !== null) {
+            $dateTime = new DateTime();
+            $dateTime->setDate($this->year, 1, 1);
+        }
+        return $dateTime;
+    }
+
+    public function runningTimeSeconds() {
+        $runtimeMinutes = $this->runtime;
+        $intRuntimeMinutes = ($runtimeMinutes === null) ? null : intval($runtimeMinutes);
+        return ($intRuntimeMinutes === null) ? null : intval($intRuntimeMinutes) * 60;
+    }
+
+    /* End iVideoMetadata Implementation */
 }
 
 ?>

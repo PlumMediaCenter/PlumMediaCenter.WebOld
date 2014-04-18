@@ -1,26 +1,21 @@
 <?php
 
-include_once(dirname(__FILE__) . '/../../MetadataFetcher/MovieMetadataFetcher.class.php');
-include_once(dirname(__FILE__) . '/../../NfoReader/MovieNfoReader.class.php');
-
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+include_once(dirname(__FILE__) . '/../../MetadataFetcher/TvShowMetadataFetcher.class.php');
+include_once(dirname(__FILE__) . '/../../NfoReader/TvShowNfoReader.class.php');
 
 /**
- * Description of FileSystemMovie
+ * Description of FileSystemTvShow
  *
  * @author bplumb
  */
-class FileSystemMovie extends FileSystemVideo {
+class FileSystemTvShow extends FileSystemVideo {
 
     function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
         parent::__construct($videoSourceUrl, $videoSourcePath, $fullPath);
         //the media type of this video is movie
-        $this->mediaType = Enumerations\MediaType::Movie;
+        $this->mediaType = Enumerations\MediaType::TvShow;
+        //retrieve the poster path if the video has a poster in its folder with it
+        $this->posterPath = $this->getExistingPosterPath();
     }
 
     /**
@@ -32,34 +27,27 @@ class FileSystemMovie extends FileSystemVideo {
     }
 
     /**
-     * Returns the full url to the video file
-     * @return string - the full url to the video file
+     * Returns the full url to the tv show folder
+     * @return string - the full url to the tv show folder
      */
     public function getUrl() {
-        return $this->getContainingFolderUrl() . "/" . pathinfo($this->path, PATHINFO_FILENAME) . "." . pathinfo($this->path, PATHINFO_EXTENSION);
+        return $this->getContainingFolderUrl() . '/' . pathinfo($this->path, PATHINFO_FILENAME);
     }
 
     /**
-
-      /**
      * Gets the url to the poster for this video. This will ALWAYS return a url. So if 
      * this video does not have a poster, the url returned will point to the blank poster.
      * @return string - the url to the poster for this video. 
      */
     protected function getPosterUrl() {
-        $posterUrl = null;
-        $posterFilename = ($this->posterPath !== null) ? pathinfo($this->posterPath, PATHINFO_FILENAME) . "." . pathinfo($this->posterPath, PATHINFO_EXTENSION) : null;
-        //if no poster exists, use a blank poster
+        $posterFilename = $posterUrl = null;
+        //if no poster exists
         if ($posterFilename === null) {
-            $blankPosterBaseUrl = $this->getBlankPosterBaseUrl();
-            $blankPosterName = $this->getBlankPosterName();
-            $posterUrl = "$blankPosterBaseUrl/$blankPosterName";
+            $posterUrl = $this->getBlankPosterBaseUrl() . '/' . $this->getBlankPosterName();
         } else {
-            //use the poster that exists
             $containingFolderUrl = $this->getContainingFolderUrl();
-            $posterUrl = "$containingFolderUrl/$posterFilename";
+            $posterUrl = $containingFolderUrl . '/' . $posterFilename;
         }
-        return $posterUrl;
     }
 
     /**
@@ -69,9 +57,9 @@ class FileSystemMovie extends FileSystemVideo {
         return "BlankPoster.jpg";
     }
 
-    protected function getNfoReader() {
-        if (isset($this->nfoReader) === false) {
-            $this->nfoReader = new MovieNfoReader();
+    function getNfoReader() {
+        if ($this->nfoReader == null) {
+            $this->nfoReader = new TvShowNfoReader();
             $this->nfoReader->loadFromFile($this->getExistingNfoPath());
         }
         return $this->nfoReader;

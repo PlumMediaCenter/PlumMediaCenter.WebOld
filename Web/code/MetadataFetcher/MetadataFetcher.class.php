@@ -2,7 +2,7 @@
 
 include_once(dirname(__FILE__) . '/../Interfaces/iVideoMetadata.php');
 
-abstract class MetadataFetcher implements iVideo{
+abstract class MetadataFetcher implements iVideoMetadata {
 
     abstract function searchByTitle($title, $year);
 

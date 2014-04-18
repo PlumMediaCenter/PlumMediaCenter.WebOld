@@ -1,6 +1,6 @@
 <?php
 
-interface iVideo {
+interface iVideoMetadata {
 
     function title();
 
@@ -10,8 +10,6 @@ interface iVideo {
 
     function mpaa();
 
-    function posterUrl();
-    
     /**
      * The list of genres for this video
      * @return string[] - a list of the genres for this video

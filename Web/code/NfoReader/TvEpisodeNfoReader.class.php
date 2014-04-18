@@ -114,6 +114,44 @@ class TvEpisodeNfoReader extends NfoReader {
     public $actors;
     public $fileInfo;
 
+    /* iVideoMetadata implementation */
+
+    public function title() {
+        return $this->title;
+    }
+
+    public function rating() {
+        return $this->rating;
+    }
+
+    public function plot() {
+        return $this->plot;
+    }
+
+    public function mpaa() {
+        return $this->mpaa;
+    }
+
+    public function genres() {
+        return $this->genres;
+    }
+
+    public function releaseDate() {
+        $dateTime = null;
+        if ($this->year !== null) {
+            $dateTime = new DateTime();
+            $dateTime->setDate($this->year, 1, 1);
+        }
+        return $dateTime;
+    }
+
+    public function runningTimeSeconds() {
+        $runtimeMinutes = $this->runtime;
+        $intRuntimeMinutes = ($runtimeMinutes === null) ? null : intval($runtimeMinutes);
+        return ($intRuntimeMinutes === null) ? null : intval($intRuntimeMinutes) * 60;
+    }
+
+    /* End iVideoMetadata Implementation */
 }
 
 ?>
