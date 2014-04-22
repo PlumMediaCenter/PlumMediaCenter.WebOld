@@ -161,9 +161,25 @@ class Table
 				$options['select'] = $this->get_fully_qualified_table_name() . '.*';
 		}
 
-		if (array_key_exists('select',$options))
-			$sql->select($options['select']);
-
+		if (array_key_exists('select',$options)){
+                    $orig_select_text = $options['select'];
+                    //split the select string by comma. Look through each field and replace any aliases
+                    //with their corresponding column name
+                    $columns = explode(",", $orig_select_text);
+                    $new_select_columns = array();
+                    foreach($columns as $column_name){
+                        //remove any whitespace around the name
+                        $treated_column_name = trim($column_name);
+                        //look through the list of mapped names and see if a replacement is in order
+                        $actual_column_name = isset($options['mapped_names'][$treated_column_name])? 
+                                $options['mapped_names'][$treated_column_name]: 
+                                $column_name;
+                        //at this point, any alias column name has been replaced its actual column name. Add the column back to the list
+                        $new_select_columns[] = $actual_column_name;
+                    }
+                    $new_select_text = implode(',', $new_select_columns);
+                    $sql->select($new_select_text);
+                }
 		if (array_key_exists('conditions',$options))
 		{
 			if (!is_hash($options['conditions']))

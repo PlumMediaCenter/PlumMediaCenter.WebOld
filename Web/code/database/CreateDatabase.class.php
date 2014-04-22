@@ -195,6 +195,7 @@ class CreateDatabase {
         $t = $t && DbManager::NonQuery('alter table video '
                         . 'add column sd_poster_url varchar(2000) not null,'
                         . 'add column hd_poster_url varchar(2000) not null, '
+                        . 'add column metadata_loaded_from_nfo boolean not null default 0, '
                         . 'change column url url varchar(2000) not null');
         return $t;
     }

@@ -1,18 +1,17 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+include_once(dirname(__FILE__) . '/DbVideo.php');
 
 /**
- * Description of DbVideo
- *
+ * This class wraps a database movie object. 
  * @author bplumb
  */
-class DbVideo {
-    
+class DbMovie extends DbVideo {
+
+    public function __construct($videoId) {
+        parent::__construct($videoId);
+    }
+
     static function Delete($videoId) {
         //delete every VideoGenre record referencing this video
         \orm\VideoGenre::table()->delete(array('video_id' => array($videoId)));

@@ -13,9 +13,9 @@ class Enumeration {
         if (isset(\Enumerations\Enumeration::$cache[$enumType]) === false) {
             $refl = new \ReflectionClass($enumType);
             $enumValues = $refl->getConstants();
-           \Enumerations\Enumeration::$cache[$enumType] = $enumValues;
+            \Enumerations\Enumeration::$cache[$enumType] = $enumValues;
         }
-        
+
         //grab the enum values for this enum type
         $values = \Enumerations\Enumeration::$cache[$enumType];
         //if the value specified is in the list of enum values for this enum, return true. otherwise, the value is not a valid enum value
@@ -66,6 +66,15 @@ class PlayType extends Enumeration {
     const Single = "Single";
     const TvShow = "TvShow";
     const Playlist = "Playlist";
+
+}
+
+class PosterSizes extends Enumeration {
+
+    const RokuSDWidth = 110;
+    const RokuSDHeight = 150;
+    const RokuHDWidth = 210;
+    const RokuHDHeight = 270;
 
 }
 

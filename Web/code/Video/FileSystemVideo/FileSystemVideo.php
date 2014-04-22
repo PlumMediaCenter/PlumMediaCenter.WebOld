@@ -1,6 +1,7 @@
 <?php
 
 include_once(dirname(__FILE__) . '/../../lib/php-mp4info/MP4Info.php');
+include_once(dirname(__FILE__) . '/../../lib/SimpleImage/SimpleImage.php');
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,6 +19,7 @@ abstract class FileSystemVideo {
     protected $posterFilenames;
     protected $mediaType;
     protected $metadataLoaded = false;
+    protected $metadataLoadedFromNfo = false;
     protected $posterPath;
     protected $posterUrl;
     protected $nfoReader = null;
@@ -219,8 +221,10 @@ abstract class FileSystemVideo {
         //no nfo file was found. look online for the metadata
         if ($nfoPath === null) {
             $iVideoMetadataMetadata = $this->getMetadataFetcher();
+            $this->metadataLoadedFromNfo = false;
         } else {
             $iVideoMetadataMetadata = $this->getNfoReader();
+            $this->metadataLoadedFromNfo = true;
         }
 
         //extract all of the video information from the fetcher or reader
@@ -346,6 +350,7 @@ abstract class FileSystemVideo {
         $v->videoSourceUrl = $this->sourceUrl;
         $v->sdPosterUrl = $this->getSdPosterUrl();
         $v->hdPosterUrl = $this->getHdPosterUrl();
+        $v->metadataLoadedFromNfo = $this->metadataLoadedFromNfo;
         $v->save();
 
         //save each genre
@@ -356,6 +361,33 @@ abstract class FileSystemVideo {
             $vg->videoId = $v->id;
             $vg->save();
         }
+    }
+
+    /**
+     * Generates an poster that is sized to the max width and max height specified
+     * The existing aspect ratio is retained
+     * @param type $width - width in pixels
+     * @param type $height - height in pixels
+     * @return boolean - true if successful, false if file doesn't exist or failure
+     */
+    public function savePoster($destination, $maxWidth, $maxHeight) {
+        $posterPath = $this->getPosterPath();
+        if (file_exists($posterPath)) {
+            $image = new SimpleImage();
+            //load the image
+            try {
+                $success = $image->load($posterPath);
+                //resize the image
+                $image->best_fit($maxWidth, $maxHeight);
+                //re-save the image as folder-small.jpg
+                $image->save($destination);
+            } catch (ErrorException $e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
     }
 
 }

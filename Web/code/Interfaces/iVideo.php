@@ -1,14 +1,26 @@
 <?php
 
-interface iVideoMetadata {
+/**
+ *
+ * @author bplumb
+ */
+interface iVideo {
+    
     function title();
-
-    function rating();
 
     function plot();
 
     function mpaa();
+    
+    function path();
 
+    function sourcePath();
+    
+    function sourceUrl();
+    
+    function metadataLoadedFromNfo();
+    
+    
     /**
      * The list of genres for this video
      * @return string[] - a list of the genres for this video
