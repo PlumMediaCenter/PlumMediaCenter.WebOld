@@ -22,10 +22,6 @@ abstract class DbVideo implements iVideo {
 
     /* End ORM Objects */
 
-    public function getVideoId() {
-        return $this->videoId;
-    }
-
     public function __construct($videoId) {
         $this->videoId = $videoId;
     }
@@ -69,9 +65,14 @@ abstract class DbVideo implements iVideo {
 
         //finally, delete the video itself
         \orm\Video::table()->delete(array('video_id' => array($videoId)));
+        
     }
 
     /* iVideo functions */
+
+    public function videoId() {
+        return $this->videoId;
+    }
 
     function title() {
         return $this->getVideoRecord()->title;
@@ -99,6 +100,10 @@ abstract class DbVideo implements iVideo {
     
     function metadataLoadedFromNfo(){
         return $this->getVideoRecord()->metadataLoadedFromNfo;
+    }
+    
+    function poster(){
+        return $this->getVideoRecord();
     }
 
     /**

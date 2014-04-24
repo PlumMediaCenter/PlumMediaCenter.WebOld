@@ -23,8 +23,11 @@ abstract class FileSystemVideo {
     protected $posterPath;
     protected $posterUrl;
     protected $nfoReader = null;
+    protected $metadataPosterUrl = null;
+    protected $posterDestinationPath;
 
     /** Database Fields */
+    protected $videoId;
     protected $title;
     protected $plot;
     protected $mpaa;
@@ -36,6 +39,7 @@ abstract class FileSystemVideo {
     protected $url;
 
     function __construct($path, $sourcePath, $sourceUrl) {
+        $this->posterDestinationPath = dirname(__FILE__) . '/../../../Content/Images/posters';
         //save the sourceUrl
         $this->sourceUrl = $sourceUrl;
         //save the sourcePath
@@ -126,13 +130,6 @@ abstract class FileSystemVideo {
         );
         return $posterFilenames;
     }
-
-    /**
-     * Gets the url to the poster for this video. This will ALWAYS return a url. So if 
-     * this video does not have a poster, the url returned will point to the blank poster.
-     * @return string - the url to the poster for this video. 
-     */
-    protected abstract function getPosterUrl();
 
     /**
      * Returns the full url to the video file
@@ -234,6 +231,7 @@ abstract class FileSystemVideo {
         $this->releaseDate = $iVideoMetadataMetadata->releaseDate();
         $this->metadataRunningTimeSeconds = $iVideoMetadataMetadata->runningTimeSeconds();
         $this->metadataLoaded = true;
+        $this->metadataPosterUrl = $iVideoMetadataMetadata->posterUrl();
 
         $this->genres = $iVideoMetadataMetadata->genres();
     }
@@ -321,13 +319,52 @@ abstract class FileSystemVideo {
         return $modifiedDate;
     }
 
+    public function getBlankPosterUrl($extensionPrefix = "") {
+        $blankPosterBaseUrl = $this->getBlankPosterBaseUrl();
+        $blankPosterName = $this->getBlankPosterName();
+        //rip the extension off
+        $ext = pathinfo($blankPosterName, PATHINFO_EXTENSION);
+        $name = pathinfo($blankPosterName, PATHINFO_FILENAME);
+        $posterUrl = "$blankPosterBaseUrl/$name" . $extensionPrefix . ".$ext";
+        return $posterUrl;
+    }
+
+    /**
+     * Gets the url to the poster for this video. This will ALWAYS return a url. So if 
+     * this video does not have a poster, the url returned will point to the blank poster.
+     * @return string - the url to the poster for this video. 
+     */
+    function getPosterUrl() {
+        $finalUrl = "";
+        $posterPath = $this->getPosterPath();
+        if ($posterPath === null) {
+            $finalUrl = $this->getBlankPosterUrl();
+        } else {
+            $finalUrl = baseUrl() . "/Content/Images/posters/$this->videoId.jpg";
+        }
+        return FileSystemVideo::EncodeUrl($finalUrl);
+    }
+
     function getSdPosterUrl() {
-        return FileSystemVideo::EncodeUrl($this->getContainingFolderUrl() . "/folder.sd.jpg");
+        $finalUrl = "";
+        $posterPath = $this->getPosterPath();
+        if ($posterPath === null) {
+            $finalUrl = $this->getBlankPosterUrl("-sd");
+        } else {
+            $finalUrl = baseUrl() . "/Content/Images/posters/$this->videoId-sd.jpg";
+        }
+        return FileSystemVideo::EncodeUrl($finalUrl);
     }
 
     function getHdPosterUrl() {
-        $hdPosterUrl = $this->getContainingFolderUrl() . "/folder.hd.jpg";
-        return FileSystemVideo::EncodeUrl($hdPosterUrl);
+        $finalUrl = "";
+        $posterPath = $this->getPosterPath();
+        if ($posterPath === null) {
+            $finalUrl = $this->getBlankPosterUrl("-hd");
+        } else {
+            $finalUrl = baseUrl() . "/Content/Images/posters/$this->videoId-hd.jpg";
+        }
+        return FileSystemVideo::EncodeUrl($finalUrl);
     }
 
     /**
@@ -348,10 +385,16 @@ abstract class FileSystemVideo {
         $v->mediaType = $this->mediaType;
         $v->videoSourcePath = $this->sourcePath;
         $v->videoSourceUrl = $this->sourceUrl;
+        $v->save();
+        //save the video id
+        $this->videoId = $v->videoId;
+
+
         $v->sdPosterUrl = $this->getSdPosterUrl();
         $v->hdPosterUrl = $this->getHdPosterUrl();
         $v->metadataLoadedFromNfo = $this->metadataLoadedFromNfo;
         $v->save();
+
 
         //save each genre
         foreach ($this->genres as $genre) {
@@ -363,6 +406,50 @@ abstract class FileSystemVideo {
         }
     }
 
+    public function videoId() {
+        return $this->videoId;
+    }
+
+    public function delete() {
+        $destinationFolderPath = dirname(__FILE__) . '/../../../Content/Images/posters';
+
+        $sdPosterPath = "$destinationFolderPath/$this->videoId-sd.jpg";
+        $hdPosterPath = "$destinationFolderPath/$this->videoId-hd.jpg";
+        $posterPath = "$destinationFolderPath/$this->videoId.jpg";
+        unlink($sdPosterPath);
+        unlink($hdPosterPath);
+        unlink($posterPath);
+    }
+
+    public function copyPosters() {
+
+        //save the hd poster.
+        $posterPath = "$this->posterDestinationPath/$this->videoId.jpg";
+        $sdPosterPath = "$this->posterDestinationPath/$this->videoId-sd.jpg";
+        $hdPosterPath = "$this->posterDestinationPath/$this->videoId-hd.jpg";
+
+        $this->savePoster($posterPath);
+        $this->savePoster($sdPosterPath, \Enumerations\PosterSizes::RokuSDWidth, \Enumerations\PosterSizes::RokuSDHeight, $posterPath);
+        $this->savePoster($hdPosterPath, \Enumerations\PosterSizes::RokuHDWidth, \Enumerations\PosterSizes::RokuHDHeight, $posterPath);
+    }
+
+    /**
+     * Returns either the url or the path to the poster
+     */
+    public function getPosterPath() {
+        //use a local poster first
+        $posterFilePath = $this->getExistingPosterPath();
+        $posterUrl = $this->metadataPosterUrl;
+
+        if (file_exists($posterFilePath) === true) {
+            return $posterFilePath;
+        } else if ($posterUrl !== null) {
+            return $posterUrl;
+        } else {
+            //do nothing. This video will use the standard blank poster
+        }
+    }
+
     /**
      * Generates an poster that is sized to the max width and max height specified
      * The existing aspect ratio is retained
@@ -370,16 +457,18 @@ abstract class FileSystemVideo {
      * @param type $height - height in pixels
      * @return boolean - true if successful, false if file doesn't exist or failure
      */
-    public function savePoster($destination, $maxWidth, $maxHeight) {
-        $posterPath = $this->getPosterPath();
-        if (file_exists($posterPath)) {
-            $image = new SimpleImage();
+    private function savePoster($destination, $maxWidth = null, $maxHeight = null, $posterPath = null) {
+        $posterPath = ($posterPath === null) ? $this->getPosterPath() : $posterPath;
+        if ($posterPath != null) {
+            $image = new \abeautifulsite\SimpleImage();
             //load the image
             try {
                 $success = $image->load($posterPath);
-                //resize the image
-                $image->best_fit($maxWidth, $maxHeight);
-                //re-save the image as folder-small.jpg
+                if ($maxWidth !== null && $maxHeight !== null) {
+                    //resize the image
+                    $image->best_fit($maxWidth, $maxHeight);
+                }
+
                 $image->save($destination);
             } catch (ErrorException $e) {
                 return false;

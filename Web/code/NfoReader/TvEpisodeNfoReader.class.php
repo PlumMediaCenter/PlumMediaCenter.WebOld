@@ -150,6 +150,10 @@ class TvEpisodeNfoReader extends NfoReader {
         $intRuntimeMinutes = ($runtimeMinutes === null) ? null : intval($runtimeMinutes);
         return ($intRuntimeMinutes === null) ? null : intval($intRuntimeMinutes) * 60;
     }
+    
+    public function posterUrl(){
+        return $this->thumb;
+    }
 
     /* End iVideoMetadata Implementation */
 }

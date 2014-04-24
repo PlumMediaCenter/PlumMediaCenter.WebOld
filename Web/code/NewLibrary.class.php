@@ -1,12 +1,11 @@
 <?php
 
-include_once("database/Queries.class.php");
-include_once("VideoSource.class.php");
-include_once(dirname(__FILE__) . "/Video/FileSystemVideo/FileSystemVideo.php");
-include_once(dirname(__FILE__) . "/Video/FileSystemVideo/FileSystemMovie.php");
-include_once(dirname(__FILE__) . "/Video/DbVideo/DbVideo.php");
-include_once(dirname(__FILE__) . "/Video/DbVideo/DbMovie.php");
-
+include_once('database/Queries.class.php');
+include_once('VideoSource.class.php');
+include_once(dirname(__FILE__) . '/Video/FileSystemVideo/FileSystemVideo.php');
+include_once(dirname(__FILE__) . '/Video/FileSystemVideo/FileSystemMovie.php');
+include_once(dirname(__FILE__) . '/Video/DbVideo/DbVideo.php');
+include_once(dirname(__FILE__) . '/Video/DbVideo/DbMovie.php');
 
 class NewLibrary {
 
@@ -15,6 +14,7 @@ class NewLibrary {
      * @return boolean
      */
     function generateLibrary() {
+
         //get list of movie sources
         $movieSources = VideoSource::GetByType(Enumerations\MediaType::Movie);
 
@@ -22,7 +22,7 @@ class NewLibrary {
         $moviesInDbQueryResults = \orm\Video::find('all');
         //create a DbVideo class for each movie from db
         $moviesInDb = [];
-        foreach($moviesInDbQueryResults as $movieInDb){
+        foreach ($moviesInDbQueryResults as $movieInDb) {
             $movie = new DbMovie($movieInDb->videoId);
             $movie->setVideoRecord($movieInDb);
             $moviesInDb[] = $movie;
@@ -77,14 +77,17 @@ class NewLibrary {
             $newMovie->loadMetadata();
             //save the new movie to the database
             $newMovie->save();
+
             //copy the new movie's poster to the public poster folder
-            
+            $newMovie->copyPosters();
         }
 
         //delete the movies from the db that were removed from the filesystem
         /* @var  $movieToDeleteFromDb \orm\Video */
-        foreach ($moviesInDbButDeletedFromFs as $movieToDeleteFromDb) {
-            DbVideo::Delete($movieToDeleteFromDb->getVideoId());
+        foreach ($moviesInDbButDeletedFromFs as $dbVideo) {
+            DbVideo::Delete($dbVideo->getVideoId());
+            $fsVideo = new FilesystemMovie($dbVideo->sourceUrl(), $dbVideo->sourcePath(), $dbVideo->path());
+            $fsVideo->delete();
         }
 
         /* @var  $existingMovie \orm\Video */
@@ -94,9 +97,10 @@ class NewLibrary {
             if ($dbVideo->metadataLoadedFromNfo() === true) {
                 //if the poster is newer in the fs than from the db, 
                 if ($existingMovie->posterLastModifiedDate() !== null) {
-                    //regenerate the sd and hd posters 
+                    //re-copy the posters
                     $fsVideo = new FilesystemMovie($dbVideo->sourceUrl(), $dbVideo->sourcePath(), $dbVideo->path());
                     $fsVideo->generatePosters();
+                    $fsVideo->copyPosters();
                 }
             }
         }

@@ -26,4 +26,8 @@ interface iVideoMetadata {
      */
     function runningTimeSeconds();
 
+    /**
+     * A url to the poster for this video
+     */
+    function posterUrl();
 }

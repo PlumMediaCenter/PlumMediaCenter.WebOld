@@ -6,6 +6,8 @@
  */
 interface iVideo {
     
+    function videoId();
+    
     function title();
 
     function plot();
@@ -19,6 +21,11 @@ interface iVideo {
     function sourceUrl();
     
     function metadataLoadedFromNfo();
+    
+    /**
+     * The path to the poster or the url to the poster
+     */
+    function poster();
     
     
     /**

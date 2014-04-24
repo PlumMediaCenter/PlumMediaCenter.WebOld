@@ -39,6 +39,7 @@ class FileSystemMovie extends FileSystemVideo {
         return $this->getContainingFolderUrl() . "/" . pathinfo($this->path, PATHINFO_FILENAME) . "." . pathinfo($this->path, PATHINFO_EXTENSION);
     }
 
+
     /**
 
       /**
@@ -46,21 +47,21 @@ class FileSystemMovie extends FileSystemVideo {
      * this video does not have a poster, the url returned will point to the blank poster.
      * @return string - the url to the poster for this video. 
      */
-    protected function getPosterUrl() {
-        $posterUrl = null;
-        $posterFilename = ($this->posterPath !== null) ? pathinfo($this->posterPath, PATHINFO_FILENAME) . "." . pathinfo($this->posterPath, PATHINFO_EXTENSION) : null;
-        //if no poster exists, use a blank poster
-        if ($posterFilename === null) {
-            $blankPosterBaseUrl = $this->getBlankPosterBaseUrl();
-            $blankPosterName = $this->getBlankPosterName();
-            $posterUrl = "$blankPosterBaseUrl/$blankPosterName";
-        } else {
-            //use the poster that exists
-            $containingFolderUrl = $this->getContainingFolderUrl();
-            $posterUrl = "$containingFolderUrl/$posterFilename";
-        }
-        return $posterUrl;
-    }
+//    protected function getPosterUrl() {
+//        $posterUrl = null;
+//        $posterFilename = ($this->posterPath !== null) ? pathinfo($this->posterPath, PATHINFO_FILENAME) . "." . pathinfo($this->posterPath, PATHINFO_EXTENSION) : null;
+//        //if no poster exists, use a blank poster
+//        if ($posterFilename === null) {
+//            $blankPosterBaseUrl = $this->getBlankPosterBaseUrl();
+//            $blankPosterName = $this->getBlankPosterName();
+//            $posterUrl = "$blankPosterBaseUrl/$blankPosterName";
+//        } else {
+//            //use the poster that exists
+//            $containingFolderUrl = $this->getContainingFolderUrl();
+//            $posterUrl = "$containingFolderUrl/$posterFilename";
+//        }
+//        return $posterUrl;
+//    }
 
     /**
      * Retrieves the name of the blank poster that will be used if no poster was found for this video
