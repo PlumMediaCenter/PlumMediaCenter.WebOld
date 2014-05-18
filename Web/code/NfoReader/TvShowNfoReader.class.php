@@ -124,6 +124,7 @@ class TvShowNfoReader extends NfoReader {
         if ($this->year !== null) {
             $dateTime = new DateTime();
             $dateTime->setDate($this->year, 1, 1);
+            $dateTime->setTime(0, 0, 0);
         }
         return $dateTime;
     }
@@ -133,8 +134,8 @@ class TvShowNfoReader extends NfoReader {
         $intRuntimeMinutes = ($runtimeMinutes === null) ? null : intval($runtimeMinutes);
         return ($intRuntimeMinutes === null) ? null : intval($intRuntimeMinutes) * 60;
     }
-    
-    public function posterUrl(){
+
+    public function posterUrl() {
         return null;
     }
 

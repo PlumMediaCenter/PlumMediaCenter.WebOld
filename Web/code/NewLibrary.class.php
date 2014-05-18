@@ -49,7 +49,7 @@ class NewLibrary {
                 if ($movieInFs === null) {
                     continue;
                 }
-                if ($movieInDb->path() === $movieInFs->getPath()) {
+                if ($movieInDb->path() === $movieInFs->path()) {
                     $videoHasBeenFound = true;
                     //remove the video from the filesystem list
                     $moviesInFs[$fsKey] = null;
@@ -75,32 +75,46 @@ class NewLibrary {
         foreach ($newMovies as $newMovie) {
             //this process includes looking for an nfo file. If it finds one, use that info. Otherwise, look to the net
             $newMovie->loadMetadata();
-            //save the new movie to the database
+            //save the new movie to the database (and also copies its posters)
             $newMovie->save();
-
-            //copy the new movie's poster to the public poster folder
-            $newMovie->copyPosters();
         }
 
         //delete the movies from the db that were removed from the filesystem
-        /* @var  $movieToDeleteFromDb \orm\Video */
+        /* @var  $dbVideo \orm\Video */
         foreach ($moviesInDbButDeletedFromFs as $dbVideo) {
-            DbVideo::Delete($dbVideo->getVideoId());
-            $fsVideo = new FilesystemMovie($dbVideo->sourceUrl(), $dbVideo->sourcePath(), $dbVideo->path());
+            $fsVideo = new FilesystemMovie($dbVideo->path(), $dbVideo->sourcePath(), $dbVideo->sourceUrl());
             $fsVideo->delete();
         }
 
         /* @var  $existingMovie \orm\Video */
-        //do a series of checks on the existing videos to see if anything has changes
-        foreach ($existingMovies as $dbVideo) {
+        //do a series of checks on the existing videos to see if anything has changed
+        foreach ($existingMovies as $existingDbVideo) {
             //if this video was loaded from an nfo file
-            if ($dbVideo->metadataLoadedFromNfo() === true) {
+            if ($existingDbVideo->metadataLoadedFromNfo() === true) {
+                $save = false;
+                //re-copy the posters
+                $fsVideo = new FilesystemMovie($existingDbVideo->path(), $existingDbVideo->sourcePath(), $existingDbVideo->sourceUrl());
+
+                //if the nfo file for this video has changed, refresh the metadata
+                if ($existingDbVideo->metadataLastModifiedDate() < $fsVideo->getMetadataLastModifiedDate()) {
+                    $fsVideo->loadMetadata();
+                    //the metadata changed. If the video has no poster, regenerate the public folder 
+                    //text-only poster for this video
+                    if ($fsVideo->posterExistsOnFileSystem() === false) {
+                        $fsVideo->generateTextOnlyPoster(\Enumerations\MediaType::Movie);
+                    }
+                    $save = true;
+                }
+
                 //if the poster is newer in the fs than from the db, 
-                if ($existingMovie->posterLastModifiedDate() !== null) {
-                    //re-copy the posters
-                    $fsVideo = new FilesystemMovie($dbVideo->sourceUrl(), $dbVideo->sourcePath(), $dbVideo->path());
-                    $fsVideo->generatePosters();
+                if ($fsVideo->getPosterLastModifiedDate() > $existingDbVideo->posterLastModifiedDate()) {
                     $fsVideo->copyPosters();
+                    $save = true;
+                }
+
+                if ($save === true) {
+                    //re-save the video to push any of its latest changes to the db
+                    $fsVideo->save();
                 }
             }
         }

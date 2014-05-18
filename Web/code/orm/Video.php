@@ -20,6 +20,7 @@ namespace orm;
  * @property String $videoSourcePath
  * @property String $videoSourceUrl
  * @property String $metadataLoadedFromNfo
+ * @property String $posterLoadedFromFileSystem
  */
 class Video extends \ActiveRecord\Model {
 
@@ -36,7 +37,8 @@ class Video extends \ActiveRecord\Model {
         'videoId' => 'video_id',
         'videoSourcePath' => 'video_source_path',
         'videoSourceUrl' => 'video_source_url',
-        'metadataLoadedFromNfo' => 'metadata_loaded_from_nfo'
-
+        'metadataLoadedFromNfo' => 'metadata_loaded_from_nfo',
+        'posterLoadedFromFileSystem' => 'poster_loaded_from_file_system'
     );
+
 }

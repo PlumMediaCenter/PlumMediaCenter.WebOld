@@ -13,6 +13,11 @@ class MovieNfoReader extends NfoReader {
         $this->set = $this->val("set");
         $this->rating = $this->val("rating");
         $year = $this->val("year");
+        if (is_string($year)) {
+            //if the year is in the yyyy-mm-dd format, this will rip the year off the front. 
+            //if the year is in a different format that this, nothing more to do.
+            $year = substr($year, 0, 4);
+        }
         //year should be a 4 digit number
         $this->year = (strlen($year) === 4) ? intval($year) : null;
         $this->top250 = $this->val("top250");
@@ -154,6 +159,7 @@ class MovieNfoReader extends NfoReader {
         if ($this->year !== null) {
             $dateTime = new DateTime();
             $dateTime->setDate($this->year, 1, 1);
+            $dateTime->setTime(0, 0, 0);
         }
         return $dateTime;
     }
@@ -163,8 +169,8 @@ class MovieNfoReader extends NfoReader {
         $intRuntimeMinutes = ($runtimeMinutes === null) ? null : intval($runtimeMinutes);
         return ($intRuntimeMinutes === null) ? null : intval($intRuntimeMinutes) * 60;
     }
-    
-    public function posterUrl(){
+
+    public function posterUrl() {
         return $this->thumb;
     }
 

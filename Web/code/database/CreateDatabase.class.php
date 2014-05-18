@@ -1,7 +1,6 @@
 <?php
 
 include_once(dirname(__FILE__) . "/../DbManager.class.php");
-include_once(dirname(__FILE__) . "/Table.class.php");
 include_once(dirname(__FILE__) . "/../functions.php");
 
 /**
@@ -197,6 +196,7 @@ class CreateDatabase {
                         . 'add column hd_poster_url varchar(2000) not null, '
                         . 'add column orig_poster_path varchar(2000) not null,'
                         . 'add column metadata_loaded_from_nfo boolean not null default 0, '
+                        . 'add column poster_loaded_from_file_system boolean not null default 0, '
                         . 'change column url url varchar(2000) not null');
         return $t;
     }

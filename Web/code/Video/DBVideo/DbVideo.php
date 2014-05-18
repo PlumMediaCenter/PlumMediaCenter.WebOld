@@ -1,6 +1,8 @@
 <?php
 
 include_once(dirname(__file__) . '/../../Interfaces/iVideo.php');
+include_once(dirname(__file__) . '/../FileSystemVideo/FileSystemVideo.php');
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -44,31 +46,31 @@ abstract class DbVideo implements iVideo {
         }
         return $this->videoRecord;
     }
-    
+
     /**
      * Returns the list of orm genre records
      * @return \orm\Genre[]
      */
-    public function getGenreRecords(){
-        if($this->genreRecords === null){
-            $this->genreRecords = \orm\VideoGenre::all(array('conditions'=> "video_id = $this->videoId"));
+    public function getGenreRecords() {
+        if ($this->genreRecords === null) {
+            $this->genreRecords = \orm\VideoGenre::all(array('conditions' => "video_id = $this->videoId"));
         }
         return $this->genreRecords;
     }
 
-    static function Delete($videoId) {
-        //delete every VideoGenre record referencing this video
-        \orm\VideoGenre::table()->delete(array('video_id' => array($videoId)));
+    public function posterLastModifiedDate() {
+        return $this->getVideoRecord()->posterLastModifiedDate;
+    }
 
-        //delete every watchVideo record referencing this video
-        \orm\WatchVideo::table()->delete(array('video_id' => array($videoId)));
-
-        //finally, delete the video itself
-        \orm\Video::table()->delete(array('video_id' => array($videoId)));
-        
+    public function metadataLastModifiedDate() {
+        return $this->getVideoRecord()->metadataLastModifiedDate;
     }
 
     /* iVideo functions */
+
+    public function mediaType() {
+        return $this->getVideoRecord()->mediaType;
+    }
 
     public function videoId() {
         return $this->videoId;
@@ -93,17 +95,17 @@ abstract class DbVideo implements iVideo {
     function sourcePath() {
         return $this->getVideoRecord()->videoSourcePath;
     }
-    
-    function sourceUrl(){
+
+    function sourceUrl() {
         return $this->getVideoRecord()->videoSourceUrl;
     }
-    
-    function metadataLoadedFromNfo(){
-        return $this->getVideoRecord()->metadataLoadedFromNfo;
+
+    function metadataLoadedFromNfo() {
+        return $this->getVideoRecord()->metadataLoadedFromNfo === 1;
     }
-    
-    function poster(){
-        return $this->getVideoRecord();
+
+    function posterUrl() {
+        return FileSystemVideo::posterDestinationUrl() . "/$this->videoId.jpg";
     }
 
     /**
@@ -113,7 +115,7 @@ abstract class DbVideo implements iVideo {
     function genres() {
         $genreRecords = $this->getGenreRecords();
         $genres = [];
-        foreach($genreRecords as $genreRecord){
+        foreach ($genreRecords as $genreRecord) {
             $genres[] = $genreRecord->name;
         }
         return $genres;

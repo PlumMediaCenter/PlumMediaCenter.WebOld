@@ -42,7 +42,7 @@ function getFoldersFromDirectory($baseDirectory) {
  * @param String - $dir - the full path to the directory to start in
  * @return array - list of all file paths found in or under this directory
  */
-function getVideosFromDir($dir) {
+function getFilesFromDir($dir) {
     ob_start();
     $files = array();
     try {
@@ -57,12 +57,10 @@ function getVideosFromDir($dir) {
             if ($file != "." && $file != "..") {
                 if (is_dir($dir . $file)) {
                     $dir2 = $dir . $file . "/";
-                    $files[] = getVideosFromDir($dir2);
+                    $files[] = getFilesFromDir($dir2);
                 } else {
                     $d = $dir . $file;
-                    if (fileIsValidVideo($d)) {
-                        $files[] = $d;
-                    }
+                    $files[] = $d;
                 }
             }
         }
@@ -70,6 +68,22 @@ function getVideosFromDir($dir) {
     }
     ob_end_clean();
     return array_flat($files);
+}
+
+/**
+ * Gets all files in a directory recursively
+ * @param String - $dir - the full path to the directory to start in
+ * @return array - list of all file paths found in or under this directory
+ */
+function getVideosFromDir($dir) {
+    $videoList = array();
+    $filesList = getFilesFromDir($dir);
+    foreach ($filesList as $file) {
+        if (fileIsValidVideo($file)) {
+            $videoList[] = $file;
+        }
+    }
+    return $videoList;
 }
 
 /**

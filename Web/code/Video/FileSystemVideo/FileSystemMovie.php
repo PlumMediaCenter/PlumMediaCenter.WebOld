@@ -1,5 +1,6 @@
 <?php
 
+include_once(dirname(__FILE__) . '/FileSystemVideo.php');
 include_once(dirname(__FILE__) . '/../../MetadataFetcher/MovieMetadataFetcher.class.php');
 include_once(dirname(__FILE__) . '/../../NfoReader/MovieNfoReader.class.php');
 
@@ -28,7 +29,20 @@ class FileSystemMovie extends FileSystemVideo {
      * @return string - the filename of the file provided to the video
      */
     protected function getFilename() {
-        return pathinfo($this->path, PATHINFO_FILENAME);
+        //if this video was found in the root of the video source, then use the filename. 
+        //Otherwise, lets assume that the video is in a folder whose folder name is the 
+        //name of the video
+        $videoContainingFolder = dirname($this->path);
+        if (strtoupper($videoContainingFolder) === strtoupper($this->sourcePath)) {
+            return pathinfo($this->path, PATHINFO_FILENAME);
+        } else {
+            //return the name of the folder
+            return pathinfo(dirname($this->path), PATHINFO_FILENAME);
+        }
+    }
+
+    public function generateTextOnlyPoster() {
+        return parent::generateTextOnlyPosterByType($this->mediaType);
     }
 
     /**
@@ -38,7 +52,6 @@ class FileSystemMovie extends FileSystemVideo {
     public function getUrl() {
         return $this->getContainingFolderUrl() . "/" . pathinfo($this->path, PATHINFO_FILENAME) . "." . pathinfo($this->path, PATHINFO_EXTENSION);
     }
-
 
     /**
 
@@ -85,7 +98,12 @@ class FileSystemMovie extends FileSystemVideo {
     protected function getMetadataFetcher() {
         $metadataFetcher = new MovieMetadataFetcher();
         $foldername = pathinfo(dirname($this->path), PATHINFO_FILENAME);
-        $metadataFetcher->searchByTitle($foldername);
+        try {
+            $metadataFetcher->searchByTitle($foldername);
+        } catch (Exception $e) {
+            //the metadata fetcher failed for some reason. return null
+            return null;
+        }
         return $metadataFetcher;
     }
 

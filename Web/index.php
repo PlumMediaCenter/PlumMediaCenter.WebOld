@@ -6,6 +6,8 @@ require_once(basePath() . '/config.php');
 require_once(basePath() . "/Code/DbManager.class.php");
 require_once(basePath() . '/Code/Security.class.php');
 require_once(basePath() . '/Code/Enumerations.class.php');
+require_once(basePath() . '/Models/BaseModel.php');
+
 require_once(basePath() . '/Code/lib/php-activerecord/ActiveRecord.php');
 
 //set up database stuff
