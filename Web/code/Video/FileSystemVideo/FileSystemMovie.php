@@ -18,6 +18,8 @@ include_once(dirname(__FILE__) . '/../../NfoReader/MovieNfoReader.class.php');
  */
 class FileSystemMovie extends FileSystemVideo {
 
+    private $metadataFetcher = null;
+
     function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
         parent::__construct($videoSourceUrl, $videoSourcePath, $fullPath);
         //the media type of this video is movie
@@ -95,16 +97,18 @@ class FileSystemMovie extends FileSystemVideo {
      * Returns a Video Metadata Fetcher. Search by title
      * @return MovieMetadataFetcher
      */
-    protected function getMetadataFetcher() {
-        $metadataFetcher = new MovieMetadataFetcher();
-        $foldername = pathinfo(dirname($this->path), PATHINFO_FILENAME);
-        try {
-            $metadataFetcher->searchByTitle($foldername);
-        } catch (Exception $e) {
-            //the metadata fetcher failed for some reason. return null
-            return null;
+    protected function getMetadataFetcher($force = false) {
+        if ($force === true || $this->metadataFetcher === null) {
+            $this->metadataFetcher = new MovieMetadataFetcher();
+            $foldername = pathinfo(dirname($this->path), PATHINFO_FILENAME);
+            try {
+                $this->metadataFetcher->searchByTitle($foldername);
+            } catch (Exception $e) {
+                //the metadata fetcher failed for some reason. return null
+                $this->metadataFetcher = null;
+            }
         }
-        return $metadataFetcher;
+        return $this->metadataFetcher;
     }
 
 }

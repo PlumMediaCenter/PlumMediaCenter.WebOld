@@ -7,13 +7,13 @@ include_once(dirname(__FILE__) . '/Video/FileSystemVideo/FileSystemMovie.php');
 include_once(dirname(__FILE__) . '/Video/DbVideo/DbVideo.php');
 include_once(dirname(__FILE__) . '/Video/DbVideo/DbMovie.php');
 
-class NewLibrary {
+class LibraryNew {
 
     /**
-     * Scans all source folders for media files and synchronizes the database with the watch folders 
-     * @return boolean
+     * Returns a list of three sets of movies: new movies, deleted movies and existing movies.
+     * @return {new: fileSystemVideo[], existing: fileSystemVideo[], deleted: fileSystemVideo[] }
      */
-    function generateLibrary() {
+    public function getMovies() {
 
         //get list of movie sources
         $movieSources = VideoSource::GetByType(Enumerations\MediaType::Movie);
@@ -42,8 +42,11 @@ class NewLibrary {
 
         //Get list of deleted movies (found in db but NOT found in filesystem)
         $moviesInDbButDeletedFromFs = array();
+        //look at each movie from db
         foreach ($moviesInDb as $dbKey => $movieInDb) {
             $videoHasBeenFound = false;
+            $filesystemVideo = null;
+            //look at each movie from filesystem
             foreach ($moviesInFs as $fsKey => $movieInFs) {
                 //if this item is null, then it has already been removed. move to the next item.
                 if ($movieInFs === null) {
@@ -51,6 +54,8 @@ class NewLibrary {
                 }
                 if ($movieInDb->path() === $movieInFs->path()) {
                     $videoHasBeenFound = true;
+                    //save this video object since we want to return a list of all of the filesystem videos
+                    $filesystemVideo = $moviesInFs[$fsKey];
                     //remove the video from the filesystem list
                     $moviesInFs[$fsKey] = null;
                     break;
@@ -60,7 +65,7 @@ class NewLibrary {
             //the video was not found. it has been deleted. put it into the delete list
             if ($videoHasBeenFound === false) {
                 //add to list of movies to delete
-                $moviesInDbButDeletedFromFs[] = $movieInDb;
+                $moviesInDbButDeletedFromFs[] = $filesystemVideo;
                 //remove from list of movies from db
                 $moviesInDb[$dbKey] = null;
             }
@@ -71,52 +76,39 @@ class NewLibrary {
         //the remaining videos in $moviesInFs are new movies
         $newMovies = array_filter($moviesInFs);
 
+        //collect the lists into a single object
+        $result = (object) array();
+        $result->new = $newMovies;
+        $result->existing = $existingMovies;
+        $result->deleted = $moviesInDbButDeletedFromFs;
+
+        return $result;
+    }
+
+    /**
+     * Scans all source folders for media files and synchronizes the database with the watch folders 
+     * @return boolean
+     */
+    function generateLibrary() {
+        $movies = $this->getMovies();
+
         //write new movies to the db
-        foreach ($newMovies as $newMovie) {
+        foreach ($movies->new as $newVideo) {
             //this process includes looking for an nfo file. If it finds one, use that info. Otherwise, look to the net
-            $newMovie->loadMetadata();
+            $newVideo->loadMetadata();
             //save the new movie to the database (and also copies its posters)
-            $newMovie->save();
+            $newVideo->save();
         }
 
         //delete the movies from the db that were removed from the filesystem
-        /* @var  $dbVideo \orm\Video */
-        foreach ($moviesInDbButDeletedFromFs as $dbVideo) {
-            $fsVideo = new FilesystemMovie($dbVideo->path(), $dbVideo->sourcePath(), $dbVideo->sourceUrl());
-            $fsVideo->delete();
+        foreach ($movies->deleted as $deletedVideo) {
+            $deletedVideo->delete();
         }
 
         /* @var  $existingMovie \orm\Video */
         //do a series of checks on the existing videos to see if anything has changed
-        foreach ($existingMovies as $existingDbVideo) {
-            //if this video was loaded from an nfo file
-            if ($existingDbVideo->metadataLoadedFromNfo() === true) {
-                $save = false;
-                //re-copy the posters
-                $fsVideo = new FilesystemMovie($existingDbVideo->path(), $existingDbVideo->sourcePath(), $existingDbVideo->sourceUrl());
-
-                //if the nfo file for this video has changed, refresh the metadata
-                if ($existingDbVideo->metadataLastModifiedDate() < $fsVideo->getMetadataLastModifiedDate()) {
-                    $fsVideo->loadMetadata();
-                    //the metadata changed. If the video has no poster, regenerate the public folder 
-                    //text-only poster for this video
-                    if ($fsVideo->posterExistsOnFileSystem() === false) {
-                        $fsVideo->generateTextOnlyPoster(\Enumerations\MediaType::Movie);
-                    }
-                    $save = true;
-                }
-
-                //if the poster is newer in the fs than from the db, 
-                if ($fsVideo->getPosterLastModifiedDate() > $existingDbVideo->posterLastModifiedDate()) {
-                    $fsVideo->copyPosters();
-                    $save = true;
-                }
-
-                if ($save === true) {
-                    //re-save the video to push any of its latest changes to the db
-                    $fsVideo->save();
-                }
-            }
+        foreach ($movies->existing as $existingVideo) {
+            $existingVideo->saveIfChanged();
         }
     }
 

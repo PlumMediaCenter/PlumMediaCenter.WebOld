@@ -19,6 +19,8 @@ include_once(dirname(__FILE__) . '/../../Interfaces/iVideo.php');
 abstract class FileSystemVideo implements iVideo {
 
     const UNKNOWN_MPAA = 'N/A';
+    //for videos that don't have nfo files in their directories, refresh those videos' db metadata by this value
+    const REFRESH_VIDEO_FROM_WEB_FREQUENCY_DAYS = 60;
 
     protected $posterFilenames;
     protected $mediaType;
@@ -44,6 +46,7 @@ abstract class FileSystemVideo implements iVideo {
     protected $sourcePath;
     protected $path;
     protected $url;
+    protected $metadataModifiedDate;
 
     function __construct($path, $sourcePath, $sourceUrl) {
         $this->posterDestinationPath = FileSystemVideo::posterDestinationPath();
@@ -73,8 +76,6 @@ abstract class FileSystemVideo implements iVideo {
 
         //retrieve the poster path if the video has a poster in its folder with it
         $this->posterPath = $this->getExistingPosterPath();
-
-        //$this->posterUrl = $this->getPosterUrl();
 
         $this->genres = [];
     }
@@ -189,6 +190,7 @@ abstract class FileSystemVideo implements iVideo {
 
     /**
      * Forces each child class to load their corresponding metadata fetcher class
+     * @return MetadataFetcher
      */
     protected abstract function getMetadataFetcher();
 
@@ -262,14 +264,16 @@ abstract class FileSystemVideo implements iVideo {
             /* @var iVideoMetadata $iVideoMetadata */
             $iVideoMetadata = null;
 
-            $nfoPath = $this->getExistingNfoPath();
-            //no nfo file was found. look online for the metadata
-            if ($nfoPath === null) {
-                $iVideoMetadata = $this->getMetadataFetcher();
-                $this->metadataLoadedFromNfo = false;
-            } else {
-                $iVideoMetadata = $this->getNfoReader();
-                $this->metadataLoadedFromNfo = true;
+            switch ($this->determineMetadataSource()) {
+                case \Enumerations\MetadataSource::NFO:
+                    $iVideoMetadata = $this->getNfoReader();
+                    $this->metadataSource = \Enumerations\MetadataSource::NFO;
+                    break;
+                case \Enumerations\MetadataSource::Web:
+                    $iVideoMetadata = $this->getMetadataFetcher();
+                    break;
+                case \Enumerations\MetadataSource::None:
+                    break;
             }
 
             if ($iVideoMetadata !== null) {
@@ -282,6 +286,8 @@ abstract class FileSystemVideo implements iVideo {
                 $this->metadataLoaded = true;
                 $this->metadataPosterUrl = $iVideoMetadata->posterUrl();
 
+                $this->metadataSource = \Enumerations\MetadataSource::Web;
+
                 $this->genres = $iVideoMetadata->genres();
             } else {
                 //the metadata interface was empty. 
@@ -289,6 +295,8 @@ abstract class FileSystemVideo implements iVideo {
                 $this->title = $this->getFilename();
                 $this->plot = null;
                 $this->mpaa = FileSystemVideo::UNKNOWN_MPAA;
+
+                $this->metadataSource = \Enumerations\MetadataSource::None;
             }
         }
 
@@ -355,7 +363,7 @@ abstract class FileSystemVideo implements iVideo {
      * Returns the date of the last time the nfo file was modified
      * @return \DateTime
      */
-    public function getMetadataLastModifiedDate() {
+    public function getMetadataModifiedDate() {
         return $this->getModifiedDate($this->getExistingNfoPath());
     }
 
@@ -363,7 +371,7 @@ abstract class FileSystemVideo implements iVideo {
      * Returns the date of the last time the poster file was modified
      * @return \DateTime
      */
-    public function getPosterLastModifiedDate() {
+    public function getPosterModifiedDate() {
         $existingPosterPath = $this->getExistingPosterPath();
         return $this->getModifiedDate($existingPosterPath);
     }
@@ -559,27 +567,27 @@ abstract class FileSystemVideo implements iVideo {
         $oldTitle = $v->title;
 
         $v->title = $this->title();
-        $v->runningTimeSeconds = $this->getRunningTimeSeconds();
+        $v->running_time_seconds = $this->getRunningTimeSeconds();
         $v->plot = $this->plot();
         $v->path = $this->path();
         $v->url = $this->getUrl();
         $v->filetype = $this->getFiletype();
-        $v->metadataLastModifiedDate = $this->getMetadataLastModifiedDate();
-        $v->posterLastModifiedDate = $this->getPosterLastModifiedDate();
-        $v->posterLoadedFromFileSystem = $this->posterExistsOnFileSystem();
+        $v->metadata_modified_date = $this->getMetadataModifiedDate();
+        $v->poster_last_modified_date = $this->getPosterModifiedDate();
+        $v->poster_loaded_from_file_system = $this->posterExistsOnFileSystem();
         $v->mpaa = $this->mpaa();
-        $v->releaseDate = $this->releaseDate();
+        $v->release_date = $this->releaseDate();
         $v->mediaType = $this->mediaType();
-        $v->videoSourcePath = $this->sourcePath();
-        $v->videoSourceUrl = $this->sourceUrl();
+        $v->video_source_path = $this->sourcePath();
+        $v->video_source_url = $this->sourceUrl();
         $v->save();
         //save the video id to the property so we can use it in some other functions
-        $this->videoId = $v->videoId;
+        $this->video_id = $v->videoId;
 
 
-        $v->sdPosterUrl = $this->getSdPosterUrl();
-        $v->hdPosterUrl = $this->getHdPosterUrl();
-        $v->metadataLoadedFromNfo = $this->metadataLoadedFromNfo;
+        $v->sd_poster_url = $this->getSdPosterUrl();
+        $v->hd_poster_url = $this->getHdPosterUrl();
+        $v->metadata_loaded_from_nfo = $this->metadataLoadedFromNfo;
         $v->save();
 
         //clear out any pre-existing genres (only applies when this is an existing video being re-saved
@@ -610,6 +618,259 @@ abstract class FileSystemVideo implements iVideo {
         return FileSystemVideo::posterDestinationPath() . "/$this->videoId.jpg";
     }
 
+    /**
+     * Determines the type of metadata that will currently be used for this video. If metadata exists in the 
+     * diretory is first, then if a web metadata fetcher exists second, and finally none if neither was found
+     * @return \Enumerations\MetadataSource 
+     */
+    private function determineMetadataSource() {
+        //if a metadata file exists on disc, THAT is the source
+        if ($this->getExistingNfoPath() !== null) {
+            return \Enumerations\MetadataSource::NFO;
+        } else {
+            $metadataFetcher = $this->getMetadataFetcher();
+            //a metadata fetcher was found. We can get metadata from the web. 
+            if ($metadataFetcher !== null) {
+                return \Enumerations\MetadataSource::Web;
+            } else {
+                //no metadata fetcher was able to be found. We have to assume there is no metadata available
+                return \Enumerations\MetadataSource::None;
+            }
+        }
+    }
+
+    /**
+     * Determines the type of poster that will be used for this video. If poster exists in the 
+     * diretory is first, then if a web poster fetcher exists second, and finally none if neither was found
+     * @return \Enumerations\MetadataSource 
+     */
+    private function determinePosterSource() {
+        //if a metadata file exists on disc, THAT is the source
+        if ($this->getExistingPosterPath() !== null) {
+            return \Enumerations\MetadataSource::NFO;
+        } else {
+            $metadataFetcher = $this->getMetadataFetcher();
+            //if the metadata fetcher actually has a poster for this video
+            $posterUrl = $metadataFetcher->posterUrl();
+            if ($posterUrl !== null) {
+                return \Enumerations\MetadataSource::Web;
+            } else {
+                //no metadata fetcher was able to be found or the video had no poster
+                // We have to assume there is no poster available
+                return \Enumerations\MetadataSource::None;
+            }
+        }
+    }
+
+    /**
+     * Determines if the metadata on disc for this video is out of sync with the database
+     */
+    public function metadataIsOutOfSync() {
+        $source = $this->determineMetadataSource();
+        $modifiedDate = $this->getMetadataModifiedDate();
+        $modifiedDateFromDb = $this->metadataModifiedDateFromDb();
+        return $this->posterOrMetadataIsOutOfSync($source, $modifiedDate, $modifiedDateFromDb);
+    }
+
+    /**
+     * Determines if the poster for this video is out of sync
+     */
+    private function posterIsOutOfSync() {
+        $source = $this->determinePosterSource();
+        $modifiedDate = $this->getPosterModifiedDate();
+        $modifiedDateFromDb = $this->posterModifiedDateFromDb();
+        return $this->posterOrMetadataIsOutOfSync($source, $modifiedDate, $modifiedDateFromDb);
+    }
+
+    /**
+     * Determines if the poster or metadata with the provided parameters is out of sync
+     * @param \Enumerations\MetadataSource $source
+     * @param Date $modifiedDate
+     * @param Date $modifiedDateFromDb
+     * @return boolean - true if the item is out of sync, false if it is still in sync
+     */
+    private function posterOrMetadataIsOutOfSync($source, $modifiedDate, $modifiedDateFromDb) {
+        $isOutOfSync = true;
+        //video has a different metadata source than the last time it was saved
+        if ($source !== $this->posterSourceFromDb()) {
+            $isOutOfSync = true;
+        } else {
+            if ($source === \Enumerations\MetadataSource::NFO) {
+                //if the nfo file changed since last db save, out of sync
+                if ($modifiedDate !== $modifiedDateFromDb) {
+                    $isOutOfSync = true;
+                }
+                //both web and none will follow this policy. 
+            } else if ($source === \Enumerations\MetadataSource::Web || $source === \Enumerations\MetadataSource::None) {
+                //get the modified date from the db. If it's null, set to year 1 to guarentee that metadata is out of sync
+                $modifiedDateFromDb = ($modifiedDateFromDb === null) ? strtotime("0001-01-01") : $modifiedDateFromDb;
+                //if metadtaa modified date is past the frequency of refresh, go fetch new metadata
+                $diff = time() - $modifiedDateFromDb;
+                $daysDiff = $diff / (60 * 60 * 24);
+                if ($daysDiff > FileSystemVideo::REFRESH_VIDEO_FROM_WEB_FREQUENCY_DAYS) {
+                    $isOutOfSync = true;
+                } else {
+                    $isOutOfSync = false;
+                }
+            }
+        }
+        return $isOutOfSync;
+    }
+
+    /**
+     * Saves any pieces of this video that has changed in the filesystem that is not yet in the database
+     */
+    public function saveIfChanged() {
+        $save = false;
+        if ($this->metadataIsOutOfSync()) {
+            $this->loadMetadata(true);
+            $save = true;
+        }
+
+        if ($this->posterIsOutOfSync() === true) {
+            $this->copyPosters();
+            $save = true;
+        }
+
+
+        //if this video was loaded from an nfo file
+        if ($this->metadataLoadedFromNfo() === true) {
+            $save = false;
+            //re-copy the posters
+            $fsVideo = new FilesystemMovie($existingDbVideo->path(), $existingDbVideo->sourcePath(), $existingDbVideo->sourceUrl());
+
+            //if the nfo file for this video has changed, refresh the metadata
+            if ($existingDbVideo->metadataLastModifiedDate() < $fsVideo->getMetadataModifiedDate()) {
+                $fsVideo->loadMetadata();
+                //the metadata changed. If the video has no poster, regenerate the public folder 
+                //text-only poster for this video
+                if ($fsVideo->posterExistsOnFileSystem() === false) {
+                    $fsVideo->generateTextOnlyPoster(\Enumerations\MediaType::Movie);
+                }
+                $save = true;
+            }
+
+            //if the poster is newer in the fs than from the db, 
+            if ($fsVideo->getPosterModifiedDate() > $existingDbVideo->posterLastModifiedDate()) {
+                $fsVideo->copyPosters();
+                $save = true;
+            }
+
+            if ($save === true) {
+                //re-save the video to push any of its latest changes to the db
+                $fsVideo->save();
+            }
+        }
+    }
+
+    public function generateTextPoster() {
+        include_once(dirname(__file__) . "/../Code/lib/PHPImageWorkshop/ImageWorkshop.php");
+        $text = $this->getTitle();
+        //append the time to the end of the text for debugging so we can see that the file has changed or not
+        $text .= "--" . time();
+        $fontPath = dirname(__FILE__) . '/../../../Content/Fonts/Liberation-Mono/LiberationMono-Regular.ttf';
+        $fontColor = "000000";
+        $textRotation = 0;
+        $borderWidth = 25;
+        $backgroundColor = "FFFFFF";
+        $posterWidth = 500;
+        $posterHeight = 750;
+        $maxCharactersPerRow = 20;
+        $fontSize = $posterWidth / $maxCharactersPerRow;
+
+        //create the main poster 
+        $document = \PHPImageWorkshop\ImageWorkshop::initVirginLayer($posterWidth, $posterHeight);
+
+        $textItems = array();
+        $textItems[] = (object) array('x' => null, 'text' => $text, 'layer' => null);
+        $textIsReady = false;
+        //walk through the text provided and try to fit it all on the poster. This may require splitting the text up into chunks and drawing
+        //it in multiple lines.
+        while ($textIsReady === false) {
+            $textItemCount = count($textItems);
+            $finishedCount = 0;
+            foreach ($textItems as $key => $textItem) {
+                //if the layer has not been created yet, try to create it
+                if ($textItem->layer === null) {
+                    $thisTextItemText = $textItem->text;
+                    $textLength = strlen($thisTextItemText);
+
+                    $twoCharLayer = \PHPImageWorkshop\ImageWorkshop::initTextLayer('AA', $fontPath, $fontSize, $fontColor, $textRotation, $backgroundColor);
+                    $singleCharWidth = $twoCharLayer->getWidth() / 2;
+                    $layerWidth = $singleCharWidth * $textLength;
+                    $xDiff = ($posterWidth - ($borderWidth * 2)) - $layerWidth;
+
+                    //if the text layer wont fit on one line, split it into chunks.
+                    if ($xDiff < 0) {
+                        //split the text into two equal pieces.
+                        $firstHalfEndingChar = floor($textLength / 2);
+                        $firstHalfText = substr($thisTextItemText, 0, $firstHalfEndingChar);
+                        $secondHalfText = substr($thisTextItemText, $firstHalfEndingChar, $textLength);
+                        $textItem->text = $firstHalfText;
+                        $secondHalfTextItem = (object) array('x' => null, 'text' => $secondHalfText, 'layer' => null);
+                        //insert this item right next to its first half
+                        array_splice($textItems, $key + 1, 0, array($secondHalfTextItem));
+                        //exit the for loop and start it over.
+                        break;
+                    } else {
+                        //this text item is going to fit onto the poster. Keep it and move on to the next item
+                        $textItem->layer = \PHPImageWorkshop\ImageWorkshop::initTextLayer($thisTextItemText, $fontPath, $fontSize, $fontColor, $textRotation, $backgroundColor);
+                        //calculate the x for the starting position of the text so that it is centered
+                        $textItem->x = ($posterWidth / 2) - ($layerWidth / 2);
+                        //this layer is finished. 
+                        $finishedCount += 1;
+                        //($outerBoxWidth / 2) - ($boxWidth / 2)
+                    }
+                } else {
+                    //this layer is finished
+                    $finishedCount += 1;
+                }
+            }
+            //the number of finished items equals the number of expected finished items. Exit the while loop
+            if ($finishedCount === $textItemCount) {
+                $textIsReady = true;
+            }
+        }
+
+        $layerIdx = 1;
+        $rowCount = count($textItems);
+
+        $middleRowIndex = floor($rowCount / 2);
+        $yMargin = 5;
+        $idx = 0;
+        //add each layer to the document
+        foreach ($textItems as $textItem) {
+            $textLayer = $textItem->layer;
+            $textLayerHeight = $textLayer->getHeight();
+            //calculate the y position for this row of text
+            $posterCenter = ( $posterHeight / 2) - ($textLayerHeight / 2);
+            $yFactor = $idx - $middleRowIndex;
+
+            $yPos = $posterCenter + ($yFactor * ($textLayerHeight + $yMargin ));
+
+            //add the text layer to the document
+            $document->addLayer($layerIdx++, $textItem->layer, $textItem->x, $yPos);
+            $idx++;
+        }
+
+
+        //create the border
+        $borderLayer = \PHPImageWorkshop\ImageWorkshop::initVirginLayer($document->getWidth(), $document->getHeight()); // This layer will have the width and height of the document
+        $borderColor = "000000";
+        $horizontalBorderLayer = \PHPImageWorkshop\ImageWorkshop::initVirginLayer($document->getWidth(), $borderWidth, $borderColor);
+        $verticalBorderLayer = \PHPImageWorkshop\ImageWorkshop::initVirginLayer($borderWidth, $document->getHeight(), $borderColor);
+        $borderLayer->addLayer(1, $horizontalBorderLayer, 0, 0);
+        $borderLayer->addLayer(2, $horizontalBorderLayer, 0, 0, 'LB');
+        $borderLayer->addLayer(3, $verticalBorderLayer, 0, 0);
+        $borderLayer->addLayer(4, $verticalBorderLayer, 0, 0, 'RT');
+        $document->addLayer(2, $borderLayer);
+        $dirPath = "C:/";
+        $filename = "image.jpg";
+        $createFolders = true;
+        $imageQuality = 100;
+        $document->save($dirPath, $filename, $createFolders, $backgroundColor, $imageQuality);
+    }
+
     public function delete() {
         $destinationFolderPath = dirname(__FILE__) . '/../../../Content/Images/posters';
         $videoId = $this->videoId();
@@ -635,6 +896,8 @@ abstract class FileSystemVideo implements iVideo {
     }
 
     public function copyPosters() {
+
+        //$fsVideo->generateTextOnlyPoster(\Enumerations\MediaType::Movie);
         $this->loadMetadata();
         //save the hd poster.
         $posterPath = "$this->posterDestinationPath/$this->videoId.jpg";
@@ -692,7 +955,34 @@ abstract class FileSystemVideo implements iVideo {
         return true;
     }
 
-    /* iVideo Implementation */
+    /**
+     * Goes to the database and gets the metadata modified date for this video
+     * @return null
+     */
+    public function metadataModifiedDateFromDb() {
+        $videoId = $this->videoId();
+        if ($videoId !== null) {
+            /* @var $result \orm\Video  */
+            $result = \orm\Video::find_by_video_id($videoId);
+            return $result->metadata_modified_date;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Goes to the database and gets the poster modified date for this video
+     */
+    public function posterModifiedDateFromDb() {
+        $videoId = $this->videoId();
+        if ($videoId !== null) {
+            /* @var $result \orm\Video  */
+            $result = \orm\Video::find_by_video_id($videoId);
+            return $result->poster_modified_date;
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Get the videoId from the database of this video
@@ -781,11 +1071,11 @@ abstract class FileSystemVideo implements iVideo {
     }
 
     /**
-     * Gets whether the metadata for this video was loaded from an nfo file or not.
-     * @return boolean - whether the metadata for this video was loaded from an nfo file or not.
+     * Returns the metadata source that was stored in the database the last time this video was saved.
+     * @return \Enumerations\MetadataSource
      */
-    function metadataLoadedFromNfo() {
-        return $this->metadataLoadedFromNfo;
+    function metadataSourceFromDb() {
+        return $this->metadataSource;
     }
 
     /**
@@ -797,5 +1087,4 @@ abstract class FileSystemVideo implements iVideo {
         return $this->genres;
     }
 
-    /* End iVideo functions */
 }

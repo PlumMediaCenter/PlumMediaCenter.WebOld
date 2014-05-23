@@ -179,7 +179,7 @@ class CreateDatabase {
 
     private function db001_001() {
         $t = DbManager::NonQuery(
-            'create or replace view genre as
+                        'create or replace view genre as
                 select distinct name 
                 from video_genre 
                 order by name asc');
@@ -197,7 +197,9 @@ class CreateDatabase {
                         . 'add column orig_poster_path varchar(2000) not null,'
                         . 'add column metadata_loaded_from_nfo boolean not null default 0, '
                         . 'add column poster_loaded_from_file_system boolean not null default 0, '
-                        . 'change column url url varchar(2000) not null');
+                        . 'change column url url varchar(2000) not null,'
+                        . 'change column poster_last_modified_date poster_modified_date datetime not null,'
+                        . 'change column metadata_last_modified_date metadata_modified_date datetime not null');
         return $t;
     }
 

@@ -78,4 +78,12 @@ class PosterSizes extends Enumeration {
 
 }
 
+class MetadataSource extends Enumeration {
+
+    const NFO = "NFO";
+    const Web = "Web";
+    const None = "None";
+
+}
+
 ?>
