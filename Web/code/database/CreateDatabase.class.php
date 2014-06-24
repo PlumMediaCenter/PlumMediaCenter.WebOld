@@ -194,11 +194,10 @@ class CreateDatabase {
         $t = $t && DbManager::NonQuery('alter table video '
                         . 'add column sd_poster_url varchar(2000) not null,'
                         . 'add column hd_poster_url varchar(2000) not null, '
-                        . 'add column orig_poster_path varchar(2000) not null,'
-                        . 'add column metadata_loaded_from_nfo boolean not null default 0, '
-                        . 'add column poster_loaded_from_file_system boolean not null default 0, '
-                        . 'change column url url varchar(2000) not null,'
-                        . 'change column poster_last_modified_date poster_modified_date datetime not null,'
+                        . 'add column metadata_source varchar(10) not null, '
+                        . 'add column poster_source varchar(10) not null, '
+                        . 'change column url url varchar(2000) not null, '
+                        . 'change column poster_last_modified_date poster_modified_date datetime not null, '
                         . 'change column metadata_last_modified_date metadata_modified_date datetime not null');
         return $t;
     }

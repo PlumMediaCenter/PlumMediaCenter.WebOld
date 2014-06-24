@@ -2,8 +2,8 @@
 
 include_once(dirname(__FILE__) . '/../../lib/php-mp4info/MP4Info.php');
 include_once(dirname(__FILE__) . '/../../lib/SimpleImage/SimpleImage.php');
+include_once(dirname(__file__) . '/../../lib/PHPImageWorkshop/ImageWorkshop.php');
 include_once(dirname(__FILE__) . '/../../Interfaces/iVideo.php');
-
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -25,7 +25,6 @@ abstract class FileSystemVideo implements iVideo {
     protected $posterFilenames;
     protected $mediaType;
     protected $metadataLoaded = false;
-    protected $metadataLoadedFromNfo = false;
     protected $posterPath;
     protected $posterUrl;
     protected $nfoReader = null;
@@ -35,18 +34,8 @@ abstract class FileSystemVideo implements iVideo {
     //Indicates whether loadMetadata has been called yet or not
     protected $metadataWasLoaded = false;
 
-    /** Database Fields */
-    protected $videoId = null;
-    protected $title;
-    protected $plot;
-    protected $mpaa;
-    protected $releaseDate;
-    protected $genres;
-    protected $sourceUrl;
-    protected $sourcePath;
-    protected $path;
-    protected $url;
-    protected $metadataModifiedDate;
+    /** An object wrapping the database table */
+    protected $dbVideo;
 
     function __construct($path, $sourcePath, $sourceUrl) {
         $this->posterDestinationPath = FileSystemVideo::posterDestinationPath();
@@ -130,8 +119,8 @@ abstract class FileSystemVideo implements iVideo {
         }
         //at this point, none of the expected posters are present. See if there is a poster
         //in the public web poster folder for this video
-        if ($this->videoId !== null) {
-            $posterFilePath = FileSystemVideo::posterDestinationPath() . "/$this->videoId.jpg";
+        if ($this->video_id !== null) {
+            $posterFilePath = FileSystemVideo::posterDestinationPath() . "/$this->video_id.jpg";
             if (file_exists($posterFilePath) === true) {
                 return $posterFilePath;
             }
@@ -310,7 +299,7 @@ abstract class FileSystemVideo implements iVideo {
      * that is not able to be retrieved, then we will assume this video's length is 0 seconds
      * @return int|boolean - the number of seconds if successful, false if unsuccessful
      */
-    private function getRunningTimeSeconds() {
+    public function getRunningTimeSeconds() {
         //make sure that the metadata has been loaded
         $this->loadMetadata();
 
@@ -360,119 +349,34 @@ abstract class FileSystemVideo implements iVideo {
     }
 
     /**
-     * Returns the date of the last time the nfo file was modified
+     * Returns the date of the last time the nfo file was modified. If the metadata source is nfo, returns nfo file modified date.
+     * Otherwise returns the current time.
      * @return \DateTime
      */
     public function getMetadataModifiedDate() {
-        return $this->getModifiedDate($this->getExistingNfoPath());
+        if ($this->determineMetadataSource() === \Enumerations\MetadataSource::NFO) {
+            return $this->getModifiedDate($this->getExistingNfoPath());
+        } else {
+            $date = new DateTime();
+            $date->setTimestamp(time());
+            return $date;
+        }
     }
 
     /**
-     * Returns the date of the last time the poster file was modified
+     * Returns the date of the last time the poster file was modified. If the poster source is nfo, returns the date the poster was modified. 
+     * Otherwise, it returns the current time. 
      * @return \DateTime
      */
     public function getPosterModifiedDate() {
-        $existingPosterPath = $this->getExistingPosterPath();
-        return $this->getModifiedDate($existingPosterPath);
-    }
-
-    /**
-     * Generates the text-only poster for the size of the media type specified
-     * @param \Enumerations\MediaType $mediaType
-     */
-    protected function generateTextOnlyPosterByType($mediaType) {
-        $paddingX = 10;
-        $paddingY = 10;
-        $width = 1000;
-        $height = 1500;
-        switch ($mediaType) {
-            case \Enumerations\MediaType::TvEpisode:
-                $width = 400;
-                $height = 225;
-                break;
-            default:
-                $width = 1000;
-                $height = 1500;
-                break;
+        if ($this->determinePosterSource() === \Enumerations\MetadataSource::NFO) {
+            $existingPosterPath = $this->getExistingPosterPath();
+            return $this->getModifiedDate($existingPosterPath);
+        } else {
+            $date = new DateTime();
+            $date->setTimestamp(time());
+            return $date;
         }
-        $title = $this->title;
-
-        $publicPosterPath = $this->getPublicPosterPath();
-        $text = $this->title;
-        $img_width = $width;
-
-        $font = dirname(__FILE__) . '/geo_1.ttf';
-        // Create the image
-        // $text = 'Testing... a very long text.. Testing... a very long text.. Testing... a very long text.. Testing... a very long text..';
-        $text = "Hello";
-        $curTextLen = strlen($text);
-        $limit = 35;
-        $characterCount = ($curTextLen > $limit) ? $limit : $curTextLen;
-        $img_height = $height;
-
-        $im = imagecreatetruecolor($img_width, $img_height);
-        $white = imagecolorallocate($im, 255, 255, 255);
-        $grey = imagecolorallocate($im, 128, 128, 128);
-        $black = imagecolorallocate($im, 0, 0, 0);
-
-        imagefilledrectangle($im, 0, 0, $img_width, $img_height, $white);
-//
-//        $charSpacingX = 7;
-//        $charSpacingY = 5;
-        $charSize = 700;
-//
-//        $xPos = $paddingX;
-//        $yPos = $paddingY + $charSize;
-//        //loop through each character in the string
-//        for ($i = 1; $i <= $characterCount; $i++) {
-//            $xPos = $xPos + $charSize;
-//            //if this character will run off of the side, return to the next line and start again
-//            if (($xPos + $charSize + $paddingX) > $width) {
-//                $xPos = $paddingX;
-//                $yPos = $yPos + $charSize + $charSpacingY;
-//            }
-//            echo " ($xPos, $yPos)";
-//            $textN = substr($text, ($limit * ($i - 1)), $limit);
-//            imagettftext($im, $charSize, 0, $xPos, $yPos, $grey, $font, $textN);
-//            imagettftext($im, $charSize, 0, $xPos - 1, $yPos, $grey, $font, $textN);
-//
-//
-//            // Add the text
-//            //   imagettftext($im, $charSize, 0, $xPos, $yPos, $black, $font, $textN);
-//        }
-        $this->write_multiline_text($im, $charSize, $black, $font, $text, 10, 10, $width - $paddingX);
-        // Using imagepng() results in clearer text compared with imagejpeg()
-        imagepng($im, $publicPosterPath);
-        imagedestroy($im);
-    }
-
-    function write_multiline_text($image, $font_size, $color, $font, $text, $start_x, $start_y, $max_width) {
-        //split the string 
-        //build new string word for word 
-        //check everytime you add a word if string still fits 
-        //otherwise, remove last word, post current string and start fresh on a new line 
-        $words = explode(" ", $text);
-        $string = "";
-        $tmp_string = "";
-
-        for ($i = 0; $i < count($words); $i++) {
-            $tmp_string .= $words[$i] . " ";
-
-            //check size of string 
-            $dim = imagettfbbox($font_size, 0, $font, $tmp_string);
-
-            if ($dim[4] < $max_width) {
-                $string = $tmp_string;
-            } else {
-                $i--;
-                $tmp_string = "";
-                imagettftext($image, 11, 0, $start_x, $start_y, $color, $font, $string);
-
-                $string = "";
-                $start_y += 22; //change this to adjust line-height. Additionally you could use the information from the "dim" array to automatically figure out how much you have to "move down" 
-            }
-        }
-        imagettftext($image, 11, 0, $start_x, $start_y, $color, $font, $string); //"draws" the rest of the string 
     }
 
     /**
@@ -515,32 +419,32 @@ abstract class FileSystemVideo implements iVideo {
         if ($posterPath === null) {
             $finalUrl = $this->getBlankPosterUrl();
         } else {
-            $finalUrl = baseUrl() . "/Content/Images/posters/$this->videoId.jpg";
+            $finalUrl = baseUrl() . "/Content/Images/posters/$this->video_id.jpg";
         }
         return FileSystemVideo::EncodeUrl($finalUrl);
     }
 
     function getSdPosterUrl() {
         $finalUrl = "";
-        $videoId = $this->videoId();
+        $video_id = $this->videoId();
         $posterPath = $this->getPosterPath();
         if ($posterPath === null) {
             $finalUrl = $this->getBlankPosterUrl("-sd");
         } else {
-            $finalUrl = baseUrl() . "/Content/Images/posters/$videoId-sd.jpg";
+            $finalUrl = baseUrl() . "/Content/Images/posters/$video_id-sd.jpg";
         }
         return FileSystemVideo::EncodeUrl($finalUrl);
     }
 
     function getHdPosterUrl() {
         $finalUrl = "";
-        $videoId = $this->videoId();
+        $video_id = $this->videoId();
 
         $posterPath = $this->getPosterPath();
         if ($posterPath === null) {
             $finalUrl = $this->getBlankPosterUrl("-hd");
         } else {
-            $finalUrl = baseUrl() . "/Content/Images/posters/$videoId-hd.jpg";
+            $finalUrl = baseUrl() . "/Content/Images/posters/$video_id-hd.jpg";
         }
         return FileSystemVideo::EncodeUrl($finalUrl);
     }
@@ -572,50 +476,52 @@ abstract class FileSystemVideo implements iVideo {
         $v->path = $this->path();
         $v->url = $this->getUrl();
         $v->filetype = $this->getFiletype();
-        $v->metadata_modified_date = $this->getMetadataModifiedDate();
-        $v->poster_last_modified_date = $this->getPosterModifiedDate();
-        $v->poster_loaded_from_file_system = $this->posterExistsOnFileSystem();
         $v->mpaa = $this->mpaa();
         $v->release_date = $this->releaseDate();
-        $v->mediaType = $this->mediaType();
+        $v->media_type = $this->mediaType();
         $v->video_source_path = $this->sourcePath();
         $v->video_source_url = $this->sourceUrl();
+        $metadataModifiedDate = $this->getMetadataModifiedDate();
+        $v->metadata_modified_date = $metadataModifiedDate;
+        $posterModifiedDate = $this->getPosterModifiedDate();
+        $v->poster_modified_date = $posterModifiedDate;
+        $v->metadata_source = $this->determineMetadataSource();
+        $v->poster_source = $this->determinePosterSource();
         $v->save();
         //save the video id to the property so we can use it in some other functions
-        $this->video_id = $v->videoId;
+        $this->video_id = $v->video_id;
 
 
         $v->sd_poster_url = $this->getSdPosterUrl();
         $v->hd_poster_url = $this->getHdPosterUrl();
-        $v->metadata_loaded_from_nfo = $this->metadataLoadedFromNfo;
         $v->save();
 
         //clear out any pre-existing genres (only applies when this is an existing video being re-saved
-        \orm\VideoGenre::table()->delete(array('video_id' => array($this->videoId)));
+        \orm\VideoGenre::table()->delete(array('video_id' => array($this->video_id)));
 
         //save each genre
         foreach ($this->genres as $genre) {
             //save this genre to this movie
             $vg = new \orm\VideoGenre();
             $vg->name = $genre;
-            $vg->videoId = $v->id;
+            $vg->video_id = $v->video_id;
             $vg->save();
         }
 
 
         $this->copyPosters();
-
-        //if this movie still does not have a public poster after copyPosters has completed, 
-        //we need to generate a text-only poster for it
-        $publicPosterPath = $this->getPublicPosterPath();
-        if (file_exists($publicPosterPath) === false) {
-            $this->generateTextOnlyPosterByType($this->mediaType);
-            $this->copyPosters();
-        }
+//
+//        //if this movie still does not have a public poster after copyPosters has completed, 
+//        //we need to generate a text-only poster for it
+//        $publicPosterPath = $this->getPublicPosterPath();
+//        if (file_exists($publicPosterPath) === false) {
+//            $this->generateTextOnlyPosterByType($this->mediaType);
+//            $this->copyPosters();
+//        }
     }
 
     public function getPublicPosterPath() {
-        return FileSystemVideo::posterDestinationPath() . "/$this->videoId.jpg";
+        return FileSystemVideo::posterDestinationPath() . "/$this->video_id.jpg";
     }
 
     /**
@@ -651,7 +557,7 @@ abstract class FileSystemVideo implements iVideo {
         } else {
             $metadataFetcher = $this->getMetadataFetcher();
             //if the metadata fetcher actually has a poster for this video
-            $posterUrl = $metadataFetcher->posterUrl();
+            $posterUrl = ($metadataFetcher !== null) ? $metadataFetcher->posterUrl() : null;
             if ($posterUrl !== null) {
                 return \Enumerations\MetadataSource::Web;
             } else {
@@ -718,7 +624,7 @@ abstract class FileSystemVideo implements iVideo {
     }
 
     /**
-     * Saves any pieces of this video that has changed in the filesystem that is not yet in the database
+     * Saves any pieces of this video that have changed in the filesystem that are not yet in the database
      */
     public function saveIfChanged() {
         $save = false;
@@ -732,40 +638,21 @@ abstract class FileSystemVideo implements iVideo {
             $save = true;
         }
 
-
-        //if this video was loaded from an nfo file
-        if ($this->metadataLoadedFromNfo() === true) {
-            $save = false;
-            //re-copy the posters
-            $fsVideo = new FilesystemMovie($existingDbVideo->path(), $existingDbVideo->sourcePath(), $existingDbVideo->sourceUrl());
-
-            //if the nfo file for this video has changed, refresh the metadata
-            if ($existingDbVideo->metadataLastModifiedDate() < $fsVideo->getMetadataModifiedDate()) {
-                $fsVideo->loadMetadata();
-                //the metadata changed. If the video has no poster, regenerate the public folder 
-                //text-only poster for this video
-                if ($fsVideo->posterExistsOnFileSystem() === false) {
-                    $fsVideo->generateTextOnlyPoster(\Enumerations\MediaType::Movie);
-                }
-                $save = true;
-            }
-
-            //if the poster is newer in the fs than from the db, 
-            if ($fsVideo->getPosterModifiedDate() > $existingDbVideo->posterLastModifiedDate()) {
-                $fsVideo->copyPosters();
-                $save = true;
-            }
-
-            if ($save === true) {
-                //re-save the video to push any of its latest changes to the db
-                $fsVideo->save();
-            }
+        if ($save === true) {
+            $this->save();
         }
     }
 
-    public function generateTextPoster() {
-        include_once(dirname(__file__) . "/../Code/lib/PHPImageWorkshop/ImageWorkshop.php");
-        $text = $this->getTitle();
+    public function generateTextPoster($title, $destination) {
+
+        if ($title === null) {
+            throw new Exception("Unable to generate text poster with no title");
+        }
+        if ($destination === null) {
+            throw new Exception("Unable to generate text poster when no destination was provided");
+        }
+
+        $text = $title;
         //append the time to the end of the text for debugging so we can see that the file has changed or not
         $text .= "--" . time();
         $fontPath = dirname(__FILE__) . '/../../../Content/Fonts/Liberation-Mono/LiberationMono-Regular.ttf';
@@ -773,8 +660,18 @@ abstract class FileSystemVideo implements iVideo {
         $textRotation = 0;
         $borderWidth = 25;
         $backgroundColor = "FFFFFF";
-        $posterWidth = 500;
-        $posterHeight = 750;
+
+        //determine the dimensions of the poster based on the media type of the video
+        switch ($this->mediaType()) {
+            case \Enumerations\MediaType::TvEpisode:
+                $posterWidth = 400;
+                $posterHeight = 225;
+                break;
+            default:
+                $posterWidth = 1000;
+                $posterHeight = 1500;
+                break;
+        }
         $maxCharactersPerRow = 20;
         $fontSize = $posterWidth / $maxCharactersPerRow;
 
@@ -864,8 +761,8 @@ abstract class FileSystemVideo implements iVideo {
         $borderLayer->addLayer(3, $verticalBorderLayer, 0, 0);
         $borderLayer->addLayer(4, $verticalBorderLayer, 0, 0, 'RT');
         $document->addLayer(2, $borderLayer);
-        $dirPath = "C:/";
-        $filename = "image.jpg";
+        $dirPath = dirname($destination);
+        $filename = pathinfo($destination, PATHINFO_FILENAME) . '.' . pathinfo($destination, PATHINFO_EXTENSION);
         $createFolders = true;
         $imageQuality = 100;
         $document->save($dirPath, $filename, $createFolders, $backgroundColor, $imageQuality);
@@ -873,40 +770,47 @@ abstract class FileSystemVideo implements iVideo {
 
     public function delete() {
         $destinationFolderPath = dirname(__FILE__) . '/../../../Content/Images/posters';
-        $videoId = $this->videoId();
-        $sdPosterPath = "$destinationFolderPath/$videoId-sd.jpg";
-        $hdPosterPath = "$destinationFolderPath/$videoId-hd.jpg";
-        $posterPath = "$destinationFolderPath/$videoId.jpg";
+        $video_id = $this->videoId();
+        $sdPosterPath = "$destinationFolderPath/$video_id-sd.jpg";
+        $hdPosterPath = "$destinationFolderPath/$video_id-hd.jpg";
+        $posterPath = "$destinationFolderPath/$video_id.jpg";
         //just try to delete the posters. if they don't exist, we don't care. Hide the error messages
         @unlink($sdPosterPath);
         @unlink($hdPosterPath);
         @unlink($posterPath);
 
         //delete every VideoGenre record referencing this video
-        \orm\VideoGenre::table()->delete(array('video_id' => array($videoId)));
+        \orm\VideoGenre::table()->delete(array('video_id' => array($video_id)));
 
         //delete every watchVideo record referencing this video
-        \orm\WatchVideo::table()->delete(array('video_id' => array($videoId)));
+        \orm\WatchVideo::table()->delete(array('video_id' => array($video_id)));
 
         //finally, delete the video itself
-        \orm\Video::table()->delete(array('video_id' => array($videoId)));
+        \orm\Video::table()->delete(array('video_id' => array($video_id)));
 
-        //clear the local videoId so we don't think this video still exists in the db
-        $this->videoId = null;
+        //clear the local video_id so we don't think this video still exists in the db
+        $this->video_id = null;
     }
 
     public function copyPosters() {
-
-        //$fsVideo->generateTextOnlyPoster(\Enumerations\MediaType::Movie);
-        $this->loadMetadata();
+        $video_id = $this->videoId();
+        if ($video_id === -1) {
+            throw new Exception("Unable to copy posters for a video that does not yet exist in the database");
+        }
+        // $this->loadMetadata();
         //save the hd poster.
-        $posterPath = "$this->posterDestinationPath/$this->videoId.jpg";
-        $sdPosterPath = "$this->posterDestinationPath/$this->videoId-sd.jpg";
-        $hdPosterPath = "$this->posterDestinationPath/$this->videoId-hd.jpg";
+        $posterDestinationPath = "$this->posterDestinationPath/$video_id.jpg";
+        $sdPosterDestinationPath = "$this->posterDestinationPath/$video_id-sd.jpg";
+        $hdPosterDestinationPath = "$this->posterDestinationPath/$video_id-hd.jpg";
 
-        $this->savePoster($posterPath);
-        $this->savePoster($sdPosterPath, \Enumerations\PosterSizes::RokuSDWidth, \Enumerations\PosterSizes::RokuSDHeight, $posterPath);
-        $this->savePoster($hdPosterPath, \Enumerations\PosterSizes::RokuHDWidth, \Enumerations\PosterSizes::RokuHDHeight, $posterPath);
+        $savePosterSuccess = $this->savePoster($posterDestinationPath);
+
+        //if poster saving didn't work, there is no poster to copy. Generate a text only poster for this video
+        if ($savePosterSuccess === false) {
+            $this->generateTextPoster($this->getTitle(), $posterDestinationPath);
+        }
+        $this->savePoster($sdPosterDestinationPath, \Enumerations\PosterSizes::RokuSDWidth, \Enumerations\PosterSizes::RokuSDHeight, $posterDestinationPath);
+        $this->savePoster($hdPosterDestinationPath, \Enumerations\PosterSizes::RokuHDWidth, \Enumerations\PosterSizes::RokuHDHeight, $posterDestinationPath);
     }
 
     /**
@@ -933,13 +837,13 @@ abstract class FileSystemVideo implements iVideo {
      * @param type $height - height in pixels
      * @return boolean - true if successful, false if file doesn't exist or failure
      */
-    private function savePoster($destination, $maxWidth = null, $maxHeight = null, $posterPath = null) {
-        $posterPath = ($posterPath === null) ? $this->getPosterPath() : $posterPath;
-        if ($posterPath != null) {
+    private function savePoster($destination, $maxWidth = null, $maxHeight = null, $posterSourcePath = null) {
+        $posterSourcePath = ($posterSourcePath === null) ? $this->getPosterPath() : $posterSourcePath;
+        if ($posterSourcePath != null) {
             $image = new \abeautifulsite\SimpleImage();
             //load the image
             try {
-                $success = $image->load($posterPath);
+                $success = $image->load($posterSourcePath);
                 if ($maxWidth !== null && $maxHeight !== null) {
                     //resize the image
                     $image->best_fit($maxWidth, $maxHeight);
@@ -950,7 +854,7 @@ abstract class FileSystemVideo implements iVideo {
                 return false;
             }
         } else {
-            return false;
+            
         }
         return true;
     }
@@ -960,10 +864,10 @@ abstract class FileSystemVideo implements iVideo {
      * @return null
      */
     public function metadataModifiedDateFromDb() {
-        $videoId = $this->videoId();
-        if ($videoId !== null) {
+        $video_id = $this->videoId();
+        if ($video_id !== null) {
             /* @var $result \orm\Video  */
-            $result = \orm\Video::find_by_video_id($videoId);
+            $result = \orm\Video::find_by_video_id($video_id);
             return $result->metadata_modified_date;
         } else {
             return null;
@@ -974,10 +878,10 @@ abstract class FileSystemVideo implements iVideo {
      * Goes to the database and gets the poster modified date for this video
      */
     public function posterModifiedDateFromDb() {
-        $videoId = $this->videoId();
-        if ($videoId !== null) {
+        $video_id = $this->videoId();
+        if ($video_id !== null) {
             /* @var $result \orm\Video  */
-            $result = \orm\Video::find_by_video_id($videoId);
+            $result = \orm\Video::find_by_videoId($video_id);
             return $result->poster_modified_date;
         } else {
             return null;
@@ -985,18 +889,18 @@ abstract class FileSystemVideo implements iVideo {
     }
 
     /**
-     * Get the videoId from the database of this video
+     * Get the video_id from the database of this video
      * @return int - the video id of this video in the database
      */
     public function videoId() {
         //if the video id of this video is set already, return that
-        if ($this->videoId !== null) {
-            return $this->videoId;
+        if ($this->video_id !== null) {
+            return $this->video_id;
         } else {
             //the video id is not set. Check the database to see if this video is in there
             $video = \orm\Video::find_by_path($this->path);
             if ($video !== null) {
-                return $video->videoId;
+                return $video->video_id;
             }
         }
         //couldn't find a video id. 
@@ -1076,6 +980,14 @@ abstract class FileSystemVideo implements iVideo {
      */
     function metadataSourceFromDb() {
         return $this->metadataSource;
+    }
+
+    /**
+     * Returns the metadata source that was stored in the database the last time this video was saved.
+     * @return \Enumerations\MetadataSource
+     */
+    function posterSourceFromDb() {
+        return $this->posterSource;
     }
 
     /**

@@ -35,6 +35,7 @@ function view($theModel = null, $routeString = null) {
     }
     //get the layout option 
     $layout = (isset($layout)) ? $layout : null;
+    
     //include the view
     ob_start();
     include($viewPath);

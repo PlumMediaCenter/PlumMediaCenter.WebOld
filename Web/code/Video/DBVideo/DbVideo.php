@@ -14,7 +14,7 @@ include_once(dirname(__file__) . '/../FileSystemVideo/FileSystemVideo.php');
  * This class wraps a database video object. 
  * @author bplumb
  */
-abstract class DbVideo implements iVideo {
+class DbVideo implements iVideo {
 
     private $videoId;
 
@@ -68,51 +68,94 @@ abstract class DbVideo implements iVideo {
 
     /* iVideo functions */
 
-    public function mediaType() {
+    public function getMediaType() {
         return $this->getVideoRecord()->mediaType;
     }
 
-    public function videoId() {
+    public function setMediaType($mediaType) {
+        $this->getVideoRecord()->media_type = $mediaType;
+    }
+
+    public function getVideoId() {
         return $this->videoId;
     }
 
-    function title() {
+    public function setVideoId($value) {
+        $this->videoId = $value;
+        $vr = $this->getVideoRecord();
+        $vr->video_id = $value;
+        $this->setVideoRecord($vr);
+    }
+
+    function getTitle() {
         return $this->getVideoRecord()->title;
     }
 
-    function plot() {
+    function setTitle($value) {
+        $vr = $this->getVideoRecord();
+        $vr->title = $value;
+        $this->setVideoRecord($vr);
+    }
+
+    function getPlot() {
         return $this->getVideoRecord()->plot;
     }
 
-    function mpaa() {
+    function setPlot($value) {
+        $vr = $this->getVideoRecord();
+        $vr->plot = $value;
+        $this->setVideoRecord($vr);
+    }
+
+    function getMpaa() {
         return $this->getVideoRecord()->mpaa;
     }
 
-    function path() {
+    function setMpaa($value) {
+        $vr = $this->getVideoRecord();
+        $vr->mpaa = $value;
+        $this->setVideoRecord($vr);
+    }
+
+    function getPath() {
         return $this->getVideoRecord()->path;
     }
 
-    function sourcePath() {
-        return $this->getVideoRecord()->videoSourcePath;
+    function setPath($value) {
+        $vr = $this->getVideoRecord();
+        $vr->path = $value;
+        $this->setVideoRecord($vr);
     }
 
-    function sourceUrl() {
-        return $this->getVideoRecord()->videoSourceUrl;
+    function getSourcePath() {
+        return $this->getVideoRecord()->video_source_path;
     }
 
-    function metadataLoadedFromNfo() {
-        return $this->getVideoRecord()->metadataLoadedFromNfo === 1;
+    function setSourcePath($value) {
+        $vr = $this->getVideoRecord();
+        $vr->video_source_path = $value;
+        $this->setVideoRecord($vr);
     }
 
-    function posterUrl() {
-        return FileSystemVideo::posterDestinationUrl() . "/$this->videoId.jpg";
+    function getSourceUrl() {
+        return $this->getVideoRecord()->video_source_url;
+    }
+
+    function setSourceUrl($value) {
+        $vr = $this->getVideoRecord();
+        $vr->video_source_url = $value;
+        $this->setVideoRecord($vr);
+    }
+
+    function getPosterUrl() {
+        return FileSystemVideo::posterDestinationUrl() . "/$this->video_id.jpg";
     }
 
     /**
      * The list of genres for this video
      * @return string[] - a list of the genres for this video
      */
-    function genres() {
+    function getGenres() {
         $genreRecords = $this->getGenreRecords();
         $genres = [];
         foreach ($genreRecords as $genreRecord) {
@@ -122,18 +165,52 @@ abstract class DbVideo implements iVideo {
     }
 
     /**
+     * Sets the list of genres associated with this video
+     * @param string[] $genres
+     */
+    function setGenres($genres) {
+        $genreRecords = $this->getGenreRecords();
+
+        //delete any old genres associated with this video
+        /* @var $genreRecord \orm\VideoGenre  */
+        foreach ($genreRecords as $genreRecord) {
+            $genreRecord->delete();
+        }
+        $this->genreRecords = [];
+        foreach ($genres as $genre) {
+            $g = new \orm\VideoGenre();
+            $g->genre_name = $genre;
+            $g->video_id = $this->getVideoId();
+            $g->save();
+            $this->genreRecords[] = $g;
+        }
+    }
+
+    /**
      * The date the video was originally released
      * @return \DateTime
      */
-    function releaseDate() {
-        return $this->getVideoRecord()->releaseDate;
+    function getReleaseDate() {
+        return $this->getVideoRecord()->release_date;
+    }
+
+    function setReleaseDate($value) {
+        $vr = $this->getVideoRecord();
+        $vr->release_date = $value;
+        $this->setVideoRecord($vr);
     }
 
     /**
      * The running time of the video in seconds
      */
-    function runningTimeSeconds() {
-        return $this->getVideoRecord()->runningTimeSeconds;
+    function getRunningTimeSeconds() {
+        return $this->getVideoRecord()->running_time_seconds;
+    }
+
+    function setRunningTimeSeconds($value) {
+        $vr = $this->getVideoRecord();
+        $vr->running_time_seconds = $value;
+        $this->setVideoRecord($vr);
     }
 
     /* End iVideo functions */

@@ -23,7 +23,7 @@ class LibraryNew {
         //create a DbVideo class for each movie from db
         $moviesInDb = [];
         foreach ($moviesInDbQueryResults as $movieInDb) {
-            $movie = new DbMovie($movieInDb->videoId);
+            $movie = new DbMovie($movieInDb->video_id);
             $movie->setVideoRecord($movieInDb);
             $moviesInDb[] = $movie;
         }
@@ -35,7 +35,7 @@ class LibraryNew {
             $listOfAllFilesInSource = getVideosFromDir($source->location);
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
                 //create a new Movie object
-                $video = new FileSystemMovie($fullPathToFile, $source->location, $source->baseUrl);
+                $video = new FileSystemMovie($fullPathToFile, $source->location, $source->base_url);
                 $moviesInFs[] = $video;
             }
         }
@@ -71,7 +71,12 @@ class LibraryNew {
             }
         }
         //movies that WERE in the db, and ARE in the file system
-        $existingMovies = array_filter($moviesInDb);
+        $existingDbMovies = array_filter($moviesInDb);
+        $existingFsMovies = array();
+        /* @var $dbMovie DbMovie */
+        foreach ($existingDbMovies as $dbMovie) {
+            $existingFsMovies[] = new FileSystemMovie($dbMovie->path(), $dbMovie->sourcePath(), $dbMovie->sourceUrl());
+        }
 
         //the remaining videos in $moviesInFs are new movies
         $newMovies = array_filter($moviesInFs);
@@ -79,7 +84,7 @@ class LibraryNew {
         //collect the lists into a single object
         $result = (object) array();
         $result->new = $newMovies;
-        $result->existing = $existingMovies;
+        $result->existing = $existingFsMovies;
         $result->deleted = $moviesInDbButDeletedFromFs;
 
         return $result;

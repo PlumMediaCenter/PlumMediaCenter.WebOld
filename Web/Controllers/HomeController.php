@@ -57,7 +57,7 @@ class HomeController extends Controller {
         //set a 1 hour time limit on this process
         set_time_limit(3600);
         include_once(dirname(__file__) . "/../Code/LibraryNew.php");
-        $l = new NewLibrary();
+        $l = new LibraryNew();
         $l->generateLibrary();
     }
 
