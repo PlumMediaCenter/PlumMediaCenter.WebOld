@@ -4,6 +4,7 @@
 	"boss": false,
 	"camelcase": true,
     "curly": true,
+	"debug": true,
     "eqnull": false,
     "eqeqeq": true,
 	"evil": false,

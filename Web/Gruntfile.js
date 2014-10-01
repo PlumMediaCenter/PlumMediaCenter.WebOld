@@ -18,7 +18,7 @@
         },
         jsdoc: {
             dist: {
-                src: ['server/models/User.js'],
+                src: ['models/User.js'],
                 options: {
                     destination: 'web/public/apidoc'
                 }
@@ -42,7 +42,7 @@
         },
         nodemon: {
             serve: {
-                script: './server/app.js',
+                script: './app.js',
                 options: {
                     //nodeArgs: ['--debug']
                 }
@@ -105,6 +105,7 @@
     require('load-grunt-tasks')(grunt);
 
     //create tasks
+    grunt.registerTask('default', ['build']);
     grunt.registerTask('build', ['newer:jshint', 'newer:concat', 'newer:copy:partials', 'newer:copy:content', 'newer:copy:staticFiles', 'newer:copy:lib']);
     grunt.registerTask('serve', ['nodemon']);
    // grunt.registerTask('debugger', ['node-inspector']);

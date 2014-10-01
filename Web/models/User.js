@@ -73,7 +73,7 @@ User.FindByEmail = function (email) {
     User.collection().findOne({ email: email }, function (err, item) {
         if (!err) {
             console.log('Found user by email "' + email + '"');
-            user = item !== undefined ? User.Convert(item) : undefined;
+            user = item !== null ? User.Convert(item) : undefined;
             deferred.resolve(user);
         } else {
             console.log('No user with email "' + email + '" was found');
@@ -128,7 +128,7 @@ User.CredentialsAreValid = function (email, password) {
             deferred.resolve(true);
         } else {
             console.log('User credentials were NOT valid');
-            deferred.reject(new Erro('No user was found with the specified email address'));
+            deferred.reject(new Error('No user was found with the specified email address'));
         }
     }, function () {
         console.log('There was no user with that email address');

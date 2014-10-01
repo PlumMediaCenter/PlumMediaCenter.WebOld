@@ -1,4 +1,5 @@
-angular.module('app', ['ngResource', 'ngRoute', 'ngStorage']);  
+angular.module('app', ['ngResource', 'ngRoute', 'ngStorage']);
+debugger;
 angular.module('app').controller('LoginController', ['$scope', 'account', function ($scope, account) {
     'use strict';
     var vm = $scope;
@@ -7,9 +8,9 @@ angular.module('app').controller('LoginController', ['$scope', 'account', functi
 
     vm.logIn = function () {
         account.logIn(vm.email, vm.password).then(function () {
-
+            vm.message = 'Logged in';
         }, function () {
-
+            vm.message = 'Unable to log in'; 
         });
     };
     return vm;
@@ -89,7 +90,9 @@ angular.module('app').service('account', ['api', '$q', '$localStorage', function
         logIn: function (email, password) {
             var deferred = $q.defer();
             var user = api.users.authToken({ email: email, password: password }, function (a, b, c) {
-
+                deferred.resolve(true);
+            }, function (a, b, c) { 
+                return deferred.reject(false);
             });
             return deferred.promise;
         },
@@ -109,7 +112,7 @@ angular.module('app').service('api', ['$resource', function ($resource) {
             authToken: {
                 method: 'GET',
                 isArray: false,
-                url: '/api/users/:email/auth-token'
+                url: '/api/users/token'
             }
         });
 

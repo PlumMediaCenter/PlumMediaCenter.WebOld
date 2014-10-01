@@ -4,7 +4,9 @@
         logIn: function (email, password) {
             var deferred = $q.defer();
             var user = api.users.authToken({ email: email, password: password }, function (a, b, c) {
-
+                deferred.resolve(true);
+            }, function (a, b, c) { 
+                return deferred.reject(false);
             });
             return deferred.promise;
         },

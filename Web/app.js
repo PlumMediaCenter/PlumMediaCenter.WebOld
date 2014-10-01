@@ -27,12 +27,12 @@ app.use(jwtauth);
 routes = require('./routes/routes.js')(app);
 
 //expose the web application
-var publicPath = path.resolve(__dirname + './../web/public')
+var publicPath = path.resolve(__dirname + '/web/public')
 app.use(express.static(publicPath));
 
 //any other requests wil be directed to the index page
 app.get('*', function (req, res) {
-    var indexPath = path.resolve(__dirname + './../web/public/index.html');
+    var indexPath = path.resolve(__dirname + '/web/public/index.html');
     res.sendFile(indexPath);
 });
 

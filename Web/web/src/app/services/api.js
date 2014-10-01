@@ -5,7 +5,7 @@
             authToken: {
                 method: 'GET',
                 isArray: false,
-                url: '/api/users/:email/token'
+                url: '/api/users/token'
             }
         });
 
