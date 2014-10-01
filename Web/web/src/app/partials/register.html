@@ -1,0 +1,18 @@
+﻿<form name="registerUserForm" id="register" class="well" ng-submit="registerUserForm.$valid && vm.register()" ng-controller="RegisterController as vm">
+    <b>Email Address: </b><input type="text" class="form-control" name="email" ng-model="vm.user.email" required/>
+    <span class="text-danger" ng-show="registerUserForm.email.$error.required">Required!<br /></span><br />
+
+    <b>First Name: </b><input type="text" class="form-control" name="firstName" ng-model="vm.user.firstName" required /><br />
+    <span class="text-danger" ng-show="registerUserForm.firstName.$error.required">Required!<br /></span><br />
+   
+    <b> Last Name: </b><input type="text" class="form-control" name="lastName" ng-model="vm.user.lastName" required /><br />
+    <span class="text-danger" ng-show="registerUserForm.lastName.$error.required">Required!<br /></span><br />
+   
+    <b> Create a password: </b><input type="password" class="form-control" name="password" ng-model="vm.user.password" required /><br />
+    <span class="text-danger" ng-show="registerUserForm.password.$error.required">Required!<br /></span><br />
+   
+    <b> Confirm password</b><input type="password" class="form-control" name="passwordConfirm" ng-model="vm.user.passwordConfirm" required /><br />
+    <span class="text-danger" ng-show="registerUserForm.passwordConfirm.$error.required">Required!<br /></span><br />
+    <button type="submit" class="btn btn-primary pull-right">Register</button>
+    <div class="clearfix"></div>
+</form>  

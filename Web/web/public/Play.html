@@ -1,0 +1,19 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/lib/jwplayer6/jwplayer.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            jwplayer("videoPlayer").setup({
+                file: "/video",
+                width: 640,
+                height: 360,
+                type: 'mp4'
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="videoPlayer" style="width:100%;">JW Player goes here</div>
+</body>
+</html>

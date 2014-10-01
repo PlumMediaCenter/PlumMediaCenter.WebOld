@@ -1,0 +1,23 @@
+﻿{
+    "asi": false,
+	"bitwise": true,
+	"boss": false,
+	"camelcase": true,
+    "curly": true,
+    "eqnull": false,
+    "eqeqeq": true,
+	"evil": false,
+	"es3": true,
+	"immed": true,
+	"latedef": "nofunc",
+	"newcap": true,
+	"nonew": true,
+	"plusplus": false,
+	"quotmark": true,
+	"strict": true,
+    "undef": true,
+	"unused": false,
+	"globals" :{
+		"angular": false
+	}
+}
