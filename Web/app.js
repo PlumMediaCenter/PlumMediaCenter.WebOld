@@ -20,15 +20,16 @@ app.use(bodyParser.json())
 // parse application/vnd.api+json as json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }))
 
+//expose the web application
+app.use(express.static(path.resolve(__dirname + '/web/public')));
+
 //authentication handling
 app.use(jwtauth);
 
 //require the routes file, which will then load all of the routes for this app
 routes = require('./routes/routes.js')(app);
 
-//expose the web application
-var publicPath = path.resolve(__dirname + '/web/public')
-app.use(express.static(publicPath));
+
 
 //any other requests wil be directed to the index page
 app.get('*', function (req, res) {

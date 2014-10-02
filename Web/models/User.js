@@ -71,7 +71,8 @@ User.FindByEmail = function (email) {
     var dbUser, user;
     //search for the user in the databse
     User.collection().findOne({ email: email }, function (err, item) {
-        if (!err) {
+        //if there was no error AND we actually found a user with that email
+        if (!err && item !== null) {
             console.log('Found user by email "' + email + '"');
             user = item !== null ? User.Convert(item) : undefined;
             deferred.resolve(user);
@@ -132,7 +133,7 @@ User.CredentialsAreValid = function (email, password) {
         }
     }, function () {
         console.log('There was no user with that email address');
-        deferred.reject(new Erro('No user was found with the specified email address'));
+        deferred.reject(new Error('No user was found with the specified email address'));
     })
     return deferred.promise;
 };

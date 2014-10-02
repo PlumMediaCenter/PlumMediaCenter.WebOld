@@ -59,7 +59,7 @@ module.exports = function (app) {
                 email: email
             });
            
-        }, function () {
+        }, function (e) {
             console.log('Could not load user by email.');
             res.status(401).send('Authentication error');
         });

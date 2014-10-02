@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css" />
         <link rel="stylesheet" href="/content/style.css" />
     </head>
-    <body>
+    <body ng-controller="BaseController as base">
         <div ng-view></div>
         <!--Scripts area -->
         <script type="text/javascript" src="/components/angular/angular.min.js"></script>
@@ -15,5 +15,6 @@
         <script type="text/javascript" src="/components/angular-resource/angular-resource.min.js"></script>
         <script type="text/javascript" src="/app.js"></script>
         <script src="//localhost:35729/livereload.js"></script>
+        <a class="pull-right" ng-click="base.logOut()">Log Out</a>
     </body>
 </html>    

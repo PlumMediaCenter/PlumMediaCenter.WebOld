@@ -19,7 +19,7 @@
     <OutputPath>.</OutputPath>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
     <NodejsPort>3000</NodejsPort>
     <StartWebBrowser>True</StartWebBrowser>
   </PropertyGroup>
@@ -42,6 +42,8 @@
     <Compile Include="routes\userRoutes.js" />
     <Compile Include="routes\videoRoutes.js" />
     <Compile Include="web\src\app\app.js" />
+    <Compile Include="web\src\app\controllers\BaseController.js" />
+    <Compile Include="web\src\app\controllers\DashboardController.js" />
     <Compile Include="web\src\app\controllers\LoginController.js" />
     <Compile Include="web\src\app\controllers\RegisterController.js" />
     <Compile Include="web\src\app\controllers\RootController.js" />
@@ -55,6 +57,7 @@
     <Compile Include="web\src\lib\jwplayer6\swfobject.js" />
     <Content Include="package.json" />
     <Content Include="db\users" />
+    <Content Include="web\src\app\partials\dashboard.html" />
     <Content Include="web\src\app\partials\login.html" />
     <Content Include="web\src\app\partials\register.html" />
     <Content Include="web\src\content\logo-lg.png" />
