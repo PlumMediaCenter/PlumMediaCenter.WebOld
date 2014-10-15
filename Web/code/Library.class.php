@@ -34,6 +34,9 @@ class Library {
     public function fetchMissingMetadataAndPosters() {
         /* @var $video Video   */
         foreach ($this->videos as $video) {
+            //skip this video if it's not an object
+            if(is_object($video) == false){continue;}
+            echo $video->title . '<br/>';
             try{
                 if ($video->nfoFileExists() == false) {
                     $video->fetchMetadata();
@@ -111,6 +114,7 @@ class Library {
             $this->videos[] = $tvShow;
             $this->tvShowCount++;
 
+            if(is_object($tvShow) == false){continue;}
             //load all of the episodes for this tv show
             $tvShow->loadEpisodesFromDatabase();
             $this->videos = array_merge($this->videos, $tvShow->episodes);
