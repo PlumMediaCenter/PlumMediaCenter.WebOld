@@ -36,7 +36,6 @@ class Library {
         foreach ($this->videos as $video) {
             //skip this video if it's not an object
             if(is_object($video) == false){continue;}
-            echo $video->title . '<br/>';
             try{
                 if ($video->nfoFileExists() == false) {
                     $video->fetchMetadata();
