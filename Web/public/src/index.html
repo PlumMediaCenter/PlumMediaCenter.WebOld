@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css" />
+	<!-- <link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css" /> -->
+	<link rel="stylesheet" href="/style.min.css" />
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body ng-controller="RootController as root">
+<div ng-include src="'/app/partials/navbar.html'" ng-controller="NavbarController as vm"></div>
+    <div ng-view></div>
+<script type="text/javascript" src="/components/angular/angular.min.js"></script>
+ <script type="text/javascript" src="/components/angular-resource/angular-resource.js"></script>
+<script type="text/javascript" src="/components/angular-route/angular-route.min.js"></script>
+<script type="text/javascript" src="/components/ngstorage/ngStorage.min.js"></script>
+<!-- build:scripts -->
+<!-- endbuild -->
+<!-- build:liveReload -->
+<!-- endbuild -->
+</body>
+</html>

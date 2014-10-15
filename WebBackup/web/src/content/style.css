@@ -1,0 +1,77 @@
+﻿html, body {
+    padding: 0px;
+    margin: 0px;
+}
+
+body {
+    padding-top: 1px;
+    margin-top: -1px;
+}
+
+#login {
+    width: 350px;
+    margin: auto;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 30px;
+    padding-top: 80px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.text-center {
+    text-align: center;
+}
+
+#login-logo-container {
+    margin-top: 30px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.inline-block {
+    display: inline;
+    display: inline-block;
+}
+
+.logo-img-sm {
+    background-image: url('/content/logo-sm.png');
+    display: inline;
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+    width: 24px;
+    height: 24px;
+    border: 0;
+}
+
+.logo-sm {
+    font-size: 14px;
+    color: purple;
+}
+
+.logo-img-lg {
+    background-image: url('/content/logo-lg.png');
+    display: inline;
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+    width: 64px;
+    height: 64px;
+    border: 0;
+}
+
+.logo-lg {
+    font-size: 22px;
+    color: purple;
+}
+
+#register {
+    width: 400px;
+    margin: auto;
+    margin-top: 50px;
+}

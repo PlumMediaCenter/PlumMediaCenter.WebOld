@@ -1,0 +1,21 @@
+html, body{
+  padding:0px;
+  margin:0px;
+}
+
+#login {
+    width: 350px;
+    margin: auto;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 30px;
+    padding-top: 80px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.text-center {
+    text-align: center;
+}

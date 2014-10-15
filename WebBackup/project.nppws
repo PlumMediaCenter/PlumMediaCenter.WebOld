@@ -1,0 +1,441 @@
+<NotepadPlus>
+    <Project name="PlumVideoPlayer">
+        <Folder name="code">
+            <File name="code\Email.js" />
+            <File name="code\jwtauth.js" />
+        </Folder>
+        <Folder name="db">
+            <File name="db\users" />
+        </Folder>
+        <Folder name="models">
+            <File name="models\User.js" />
+        </Folder>
+        <Folder name="routes">
+            <File name="routes\play.js" />
+            <File name="routes\routes.js" />
+            <File name="routes\userRoutes.js" />
+            <File name="routes\videoRoutes.js" />
+        </Folder>
+        <Folder name="web">
+            <Folder name="public">
+                <Folder name="apidoc" />
+                <Folder name="components">
+                    <Folder name="angular">
+                        <File name="web\public\components\angular\.bower.json" />
+                        <File name="web\public\components\angular\angular-csp.css" />
+                        <File name="web\public\components\angular\angular.js" />
+                        <File name="web\public\components\angular\angular.min.js" />
+                        <File name="web\public\components\angular\angular.min.js.gzip" />
+                        <File name="web\public\components\angular\angular.min.js.map" />
+                        <File name="web\public\components\angular\bower.json" />
+                        <File name="web\public\components\angular\README.md" />
+                    </Folder>
+                    <Folder name="angular-bootstrap">
+                        <File name="web\public\components\angular-bootstrap\.bower.json" />
+                        <File name="web\public\components\angular-bootstrap\bower.json" />
+                        <File name="web\public\components\angular-bootstrap\ui-bootstrap-tpls.js" />
+                        <File name="web\public\components\angular-bootstrap\ui-bootstrap-tpls.min.js" />
+                        <File name="web\public\components\angular-bootstrap\ui-bootstrap.js" />
+                        <File name="web\public\components\angular-bootstrap\ui-bootstrap.min.js" />
+                    </Folder>
+                    <Folder name="angular-resource">
+                        <File name="web\public\components\angular-resource\.bower.json" />
+                        <File name="web\public\components\angular-resource\angular-resource.js" />
+                        <File name="web\public\components\angular-resource\angular-resource.min.js" />
+                        <File name="web\public\components\angular-resource\angular-resource.min.js.map" />
+                        <File name="web\public\components\angular-resource\bower.json" />
+                        <File name="web\public\components\angular-resource\README.md" />
+                    </Folder>
+                    <Folder name="angular-route">
+                        <File name="web\public\components\angular-route\.bower.json" />
+                        <File name="web\public\components\angular-route\angular-route.js" />
+                        <File name="web\public\components\angular-route\angular-route.min.js" />
+                        <File name="web\public\components\angular-route\angular-route.min.js.map" />
+                        <File name="web\public\components\angular-route\bower.json" />
+                        <File name="web\public\components\angular-route\README.md" />
+                    </Folder>
+                    <Folder name="bootstrap">
+                        <Folder name="dist">
+                            <Folder name="css">
+                                <File name="web\public\components\bootstrap\dist\css\bootstrap-theme.css" />
+                                <File name="web\public\components\bootstrap\dist\css\bootstrap-theme.css.map" />
+                                <File name="web\public\components\bootstrap\dist\css\bootstrap-theme.min.css" />
+                                <File name="web\public\components\bootstrap\dist\css\bootstrap.css" />
+                                <File name="web\public\components\bootstrap\dist\css\bootstrap.css.map" />
+                                <File name="web\public\components\bootstrap\dist\css\bootstrap.min.css" />
+                            </Folder>
+                            <Folder name="fonts">
+                                <File name="web\public\components\bootstrap\dist\fonts\glyphicons-halflings-regular.eot" />
+                                <File name="web\public\components\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
+                                <File name="web\public\components\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
+                                <File name="web\public\components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
+                            </Folder>
+                            <Folder name="js">
+                                <File name="web\public\components\bootstrap\dist\js\bootstrap.js" />
+                                <File name="web\public\components\bootstrap\dist\js\bootstrap.min.js" />
+                            </Folder>
+                        </Folder>
+                        <Folder name="fonts">
+                            <File name="web\public\components\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+                            <File name="web\public\components\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+                            <File name="web\public\components\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+                            <File name="web\public\components\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+                        </Folder>
+                        <Folder name="grunt">
+                            <File name="web\public\components\bootstrap\grunt\bs-glyphicons-data-generator.js" />
+                            <File name="web\public\components\bootstrap\grunt\bs-lessdoc-parser.js" />
+                            <File name="web\public\components\bootstrap\grunt\bs-raw-files-generator.js" />
+                            <File name="web\public\components\bootstrap\grunt\sauce_browsers.yml" />
+                        </Folder>
+                        <Folder name="js">
+                            <File name="web\public\components\bootstrap\js\affix.js" />
+                            <File name="web\public\components\bootstrap\js\alert.js" />
+                            <File name="web\public\components\bootstrap\js\button.js" />
+                            <File name="web\public\components\bootstrap\js\carousel.js" />
+                            <File name="web\public\components\bootstrap\js\collapse.js" />
+                            <File name="web\public\components\bootstrap\js\dropdown.js" />
+                            <File name="web\public\components\bootstrap\js\modal.js" />
+                            <File name="web\public\components\bootstrap\js\popover.js" />
+                            <File name="web\public\components\bootstrap\js\scrollspy.js" />
+                            <File name="web\public\components\bootstrap\js\tab.js" />
+                            <File name="web\public\components\bootstrap\js\tooltip.js" />
+                            <File name="web\public\components\bootstrap\js\transition.js" />
+                        </Folder>
+                        <Folder name="less">
+                            <Folder name="mixins">
+                                <File name="web\public\components\bootstrap\less\mixins\alerts.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\background-variant.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\border-radius.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\buttons.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\center-block.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\clearfix.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\forms.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\gradients.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\grid-framework.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\grid.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\hide-text.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\image.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\labels.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\list-group.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\nav-divider.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\nav-vertical-align.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\opacity.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\pagination.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\panels.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\progress-bar.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\reset-filter.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\resize.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\responsive-visibility.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\size.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\tab-focus.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\table-row.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\text-emphasis.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\text-overflow.less" />
+                                <File name="web\public\components\bootstrap\less\mixins\vendor-prefixes.less" />
+                            </Folder>
+                            <File name="web\public\components\bootstrap\less\alerts.less" />
+                            <File name="web\public\components\bootstrap\less\badges.less" />
+                            <File name="web\public\components\bootstrap\less\bootstrap.less" />
+                            <File name="web\public\components\bootstrap\less\breadcrumbs.less" />
+                            <File name="web\public\components\bootstrap\less\button-groups.less" />
+                            <File name="web\public\components\bootstrap\less\buttons.less" />
+                            <File name="web\public\components\bootstrap\less\carousel.less" />
+                            <File name="web\public\components\bootstrap\less\close.less" />
+                            <File name="web\public\components\bootstrap\less\code.less" />
+                            <File name="web\public\components\bootstrap\less\component-animations.less" />
+                            <File name="web\public\components\bootstrap\less\dropdowns.less" />
+                            <File name="web\public\components\bootstrap\less\forms.less" />
+                            <File name="web\public\components\bootstrap\less\glyphicons.less" />
+                            <File name="web\public\components\bootstrap\less\grid.less" />
+                            <File name="web\public\components\bootstrap\less\input-groups.less" />
+                            <File name="web\public\components\bootstrap\less\jumbotron.less" />
+                            <File name="web\public\components\bootstrap\less\labels.less" />
+                            <File name="web\public\components\bootstrap\less\list-group.less" />
+                            <File name="web\public\components\bootstrap\less\media.less" />
+                            <File name="web\public\components\bootstrap\less\mixins.less" />
+                            <File name="web\public\components\bootstrap\less\modals.less" />
+                            <File name="web\public\components\bootstrap\less\navbar.less" />
+                            <File name="web\public\components\bootstrap\less\navs.less" />
+                            <File name="web\public\components\bootstrap\less\normalize.less" />
+                            <File name="web\public\components\bootstrap\less\pager.less" />
+                            <File name="web\public\components\bootstrap\less\pagination.less" />
+                            <File name="web\public\components\bootstrap\less\panels.less" />
+                            <File name="web\public\components\bootstrap\less\popovers.less" />
+                            <File name="web\public\components\bootstrap\less\print.less" />
+                            <File name="web\public\components\bootstrap\less\progress-bars.less" />
+                            <File name="web\public\components\bootstrap\less\responsive-embed.less" />
+                            <File name="web\public\components\bootstrap\less\responsive-utilities.less" />
+                            <File name="web\public\components\bootstrap\less\scaffolding.less" />
+                            <File name="web\public\components\bootstrap\less\tables.less" />
+                            <File name="web\public\components\bootstrap\less\theme.less" />
+                            <File name="web\public\components\bootstrap\less\thumbnails.less" />
+                            <File name="web\public\components\bootstrap\less\tooltip.less" />
+                            <File name="web\public\components\bootstrap\less\type.less" />
+                            <File name="web\public\components\bootstrap\less\utilities.less" />
+                            <File name="web\public\components\bootstrap\less\variables.less" />
+                            <File name="web\public\components\bootstrap\less\wells.less" />
+                        </Folder>
+                        <File name="web\public\components\bootstrap\.bower.json" />
+                        <File name="web\public\components\bootstrap\bower.json" />
+                        <File name="web\public\components\bootstrap\Gruntfile.js" />
+                        <File name="web\public\components\bootstrap\LICENSE" />
+                        <File name="web\public\components\bootstrap\package.json" />
+                        <File name="web\public\components\bootstrap\README.md" />
+                    </Folder>
+                    <Folder name="jquery">
+                        <Folder name="dist">
+                            <File name="web\public\components\jquery\dist\jquery.js" />
+                            <File name="web\public\components\jquery\dist\jquery.min.js" />
+                            <File name="web\public\components\jquery\dist\jquery.min.map" />
+                        </Folder>
+                        <Folder name="src">
+                            <Folder name="ajax">
+                                <Folder name="var">
+                                    <File name="web\public\components\jquery\src\ajax\var\nonce.js" />
+                                    <File name="web\public\components\jquery\src\ajax\var\rquery.js" />
+                                </Folder>
+                                <File name="web\public\components\jquery\src\ajax\jsonp.js" />
+                                <File name="web\public\components\jquery\src\ajax\load.js" />
+                                <File name="web\public\components\jquery\src\ajax\parseJSON.js" />
+                                <File name="web\public\components\jquery\src\ajax\parseXML.js" />
+                                <File name="web\public\components\jquery\src\ajax\script.js" />
+                                <File name="web\public\components\jquery\src\ajax\xhr.js" />
+                            </Folder>
+                            <Folder name="attributes">
+                                <File name="web\public\components\jquery\src\attributes\attr.js" />
+                                <File name="web\public\components\jquery\src\attributes\classes.js" />
+                                <File name="web\public\components\jquery\src\attributes\prop.js" />
+                                <File name="web\public\components\jquery\src\attributes\support.js" />
+                                <File name="web\public\components\jquery\src\attributes\val.js" />
+                            </Folder>
+                            <Folder name="core">
+                                <Folder name="var">
+                                    <File name="web\public\components\jquery\src\core\var\rsingleTag.js" />
+                                </Folder>
+                                <File name="web\public\components\jquery\src\core\access.js" />
+                                <File name="web\public\components\jquery\src\core\init.js" />
+                                <File name="web\public\components\jquery\src\core\parseHTML.js" />
+                                <File name="web\public\components\jquery\src\core\ready.js" />
+                            </Folder>
+                            <Folder name="css">
+                                <Folder name="var">
+                                    <File name="web\public\components\jquery\src\css\var\cssExpand.js" />
+                                    <File name="web\public\components\jquery\src\css\var\getStyles.js" />
+                                    <File name="web\public\components\jquery\src\css\var\isHidden.js" />
+                                    <File name="web\public\components\jquery\src\css\var\rmargin.js" />
+                                    <File name="web\public\components\jquery\src\css\var\rnumnonpx.js" />
+                                </Folder>
+                                <File name="web\public\components\jquery\src\css\addGetHookIf.js" />
+                                <File name="web\public\components\jquery\src\css\curCSS.js" />
+                                <File name="web\public\components\jquery\src\css\defaultDisplay.js" />
+                                <File name="web\public\components\jquery\src\css\hiddenVisibleSelectors.js" />
+                                <File name="web\public\components\jquery\src\css\support.js" />
+                                <File name="web\public\components\jquery\src\css\swap.js" />
+                            </Folder>
+                            <Folder name="data">
+                                <Folder name="var">
+                                    <File name="web\public\components\jquery\src\data\var\data_priv.js" />
+                                    <File name="web\public\components\jquery\src\data\var\data_user.js" />
+                                </Folder>
+                                <File name="web\public\components\jquery\src\data\accepts.js" />
+                                <File name="web\public\components\jquery\src\data\Data.js" />
+                            </Folder>
+                            <Folder name="effects">
+                                <File name="web\public\components\jquery\src\effects\animatedSelector.js" />
+                                <File name="web\public\components\jquery\src\effects\Tween.js" />
+                            </Folder>
+                            <Folder name="event">
+                                <File name="web\public\components\jquery\src\event\alias.js" />
+                                <File name="web\public\components\jquery\src\event\support.js" />
+                            </Folder>
+                            <Folder name="exports">
+                                <File name="web\public\components\jquery\src\exports\amd.js" />
+                                <File name="web\public\components\jquery\src\exports\global.js" />
+                            </Folder>
+                            <Folder name="manipulation">
+                                <Folder name="var">
+                                    <File name="web\public\components\jquery\src\manipulation\var\rcheckableType.js" />
+                                </Folder>
+                                <File name="web\public\components\jquery\src\manipulation\support.js" />
+                                <File name="web\public\components\jquery\src\manipulation\_evalUrl.js" />
+                            </Folder>
+                            <Folder name="queue">
+                                <File name="web\public\components\jquery\src\queue\delay.js" />
+                            </Folder>
+                            <Folder name="sizzle">
+                                <Folder name="dist">
+                                    <File name="web\public\components\jquery\src\sizzle\dist\sizzle.js" />
+                                    <File name="web\public\components\jquery\src\sizzle\dist\sizzle.min.js" />
+                                    <File name="web\public\components\jquery\src\sizzle\dist\sizzle.min.map" />
+                                </Folder>
+                            </Folder>
+                            <Folder name="traversing">
+                                <Folder name="var">
+                                    <File name="web\public\components\jquery\src\traversing\var\rneedsContext.js" />
+                                </Folder>
+                                <File name="web\public\components\jquery\src\traversing\findFilter.js" />
+                            </Folder>
+                            <Folder name="var">
+                                <File name="web\public\components\jquery\src\var\arr.js" />
+                                <File name="web\public\components\jquery\src\var\class2type.js" />
+                                <File name="web\public\components\jquery\src\var\concat.js" />
+                                <File name="web\public\components\jquery\src\var\hasOwn.js" />
+                                <File name="web\public\components\jquery\src\var\indexOf.js" />
+                                <File name="web\public\components\jquery\src\var\pnum.js" />
+                                <File name="web\public\components\jquery\src\var\push.js" />
+                                <File name="web\public\components\jquery\src\var\rnotwhite.js" />
+                                <File name="web\public\components\jquery\src\var\slice.js" />
+                                <File name="web\public\components\jquery\src\var\strundefined.js" />
+                                <File name="web\public\components\jquery\src\var\support.js" />
+                                <File name="web\public\components\jquery\src\var\toString.js" />
+                            </Folder>
+                            <File name="web\public\components\jquery\src\ajax.js" />
+                            <File name="web\public\components\jquery\src\attributes.js" />
+                            <File name="web\public\components\jquery\src\callbacks.js" />
+                            <File name="web\public\components\jquery\src\core.js" />
+                            <File name="web\public\components\jquery\src\css.js" />
+                            <File name="web\public\components\jquery\src\data.js" />
+                            <File name="web\public\components\jquery\src\deferred.js" />
+                            <File name="web\public\components\jquery\src\deprecated.js" />
+                            <File name="web\public\components\jquery\src\dimensions.js" />
+                            <File name="web\public\components\jquery\src\effects.js" />
+                            <File name="web\public\components\jquery\src\event.js" />
+                            <File name="web\public\components\jquery\src\intro.js" />
+                            <File name="web\public\components\jquery\src\jquery.js" />
+                            <File name="web\public\components\jquery\src\manipulation.js" />
+                            <File name="web\public\components\jquery\src\offset.js" />
+                            <File name="web\public\components\jquery\src\outro.js" />
+                            <File name="web\public\components\jquery\src\queue.js" />
+                            <File name="web\public\components\jquery\src\selector-native.js" />
+                            <File name="web\public\components\jquery\src\selector-sizzle.js" />
+                            <File name="web\public\components\jquery\src\selector.js" />
+                            <File name="web\public\components\jquery\src\serialize.js" />
+                            <File name="web\public\components\jquery\src\traversing.js" />
+                            <File name="web\public\components\jquery\src\wrap.js" />
+                        </Folder>
+                        <File name="web\public\components\jquery\.bower.json" />
+                        <File name="web\public\components\jquery\bower.json" />
+                        <File name="web\public\components\jquery\MIT-LICENSE.txt" />
+                    </Folder>
+                    <Folder name="ngstorage">
+                        <Folder name="test">
+                            <File name="web\public\components\ngstorage\test\spec.js" />
+                        </Folder>
+                        <File name="web\public\components\ngstorage\.bower.json" />
+                        <File name="web\public\components\ngstorage\.bowerrc" />
+                        <File name="web\public\components\ngstorage\.gitignore" />
+                        <File name="web\public\components\ngstorage\bower.json" />
+                        <File name="web\public\components\ngstorage\CHANGELOG.md" />
+                        <File name="web\public\components\ngstorage\Gruntfile.js" />
+                        <File name="web\public\components\ngstorage\LICENSE" />
+                        <File name="web\public\components\ngstorage\ngStorage.js" />
+                        <File name="web\public\components\ngstorage\ngStorage.min.js" />
+                        <File name="web\public\components\ngstorage\package.json" />
+                        <File name="web\public\components\ngstorage\README.md" />
+                    </Folder>
+                    <File name="web\public\components\angular-bootstrap.js" />
+                    <File name="web\public\components\angular-resource.js" />
+                    <File name="web\public\components\angular-route.js" />
+                    <File name="web\public\components\angular.js" />
+                    <File name="web\public\components\bootstrap.css" />
+                    <File name="web\public\components\bootstrap.js" />
+                    <File name="web\public\components\bootstrap.less" />
+                    <File name="web\public\components\glyphicons-halflings-regular.eot" />
+                    <File name="web\public\components\glyphicons-halflings-regular.svg" />
+                    <File name="web\public\components\glyphicons-halflings-regular.ttf" />
+                    <File name="web\public\components\glyphicons-halflings-regular.woff" />
+                    <File name="web\public\components\jquery.js" />
+                    <File name="web\public\components\ngstorage.js" />
+                </Folder>
+                <Folder name="content">
+                    <File name="web\public\content\logo-lg.png" />
+                    <File name="web\public\content\logo-sm.png" />
+                    <File name="web\public\content\logo.png" />
+                    <File name="web\public\content\style.css" />
+                </Folder>
+                <Folder name="doc" />
+                <Folder name="lib">
+                    <Folder name="jwplayer6">
+                        <File name="web\public\lib\jwplayer6\jwplayer.flash.swf" />
+                        <File name="web\public\lib\jwplayer6\jwplayer.html5.js" />
+                        <File name="web\public\lib\jwplayer6\jwplayer.js" />
+                        <File name="web\public\lib\jwplayer6\README.html" />
+                        <File name="web\public\lib\jwplayer6\shortcuts.swf" />
+                        <File name="web\public\lib\jwplayer6\swfobject.js" />
+                    </Folder>
+                </Folder>
+                <Folder name="partials">
+                    <File name="web\public\partials\browse.html" />
+                    <File name="web\public\partials\dashboard.html" />
+                    <File name="web\public\partials\login.html" />
+                    <File name="web\public\partials\navbar.html" />
+                    <File name="web\public\partials\register - Copy.html" />
+                    <File name="web\public\partials\register.html" />
+                </Folder>
+                <File name="web\public\app.js" />
+                <File name="web\public\app.min.js" />
+                <File name="web\public\app.min.js.map" />
+                <File name="web\public\favicon.ico" />
+                <File name="web\public\index.html" />
+                <File name="web\public\Play.html" />
+            </Folder>
+            <Folder name="src">
+                <Folder name="app">
+                    <Folder name="controllers">
+                        <File name="web\src\app\controllers\DashboardController.js" />
+                        <File name="web\src\app\controllers\LoginController.js" />
+                        <File name="web\src\app\controllers\RegisterController.js" />
+                        <File name="web\src\app\controllers\RootController.js" />
+                    </Folder>
+                    <Folder name="directives">
+                        <File name="web\src\app\directives\logoDirective.js" />
+                        <File name="web\src\app\directives\placeholderFallbackDirective.js" />
+                    </Folder>
+                    <Folder name="partials">
+                        <File name="web\src\app\partials\browse.html" />
+                        <File name="web\src\app\partials\dashboard.html" />
+                        <File name="web\src\app\partials\login.html" />
+                        <File name="web\src\app\partials\navbar.html" />
+                        <File name="web\src\app\partials\register.html" />
+                    </Folder>
+                    <Folder name="services">
+                        <File name="web\src\app\services\account.js" />
+                        <File name="web\src\app\services\api.js" />
+                    </Folder>
+                    <File name="web\src\app\app.js" />
+                    <File name="web\src\app\routes.js" />
+                </Folder>
+                <Folder name="content">
+                    <File name="web\src\content\logo-lg.png" />
+                    <File name="web\src\content\logo-sm.png" />
+                    <File name="web\src\content\logo.png" />
+                    <File name="web\src\content\style.css" />
+                </Folder>
+                <Folder name="lib">
+                    <Folder name="jwplayer6">
+                        <File name="web\src\lib\jwplayer6\jwplayer.flash.swf" />
+                        <File name="web\src\lib\jwplayer6\jwplayer.html5.js" />
+                        <File name="web\src\lib\jwplayer6\jwplayer.js" />
+                        <File name="web\src\lib\jwplayer6\README.html" />
+                        <File name="web\src\lib\jwplayer6\shortcuts.swf" />
+                        <File name="web\src\lib\jwplayer6\swfobject.js" />
+                    </Folder>
+                </Folder>
+                <File name="web\src\favicon.ico" />
+                <File name="web\src\index.html" />
+            </Folder>
+        </Folder>
+        <File name=".bowerrc" />
+        <File name=".ntvs_analysis.dat" />
+        <File name="app.js" />
+        <File name="bower.json" />
+        <File name="db.js" />
+        <File name="Gruntfile.js" />
+        <File name="Gulpfile.js" />
+        <File name="jshintrc" />
+        <File name="package.json" />
+        <File name="readme" />
+        <File name="RemoteDebug.js" />
+        <File name="Web.njsproj" />
+    </Project>
+</NotepadPlus>

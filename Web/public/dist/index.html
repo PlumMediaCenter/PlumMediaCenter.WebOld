@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css" />
+	<!-- <link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css" /> -->
+	<link rel="stylesheet" href="/style.min.css" />
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body ng-controller="RootController as root">
+<div ng-include src="'/app/partials/navbar.html'" ng-controller="NavbarController as vm"></div>
+    <div ng-view></div>
+<script type="text/javascript" src="/components/angular/angular.min.js"></script>
+ <script type="text/javascript" src="/components/angular-resource/angular-resource.js"></script>
+<script type="text/javascript" src="/components/angular-route/angular-route.min.js"></script>
+<script type="text/javascript" src="/components/ngstorage/ngStorage.min.js"></script>
+<script type="text/javascript" src="/app/app.js"></script>
+<script type="text/javascript" src="/app/controllers/AccountController.js"></script>
+<script type="text/javascript" src="/app/controllers/AddVideoSourceController.js"></script>
+<script type="text/javascript" src="/app/controllers/IndexController.js"></script>
+<script type="text/javascript" src="/app/controllers/LoginController.js"></script>
+<script type="text/javascript" src="/app/controllers/NavbarController.js"></script>
+<script type="text/javascript" src="/app/controllers/Page1Controller.js"></script>
+<script type="text/javascript" src="/app/controllers/Page2Controller.js"></script>
+<script type="text/javascript" src="/app/controllers/RootController.js"></script>
+<script type="text/javascript" src="/app/controllers/VideoSourcesController.js"></script>
+<script type="text/javascript" src="/app/directives/loadingDirective.js"></script>
+<script type="text/javascript" src="/app/directives/logoDirective.js"></script>
+<script type="text/javascript" src="/app/routes.js"></script>
+<script type="text/javascript" src="/app/services/account.js"></script>
+<script type="text/javascript" src="/app/services/api.js"></script>
+<script src="//localhost:35729/livereload.js"></script>
+</body>
+</html>

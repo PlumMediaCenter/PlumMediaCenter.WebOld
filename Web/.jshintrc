@@ -1,0 +1,28 @@
+{
+  "asi": false,
+  "bitwise": true,
+  "boss": false,
+  "camelcase": true,
+  "curly": true,
+  "debug": true,
+  "eqnull": false,
+  "eqeqeq": true,
+  "evil": false,
+  "es3": true,
+  "immed": true,
+  "latedef": "nofunc",
+  "newcap": true,
+  "nonew": true,
+  "plusplus": false,
+  "quotmark": true,
+  "strict": false,
+  "undef": true,
+  "unused": false,
+  "globals": {
+    "angular": false,
+    "require": false,
+    "console": false,
+    "module": false,
+    "__dirname": false
+  }
+}
