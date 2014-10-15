@@ -42,11 +42,10 @@ class Movie extends Video {
      * ***DO NOT CALL THIS FUNCTION UNLESS YOU PRELOAD THE NfoReader object with metadata
      */
     protected function loadCustomMetadata() {
-        //we are assuming that the reader has already been loaded with the metadata file, since this function should only be called from the parent
+        //we are assuming that the reader has already been loaded with the metadata file, since this function should only be called from 
         $reader = $this->getNfoReader();
         $this->year = $reader->year !== null ? $reader->year : "";
         $this->runtime = $reader->runtime;
-        $this->genres = $reader->genres;
     }
 
     /**

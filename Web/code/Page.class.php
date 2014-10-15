@@ -1,5 +1,4 @@
 <?php
-
 include_once("code/Security.class.php");
 include_once("code/functions.php");
 include_once("code/Model.class.php");
@@ -54,22 +53,18 @@ class Page {
     }
 
     function show($layout = "layout.php", $content = null) {
-        global $model;
-        $model = $this->getModel();
-        extract((array) $model);
+        extract((array) $this->getModel());
         //if the title is not set, set it
         if (isset($title) == false) {
-            $title = "Plum Video Player";
+            $title = "Roku LAN Video Player";
         }
         ob_start();
         //if the content variable is included, use that instead of a markup page
         if ($content != null) {
             echo $content;
         } else {
-            if (file_exists($this->markupPath)) {
-                //load the markup
-                include($this->markupPath);
-            }
+            //load the markup
+            include($this->markupPath);
         }
         global $body;
         $body = ob_get_contents();

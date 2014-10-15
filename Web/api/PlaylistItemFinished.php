@@ -8,5 +8,5 @@ $playlistItemId = isset($_GET["playlistItemId"]) ? $_GET["playlistItemId"] : "";
 
 //remove the first item from the playlist
 Playlist::RemoveItem(Security::GetUsername(), $playlistName, $playlistItemId);
-echo json_encode($video, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
+echo json_encode($video);
 ?>

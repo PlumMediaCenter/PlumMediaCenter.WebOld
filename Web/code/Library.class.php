@@ -11,10 +11,8 @@ class Library {
     private $tvShowCount = 0;
     public $tvEpisodes = [];
     private $tvEpisodeCount = 0;
-    private $genres = [];
     //contains a list of all videos, a combination of movies, tv shows and tv episodes
     private $videos = [];
-    public $moviesAndTvShows = [];
 
     public function __construct() {
         //set the time limit for this script to be 10 minutes. If it takes any longer than that, there's something wrong
@@ -29,17 +27,6 @@ class Library {
         return $this->movieCount;
     }
 
-    private function clear() {
-        $this->moviesAndTvShows = [];
-        $this->videos = [];
-        $this->movies = [];
-        $this->tvShows = [];
-        $this->tvEpisodes = [];
-        $this->movieCount = 0;
-        $this->tvShowCount = 0;
-        $this->tvEpisodeCount = 0;
-    }
-
     /**
      * Fetches any missing metadata for the videos and fetches any missing posters for the videos and generates posters for
      * any video that doesn't have the posters generated yet.
@@ -47,14 +34,19 @@ class Library {
     public function fetchMissingMetadataAndPosters() {
         /* @var $video Video   */
         foreach ($this->videos as $video) {
-            if ($video->nfoFileExists() == false) {
-                $video->fetchMetadata();
+            try{
+                if ($video->nfoFileExists() == false) {
+                    $video->fetchMetadata();
+                }
+                if ($video->posterExists() == false) {
+                    $video->fetchPoster();
+                }
+                if ($video->sdPosterExists() == false || $video->hdPosterExists() == false) {
+                    $video->generatePosters();
+                }
             }
-            if ($video->posterExists() == false) {
-                $video->fetchPoster();
-            }
-            if ($video->sdPosterExists() == false || $video->hdPosterExists() == false) {
-                $video->generatePosters();
+            catch(Exception $e){
+                
             }
         }
         return true;
@@ -80,34 +72,73 @@ class Library {
      * Loads all movies and tv shows from the database
      */
     public function loadFromDatabase() {
-        $this->clear();
-        $videoIds = Queries::GetMovieAndTvShowVideoIds(Enumerations::MediaType_Movie);
+        $this->videos = [];
+        $success = $this->loadMoviesFromDatabase();
+        $success = $success && $this->loadTvShowsFromDatabase();
+        return $success;
+    }
+
+    /**
+     * Populates the movies array with all movies found in the database. All metadata is loaded into the movies. 
+     * @return Movie[] - returns the array of movies loaded from the database
+     */
+    public function loadMoviesFromDatabase() {
+        $this->movies = [];
+        $this->movieCount = 0;
+        $videoIds = Queries::GetVideoIds(Enumerations::MediaType_Movie);
         foreach ($videoIds as $videoId) {
-            $video = Video::GetVideo($videoId);
-            $this->moviesAndTvShows[] = $video;
-
-            if ($video->mediaType == Enumerations::MediaType_Movie) {
-                $this->movies[] = $video;
-                $this->videos[] = $video;
-                $this->movieCount++;
-            } else {
-                //tell the tv show to scan subdirectories for tv episodes
-                $video->loadTvEpisodesFromFilesystem();
-
-                //if this tv show has at least one season (which means it has at least one episode), then add it to the list
-                if (count($video->episodes) > 0) {
-                    $this->tvShows[] = $video;
-                    $this->videos[] = $video;
-                    $this->tvShowCount++;
-
-                    //include episodes
-                    $this->videos = array_merge($this->videos, $video->episodes);
-                    $this->tvEpisodes = array_merge($this->tvEpisodes, $video->episodes);
-                    $this->tvEpisodeCount+= $video->episodeCount;
-                }
-            }
+            $movie = Video::GetVideo($videoId);
+            $this->movies[] = $movie;
+            $this->videos[] = $movie;
+            $this->movieCount++;
         }
-        return true;
+        return $this->movies;
+    }
+
+    /**
+     * Loads an array of all tv shows found in the database. All metadata is loaded into the tv show objects. 
+     * @return TvShow[] - returns the tv shows in the library that was loaded from the database
+     */
+    public function loadTvShowsFromDatabase() {
+        $this->tvShows = [];
+        $this->tvEpisodes = [];
+        $this->tvShowCount = 0;
+        $this->tvEpisodeCount = 0;
+        $videoIds = Queries::GetVideoIds(Enumerations::MediaType_TvShow);
+        foreach ($videoIds as $videoId) {
+            $tvShow = Video::GetVideo($videoId);
+            $this->tvShows[] = $tvShow;
+            $this->videos[] = $tvShow;
+            $this->tvShowCount++;
+
+            //load all of the episodes for this tv show
+            $tvShow->loadEpisodesFromDatabase();
+            $this->videos = array_merge($this->videos, $tvShow->episodes);
+            $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
+            $this->tvEpisodeCount += $tvShow->episodeCount;
+        }
+        return $this->tvShows;
+    }
+
+    /**
+     * Forces every video loaded into memory in this library object to be written to the database. 
+     * Then any videos that are no longer in this library are removed from the database
+     */
+    public function writeToDb() {
+        //writes every video to the database. If it is a new video, it will automatically be added. If it is an existing
+        //video, it will be updated
+        $libraryVideoIds = [];
+        $totalSuccess = true;
+        foreach ($this->videos as $video) {
+            $totalSuccess = $totalSuccess && $video->writeToDb();
+            $libraryVideoIds[] = $video->getVideoId();
+        }
+
+        //delete any videos from the database that are not in this library
+        $totalSuccess = $totalSuccess && Queries::DeleteVideosNotInThisList($libraryVideoIds);
+
+        //return success or failure. If at least one item failed, this will be returned as a failure
+        return $totalSuccess;
     }
 
     /**
@@ -115,12 +146,9 @@ class Library {
      * videos. 
      */
     public function loadFromFilesystem() {
-        $this->clear();
-
         //for each movie
-        $loadMoviesSuccess = $this->loadMoviesFromFilesystem();
-        $loadTvShowsSuccess = $this->loadTvShowsFromFilesystem();
-        $success = $loadMoviesSuccess && $loadTvShowsSuccess;
+        $success = $this->loadMoviesFromFilesystem();
+        $success = $success && $this->loadTvShowsFromFilesystem();
         return $success;
     }
 
@@ -135,18 +163,22 @@ class Library {
         foreach ($movieSources as $source) {
             //get a list of each video in this movies source folder
             $listOfAllFilesInSource = getVideosFromDir($source->location);
+
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
+                //writeToLog("New Movie: $fullPathToFile");
                 //create a new Movie object
                 $video = new Movie($source->base_url, $source->location, $fullPathToFile);
                 $this->movies[] = $video;
                 $this->videos[] = $video;
-                $this->moviesAndTvShows[] = $video;
                 $this->movieCount++;
             }
         }
         return true;
     }
-
+    public function sort() {
+        usort($this->movies, array("Video", "CompareTo"));
+        usort($this->tvShows, array("Video", "CompareTo"));
+    }
     /**
      * loads the libary TvShow object with tv shows found in the source paths marked as tv show sources
      * @return TvShow[] - the array of TvShows found at the source path
@@ -168,30 +200,25 @@ class Library {
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
                 //if the current file is a video file that we can add to our library
                 //create a new Movie object
-                $video = new TvShow($source->base_url, $source->location, $fullPathToFile);
-                $this->moviesAndTvShows[] = $video;
+                $tvShow = new TvShow($source->base_url, $source->location, $fullPathToFile);
+
                 //tell the tv show to scan subdirectories for tv episodes
-                $video->loadTvEpisodesFromFilesystem();
+                $tvShow->loadTvEpisodesFromFilesystem();
 
                 //if this tv show has at least one season (which means it has at least one episode), then add it to the list
-                if (count($video->episodes) > 0) {
-                    $this->tvShows[] = $video;
-                    $this->videos[] = $video;
+                if (count($tvShow->seasons) > 0) {
+                    $this->tvShows[] = $tvShow;
+                    $this->videos[] = $tvShow;
                     $this->tvShowCount++;
 
                     //include episodes
-                    $this->videos = array_merge($this->videos, $video->episodes);
-                    $this->tvEpisodes = array_merge($this->tvEpisodes, $video->episodes);
-                    $this->tvEpisodeCount+= $video->episodeCount;
+                    $this->videos = array_merge($this->videos, $tvShow->episodes);
+                    $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
+                    $this->tvEpisodeCount+= $tvShow->episodeCount;
                 }
             }
         }
         return true;
-    }
-
-    public function sort() {
-        usort($this->movies, array("Video", "CompareTo"));
-        usort($this->tvShows, array("Video", "CompareTo"));
     }
 
     /**
@@ -201,14 +228,14 @@ class Library {
     public function writeLibraryJson() {
         //clear out any information in the video objects that doesn't need to be there
         $this->prepareVideosForJsonification();
-
+        $this->sort();
         //save the videos to a new object
         $videoList = [];
         $videoList["movies"] = $this->movies;
         $videoList["tvShows"] = $this->tvShows;
         $videoJson = json_encode($videoList, JSON_PRETTY_PRINT);
         $success = file_put_contents(dirname(__FILE__) . "/../api/library.json", $videoJson);
-        return $success !== false;
+        return $success;
     }
 
     /**
@@ -248,38 +275,6 @@ class Library {
     }
 
     /**
-     * Forces every video loaded into memory in this library object to be written to the database. 
-     * Then any videos that are no longer in this library are removed from the database
-     */
-    public function writeToDb() {
-        //writes every video to the database. If it is a new video, it will automatically be added. If it is an existing
-        //video, it will be updated. if a video is in the db but is no longer present in the filesystem, it will be deleted.
-        $libraryVideoIds = [];
-        $totalSuccess = true;
-        foreach ($this->videos as $video) {
-            $totalSuccess = $totalSuccess && $video->writeToDb();
-            $libraryVideoIds[] = $video->getVideoId();
-        }
-        //get a list of all videoIds from the database
-        $allIds = Queries::GetAllVideoIds();
-        $deleteIds = array_diff($allIds, $libraryVideoIds);
-        //we can assume that all tv shows were added before tv episodes, so sorting this array in descending order will
-        //force all tv episodes to be deleted before their tv show, thus allowing us to spin through the whole list
-        //without worrying about referencial integrity.
-        arsort($deleteIds);
-        foreach ($deleteIds as $videoId) {
-            Video::DeleteVideo($videoId);
-        }
-
-        //delete any videos from the database that are not in this library
-        //$totalSuccess = $totalSuccess && Queries::DeleteVideosNotInThisList($libraryVideoIds);
-        //return success or failure. If at least one item failed, this will be returned as a failure
-        //delete any orphaned genres
-
-        return $totalSuccess;
-    }
-
-    /**
      * Returns a set of stats (counts) based on the library.
      */
     public static function GetVideoCounts() {
@@ -298,36 +293,5 @@ class Library {
         return $stats;
     }
 
-    public static function SearchByTitle($searchString, $caseSensitiveSearch = true) {
-        //split the search string by spaces
-        $searchTerms = explode(" ", $searchString);
-        $cleanedTerms = [];
-
-
-        foreach ($searchTerms as $term) {
-            $t = trim($term);
-            //if the term is not empty, add it to the list
-            if (strlen($t) > 0) {
-                $cleanedTerms[] = $t;
-            }
-        }
-        $colname = "v.title";
-        $colname = ($caseSensitiveSearch) ? $colname : "lower($colname)";
-        //create an in statement with the terms
-        $inStmt = DbManager::GenerateLikeStatement($cleanedTerms, $colname, "or");
-        $inStmt = ($caseSensitiveSearch) ? $inStmt : strtolower($inStmt);
-        $q = "select * from video v " .
-                " where media_type in('" . Enumerations::MediaType_Movie . "', '" . Enumerations::MediaType_TvShow . "') and " .
-                "($inStmt)";
-        $results = DbManager::Query($q);
-        //create video objects out of the results
-        $videos = [];
-        foreach ($results as $row) {
-            $videos[] = Video::GetVideoFromDataRow($row);
-        }
-        return $videos;
-    }
-
 }
-
 ?>

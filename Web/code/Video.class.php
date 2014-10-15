@@ -22,16 +22,6 @@ abstract class Video {
     const NoMetadata = "0000-00-00 00:00:00"; //this will never be a date found in the metadata, so use it for invalid metadata dates
     const SdImageWidth = 110; //110x150 
     const HdImageWidth = 210; // 210x270
-    const baseQuery = "select   media_type as mediaType,  
-                                title as title, 
-                                plot as plot,  
-                                release_date as year,  
-                                url as url,  
-                                sd_poster_url as sdPosterUrl, 
-                                hd_poster_url as hdPosterUrl, 
-                                mpaa as mpaa, 
-                                video_id as videoId 
-                                from video";
 
     protected $videoSourceUrl;
     protected $videoSourcePath;
@@ -46,13 +36,12 @@ abstract class Video {
     public $mpaa = "N/A";
     public $actorList = [];
     public $videoId = null;
-    public $genres = [];
-    public $runtime = -1;
     protected $metadata;
     protected $onlineVideoDatabaseId;
     protected $metadataFetcher;
     protected $filetype = null;
     protected $metadataLoaded = false;
+    protected $runtime = -1;
     protected $runtimeInSeconds = 0;
     protected $nfoReader = null;
 
@@ -64,7 +53,7 @@ abstract class Video {
 
         //if this video does not exist, throw a new exception
         if (file_exists($this->fullPath) === false) {
-            //throw new Exception("Video file does not exist at path $this->fullPath");
+            throw new Exception("Video file does not exist at path $this->fullPath");
         }
 
         //calculate anything extra that is needed
@@ -101,53 +90,34 @@ abstract class Video {
      * @return Movie|TvShow|TvEpisode $video
      */
     public static function GetVideo($videoId) {
-        $videoRow = Queries::getVideo($videoId);
-        //if no video was found, nothing more can be done
-        if ($videoRow === false) {
-            return false;
-        }
-       return Video::GetVideoFromDataRow($videoRow);
-    }
-    
-    /**
-     * Converts a row from the video table into a video object
-     * @param [] $row
-     * @return Movie\TvShow\TvEpisode
-     */
-    public static function GetVideoFromDataRow($row){
-        $video = null;
-        switch ($row->media_type) {
-            case Enumerations::MediaType_Movie:
-                $video = new Movie($row->video_source_url, $row->video_source_path, $row->path);
-                break;
-            case Enumerations::MediaType_TvShow:
-                $video = new TvShow($row->video_source_url, $row->video_source_path, $row->path);
-                break;
-            case Enumerations::MediaType_TvEpisode:
-                $video = new TvEpisode($row->video_source_url, $row->video_source_path, $row->path);
-                break;
-        }
-        $video->videoId = intval($row->video_id);
-        $video->title = $row->title;
-        $video->runtimeInSeconds = $row->running_time_seconds;
-        $video->plot = $row->plot;
-        $video->mpaa = $row->mpaa;
-        $video->year = $row->release_date;
-        $video->runtime = $row->running_time_seconds;
-        return $video;
-    }
-
-    /**
-     * Loads the genres for this video 
-     */
-    public function loadGenres() {
-        $genres = Queries::GetVideoGenres($this->videoId);
-        if ($genres != false) {
-            $this->genres = $genres;
-        } else {
-            $this->genres = [];
-        }
-        return $this->genres;
+		try{
+			$v = Queries::getVideo($videoId);
+			//if no video was found, nothing more can be done
+			if ($v === false) {
+				return false;
+			}
+			switch ($v->media_type) {
+				case Enumerations::MediaType_Movie:
+					$video = new Movie($v->video_source_url, $v->video_source_path, $v->path);
+					break;
+				case Enumerations::MediaType_TvShow:
+					$video = new TvShow($v->video_source_url, $v->video_source_path, $v->path);
+					break;
+				case Enumerations::MediaType_TvEpisode:
+					$video = new TvEpisode($v->video_source_url, $v->video_source_path, $v->path);
+					break;
+			}
+			$video->videoId = intval($v->video_id);
+			$video->title = $v->title;
+			$video->runtimeInSeconds = $v->running_time_seconds;
+			$video->plot = $v->plot;
+			$video->mpaa = $v->mpaa;
+			$video->year = $v->release_date;
+			return $video;
+		}
+		catch(Exception $e){
+			return false;
+		}
     }
 
     /**
@@ -208,6 +178,7 @@ abstract class Video {
      * @return int|boolean - the number of seconds if successful, false if unsuccessful
      */
     private function getLengthInSecondsFromFile() {
+		return false;
         //the mp4info class likes to spit out random crap. hide it with an output buffer
         ob_start();
         $result = @MP4Info::getInfo($this->fullPath);
@@ -489,16 +460,13 @@ abstract class Video {
         $videoId = $this->getVideoId();
         //if this is a video that does not yet exist in the database, create a new video
         if ($videoId === -1) {
-            //insert into this video into the video table
-            $success = Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->url, $this->getHdPosterUrl(), $this->getSdPosterUrl());
+            $success = Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds());
         } else {
             //this is an existing video that needs to be updated. update it
-            $success = Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->url, $this->getHdPosterUrl(), $this->getSdPosterUrl());
+            $success = Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds());
         }
         $this->videoId = $this->getVideoId(true);
         if ($this->videoId != -1 && $success === true) {
-            //insert genres
-            Queries::insertVideoGenres($this->videoId, $this->genres);
             return true;
         } else {
             return false;
@@ -639,20 +607,8 @@ abstract class Video {
         }
         return $this->metadataFetcher;
     }
-
-    /**
-     * Delete a video from this application. 
-     * @param int $videoId
-     */
-    public static function DeleteVideo($videoId) {
-        $s1 = DbManager::NonQuery("delete from video_genre where video_id = $videoId");
-        $s2 = DbManager::NonQuery("delete from watch_video where video_id = $videoId");
-        $s3 = DbManager::NonQuery("delete from tv_episode where video_id = $videoId");
-        $s4 = DbManager::NonQuery("delete from video where video_id = $videoId");
-        return $s1 && $s2 && $s3 && $s4;
-    }
-
-    /**
+    
+       /**
      * compares two videos to sort them by title alphabetically
      * @param Video $video
      */

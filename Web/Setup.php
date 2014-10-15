@@ -17,6 +17,9 @@ if (isset($_POST["setup"])) {
         //mark all existing video sources as updated so that every video will be refreshed.
         Queries::updateVideoSourceRefreshVideos(1);
     }
+
+    //delete any previously existing library.json file 
+    file_put_contents(dirname(__FILE__) . "/api/library.json", "");
 }
 ?>
 <html>

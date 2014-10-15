@@ -1,5 +1,5 @@
 <form method='post'>
-    <a class="btn btn-default" href="Log.php">Reload</a> <input type='submit' class='btn' name='clearLog' value='Clear Log'/><br/>
+    <a class="btn" href="Log.php">Reload</a> <input type='submit' class='btn' name='clearLog' value='Clear Log'/><br/>
     <table id="logTable" class=" table-condensed table-striped" >
         <tr>
             <th>Time Logged</th>

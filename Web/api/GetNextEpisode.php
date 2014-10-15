@@ -10,6 +10,6 @@ if ($episode == null) {
     echo json_encode(false);
 } else {
     $episode->startSeconds = $episode->videoStartSeconds();
-    echo json_encode($episode, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
+    echo json_encode($episode);
 }
 ?>

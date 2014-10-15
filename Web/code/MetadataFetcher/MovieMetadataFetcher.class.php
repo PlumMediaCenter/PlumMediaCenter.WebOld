@@ -193,7 +193,7 @@ class MovieMetadataFetcher extends MetadataFetcher {
         return strlen($this->trailer) > 0 ? $this->trailer : null;
     }
 
-    function genres() {
+    function genreList() {
         $this->fetchInfo();
         $genres = [];
         if (count($this->info) > 0) {

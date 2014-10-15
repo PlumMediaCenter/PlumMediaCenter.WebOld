@@ -13,7 +13,7 @@ include_once("TvEpisode.class.php");
 
 class TvShow extends Video {
 
-    private $seasons = [];
+    public $seasons = [];
     //holds each episode in a list instead of grouped by seasons
     public $episodes = [];
     public $episodeCount = 0;
@@ -52,14 +52,6 @@ class TvShow extends Video {
      */
     function getEpisodes() {
         return $this->episodes;
-    }
-
-    /**
-     * Returns a reference to the list of episodes separated by season
-     * @return video[][] - 2d array index by season number and episode number
-     */
-    function getSeasons() {
-        return $this->seasons;
     }
 
     /**
@@ -118,22 +110,14 @@ class TvShow extends Video {
     }
 
     /**
-     * Fetches the number of episodes that this tv show has in the database. This is usually called 
-     * instead of loading episodes from the db.
-     */
-    function fetchEpisodeCountFromDb() {
-        $count = DbManager::getSingleItem("select count(video_id) from tv_episode where tv_show_video_id=$this->videoId");
-        $this->episodeCount = intval($count);
-    }
-
-    /**
      * Loads the episodes associated with this tv show into this tv show based on information found in the db
      */
     function loadEpisodesFromDatabase() {
         $this->seasons = [];
         $episodeInfoList = Queries::GetTvEpisodeVideoIdsForShow($this->getVideoId());
         foreach ($episodeInfoList as $info) {
-            $episode = Video::GetVideo($info->video_id);
+			$episode = Video::GetVideo($info->video_id);
+			
             //if no episode was able to be loaded, move on to the next item.
             if ($episode == false) {
                 continue;
@@ -145,7 +129,6 @@ class TvShow extends Video {
             $this->seasons[$episode->seasonNumber][] = $episode;
             $this->episodes[] = $episode;
         }
-        $this->episodeCount = count($this->episodes);
     }
 
     /**
@@ -182,7 +165,7 @@ class TvShow extends Video {
         //get the list of videos from this tv series 
         $videosList = getVideosFromDir($this->fullPath);
 
-
+        $this->episodeCount = count($videosList);
         //spin through every folder in the source location
         foreach ($videosList as $fullPathToFile) {
             //create a new Episode object
@@ -219,7 +202,6 @@ class TvShow extends Video {
             $newSeasonList[] = $newSeason;
         }
         $this->seasons = $newSeasonList;
-        $this->episodeCount = count($this->episodes);
     }
 
     /**
@@ -231,7 +213,6 @@ class TvShow extends Video {
         $reader = $this->getNfoReader();
         $this->year = $reader->year !== null ? $reader->year : "";
         $this->runtime = $reader->runtime;
-        $this->genres = $reader->genres;
     }
 
     /**
@@ -409,7 +390,7 @@ class TvShow extends Video {
     protected function getMetadataFetcherClass() {
         return new TvShowMetadataFetcher();
     }
-    
+
     /**
      * Goes to TheTvDb and retrieves all available information about this tv episode. 
      * It then stores that information into an .nfo file named the same as the video file name .

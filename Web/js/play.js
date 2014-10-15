@@ -2,6 +2,9 @@
 var player;
 var previousPlaylistIndex = 0;
 var currentPlaylistIndex = 0;
+var seekBurstSeconds = 30;
+var seekPosition = 0;
+
 $(document).ready(function() {
     //display the video title on the page
     $(document).keydown(keyboardShortcuts);
@@ -9,9 +12,10 @@ $(document).ready(function() {
         //file: "",
         // image: "",
         autostart: true,
-        primary: "flash",
+        primary: "html5",
         playlist: jwPlaylist,
         startparam: "start",
+        wmode: 'transparent',
         //      listbar: {
         //          position: 'right',
         //          size: 320
@@ -24,6 +28,7 @@ $(document).ready(function() {
                 //keep track of which index was the previous index
                 previousPlaylistIndex = currentPlaylistIndex;
                 currentPlaylistIndex = obj.index;
+                seekPosition = 0;
             },
             onComplete: function(eventName) {
                 //tell the db that this video has just been finished
@@ -36,7 +41,8 @@ $(document).ready(function() {
                 playNextVideo();
             },
             onTime: onTime,
-            onPlay: onPlay
+            onPlay: onPlay,
+            onSeek: onSeek
         }
 
     });
@@ -45,6 +51,12 @@ $(document).ready(function() {
     //anytime the window is resized, resize the player accordingly
     $(window).resize(resizePlayer);
 });
+
+function onSeek(obj){
+    if(obj.position !== seekPosition && obj.offset !== seekPosition){
+        seekPosition = offset;
+    }
+}
 
 /**
  * Returns the currently playing video object
@@ -125,13 +137,19 @@ function playVideo(video) {
     };
     var playlist = player.getPlaylist();
     //add this video to the playlist
-    playlist.push(playlistItem);
+    // playlist.push(playlistItem);
     // displayVideoTitle(video);
     //re-add the playlist to the jwplayer, and set the last video in the playlist as the next video
-    player.load(playlist);
+    //player.load(playlist);
+    //load the new video into the player
+    player.load(playlistItem);
+    player.play();
+//    //give the player a little time to load the playlist, then start playing the playlist at the latest item's index
+//    setTimeout(function(){
+//        //tell the player to play the item we JUST ADDED
+//    player.playlistItem(playlist.length - 1);
+//    }, 100);
 
-    //tell the player to play the item we JUST ADDED
-    player.playlistItem(playlist.length - 1);
 }
 
 function showPlaybackFinished() {
@@ -153,13 +171,39 @@ function displayVideoTitle(video) {
         $("#playTitle").html(title);
     }
 }
-
 function keyboardShortcuts(e) {
     switch (e.which) {
-//spacebar
-        case 32:
+        case 32://spacebar key
             //toggle playback
             jwplayer().play();
+            break;
+        case 70: //f key
+            //toggle fullscreen
+            if (player.getFullscreen() === true) {
+                player.setFullscreen(false);
+            } else {
+                player.setFullscreen(true);
+            }
+            break;
+        case 39: //right arrow key
+            //seek forward n seconds
+            var position = player.getPosition();
+            var newPosition = position + seekBurstSeconds;
+            if (position <= seekPosition) {
+                newPosition = seekPosition + seekBurstSeconds;
+            }
+            seekPosition = newPosition;
+            player.seek(seekPosition);
+            break;
+        case 37: //left arrow key
+             //seek backwards n seconds
+            var position = player.getPosition();
+            var newPosition = position - seekBurstSeconds;
+            if (position >= seekPosition) {
+                newPosition = seekPosition - seekBurstSeconds;
+            }
+            seekPosition = newPosition;
+            player.seek(seekPosition);
             break;
     }
 }

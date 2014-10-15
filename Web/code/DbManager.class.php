@@ -218,7 +218,7 @@ class DbManager {
      * @param type $list
      * @return type
      */
-    public static function GenerateInStatement($list, $wrapEachWithQuotes = true) {
+    public static function generateInStatement($list, $wrapEachWithQuotes = true) {
         $pdo = DbManager::getPdo();
         $str = '';
         $notFirstTime = false;
@@ -237,23 +237,6 @@ class DbManager {
     }
 
     /**
-     * Generates a like statement for each item in the list
-     * @param type $list
-     * @param type $dbCol
-     * @param type $logicalOperator
-     * @return type
-     */
-    public static function GenerateLikeStatement($list, $dbCol, $logicalOperator = "or") {
-        $stmt = "";
-        $logic = "";
-        foreach ($list as $item) {
-            $stmt .= "$logic $dbCol like '%$item%'";
-            $logic = $logicalOperator;
-        }
-        return $stmt;
-    }
-
-    /**
      * Generates a string combining all elements in the list 
      * @param type $list
      * @param type $wrapInQuotes
@@ -261,7 +244,7 @@ class DbManager {
      * @return boolean|string - false if failure, the in stmt if success
      */
     public static function NotIn($list, $wrapInQuotes = null, $inLength = 1000) {
-        if (count($list) == 0) {
+        if(count($list) == 0){
             return false;
         }
         $q = $wrapInQuotes == true ? "'" : "";

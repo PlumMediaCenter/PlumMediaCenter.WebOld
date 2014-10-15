@@ -1,4 +1,11 @@
-html, body{
+/* 
+    Document   : style
+    Created on : Jul 3, 2013, 3:17:58 PM
+    Author     : bplumb
+    Description:
+        Purpose of the stylesheet follows.
+*/
+html{
     height:100%;
 }
 .brand{
@@ -10,6 +17,7 @@ a{
 body{
     padding:0px;
     border:0px solid red;
+    height:100%;
 }
 
 #bodyPadding{
@@ -20,16 +28,34 @@ body{
 #containerRelativer{
     position:relative;
 }
-.mless{
-    margin:0px;
+
+.tile{
+    display:inline-block;
+    float:left;
+    border:2px solid white;
+    cursor:pointer;
+    margin: 10px;
+    width:205px;
+    height:350px;
+    padding:2px;
+    border: 5px solid transparent;
 }
 
-.bold{
-    font-weight: bold;
+.tile img{
+    width:205px;
+    cursor:pointer;
+    border:0px solid white;
 }
-.center{
+.tile:hover{
+    background-color:#CCCCCC;
+    border-left:5px solid #CCCCCC;
+    border-right:5px solid #CCCCCC;
+
+}
+.tile span{
+    display:block;
+    font-size:20px;
     text-align:center;
-    margin:auto;
 }
 
 .radio{
@@ -204,71 +230,4 @@ label{
 
 .error{
     color:red;
-}
-.categoryScroller{
-    width:100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    margin:0px;
-    padding:0px;
-    border:0px;
-}
-
-.genreContainer{
-    white-space: nowrap;
-}
-
-#body-row{
-    margin:0px;
-}
-
-#body-col{
-    padding:0px;
-}
-
-div.video-tile{
-    /* display: inline; */
-    display: inline-block;
-    *zoom: 1;
-    *display: inline;
-    cursor:pointer;
-    margin: 0px;
-    width:150px;
-    height:220px;
-    overflow:hidden;
-    padding:0px;
-    border: 1px solid transparent;
-}
-
-div.video-tile img.poster{
-    width:100%;
-    cursor:pointer;
-    border:0px solid white;
-}
-div.video-tile:hover{
-    border:1px solid #CCCCCC;
-}
-div.video-tile span{
-    display:block;
-    font-size:20px;
-    text-align:center;
-}
-
-label, input[type=radio]{
-    cursor:pointer;
-}
-
-#video-info-row{
-}
-#video-info-poster-col{
-    text-align:center;
-}
-
-#video-info-poster{
-    margin:auto;
-}
-
-.row{
-    margin:0px;
-    padding:0px;
 }

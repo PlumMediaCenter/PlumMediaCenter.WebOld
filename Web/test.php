@@ -1,7 +1,8 @@
 <?php
 
-include_once("code/Page.class.php");
-$p = new Page(__FILE__);
-$m = $p->getModel();
-$p->show();
+include_once("code/Library.class.php");
+$lib = new Library();
+$lib->loadFromDatabase();
+$lib->prepareVideosForJsonification();
+echo json_encode($lib, JSON_PRETTY_PRINT);
 ?>
