@@ -26,9 +26,15 @@ function printTvShowFileList($tvShow) {
     foreach ($episodeList as $episode) {
         $videoTitle = $episode->title;
         $episodeId = $episode->getVideoId();
+        $isNextEpisode = $nextEpisodeId == $episodeId;
         $episodeNumber = $episode->episodeNumber;
         $seasonNumber = $episode->seasonNumber;
-        $percentWatched = $episode->progressPercent();
+        //$percentWatched = $episode->progressPercent();
+        if($isNextEpisode === true){
+            $percentWatched = $episode->progressPercent();
+        }else{
+            $percentWatched = null;
+        }
         $playUrl = "Play.php?videoId=$episodeId";
         if ($seasonNumber != $currentSeasonNumber) {
             $currentSeasonNumber = $seasonNumber;
@@ -46,6 +52,7 @@ function printTvShowFileList($tvShow) {
             <td class="transparent" style='display:none;'><a class="playButton18" style="display:block;" href="<?php echo $playUrl; ?>" title="Play">Play</a></td>
             <!--<td class="transparent">  <a style="cursor:pointer;" onclick="$.getJSON('api/AddToPlaylist.php?playlistName=My Playlist&videoIds=<?php echo $episodeId; ?>');">+</a></td>-->
             <td class="transparent"><a class="play" href="<?php echo $playUrl; ?>"><?php echo $videoTitle; ?></a></td>
+            <?php if($isNextEpisode === true){ ?>
             <td class="transparent"><div class="progressbar">
                     <div class="percentWatched" style="width:<?php echo $percentWatched; ?>%">
                     </div>
@@ -53,6 +60,9 @@ function printTvShowFileList($tvShow) {
                     </div>
                 </div>
             </td>
+            <?php }else{ ?>
+            <td></td>
+            <?php } ?>
         </tr>
         <?php
     }

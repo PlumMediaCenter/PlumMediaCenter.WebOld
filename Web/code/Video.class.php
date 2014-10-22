@@ -178,7 +178,6 @@ abstract class Video {
      * @return int|boolean - the number of seconds if successful, false if unsuccessful
      */
     private function getLengthInSecondsFromFile() {
-		return false;
         //the mp4info class likes to spit out random crap. hide it with an output buffer
         ob_start();
         $result = @MP4Info::getInfo($this->fullPath);
