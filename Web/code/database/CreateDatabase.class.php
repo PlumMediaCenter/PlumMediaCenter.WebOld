@@ -14,8 +14,8 @@ class CreateDatabase {
     private $dbHost;
     //this is a list of all db upgrade functions that are callable, in order. 
     private static $upgradeFunctionNames = array(
-        '1.0.0' => 'db1_0_0',
-        '1.0.1' => 'db1_0_1'
+        '0.1.0' => 'db0_1_0',
+        '0.1.1' => 'db0_1_1'
     );
 
     function __construct($rootUsername, $rootPassword, $dbHost) {
@@ -86,7 +86,7 @@ class CreateDatabase {
             $version = DbManager::GetSingleItem("select * from app_version", $dbHost, $dbUsername, $dbPassword, config::$dbName);
             //handle the first version number, which was not following semantic versioning
             if ($version === "001.000") {
-                $version = "1.0.0";
+                $version = "0.1.0";
             }
         }
         return $version;
@@ -129,7 +129,7 @@ class CreateDatabase {
         return strcmp($versionNumbers[0], $versionNumbers[1]);
     }
 
-    function db1_0_0() {
+    function db0_1_0() {
         //log on as root and create the database
         $this->createVideoDatabase($this->rootUsername, $this->rootPassword, $this->dbHost);
 
@@ -137,7 +137,7 @@ class CreateDatabase {
             create table app_version(
                 version varchar(10)
                 )");
-        DbManager::NonQuery("insert into app_version(version) values('1.0.0')");
+        DbManager::NonQuery("insert into app_version(version) values('0.1.0')");
 
         DbManager::NonQuery(" 
             create table video(
@@ -209,12 +209,12 @@ class CreateDatabase {
                 WHERE v.video_id = t.video_id");
     }
 
-    function db1_0_1() {
+    function db0_1_1() {
         DbManager::NonQuery("
             alter table app_version
             modify version varchar(11)
         ");
-        DbManager::NonQuery("update app_version set version = '1.0.1'");
+        DbManager::NonQuery("update app_version set version = '0.1.1'");
     }
 
 }
