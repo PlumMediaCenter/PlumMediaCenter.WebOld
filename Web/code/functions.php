@@ -150,22 +150,22 @@ function saveImageFromUrl($imageUrl, $imageDest) {
 }
 
 function writeToLog($message) {
-    //format the message to not have any line breaks
-    $message = str_replace("\n", " ", $message);
-    $logPath = dirname(__FILE__) . "/../log.txt";
-    //get current time
-    $t = date("Y-m-d H:i:s");
-    //get time since last log
-    $microtime = microtime(true);
-    global $microtimeOfLastLog;
-    if ($microtimeOfLastLog == null) {
-        $microtimeOfLastLog = $microtime;
-    }
-    $secondsSinceLastLog = round(($microtime - $microtimeOfLastLog), 4);
-    //set the last log time to right now
-    $microtimeOfLastLog = $microtime;
-    $message = "$t -- $secondsSinceLastLog -- $message\n";
-    error_log($message, 3, $logPath);
+//    //format the message to not have any line breaks
+//    $message = str_replace("\n", " ", $message);
+//    $logPath = dirname(__FILE__) . "/../log.txt";
+//    //get current time
+//    $t = date("Y-m-d H:i:s");
+//    //get time since last log
+//    $microtime = microtime(true);
+//    global $microtimeOfLastLog;
+//    if ($microtimeOfLastLog == null) {
+//        $microtimeOfLastLog = $microtime;
+//    }
+//    $secondsSinceLastLog = round(($microtime - $microtimeOfLastLog), 4);
+//    //set the last log time to right now
+//    $microtimeOfLastLog = $microtime;
+//    $message = "$t -- $secondsSinceLastLog -- $message\n";
+//    error_log($message, 3, $logPath);
 }
 
 function clearLog() {

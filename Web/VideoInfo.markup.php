@@ -17,6 +17,7 @@
         <a href="Play.php?videoId=<?php echo $video->videoId; ?>">
             <img src="<?php echo $video->hdPosterUrl; ?>" style="float:left;">
         </a>
+         <a class="btn btn-primary btn-large" href="Play.php?videoId=<?php echo $video->videoId; ?>">Play</a>
     </div>
     <div class="span9">
         <h1><?php echo $video->title; ?></h1>

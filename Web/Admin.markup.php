@@ -9,11 +9,7 @@
 <input id="allMetadataType" checked="checked" type="radio" value="" name="metadataType"/> <label for="movieMetadataType">All Media</label>&nbsp;&nbsp;&nbsp;
 <input id="movieMetadataType" type="radio" value="<?php echo Enumerations::MediaType_Movie; ?>" name="metadataType"/><label for="movieMetadataType">Movies Only</label>&nbsp;&nbsp;&nbsp;
 <input id="tvShowMetadataType" type="radio" value="<?php echo Enumerations::MediaType_TvShow; ?>" name="metadataType"/><label for="movieMetadataType">Tv Shows/Episodes Only</label>
-
-<br/>
-<br/>
-<a class="btn" onclick="fetchMissingMetadataAndPosters();">Fetch and Generate Missing Metadata and Posters</a>
-
+ 
 <br/>
 <br/>
 <a href="#videosJsonModal" class="btn" role="button" data-toggle="modal" onclick="getVideosJson();">View library.json</a>
@@ -58,16 +54,4 @@
         });
     }
 
-    function fetchMissingMetadataAndPosters() {
-        bootbox.alert("Fetching missing metadata and posters. <img src='img/ajax-loader.gif'/>");
-        $.ajax({url: "api/FetchMissingMetadataAndPosters.php", dataType: "json", complete: function(result, status) {
-                bootbox.hideAll();
-                if (status === "success") {
-                    bootbox.alert("Successfully fetched all missing metadata and posters");
-                } else {
-                    bootbox.alert("There was an error fetching missing metadata and posters. Please see the <a href='Log.php'>log</a> for more information");
-                }
-            }
-        });
-    }
 </script>
