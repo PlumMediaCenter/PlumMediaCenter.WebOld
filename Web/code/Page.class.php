@@ -30,7 +30,7 @@ class Page {
             if ($this->modelIsImported == false) {
                 $this->modelIsImported = true;
 
-                include($this->modelPath);
+                include_once($this->modelPath);
                 $modelName = str_replace(".model", "", pathinfo($this->modelPath, PATHINFO_FILENAME)) . "Model";
                 if (class_exists($modelName)) {
                     $this->model = new $modelName();

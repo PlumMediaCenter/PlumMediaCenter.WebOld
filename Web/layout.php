@@ -20,7 +20,7 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
         <script type="text/javascript">
             var username = "<?php echo Security::GetUsername(); ?>";
             var enumerations = <?php
-            $c = new ReflectionClass("Enumerations");
+$c = new ReflectionClass("Enumerations");
 echo json_encode($c->getConstants());
 ?>;
             enumerations.movie = "<?php echo Enumerations::MediaType_Movie; ?>";
@@ -57,6 +57,10 @@ echo json_encode($c->getConstants());
                             <!--<li id="adminNav"><a href="Playlist.php">Playlist</a></li>-->
                             <li id="adminNav"><a href="Admin.php">Admin</a></li>
                         </ul>
+                        <form class="navbar-form pull-right" action="SearchResults.php">
+                            <input type="text" class="span2" name="title">
+                            <button type="submit" class="btn">Search</button>
+                        </form>
                     </div>
                 </div>
             </div>

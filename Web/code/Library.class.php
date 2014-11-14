@@ -35,8 +35,10 @@ class Library {
         /* @var $video Video   */
         foreach ($this->videos as $video) {
             //skip this video if it's not an object
-            if(is_object($video) == false){continue;}
-            try{
+            if (is_object($video) == false) {
+                continue;
+            }
+            try {
                 if ($video->nfoFileExists() == false) {
                     $video->fetchMetadata();
                 }
@@ -46,8 +48,7 @@ class Library {
                 if ($video->sdPosterExists() == false || $video->hdPosterExists() == false) {
                     $video->generatePosters();
                 }
-            }
-            catch(Exception $e){
+            } catch (Exception $e) {
                 
             }
         }
@@ -113,7 +114,9 @@ class Library {
             $this->videos[] = $tvShow;
             $this->tvShowCount++;
 
-            if(is_object($tvShow) == false){continue;}
+            if (is_object($tvShow) == false) {
+                continue;
+            }
             //load all of the episodes for this tv show
             $tvShow->loadEpisodesFromDatabase();
             $this->videos = array_merge($this->videos, $tvShow->episodes);
@@ -178,10 +181,7 @@ class Library {
         }
         return true;
     }
-    public function sort() {
-        usort($this->movies, array("Video", "CompareTo"));
-        usort($this->tvShows, array("Video", "CompareTo"));
-    }
+
     /**
      * loads the libary TvShow object with tv shows found in the source paths marked as tv show sources
      * @return TvShow[] - the array of TvShows found at the source path
@@ -251,6 +251,21 @@ class Library {
             $video->prepForJsonification();
         }
     }
+    
+    public function sort(){
+        
+        //sort the movies and tv shows
+        usort($this->movies, array($this, 'cmp'));
+        usort($this->tvShows, array($this, 'cmp'));
+    }
+
+    function cmp($a, $b) {
+        if (isset($a) && isset($b) && isset($a->name) && isset($b->name)) {
+            return strcmp($b->name, $a->name);
+        } else {
+            return true;
+        }
+    }
 
     /**
      * Write information to log pertaining to the current status of this library. Logs things like number of new videos
@@ -297,4 +312,5 @@ class Library {
     }
 
 }
+
 ?>

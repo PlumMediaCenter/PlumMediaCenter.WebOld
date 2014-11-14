@@ -27,6 +27,10 @@ class TvEpisode extends Video {
     function getBlankPosterName() {
         return "BlankEpisode";
     }
+    
+    function getFullEpisodeName(){
+        return $this->showName . ' S' . $this->seasonNumber . ':E' . $this->episodeNumber . ' ' . $this->title;
+    }
 
     /**
      * This tv episode cannot provide all important information by itself. It needs the tv show object to do that for it. As such, 

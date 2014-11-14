@@ -90,34 +90,33 @@ abstract class Video {
      * @return Movie|TvShow|TvEpisode $video
      */
     public static function GetVideo($videoId) {
-		try{
-			$v = Queries::getVideo($videoId);
-			//if no video was found, nothing more can be done
-			if ($v === false) {
-				return false;
-			}
-			switch ($v->media_type) {
-				case Enumerations::MediaType_Movie:
-					$video = new Movie($v->video_source_url, $v->video_source_path, $v->path);
-					break;
-				case Enumerations::MediaType_TvShow:
-					$video = new TvShow($v->video_source_url, $v->video_source_path, $v->path);
-					break;
-				case Enumerations::MediaType_TvEpisode:
-					$video = new TvEpisode($v->video_source_url, $v->video_source_path, $v->path);
-					break;
-			}
-			$video->videoId = intval($v->video_id);
-			$video->title = $v->title;
-			$video->runtimeInSeconds = $v->running_time_seconds;
-			$video->plot = $v->plot;
-			$video->mpaa = $v->mpaa;
-			$video->year = $v->release_date;
-			return $video;
-		}
-		catch(Exception $e){
-			return false;
-		}
+        try {
+            $v = Queries::getVideo($videoId);
+            //if no video was found, nothing more can be done
+            if ($v === false) {
+                return false;
+            }
+            switch ($v->media_type) {
+                case Enumerations::MediaType_Movie:
+                    $video = new Movie($v->video_source_url, $v->video_source_path, $v->path);
+                    break;
+                case Enumerations::MediaType_TvShow:
+                    $video = new TvShow($v->video_source_url, $v->video_source_path, $v->path);
+                    break;
+                case Enumerations::MediaType_TvEpisode:
+                    $video = new TvEpisode($v->video_source_url, $v->video_source_path, $v->path);
+                    break;
+            }
+            $video->videoId = intval($v->video_id);
+            $video->title = $v->title;
+            $video->runtimeInSeconds = $v->running_time_seconds;
+            $video->plot = $v->plot;
+            $video->mpaa = $v->mpaa;
+            $video->year = $v->release_date;
+            return $video;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -606,13 +605,84 @@ abstract class Video {
         }
         return $this->metadataFetcher;
     }
-    
-       /**
+
+    /**
      * compares two videos to sort them by title alphabetically
      * @param Video $video
      */
     public static function CompareTo($video1, $video2) {
         return strcmp($video1->title, $video2->title);
+    }
+
+    public static function searchByTitle($search) {
+        $results = [];
+        $title = strtolower($search);
+
+        //split the title by spaces.
+        $parts = explode(' ', $search);
+        $trimmedParts = [];
+        //trim all spacing from the 
+        foreach ($parts as $part) {
+            //remove any extra spaces
+            $part = trim($part);
+            if (strlen($part) > 0) {
+                $trimmedParts[] = $part;
+            }
+        }
+
+        if (count($trimmedParts) == 0) {
+            return $results;
+        }
+
+        $sql = 'select * from video where ';
+        $or = '';
+        //construct the where clause
+        foreach ($trimmedParts as $part) {
+            $sql = $sql . $or . "lower(title) like '%$title%'";
+            $or = ' or ';
+        }
+        $videoIds = DbManager::query($sql);
+
+        $videos = [];
+        //load each video. Yes this is very inefficient, but for now it works...
+        foreach ($videoIds as $videoId) {
+            $video = Video::GetVideo($videoId->video_id);
+            if ($video->mediaType === Enumerations::MediaType_TvShow) {
+                $video->loadEpisodesFromDatabase();
+            }
+            $videos[] = $video;
+        }
+
+        //rank each result by how many times each part of the search string appears in the title of each video
+        foreach ($videos as $video) {
+            $video->searchByTitleRank = 0;
+            $rank = 0;
+            $title = strtolower($video->title);
+            foreach ($trimmedParts as $part) {
+                $rank = $rank + substr_count($title, $part);
+            }
+            $video->searchByTitleRank = $rank;
+        }
+
+        usort($videos, array('Video', 'SearchCmp'));
+
+        return $videos;
+    }
+
+    public static function SearchCmp($a, $b) {
+        return $b->searchByTitleRank > $a->searchByTitleRank;
+    }
+
+    public static function PrepareVideosForJsonification($videos) {
+        foreach ($videos as $video) {
+            $video->prepForJsonification();
+            if ($video->mediaType === Enumerations::MediaType_TvShow) {
+                foreach ($video->episodes as $episode) {
+                    $episode->prepForJsonification();
+                }
+            }
+        }
+        return $videos;
     }
 
 }
