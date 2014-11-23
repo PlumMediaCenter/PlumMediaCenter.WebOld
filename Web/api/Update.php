@@ -62,7 +62,7 @@ function loadLatestCode($sha) {
     rrmdir($tempDir);
 
     //run the database update 
-    include(dirname(__FILE__) . '/../database/CreateDatabase.class.php');
+    include(dirname(__FILE__) . '/../code/database/CreateDatabase.class.php');
     $createDatabase = new CreateDatabase(config::$dbUsername, config::$dbPassword, config::$dbHost);
     $createDatabase->upgradeDatabase();
 }

@@ -109,7 +109,9 @@ class CreateDatabase {
                     //call the upgrade function
                     $this->$funct();
                 }
-                DbManager::NonQuery("update app_version set version = '$dbVersion'");
+                $versionNumber = str_replace('db','',$funct);
+                $versionNumber = str_replace('_', '.', $versionNumber);
+                DbManager::NonQuery("update app_version set version = '$versionNumber'");
             }
         }
         return true;
