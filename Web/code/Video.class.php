@@ -41,9 +41,10 @@ abstract class Video {
     protected $metadataFetcher;
     protected $filetype = null;
     protected $metadataLoaded = false;
-    protected $runtime = -1;
-    protected $runtimeInSeconds = 0;
+    public $_runtime = -1;
+    public $runtime = 0;
     protected $nfoReader = null;
+    
 
     function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
         //save the important stuff
@@ -109,7 +110,7 @@ abstract class Video {
             }
             $video->videoId = intval($v->video_id);
             $video->title = $v->title;
-            $video->runtimeInSeconds = $v->running_time_seconds;
+            $video->runtime = intval($v->running_time_seconds);
             $video->plot = $v->plot;
             $video->mpaa = $v->mpaa;
             $video->year = $v->release_date;
@@ -477,6 +478,9 @@ abstract class Video {
     public function prepForJsonification() {
         $this->hdPosterUrl = $this->getActualHdPosterUrl();
         $this->sdPosterUrl = $this->getActualSdPosterUrl();
+        $this->runtime = $this->getLengthInSeconds();
+        $this->title = '' . $this->title;
+        unset($this->_runtime);
     }
 
     protected function deleteMetadata() {
@@ -613,8 +617,8 @@ abstract class Video {
     public static function CompareTo($video1, $video2) {
         return strcmp($video1->title, $video2->title);
     }
-
-    public static function searchByTitle($search) {
+    
+    public static function getSearchSuggestions($search){
         $results = [];
         $title = strtolower($search);
 
@@ -634,13 +638,43 @@ abstract class Video {
             return $results;
         }
 
-        $sql = 'select * from video where ';
+        $sql = 'select video_id, title from video where (';
         $or = '';
         //construct the where clause
         foreach ($trimmedParts as $part) {
             $sql = $sql . $or . "lower(title) like '%$title%'";
             $or = ' or ';
         }
+        $sql = $sql . ') and media_type not like \'' . Enumerations::MediaType_TvEpisode . '\'';
+        $matches = DbManager::query($sql);
+        
+        //rank each result by how many times each part of the search string appears in the title of each video
+        foreach ($matches as $match) {
+            $match->rank = 0;
+            $rank = 0;
+            $title = strtolower($match->title);
+            foreach ($trimmedParts as $part) {
+                $rank = $rank + substr_count($title, $part);
+            }
+            $match->rank = $rank;
+        }
+
+        usort($matches, array('Video', 'SearchCmp'));
+        foreach($matches as $match){
+            $match->videoId = $match->video_id;
+            unset($match->video_id);
+        }
+        return $matches;
+    }
+
+    public static function searchByTitle($search) {
+        $suggestions = Video::getSearchSuggestions($search);
+        $videoIds = [];
+        foreach($suggestions as $suggestion){
+            $videoIds[] = $suggestion->videoId;
+        }
+     
+        $sql = 'select * from video where video_id in(' . implode(',', $videoIds) . ')';
         $videoIds = DbManager::query($sql);
 
         $videos = [];
@@ -653,24 +687,11 @@ abstract class Video {
             $videos[] = $video;
         }
 
-        //rank each result by how many times each part of the search string appears in the title of each video
-        foreach ($videos as $video) {
-            $video->searchByTitleRank = 0;
-            $rank = 0;
-            $title = strtolower($video->title);
-            foreach ($trimmedParts as $part) {
-                $rank = $rank + substr_count($title, $part);
-            }
-            $video->searchByTitleRank = $rank;
-        }
-
-        usort($videos, array('Video', 'SearchCmp'));
-
         return $videos;
     }
 
     public static function SearchCmp($a, $b) {
-        return $b->searchByTitleRank > $a->searchByTitleRank;
+        return $b->rank > $a->rank;
     }
 
     public static function PrepareVideosForJsonification($videos) {

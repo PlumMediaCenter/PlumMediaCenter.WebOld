@@ -20,6 +20,7 @@ class Queries {
     private static $stmtGetTvEpisodeVideoIdsForShow = null;
     private static $stmtGetEpisodePathsByShowPath = null;
     private static $stmtGetVideo = null;
+    private static $stmtGetVideosByMediaType = null;
     private static $stmtGetVideos = null;
     private static $stmtGetTvEpisode = null;
     private static $stmtGetEpisodesInTvShow = null;
@@ -39,6 +40,28 @@ class Queries {
         $stmt = $pdo->prepare($sql);
         $success = $stmt->execute();
         Queries::LogSql($sql, $success);
+        return $success;
+    }
+    
+     /**
+     * Deletes any videos that are not in the list of videos to keep.
+     * @param int[] $videoIdsToKeep - the list of videoIds to keep. Any video not in this list will be deleted.
+     * @return boolean - true if successful, false if failure
+     */
+    public static function DeleteVideos($videoIdsToDelete) {
+        $inStmt = DbManager::GenerateInStatement($videoIdsToDelete, false);
+        $inStmt = (strlen($inStmt) != false) ? "where video_id $notInStmt" : "";
+
+        //delete all references to this video in the following tables: tv_episode, video, watch_video
+        $sql = "delete from watch_video $notInStmt";
+        $success = DbManager::NonQuery($sql);
+        Queries::LogSql($sql, $success);
+        $sql1 = "delete from tv_episode $notInStmt";
+        $success = $success && DbManager::NonQuery($sql1);
+        Queries::LogSql($sql1, $success);
+        $sql2 = "delete from video $notInStmt";
+        $success = $success && DbManager::NonQuery($sql2);
+        Queries::LogSql($sql2, $success);
         return $success;
     }
 
@@ -389,6 +412,7 @@ class Queries {
     }
 
     public static function getVideoIdByVideoPath($videoPath) {
+        $videoId = null;
         $pdo = DbManager::getPdo();
         if (Queries::$stmtGetVideoIdByVideoPath == null) {
             $sql = "select video_id from video where path = :videoPath";
@@ -403,10 +427,11 @@ class Queries {
         if ($success === true) {
             $videoId = $videoId["video_id"];
             //if the videoId is null, return -1. otherwise, return the videoId found
-            return $videoId === null ? -1 : $videoId;
+            $videoId = $videoId === null ? -1 : $videoId;
         } else {
-            return -1;
+            $videoId = -1;
         }
+        return intval($videoId);
     }
 
     public static function getVideoMetadataLastModifiedDate($videoId) {
@@ -434,7 +459,7 @@ class Queries {
      * Gets an associative array of the video sources
      * @return associative array of video sources
      */
-    public static function getVideoSources($type = null) {
+    public static function GetVideoSources($type = null) {
         $sql = "select location, base_url,  media_type, security_type, refresh_videos from video_source";
         if ($type != null) {
             $sql .= " where media_type = '$type'";
@@ -721,6 +746,30 @@ class Queries {
         return false;
     }
 
+    public static function GetVideosById($videoIds, $columns) {
+        $pdo = DbManager::getPdo();
+        if(count($columns) > 0){
+            $columnString = implode(",", $columns);
+        }else{
+            $columnString = "*";
+        }
+        $inStmt = DbManager::GenerateInStatement($videoIds, false);
+        $sql = "select $columnString from video where $inStmt";
+        $stmt = $pdo->prepare($sql);
+        Queries::$stmtGetVideo = $stmt;
+
+        $success = $stmt->execute();
+        if ($success === true) {
+            $v = Dbmanager::FetchAllClass($stmt);
+            if (count($v) > 0) {
+                $v = $v[0];
+                return $v;
+            }
+        }
+        //return false if no videos were found or an error occurred.
+        return false;
+    }
+
     public static function GetVideo($videoId) {
         if (Queries::$stmtGetVideo == null) {
             $pdo = DbManager::getPdo();
@@ -733,7 +782,6 @@ class Queries {
         $stmt->bindParam(":videoId", $videoId);
 
         $success = $stmt->execute();
-        Queries::LogStmt($stmt, $success);
         if ($success === true) {
             $v = Dbmanager::FetchAllClass($stmt);
             if (count($v) > 0) {

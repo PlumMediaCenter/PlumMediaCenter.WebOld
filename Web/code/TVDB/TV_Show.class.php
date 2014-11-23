@@ -54,7 +54,7 @@ class TV_Show extends TVDB {
      * @access public
      * @var string
      */
-    public $runtime;
+    protected $_runtime;
 
     /**
      * Array of genres the tv show is (strings)
@@ -142,7 +142,7 @@ class TV_Show extends TVDB {
         $d = new DateTime("$m/$d/$y");
         $this->firstAired = $d;
         $this->network = (string) $config->Network;
-        $this->runtime = (string) $config->Runtime;
+        $this->_runtime = (string) $config->Runtime;
         $this->genres = $this->removeEmptyIndexes(explode('|', (string) $config->Genre));
         $this->actors = $this->removeEmptyIndexes(explode('|', (string) $config->Actors));
         $this->overview = (string) $config->Overview;

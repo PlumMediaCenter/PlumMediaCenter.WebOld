@@ -218,7 +218,7 @@ class DbManager {
      * @param type $list
      * @return type
      */
-    public static function generateInStatement($list, $wrapEachWithQuotes = true) {
+    public static function GenerateInStatement($list, $wrapEachWithQuotes = true) {
         $pdo = DbManager::getPdo();
         $str = '';
         $notFirstTime = false;

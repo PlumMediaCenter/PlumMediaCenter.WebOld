@@ -236,6 +236,12 @@ class Library {
         $videoList = [];
         $videoList["movies"] = $this->movies;
         $videoList["tvShows"] = $this->tvShows;
+        
+        //delete the episodes list from every tv show since the api provides a way to get the episodes directly
+        foreach($this->tvShows as $show){
+            unset($show->episodes);
+            unset($show->seasons);
+        }
         $videoJson = json_encode($videoList, JSON_PRETTY_PRINT);
         $success = file_put_contents(dirname(__FILE__) . "/../api/library.json", $videoJson);
         return $success;

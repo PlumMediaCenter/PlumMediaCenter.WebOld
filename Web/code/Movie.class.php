@@ -14,7 +14,7 @@ class Movie extends Video {
         //make sure the metadata has been loaded
         $this->loadMetadata();
         //runtime is in minutes
-        return $this->runtime * 60;
+        return $this->_runtime * 60;
     }
 
     function getNfoReader() {
@@ -45,7 +45,7 @@ class Movie extends Video {
         //we are assuming that the reader has already been loaded with the metadata file, since this function should only be called from 
         $reader = $this->getNfoReader();
         $this->year = $reader->year !== null ? $reader->year : "";
-        $this->runtime = $reader->runtime;
+        $this->_runtime = $reader->runtime;
     }
 
     /**
