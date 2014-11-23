@@ -25,11 +25,12 @@ foreach ($finalTags as $tagObject) {
 //get the current version of this server
 $currentVersion = Version::GetVersion(config::$dbHost, config::$dbUsername, config::$dbPassword, config::$dbName);
 $currentVersion = '0.1.0';
+echo "Our version is $currentVersion. GitHub latest version is " . $highestTagObject['tag'] . '<br/>';
 if ($currentVersion < $highestTagObject['tag']) {
-    echo "Need to update";
+    echo "We need to fetch some updates<br/>";
     loadLatestCode($highestTagObject['sha']);
 } else {
-    echo "server is up to date";
+    echo "Server is up to date. No update needed.<br/>";
 }
 
 function loadLatestCode($sha) {
@@ -38,10 +39,10 @@ function loadLatestCode($sha) {
     $extractedPath = "$tempDir/extract";
     $extractedWebPath = "$extractedPath/PlumVideoPlayer-$sha/Web";
     $rootWebPath = dirname(__FILE__) . '/..';
-    $rootWebPath = "$tempDir/copyTest";
     if (!file_exists($tempDir)) {
         mkdir($tempDir, 0777, true);
     }
+    echo "creating a temporary directory: $tempDir<br/>";
     //empty out the directory
     deleteFromDirectory($tempDir . '*');
     $url = "https://github.com/TwitchBronBron/PlumVideoPlayer/archive/$sha.zip";

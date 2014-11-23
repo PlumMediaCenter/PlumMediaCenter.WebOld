@@ -15,7 +15,9 @@ class CreateDatabase {
     //this is a list of all db upgrade functions that are callable, in order. 
     private static $upgradeFunctionNames = array(
         '0.1.0' => 'db0_1_0',
-        '0.1.1' => 'db0_1_1'
+        '0.1.1' => 'db0_1_1',
+        '0.1.2' => 'db0_1_2',
+        '0.1.3' => 'db0_1_3'
     );
 
     function __construct($rootUsername, $rootPassword, $dbHost) {
@@ -81,7 +83,7 @@ class CreateDatabase {
         $tableExists = DbManager::TableExists("app_version");
         //see if the version table exists. If it doesn't, then we start at the beginning.
         if ($tableExists === false) {
-       
+            
         } else {
             $version = DbManager::GetSingleItem("select * from app_version", $dbHost, $dbUsername, $dbPassword, config::$dbName);
             //handle the first version number, which was not following semantic versioning
@@ -103,8 +105,11 @@ class CreateDatabase {
         //execute all update functions in order, starting with the version AFTER the version we currently have
         foreach (CreateDatabase::$upgradeFunctionNames as $key => $funct) {
             if ($this->compareVersionNumbers($key, $dbVersion) > 0) {
-                //call the upgrade function
-                $this->$funct();
+                if (method_exists($this, $funct)) {
+                    //call the upgrade function
+                    $this->$funct();
+                }
+                DbManager::NonQuery("update app_version set version = '$dbVersion'");
             }
         }
         return true;
@@ -118,11 +123,11 @@ class CreateDatabase {
      */
     function compareVersionNumbers($v1, $v2) {
         $versionNumbers = [$v1, $v2];
-        foreach ($versionNumbers as $key=>$versionNumber) {
+        foreach ($versionNumbers as $key => $versionNumber) {
             $str = '';
             $parts = explode('.', $versionNumber);
-            foreach($parts as $part) {
-                $str = $str . str_pad($part,3,'0');
+            foreach ($parts as $part) {
+                $str = $str . str_pad($part, 3, '0');
             }
             $versionNumbers[$key] = $str;
         }
@@ -207,14 +212,6 @@ class CreateDatabase {
                     v.plot
                 FROM video v, tv_episode t
                 WHERE v.video_id = t.video_id");
-    }
-
-    function db0_1_1() {
-        DbManager::NonQuery("
-            alter table app_version
-            modify version varchar(11)
-        ");
-        DbManager::NonQuery("update app_version set version = '0.1.1'");
     }
 
 }
