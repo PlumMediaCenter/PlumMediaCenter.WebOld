@@ -24,6 +24,7 @@ foreach ($finalTags as $tagObject) {
 
 //get the current version of this server
 $currentVersion = Version::GetVersion(config::$dbHost, config::$dbUsername, config::$dbPassword, config::$dbName);
+$currentVersion = '0.1.0';
 echo "Our version is $currentVersion. GitHub latest version is " . $highestTagObject['tag'] . '<br/>';
 if ($currentVersion < $highestTagObject['tag']) {
     echo "We need to fetch some updates<br/>";
@@ -33,11 +34,11 @@ if ($currentVersion < $highestTagObject['tag']) {
 }
 
 function loadLatestCode($sha) {
-    $tempDir = realpath(dirname(__FILE__) . '/../tmp');
-    $zipFolderPath = realpath("$tempDir/server.zip");
-    $extractedPath = realpath("$tempDir/extract");
-    $extractedWebPath = realpath("$extractedPath/PlumVideoPlayer-$sha/Web");
-    $rootWebPath = realpath(dirname(__FILE__) . '/../');
+    $tempDir = dirname(__FILE__) . '/../tmp';
+    $zipFolderPath = "$tempDir/server.zip";
+    $extractedPath = "$tempDir/extract";
+    $extractedWebPath = "$extractedPath/PlumVideoPlayer-$sha/Web";
+    $rootWebPath = dirname(__FILE__) . '/..';
     if (!file_exists($tempDir)) {
         mkdir($tempDir, 0777, true);
     }
