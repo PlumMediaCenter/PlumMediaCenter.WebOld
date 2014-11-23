@@ -65,8 +65,6 @@ function loadLatestCode($sha) {
     include(dirname(__FILE__) . '/../database/CreateDatabase.class.php');
     $createDatabase = new CreateDatabase(config::$dbUsername, config::$dbPassword, config::$dbHost);
     $createDatabase->upgradeDatabase();
-
-    //everything should be updated now.
 }
 
 function deleteFromDirectory($globPattern) {
