@@ -1,7 +1,7 @@
-PlumVideoServer
+PlumMediaCenter Server
 ===============
 
-PHP Based mp4 video library website. Also included is a prototype Roku app that consumes the videos from this video library website.
+PHP Based mp4 media (video only right now) library website. Also included is a prototype Roku app that consumes the videos from this video library website.
 
 More detailed instructions to come as I have time. 
 
