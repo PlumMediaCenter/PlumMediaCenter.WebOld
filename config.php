@@ -5,9 +5,9 @@ define("BASE_URL", "http://localhost:8080/PlumVideoPlayer/Web/");
 class config {
 
     public static $dbHost = "127.0.0.1";
-    public static $dbName = "plumvideoplayer";
-    public static $dbUsername = "plumvideoplayer";
-    public static $dbPassword = "plumvideoplayer";
+    public static $dbName = "plummediacenter";
+    public static $dbUsername = "plummediacenter";
+    public static $dbPassword = "plummediacenter";
     public static $logQueries = true;
     public static $tvdbUrl = 'http://thetvdb.com';
     public static $tvdbApiKey = '3352E255A2DE009D';

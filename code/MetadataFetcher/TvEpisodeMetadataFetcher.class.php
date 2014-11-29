@@ -36,7 +36,9 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher {
     public function searchByShowNameAndSeasonAndEpisodeNumber($showName, $seasonNumber, $episodeNumber) {
         //query the TvDb to find a tv show that matches this folder's title. 
         $this->tvShowObject = TvShowMetadataFetcher::GetSearchByTitle($showName);
-        $this->episodeObject = $this->tvShowObject->getEpisode($seasonNumber, $episodeNumber);
+        if(isset($this->tvShowObject)){
+            $this->episodeObject = $this->tvShowObject->getEpisode($seasonNumber, $episodeNumber);
+        }
     }
 
     public function searchByShowIdAndEpisodeId($showId, $id) {
