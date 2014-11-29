@@ -37,7 +37,7 @@ function loadLatestCode($sha) {
     $tempDir = dirname(__FILE__) . '/../tmp';
     $zipFolderPath = "$tempDir/server.zip";
     $extractedPath = "$tempDir/extract";
-    $extractedWebPath = "$extractedPath/PlumVideoPlayer-$sha/Web";
+    $extractedWebPath = "$extractedPath/PlumVideoPlayer-$sha";
     $rootWebPath = dirname(__FILE__) . '/..';
     echo "Ensuring that temp directory exists: '$tempDir'<br/>";
     if (!file_exists($tempDir)) {
