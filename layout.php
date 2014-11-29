@@ -5,7 +5,7 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
 ?>
 <!DOCTYPE HTML>
 <html>
-    <head><title><?php echo $title != null ? $title : ""; ?></title>
+    <head><title><?php echo $title != null ? $title . '-' : ""; ?>Plum Media Center</title>
         <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.color-2.1.0.min.js"></script>
         <script type="text/javascript" src="js/jquery.utility.js"></script>
@@ -49,7 +49,7 @@ echo json_encode($c->getConstants());
             <div class="navbar-inner">
                 <div class="container">
 
-                    <a class="brand" href="index.php">  <img src="img/logo.png" style="height:20px;"> Plum Video Player</a>
+                    <a class="brand" href="index.php">  <img src="img/logo.png" style="height:20px;"> Plum Media Center</a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li id="browseNav<?php echo Enumerations::MediaType_Movie; ?>" ><a href="Browse.php?mediaType=<?php echo Enumerations::MediaType_Movie; ?>">Movies</a></li>

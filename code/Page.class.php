@@ -56,7 +56,7 @@ class Page {
         extract((array) $this->getModel());
         //if the title is not set, set it
         if (isset($title) == false) {
-            $title = "Roku LAN Video Player";
+            $title = '';
         }
         ob_start();
         //if the content variable is included, use that instead of a markup page
