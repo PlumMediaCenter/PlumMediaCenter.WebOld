@@ -1,4 +1,4 @@
-<?php ?>
+<?php include_once(dirname(__FILE__) .'/code/database/CreateDatabase.class.php');?>
 <a onclick="generateLibrary();" class="btn">Generate/Update library</a>
 <br/>
 <br/>
@@ -19,6 +19,7 @@
 <br/>
 <br/>
 <a href='api/Update.php' class="btn">Check for and install updates</a>
+<br/>Currently installed version <?php echo CreateDatabase::CurrentDbVersion();?>
 
 <div id="videosJsonModal" class="modal hide" style="width: 1000px; margin-left: -500px;">
     <div class="modal-header">
