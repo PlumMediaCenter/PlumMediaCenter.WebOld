@@ -8,7 +8,7 @@ $url = "https://api.github.com/repos/$repoOwner/$repoName/git/refs/tags";
 $options = array('http' => array('user_agent' => "$repoOwner/$repoName"));
 $context = stream_context_create($options);
 $response = file_get_contents($url, false, $context);
-echo $response;
+
 $tagObjects = json_decode($response, true);
 $finalTags = [];
 foreach ($tagObjects as $tagObject) {
@@ -24,7 +24,7 @@ foreach ($finalTags as $tagObject) {
 
 //get the current version of this server
 $currentVersion = Version::GetVersion(config::$dbHost, config::$dbUsername, config::$dbPassword, config::$dbName);
-$currentVersion = '0.1.0';
+
 echo "Our version is $currentVersion. GitHub latest version is " . $highestTagObject['tag'] . '<br/>';
 if ($currentVersion < $highestTagObject['tag']) {
     echo "We need to fetch some updates<br/>";
