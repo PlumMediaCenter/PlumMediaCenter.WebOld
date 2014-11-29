@@ -2,12 +2,12 @@
 
 require(dirname(__FILE__) . '/../code/functions.php');
 require(dirname(__FILE__) . '/../code/database/Version.class.php');
-$repoUrl = config::$repositoryUrl;
-$url = "$repoUrl/git/refs/tags";
+$repoName = config::$repoName;
+$url = "https://api.github.com/repos/$repoName/git/refs/tags";
 $options = array('http' => array('user_agent' => 'TwitchBronBron/PlumMediaCenter'));
 $context = stream_context_create($options);
 $response = file_get_contents($url, false, $context);
-
+echo $response;
 $tagObjects = json_decode($response, true);
 $finalTags = [];
 foreach ($tagObjects as $tagObject) {
@@ -46,7 +46,8 @@ function loadLatestCode($sha) {
     //empty out the directory
     echo 'Emptying out temp directory<br/>';
     deleteFromDirectory($tempDir . '*');
-    $url = "$repoUrl/archive/$sha.zip";
+    $repoName = config::$repoName;
+    $url = "https://github.com/$repoName/archive/$sha.zip";
     echo "Downloading latest server code from '$url'<br/>";
     file_put_contents($zipFolderPath, fopen($url, 'r'));
     //unzip the archive

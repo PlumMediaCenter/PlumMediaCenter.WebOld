@@ -1,6 +1,6 @@
 <?php
 
-define("BASE_URL", "http://localhost:8080/PlumVideoPlayer/Web/");
+define("BASE_URL", "http://localhost:8080/PlumMediaCenter/");
 
 class config {
 
@@ -13,7 +13,7 @@ class config {
     public static $tvdbApiKey = '3352E255A2DE009D';
     public static $tmdbApiKey = '90dbc17887e30eae3095d213fa803190';
     public static $tmdbUrl = 'http://api.themoviedb.org/3';
-    public static $repositoryUrl = 'https://api.github.com/repos/TwitchBronBron/PlumMediaCenter/';
+    public static $repoName = 'TwitchBronBron/PlumMediaCenter';
     public static $globalUsername = 'plumuser';
     //if a video is within this amount of time of the next video, play the next one instead (or restart it)
     public static $playNextVideoBufferInSeconds = 90;
