@@ -29,6 +29,7 @@ echo "Our version is $currentVersion. GitHub latest version is " . $highestTagOb
 if ($currentVersion < $highestTagObject['tag']) {
     echo "We need to fetch some updates<br/>";
     loadLatestCode($highestTagObject['sha']);
+    echo "Updated server to version " . $highestTagObject['tag'] . '<br/>';
 } else {
     echo "Server is up to date. No update needed.<br/>";
 }
@@ -39,16 +40,19 @@ function loadLatestCode($sha) {
     $extractedPath = "$tempDir/extract";
     $extractedWebPath = "$extractedPath/PlumVideoPlayer-$sha/Web";
     $rootWebPath = dirname(__FILE__) . '/..';
+    echo "Ensuring that temp directory exists: '$tempDir'<br/>";
     if (!file_exists($tempDir)) {
         mkdir($tempDir, 0777, true);
     }
-    echo "creating a temporary directory: $tempDir<br/>";
     //empty out the directory
+    echo 'Emptying out temp directory<br/>';
     deleteFromDirectory($tempDir . '*');
     $url = "https://github.com/TwitchBronBron/PlumVideoPlayer/archive/$sha.zip";
+    echo "Downloading latest server code from '$url'<br/>";
     file_put_contents($zipFolderPath, fopen($url, 'r'));
     //unzip the archive
     $zip = new ZipArchive;
+    echo 'Download complete. Extracting zip archive of server code<br/>';
     if ($zip->open($zipFolderPath) === true) {
         $zip->extractTo($extractedPath);
         $zip->close();
@@ -56,15 +60,20 @@ function loadLatestCode($sha) {
         echo 'failed to unzip archive of new version';
         return;
     }
+    echo 'Extract complete<br/>';
+    echo 'Overwriting files on server with latest code<br/>';
     //copy every file from the extracted web path to the root of this application directory (overwriting every file)
     recurse_copy_overwrite($extractedWebPath, $rootWebPath);
+    echo 'Overwrite complete. Cleaning up temp directory<br/>';
     //clean up the temp directory now that the file updates have finished
     rrmdir($tempDir);
 
     //run the database update 
+    echo 'Updating database<br/>';
     include(dirname(__FILE__) . '/../code/database/CreateDatabase.class.php');
     $createDatabase = new CreateDatabase(config::$dbUsername, config::$dbPassword, config::$dbHost);
     $createDatabase->upgradeDatabase();
+    echo 'Database update complete<br/>';
 }
 
 function deleteFromDirectory($globPattern) {
