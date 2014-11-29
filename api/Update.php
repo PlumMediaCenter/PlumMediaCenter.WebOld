@@ -2,9 +2,10 @@
 
 require(dirname(__FILE__) . '/../code/functions.php');
 require(dirname(__FILE__) . '/../code/database/Version.class.php');
+$repoOwner = config::repoOwner;
 $repoName = config::$repoName;
-$url = "https://api.github.com/repos/$repoName/git/refs/tags";
-$options = array('http' => array('user_agent' => 'TwitchBronBron/PlumMediaCenter'));
+$url = "https://api.github.com/repos/$repoOwner/$repoName/git/refs/tags";
+$options = array('http' => array('user_agent' => "$repoOwner/$repoName"));
 $context = stream_context_create($options);
 $response = file_get_contents($url, false, $context);
 echo $response;
@@ -37,7 +38,8 @@ function loadLatestCode($sha) {
     $tempDir = dirname(__FILE__) . '/../tmp';
     $zipFolderPath = "$tempDir/server.zip";
     $extractedPath = "$tempDir/extract";
-    $extractedWebPath = "$extractedPath/PlumVideoPlayer-$sha";
+    $repoName = config::$repoName;
+    $extractedWebPath = "$extractedPath/$repoName-$sha";
     $rootWebPath = dirname(__FILE__) . '/..';
     echo "Ensuring that temp directory exists: '$tempDir'<br/>";
     if (!file_exists($tempDir)) {
@@ -46,8 +48,9 @@ function loadLatestCode($sha) {
     //empty out the directory
     echo 'Emptying out temp directory<br/>';
     deleteFromDirectory($tempDir . '*');
+    $repoOwner = config::repoOwner;
     $repoName = config::$repoName;
-    $url = "https://github.com/$repoName/archive/$sha.zip";
+    $url = "https://github.com/$repoOwner/$repoName/archive/$sha.zip";
     echo "Downloading latest server code from '$url'<br/>";
     file_put_contents($zipFolderPath, fopen($url, 'r'));
     //unzip the archive
