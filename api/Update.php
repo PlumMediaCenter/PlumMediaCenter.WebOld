@@ -2,12 +2,11 @@
 
 require(dirname(__FILE__) . '/../code/functions.php');
 require(dirname(__FILE__) . '/../code/database/Version.class.php');
-
-$url = "https://api.github.com/repos/twitchbronbron/plumvideoplayer/git/refs/tags";
-$options = array('http' => array('user_agent' => 'TwitchBronBron/PlumVideoPlayer'));
+$repoUrl = config::$repositoryUrl;
+$url = "$repoUrl/git/refs/tags";
+$options = array('http' => array('user_agent' => 'TwitchBronBron/PlumMediaCenter'));
 $context = stream_context_create($options);
 $response = file_get_contents($url, false, $context);
-//$response = '[{"ref":"refs/tags/v0.1.0","url":"https://api.github.com/repos/TwitchBronBron/PlumVideoPlayer/git/refs/tags/v0.1.0","object":{"sha":"c2a7f7e6ded9063f0dc3e8987de94b977a83bf9b","type":"tag","url":"https://api.github.com/repos/TwitchBronBron/PlumVideoPlayer/git/tags/c2a7f7e6ded9063f0dc3e8987de94b977a83bf9b"}},{"ref":"refs/tags/v0.1.1","url":"https://api.github.com/repos/TwitchBronBron/PlumVideoPlayer/git/refs/tags/v0.1.1","object":{"sha":"b8e614aef6558941d7ccf3fb046ef3ace429a164","type":"tag","url":"https://api.github.com/repos/TwitchBronBron/PlumVideoPlayer/git/tags/b8e614aef6558941d7ccf3fb046ef3ace429a164"}}]';
 
 $tagObjects = json_decode($response, true);
 $finalTags = [];
@@ -47,7 +46,7 @@ function loadLatestCode($sha) {
     //empty out the directory
     echo 'Emptying out temp directory<br/>';
     deleteFromDirectory($tempDir . '*');
-    $url = "https://github.com/TwitchBronBron/PlumVideoPlayer/archive/$sha.zip";
+    $url = "$repoUrl/archive/$sha.zip";
     echo "Downloading latest server code from '$url'<br/>";
     file_put_contents($zipFolderPath, fopen($url, 'r'));
     //unzip the archive
