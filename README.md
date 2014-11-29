@@ -1,4 +1,4 @@
-PlumVideoPlayer
+PlumVideoServer
 ===============
 
 PHP Based mp4 video library website. Also included is a prototype Roku app that consumes the videos from this video library website.
