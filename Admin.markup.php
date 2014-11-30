@@ -12,20 +12,28 @@
 
 <br/>
 <br/>
-<a href="#videosJsonModal" class="btn btn-default" data-toggle="modal" onclick="getVideosJson();">View library.json</a>
-<br/>
-<br/>
+
 <a href='Log.php' class="btn btn-default">View Log</a>
 <br/>
 <br/>
 <a href='api/Update.php' class="btn btn-default">Check for and install updates</a>
 <br/>Currently installed version <?php echo CreateDatabase::CurrentDbVersion(); ?>
 
-<div id="videosJsonModal" class="modal hide" style="width: 1000px; margin-left: -500px;">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-        <h3 id="myModalLabel"></h3>
-        <div id="videosJsonModalContent" class="modal-body"></div>
+<div id="generateLibraryModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <p>One fine body&hellip;</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
     </div>
 </div>
 <script type="text/javascript">
@@ -36,20 +44,16 @@
             $("#metadataManagerBtn").attr("href", $("#metadataManagerBtn").attr("href-original") + "?mediaType=" + $(this).val());
         });
     });
-    function getVideosJson() {
-        $.getJSON("api/library.json", function(json) {
-            $("#videosJsonModalContent").html("<pre>" + JSON.stringify(json, undefined, 2) + "</pre>");
-        });
-    }
 
     function generateLibrary() {
-        bootbox.alert("Generating Library. <img src='img/ajax-loader.gif'/>");
+        $("#generateLibraryModal").modal("show", true);
+        var $modalBody = $("#generateLibraryModal .modal-body");
+        $modalBody.html("Generating Library. <img src='img/ajax-loader.gif'/>");
         $.ajax({url: "api/GenerateLibrary.php", dataType: "json", complete: function(result, status) {
-                bootbox.hideAll();
                 if (status === "success") {
-                    bootbox.alert("Library has been successfully generated and is up to date.");
+                    $modalBody.html("Library has been successfully generated and is up to date.");
                 } else {
-                    bootbox.alert("There was an error generating library. Please see the <a href='Log.php'>log</a> for more information");
+                    $modalBody.html("There was an error generating library. Please see the <a href='Log.php'>log</a> for more information");
                 }
             }
         });

@@ -18,7 +18,7 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
         <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
         <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         
-        <script type="text/javascript" src="plugins/bootstrap/js/bootbox.min.js"></script>
+        <script type="text/javascript" src="lib/bootbox/bootbox.min.js"></script>
         <script type="text/javascript" src="js/jquery.playlistadder.js"></script>
         <link href="css/style.css" rel="stylesheet">
         <link rel="icon" href="favicon.ico" type="image/x-icon" />
