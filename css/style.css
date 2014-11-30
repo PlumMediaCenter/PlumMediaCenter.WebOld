@@ -20,6 +20,22 @@ body{
     height:100%;
 }
 
+.pointer{
+    cursor:pointer;
+}
+
+.text-center{
+    text-align:center;
+}
+
+.text-right{
+    text-align:right;
+}
+
+.text-left{
+    text-align: left;
+}
+
 #bodyPadding{
     height:50px;
     width:100%;
@@ -37,14 +53,15 @@ body{
     margin: 10px;
     width:205px;
     height:350px;
+    overflow:hidden;
     padding:2px;
     border: 5px solid transparent;
 }
 
 .tile img{
-    width:205px;
-    cursor:pointer;
+    /* cursor:pointer; */
     border:0px solid white;
+    width: 100%;
 }
 .tile:hover{
     background-color:#CCCCCC;
@@ -230,4 +247,30 @@ label{
 
 .error{
     color:red;
+}
+
+#tablesArea{
+    border:1px solid black;
+    min-height: 300px;
+    overflow:auto;
+    margin:0px;
+    padding:0px;
+}
+
+#playTitle{
+    margin:0px; 
+    padding:0px;
+    line-height:0px;
+    width:100%;
+    display:inline-block; 
+    font-size: 15px;
+    text-align:center;
+}
+
+#videoInfoPlayBtn{
+    width:200px
+}
+
+#videoInfoMainPoster{
+    width:200px;
 }

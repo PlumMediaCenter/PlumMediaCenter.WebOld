@@ -1,25 +1,25 @@
-<?php include_once(dirname(__FILE__) .'/code/database/CreateDatabase.class.php');?>
-<a onclick="generateLibrary();" class="btn">Generate/Update library</a>
+<?php include_once(dirname(__FILE__) . '/code/database/CreateDatabase.class.php'); ?>
+<a onclick="generateLibrary();" class="btn btn-default">Generate/Update library</a>
 <br/>
 <br/>
-<a href='VideoSources.php' class="btn">Add/Remove Video Sources</a>
+<a href='VideoSources.php' class="btn btn-default">Add/Remove Video Sources</a>
 <br/>
 <br/>
-<a id="metadataManagerBtn" href-original="MetadataManager.php" href="MetadataManager.php" class="btn">Manage Metadata</a>
-<input id="allMetadataType" checked="checked" type="radio" value="" name="metadataType"/> <label for="movieMetadataType">All Media</label>&nbsp;&nbsp;&nbsp;
-<input id="movieMetadataType" type="radio" value="<?php echo Enumerations::MediaType_Movie; ?>" name="metadataType"/><label for="movieMetadataType">Movies Only</label>&nbsp;&nbsp;&nbsp;
-<input id="tvShowMetadataType" type="radio" value="<?php echo Enumerations::MediaType_TvShow; ?>" name="metadataType"/><label for="movieMetadataType">Tv Shows/Episodes Only</label>
- 
+<a id="metadataManagerBtn" href-original="MetadataManager.php" href="MetadataManager.php" class="btn btn-default">Manage Metadata</a>
+<label class="pointer"><input id="allMetadataType" checked="checked" type="radio" value="" name="metadataType"/>All Media</label>&nbsp;&nbsp;&nbsp;
+<label class="pointer"><input id="movieMetadataType" type="radio" value="<?php echo Enumerations::MediaType_Movie; ?>" name="metadataType"/>Movies Only</label>&nbsp;&nbsp;&nbsp;
+<label class="pointer"><input id="tvShowMetadataType" type="radio" value="<?php echo Enumerations::MediaType_TvShow; ?>" name="metadataType"/>Tv Shows/Episodes Only</label>
+
 <br/>
 <br/>
-<a href="#videosJsonModal" class="btn" role="button" data-toggle="modal" onclick="getVideosJson();">View library.json</a>
+<a href="#videosJsonModal" class="btn btn-default" data-toggle="modal" onclick="getVideosJson();">View library.json</a>
 <br/>
 <br/>
-<a href='Log.php' class="btn">View Log</a>
+<a href='Log.php' class="btn btn-default">View Log</a>
 <br/>
 <br/>
-<a href='api/Update.php' class="btn">Check for and install updates</a>
-<br/>Currently installed version <?php echo CreateDatabase::CurrentDbVersion();?>
+<a href='api/Update.php' class="btn btn-default">Check for and install updates</a>
+<br/>Currently installed version <?php echo CreateDatabase::CurrentDbVersion(); ?>
 
 <div id="videosJsonModal" class="modal hide" style="width: 1000px; margin-left: -500px;">
     <div class="modal-header">

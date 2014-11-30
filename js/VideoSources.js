@@ -102,10 +102,10 @@ $(document).ready(function() {
             $("input[name=mediaType]").prop("checked", false).addBack("[value=" + mediaType + "]").prop("checked", true);
             $("input[name=securityType]").prop("checked", false).addBack("[value=" + securityType + "]").prop("checked", true);
         }
-//clear the message 
+        //clear the message 
         $("#addEditMessage").html("");
         //show the add/edit window
-        $("#newSourceModal").modal();
+        $("#newSourceModal").modal('show');
     }
 
     function deleteVideoSource(sourcePath) {

@@ -16,7 +16,7 @@
         }];
 
 </script>
-<h2 id="playTitle" style="margin:0px; padding:0px;line-height:0px;width:100%;display:inline-block; font-size: 15px; text-align:center;"></h2>
+<h2 id="playTitle" ></h2>
 <div id="videoPlayer" style="width:100%;">JW Player goes here</div>
 <div id="playbackFinished"><h1>Playback has finished. Please select another video to watch.</h1></div>
 

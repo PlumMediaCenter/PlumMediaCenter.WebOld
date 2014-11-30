@@ -15,7 +15,7 @@ function printTvShowFileList($tvShow) {
         return;
     }
     echo "<table class='table'>"
-    . "<tr><th>Episode</th><th style='display:none;'>VID</th><th  style='display:none;'>Play</th><th style='display:none;'>Add To Playlist</th><th>Title</th><th>Progress</th></tr>";
+    . "<tr><th>Episode</th><th style='display:none;'>VID</th><th></th><th style='display:none;'>Add To Playlist</th><th>Title</th><th>Progress</th></tr>";
     //get the list of all episodes of this tv series. 
     $episodeList = $tvShow->episodes;
 
@@ -30,9 +30,9 @@ function printTvShowFileList($tvShow) {
         $episodeNumber = $episode->episodeNumber;
         $seasonNumber = $episode->seasonNumber;
         //$percentWatched = $episode->progressPercent();
-        if($isNextEpisode === true){
+        if ($isNextEpisode === true) {
             $percentWatched = $episode->progressPercent();
-        }else{
+        } else {
             $percentWatched = null;
         }
         $playUrl = "Play.php?videoId=$episodeId";
@@ -49,19 +49,23 @@ function printTvShowFileList($tvShow) {
             style="border:1px solid black;" episodeId="<?php echo $episodeId; ?>">
             <td class="transparent"><?php echo $episodeNumber; ?></td>
             <td class="transparent" style='display:none;'><?php echo $episodeId; ?></td>
-            <td class="transparent" style='display:none;'><a class="playButton18" style="display:block;" href="<?php echo $playUrl; ?>" title="Play">Play</a></td>
+            <td class="transparent">
+                <a class="btn btn-primary btn-xs" style="display:block;" href="<?php echo $playUrl; ?>" title="Play">  
+                    <span class="glyphicon glyphicon-play"></span>
+                </a>
+            </td>
             <!--<td class="transparent">  <a style="cursor:pointer;" onclick="$.getJSON('api/AddToPlaylist.php?playlistName=My Playlist&videoIds=<?php echo $episodeId; ?>');">+</a></td>-->
             <td class="transparent"><a class="play" href="<?php echo $playUrl; ?>"><?php echo $videoTitle; ?></a></td>
-            <?php if($isNextEpisode === true){ ?>
-            <td class="transparent"><div class="progressbar">
-                    <div class="percentWatched" style="width:<?php echo $percentWatched; ?>%">
+            <?php if ($isNextEpisode === true) { ?>
+                <td class="transparent"><div class="progressbar">
+                        <div class="percentWatched" style="width:<?php echo $percentWatched; ?>%">
+                        </div>
+                        <div class="percentWatchedText"><?php echo $percentWatched; ?>%
+                        </div>
                     </div>
-                    <div class="percentWatchedText"><?php echo $percentWatched; ?>%
-                    </div>
-                </div>
-            </td>
-            <?php }else{ ?>
-            <td></td>
+                </td>
+            <?php } else { ?>
+                <td></td>
             <?php } ?>
         </tr>
         <?php
@@ -102,7 +106,7 @@ function printTvShowGridTiles($tvShow) {
                 <span><br/><?php echo "$episodeNumber - $episodeTitle"; ?> </span>
                 <a href="<?php echo $playUrl; ?>" title="Play <?php echo "$episodeTitle"; ?>" class="playButton semiTransparent"  style="position:absolute; left:35%; top:30%;"></a>
                 <a class = 'infoButton18'  style="display:block;" onclick="getEpisodeInfo('<?php echo $episodeId; ?>', 'episodeTile_<?php echo $episodeId; ?>');
-                        return false;"></a>
+                                return false;"></a>
 
             </div>
         </div>

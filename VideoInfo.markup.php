@@ -12,27 +12,32 @@
     var video = <?php echo $videoJson; ?>;
 </script>
 
-<div class="row">
-    <div class="span3">
+<div class="row" style="margin-top:5px;">
+    <div class="col-md-3 text-center">
         <a href="Play.php?videoId=<?php echo $video->videoId; ?>">
-            <img src="<?php echo $video->hdPosterUrl; ?>" style="float:left;">
+            <div id="videoInfoMainPosterContainer">
+                <img src="<?php echo $video->hdPosterUrl; ?>" id="videoInfoMainPoster">
+            </div>
         </a>
-         <a class="btn btn-primary btn-large" href="Play.php?videoId=<?php echo $video->videoId; ?>">Play</a>
+        <a id="videoInfoPlayBtn" href="Play.php?videoId=<?php echo $video->videoId; ?>" class="btn btn-primary">
+            <span class="glyphicon glyphicon-play"></span>&nbsp;Play
+        </a>
     </div>
-    <div class="span9">
-        <h1><?php echo $video->title; ?></h1>
+    <div class="col-md-9">
+        <h1 class="text-center"><?php echo $video->title; ?></h1>
         Rating: <?php echo $video->mpaa; ?>
         <br/> <br/><?php echo $video->plot; ?>
     </div>
 </div>
+<br/>
 <div class="row">
-    <div class="span5" style="border:0px solid red;">
+    <div class="col-md-5" style="border:0px solid red;">
         <?php
         include_once("code/functions.php");
         printTvShowFileList($video);
         ?>
     </div>
-    <div class="span7" style="border:0px solid red;">
+    <div class="col-md-7" style="border:0px solid red;">
         <div id="episodeInfo" class="shadow">
             <h1 id="title" style="text-align:center;"></h1>
             <img align="right" id="episodePoster"/>
