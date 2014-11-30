@@ -2,6 +2,7 @@
 
 require(dirname(__FILE__) . '/../code/functions.php');
 require(dirname(__FILE__) . '/../code/database/Version.class.php');
+ob_start();
 $repoOwner = config::$repoOwner;
 $repoName = config::$repoName;
 $url = "https://api.github.com/repos/$repoOwner/$repoName/git/refs/tags";
@@ -33,6 +34,12 @@ if ($currentVersion < $highestTagObject['tag']) {
 } else {
     echo "Server is up to date. No update needed.<br/>";
 }
+$output = ob_get_contents();
+ob_end_clean();
+$result = (object)[];
+$result->success = true;
+$result->message = $output;
+echo json_encode($result);
 
 function loadLatestCode($sha) {
     $tempDir = dirname(__FILE__) . '/../tmp';
