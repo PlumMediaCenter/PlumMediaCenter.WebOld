@@ -50,7 +50,7 @@ function printTvShowFileList($tvShow) {
             <td class="transparent"><?php echo $episodeNumber; ?></td>
             <td class="transparent" style='display:none;'><?php echo $episodeId; ?></td>
             <td class="transparent">
-                <a class="btn btn-primary btn-xs" style="display:block;" href="<?php echo $playUrl; ?>" title="Play">  
+                <a class="btn btn-primary btn-sm" style="display:block;" href="<?php echo $playUrl; ?>" title="Play">  
                     <span class="glyphicon glyphicon-play"></span>
                 </a>
             </td>

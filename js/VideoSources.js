@@ -46,7 +46,7 @@ $(document).ready(function() {
                 required: true,
                 endingSlash: true,
                 remote: {
-                    url: "ajax/PathExistsOnServer.php",
+                    url: "api/PathExistsOnServer.php",
                     async: false,
                     data: {
                         path: function() {

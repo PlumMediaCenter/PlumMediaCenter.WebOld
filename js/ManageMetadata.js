@@ -123,7 +123,7 @@ function loadMetadataTables() {
     if (mediaType == enumerations.movie && moviesLoaded == false) {
         //set a waiting message
         $("#moviesTableArea").html("Loading <img src='img/ajax-loader.gif'/>")
-        $.getJSON("ajax/GetMetadataManagerTables.php", {mediaType: mediaType},
+        $.getJSON("api/GetMetadataManagerTables.php", {mediaType: mediaType},
         function(result) {
             moviesLoaded = true;
             $("#moviesTableArea").html(result[enumerations.movie]);
@@ -133,7 +133,7 @@ function loadMetadataTables() {
         $("#tvShowsTableArea").html("Loading <img src='img/ajax-loader.gif'/>")
         $("#tvEpisodesTableArea").html("Loading <img src='img/ajax-loader.gif'/>")
 
-        $.getJSON("ajax/GetMetadataManagerTables.php", {mediaType: mediaType},
+        $.getJSON("api/GetMetadataManagerTables.php", {mediaType: mediaType},
         function(result) {
 
             tvShowsLoaded = true;

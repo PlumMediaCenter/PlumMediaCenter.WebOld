@@ -26,8 +26,8 @@
                     <td><?php echo $src->media_type; ?></td>
                     <td><?php echo $src->security_type; ?></td>
                     <td><a href='<?php echo $src->base_url; ?>'><?php echo $src->base_url; ?></a></td>
-                    <td class="text-center"><a class="btn btn-primary btn-xs editSource" title="Edit" data-location="<?php echo $src->location; ?>" data-base-url="<?php echo $src->base_url; ?>" data-media-type="<?php echo $src->media_type; ?>" data-security-type="<?php echo $src->security_type; ?>"><span class="glyphicon glyphicon-edit"></span></a></td>
-                    <td class="text-center"><button class="btn btn-danger btn-xs deleteSource" title="Delete this video source" data-location="<?php echo $src->location; ?>" aria-hidden="true">&times;</button></td>
+                    <td class="text-center"><a class="btn btn-primary btn-sm editSource" title="Edit" data-location="<?php echo $src->location; ?>" data-base-url="<?php echo $src->base_url; ?>" data-media-type="<?php echo $src->media_type; ?>" data-security-type="<?php echo $src->security_type; ?>"><span class="glyphicon glyphicon-edit"></span></a></td>
+                    <td class="text-center"><button class="btn btn-danger btn-sm deleteSource" title="Delete this video source" data-location="<?php echo $src->location; ?>" aria-hidden="true"><span class="glyphicon glyphicon-trash"></span></button></td>
                 </tr>
             <?php } ?>
         </tbody>
