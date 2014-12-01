@@ -1,6 +1,5 @@
-<!--<script type="text/javascript" src="plugins/jwplayer/jwplayer.js"></script>-->
 <script type="text/javascript" src="js/play.js"></script>
-<script type="text/javascript" src="plugins/jwplayer6/jwplayer.js"></script>
+<script type="text/javascript" src="lib/jwplayer6/jwplayer.js"></script>
 
 <script type="text/javascript">
     var playType = "<?php echo $playType; ?>";

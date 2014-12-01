@@ -5,7 +5,7 @@ include_once(dirname(__FILE__) . "/../config.php");
 include_once("MetadataFetcher/TvShowMetadataFetcher.class.php");
 include_once("NfoReader/TvShowNfoReader.class.php");
 
-include_once(dirname(__FILE__) . "/../plugins/php-mp4info/MP4Info.php");
+include_once(dirname(__FILE__) . "/../lib/php-mp4info/MP4Info.php");
 
 
 include_once("Video.class.php");

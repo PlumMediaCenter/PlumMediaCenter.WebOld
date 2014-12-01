@@ -95,7 +95,7 @@ class TvShowMetadataFetcher extends MetadataFetcher {
     }
 
     function runtime() {
-        return $this->fetchSuccess ? $this->tvShowObject->runtime : null;
+        return $this->fetchSuccess && isset($this->tvShowObject->runtime )? $this->tvShowObject->runtime : null;
     }
 
     function seriesName() {

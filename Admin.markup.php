@@ -1,4 +1,5 @@
 <?php include_once(dirname(__FILE__) . '/code/database/CreateDatabase.class.php'); ?>
+<br/>
 <a onclick="generateLibrary();" class="btn btn-default">Generate/Update library</a>
 <br/>
 <br/>
@@ -13,9 +14,6 @@
 <br/>
 <br/>
 
-<a href='Log.php' class="btn btn-default">View Log</a>
-<br/>
-<br/>
 <a href='api/Update.php' class="btn btn-default">Check for and install updates</a>
 <br/>Currently installed version <?php echo CreateDatabase::CurrentDbVersion(); ?>
 

@@ -224,9 +224,9 @@ input[type=radio], label{
     padding:0px;
 }
 
-.ui-icon.white { background-image: url(../plugins/jquery-ui-1.10.3.custom/css/dark-hive/images/ui-icons_ffffff_256x240.png); }
-.ui-icon.red { background-image: url(../plugins/jquery-ui-1.10.3.custom/css/dark-hive/images/ui-icons_a83300_256x240.png); }
-.ui-icon.green { background-image: url(../plugins/jquery-ui-1.10.3.custom/css/dark-hive/images/ui-icons_4b8e0b_256x240.png); }
+.ui-icon.white { background-image: url(../lib/jquery-ui-1.10.3.custom/css/dark-hive/images/ui-icons_ffffff_256x240.png); }
+.ui-icon.red { background-image: url(../lib/jquery-ui-1.10.3.custom/css/dark-hive/images/ui-icons_a83300_256x240.png); }
+.ui-icon.green { background-image: url(../lib/jquery-ui-1.10.3.custom/css/dark-hive/images/ui-icons_4b8e0b_256x240.png); }
 
 
 #playbackFinished{

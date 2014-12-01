@@ -1,6 +1,6 @@
 <script type="text/javascript" src="js/VideoSources.js"></script>
-<script type="text/javascript" src="plugins/jquery-validation/jquery.validate.min.js"></script>
-<script type="text/javascript" src="plugins/jquery-validation/additional-methods.min.js"></script>
+<script type="text/javascript" src="lib/jquery-validation/jquery.validate.min.js"></script>
+<script type="text/javascript" src="lib/jquery-validation/additional-methods.min.js"></script>
 
 
 <form id="videoSourcesForm" method="post">

@@ -24,9 +24,9 @@ if (isset($_POST["setup"])) {
 ?>
 <html>
     <head>
-        <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css"/>
         <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
-        <script type="text/javascript" src="plugins/bootstrap/css/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="lib/bootstrap/css/js/bootstrap.min.js"></script>
     </head>
     <body>
         <?php if ($success === true) { ?>
