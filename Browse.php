@@ -29,8 +29,8 @@ function getSortedVideos($lib) {
 }
 
 function cmp($a, $b) {
-    if (isset($a) && isset($b) && isset($a->name) && isset($b->name)) {
-        return strcmp($b->name, $a->name);
+    if (isset($a) && isset($b) && isset($a->title) && isset($b->title)) {
+        return strcmp($a->title, $b->title);
     } else {
         return true;
     }
