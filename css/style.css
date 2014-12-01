@@ -45,36 +45,6 @@ body{
     position:relative;
 }
 
-.tile{
-    display:inline-block;
-    float:left;
-    border:2px solid white;
-    cursor:pointer;
-    margin: 10px;
-    width:205px;
-    height:350px;
-    overflow:hidden;
-    padding:2px;
-    border: 5px solid transparent;
-}
-
-.tile img{
-    /* cursor:pointer; */
-    border:0px solid white;
-    width: 100%;
-}
-.tile:hover{
-    background-color:#CCCCCC;
-    border-left:5px solid #CCCCCC;
-    border-right:5px solid #CCCCCC;
-
-}
-.tile span{
-    display:block;
-    font-size:20px;
-    text-align:center;
-}
-
 .radio{
     padding-left:0px;
 }
@@ -274,3 +244,104 @@ label{
 #videoInfoMainPoster{
     width:200px;
 }
+
+
+
+#video-container{
+    margin-right:auto;
+    margin-left:auto;
+    text-align:center;
+}
+
+div.video-tile{
+    /* display: inline; */
+    display: inline-block;
+    *zoom: 1;
+    *display: inline;
+    cursor:pointer;
+    margin: 0px;
+    width:150px;
+    height:220px;
+    overflow:hidden;
+    padding:2px;
+    border: 2px solid transparent;
+    position:relative;
+}
+
+.noPosterText{
+    position:absolute;
+    top:60%;
+    width:100%;
+    text-align:center;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px #000000;
+    padding:10px;
+    font-size: 16px;
+}
+/* extra small devices (less than 768px)*/
+@media (max-width:767px) {
+    div.video-tile{
+        width:100px;
+        height:146px;
+    }
+    .noPosterText{
+        font-size:11px;
+        top:53%;
+    }
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+    div.video-tile{
+        width:135px;
+        height:197px;
+    }
+    .noPosterText{
+        font-size:14px;
+    }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px){ 
+    div.video-tile{
+        width:174px;
+        height:256px;
+    }
+    .noPosterText{
+        font-size:16px;
+    }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    div.video-tile{
+        width:210px;
+        height:310px;
+    }  
+    .noPosterText{
+        font-size:18px;
+    }
+}
+
+div.video-tile img.poster{
+    width:100%;
+    cursor:pointer;
+    border:0px solid white;
+}
+div.video-tile{
+    border:5px solid transparent;
+}
+div.video-tile:hover{
+    border:3px solid #AAAAAA;
+}
+
+div.video-tile span{
+    display:block;
+    text-align:center;
+}
+
+label, input[type=radio]{
+    cursor:pointer;
+}
+

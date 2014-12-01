@@ -480,6 +480,8 @@ abstract class Video {
         $this->sdPosterUrl = $this->getActualSdPosterUrl();
         $this->runtime = $this->getLengthInSeconds();
         $this->title = '' . $this->title;
+        //if this video has the "no poster found" poster, then mark on this video that it doesn't have a poster
+        $this->hasPoster = $this->posterExists();
         unset($this->_runtime);
     }
 
