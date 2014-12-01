@@ -1,4 +1,7 @@
 <script type="text/javascript" src="js/VideoInfo.js"></script>
+<script type="text/javascript" src="lib/lightbox/js/lightbox.min.js"></script>
+<link rel="stylesheet" href="lib/lightbox/css/lightbox.css" />
+
 <style type="text/css">
     .selected{
         background-color:grey;
@@ -11,14 +14,13 @@
 <script type="text/javascript">
     var video = <?php echo $videoJson; ?>;
 </script>
-
-<div class="row" style="margin-top:5px;">
+<div class="row marginless" style="margin-top:5px;">
     <div class="col-md-3 text-center">
-        <a href="Play.php?videoId=<?php echo $video->videoId; ?>">
-            <div id="videoInfoMainPosterContainer">
-                <img src="<?php echo $video->hdPosterUrl; ?>" id="videoInfoMainPoster">
-            </div>
-        </a>
+        <div id="videoInfoMainPosterContainer">
+            <a href="<?php echo $video->getPosterUrl(); ?>" data-lightbox="poster">
+                <img src="<?php echo $video->hdPosterUrl; ?>" id="videoInfoMainPoster" >
+            </a>
+        </div>
         <a id="videoInfoPlayBtn" href="Play.php?videoId=<?php echo $video->videoId; ?>" class="btn btn-primary">
             <span class="glyphicon glyphicon-play"></span>&nbsp;Play
         </a>
@@ -30,7 +32,7 @@
     </div>
 </div>
 <br/>
-<div class="row">
+<div class="row marginless">
     <div class="col-md-5" style="border:0px solid red;">
         <?php
         include_once("code/functions.php");

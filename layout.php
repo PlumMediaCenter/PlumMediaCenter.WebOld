@@ -8,7 +8,8 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title><?php echo $title != null ? $title . '-' : ""; ?>Plum Media Center</title>
-        <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+        <!--<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>-->
+        <script type="text/javascript" src="lib/lightbox/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="js/jquery.color-2.1.0.min.js"></script>
         <script type="text/javascript" src="js/jquery.utility.js"></script>
         <link href="lib/jquery-ui-1.10.3.custom/css/dark-hive/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" media="screen">
