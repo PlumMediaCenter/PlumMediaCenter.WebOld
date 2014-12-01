@@ -14,10 +14,10 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
         <link href="lib/jquery-ui-1.10.3.custom/css/dark-hive/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" media="screen">
         <script type="text/javascript" src="lib/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"></script>
 
-        <?php /* bootstrap */?>
+        <?php /* bootstrap */ ?>
         <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
         <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-        
+
         <script type="text/javascript" src="lib/bootbox/bootbox.min.js"></script>
         <script type="text/javascript" src="js/jquery.playlistadder.js"></script>
         <link href="css/style.css" rel="stylesheet">
@@ -25,9 +25,9 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
         <script type="text/javascript">
             var username = "<?php echo Security::GetUsername(); ?>";
             var enumerations = <?php
-$c = new ReflectionClass("Enumerations");
-echo json_encode($c->getConstants());
-?>;
+        $c = new ReflectionClass("Enumerations");
+        echo json_encode($c->getConstants());
+        ?>;
             enumerations.movie = "<?php echo Enumerations::MediaType_Movie; ?>";
             enumerations.tvShow = "<?php echo Enumerations::MediaType_TvShow; ?>";
             enumerations.tvEpisode = "<?php echo Enumerations::MediaType_TvEpisode; ?>";
@@ -50,11 +50,9 @@ echo json_encode($c->getConstants());
     <body>
         <div id="bodyPadding"></div>
         <div id="playlistAdder"></div>
-        <?php include_once(dirname(__FILE__ ) . '/partials/navbar.php');?>
-        <div class="container">
-            <div id="containerRelativer">
-                <?php echo isset($body) ? $body : ""; ?>
-            </div>
+        <?php include_once(dirname(__FILE__) . '/partials/navbar.php'); ?>
+        <div id="containerRelativer">
+            <?php echo isset($body) ? $body : ""; ?>
         </div>
     </body>
 </html>

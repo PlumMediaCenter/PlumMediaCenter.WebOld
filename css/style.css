@@ -238,7 +238,8 @@ label{
 }
 
 #videoInfoPlayBtn{
-    width:200px
+    width:200px;
+    margin-top:5px;
 }
 
 #videoInfoMainPoster{
@@ -247,7 +248,7 @@ label{
 
 
 
-#video-container{
+.video-container{
     margin-right:auto;
     margin-left:auto;
     text-align:center;
@@ -334,6 +335,7 @@ div.video-tile{
 }
 div.video-tile:hover{
     border:3px solid #AAAAAA;
+    border-radius: 5px;
 }
 
 div.video-tile span{
