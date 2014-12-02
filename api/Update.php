@@ -3,11 +3,14 @@
 require(dirname(__FILE__) . '/../code/functions.php');
 require(dirname(__FILE__) . '/../code/database/Version.class.php');
 ob_start();
+
+$force = isset($_GET['force']) ? true : false;
 $repoOwner = config::$repoOwner;
 $repoName = config::$repoName;
 $url = "https://api.github.com/repos/$repoOwner/$repoName/git/refs/tags";
 $options = array('http' => array('user_agent' => "$repoOwner/$repoName"));
 $context = stream_context_create($options);
+
 $response = file_get_contents($url, false, $context);
 
 $tagObjects = json_decode($response, true);
@@ -25,9 +28,10 @@ foreach ($finalTags as $tagObject) {
 
 //get the current version of this server
 $currentVersion = Version::GetVersion(config::$dbHost, config::$dbUsername, config::$dbPassword, config::$dbName);
-
+$ourVersionIsOutOfDate = padTag($currentVersion) < padTag($highestTagObject['tag']);
 echo "Our version is $currentVersion. GitHub latest version is " . $highestTagObject['tag'] . '<br/>';
-if (padTag($currentVersion) < padTag($highestTagObject['tag'])) {
+if ($ourVersionIsOutOfDate || $force) {
+    echo $force ? 'Forcing the update<br/>' : '';
     echo "We need to fetch some updates<br/>";
     loadLatestCode($highestTagObject['sha']);
     echo "Updated server to version " . $highestTagObject['tag'] . '<br/>';
@@ -39,6 +43,8 @@ ob_end_clean();
 $result = (object) [];
 $result->success = true;
 $result->message = $output;
+
+header('Content-Type: application/json');
 echo json_encode($result);
 
 function loadLatestCode($sha) {
