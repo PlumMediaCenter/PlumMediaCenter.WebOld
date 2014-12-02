@@ -6,10 +6,7 @@ $result = (object) [];
 require_once(dirname(__FILE__) . '/../code/LibraryGenerator.class.php');
 
 $l = new LibraryGenerator();
-$l->generateLibrary();
+$success = $l->generateLibrary();
 
-$result->successWritingToDb = $l->writeToDb();
-$result->successWritingLibraryJson = $l->writeLibraryJson();
-$result->success = $result->successLoadingFromDatabase && $result->successWritingToDb && $result->successWritingLibraryJson;
 echo json_encode($result);
 ?>

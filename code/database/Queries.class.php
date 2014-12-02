@@ -32,6 +32,7 @@ class Queries {
     private static $stmtDeletePlaylist = null;
     private static $stmtGetPlaylistNames = null;
     private static $stmtGetVideoIds = null;
+    private static $statements = [];
 
     public static function GetTvShowFirstEpisode($tvShowVideoId) {
         $notInStmt = DbManager::NotIn($videoIdsToKeep, false);
@@ -42,18 +43,21 @@ class Queries {
         Queries::LogSql($sql, $success);
         return $success;
     }
-    
-     /**
+
+    /**
      * Deletes any videos that are not in the list of videos to keep.
      * @param int[] $videoIdsToKeep - the list of videoIds to keep. Any video not in this list will be deleted.
      * @return boolean - true if successful, false if failure
      */
     public static function DeleteVideos($videoIdsToDelete) {
         $inStmt = DbManager::GenerateInStatement($videoIdsToDelete, false);
-        $inStmt = (strlen($inStmt) != false) ? "where video_id $notInStmt" : "";
-
+        $inStmt = (strlen($inStmt) != false) ? "where video_id $inStmt" : "";
+        //if the statement got messed up at all, stop the query right here
+        if (strlen($inStmt) < 1 || $inStmt == '' || strlen($inStmt) == false) {
+            return false;
+        }
         //delete all references to this video in the following tables: tv_episode, video, watch_video
-        $sql = "delete from watch_video $notInStmt";
+        $sql = "delete from watch_video $inStmt";
         $success = DbManager::NonQuery($sql);
         Queries::LogSql($sql, $success);
         $sql1 = "delete from tv_episode $notInStmt";
@@ -230,6 +234,14 @@ class Queries {
         return $list;
     }
 
+    public static function GetMoviePaths() {
+        $stmt = $pdo->prepare("select video_id, path from video where media_type = :mediaType");
+        $stmt->bindParam(':mediaType', Enumerations::MediaType_Movie);
+        $stmt->execute();
+        $list = Queries::FetchAllKeyValuePair($stmt, "video_id", "path");
+        return $list;
+    }
+
     /**
      * Inserts a record into the video table 
      * @param type $title -- the title of the video
@@ -238,11 +250,11 @@ class Queries {
      * @param type $mediaType -- the media type of the video (movie, tv show, tv episode   
      * @return boolean - success or failure
      */
-    public static function insertVideo($title, $plot, $mpaa, $releaseDate, $videoPath, $filetype, $mediaType, $metadataModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds) {
+    public static function insertVideo($title, $plot, $mpaa, $year, $url, $videoPath, $filetype, $mediaType, $metadataModifiedDate, $posterModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds, $sdPosterUrl, $hdPosterUrl) {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtInsertVideo == null) {
-            $sql = "insert into video(title, plot, mpaa, release_date, path, filetype, media_type, metadata_last_modified_date, video_source_path, video_source_url, running_time_seconds)" .
-                    " values(:title, :plot, :mpaa, :releaseDate, :filePath, :filetype, :mediaType, :metadataLastModifiedDate, :videoSourcePath, :videoSourceUrl, :runningTimeSeconds)";
+            $sql = "insert into video(title, plot, mpaa, release_date, :url, path, filetype, media_type, metadata_last_modified_date, poster_last_modified_date, video_source_path, video_source_url, running_time_seconds, sd_poster_url, hd_poster_url)" .
+                    " values(:title, :plot, :mpaa, :year, :url, :filePath, :filetype, :mediaType, :metadataModifiedDate, :posterModifiedDate, :videoSourcePath, :videoSourceUrl, :runningTimeSeconds, :sdPosterUrl, :hdPosterUrl)";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtInsertVideo = $stmt;
         }
@@ -250,14 +262,19 @@ class Queries {
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":plot", $plot);
         $stmt->bindParam(":mpaa", $mpaa);
-        $stmt->bindParam(":releaseDate", $releaseDate);
+        $stmt->bindParam(":year", $year);
+        $stmt->bindParam(":url", $url);
         $stmt->bindParam(":filePath", $videoPath);
         $stmt->bindParam(":filetype", $filetype);
         $stmt->bindParam(":mediaType", $mediaType);
-        $stmt->bindParam(":metadataLastModifiedDate", $metadataModifiedDate);
+        $stmt->bindParam(":metadataModifiedDate", $metadataModifiedDate);     
+        $stmt->bindParam(":posterModifieDate", $posterModifiedDate);
         $stmt->bindParam(":videoSourcePath", $videoSourcePath);
         $stmt->bindParam(":videoSourceUrl", $videoSourceUrl);
         $stmt->bindParam(":runningTimeSeconds", $runningTimeSeconds);
+        $stmt->bindParam(":sdPosterUrl", $sdPosterUrl);
+        $stmt->bindParam(":hdPosterUrl", $hdPosterUrl);
+
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
         return $success;
@@ -271,15 +288,16 @@ class Queries {
      * @param string $filetype -- the filetype of the video
      * @param string $mediaType -- the media type of the video (movie, tv show, tv episode   
      */
-    public static function updateVideo($videoId, $title, $plot, $mpaa, $releaseDate, $videoPath, $fileType, $mediaType, $metadataModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds) {
+    public static function updateVideo($videoId, $title, $plot, $mpaa, $year, $url, $videoPath, $fileType, $mediaType, $metadataModifiedDate, $posterModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds, $sdPosterUrl, $hdPosterUrl) {
         if ($videoId == null || $videoId == -1) {
-            Queries::insertVideo($title, $plot, $mpaa, $releaseDate, $videoPath, $fileType, $mediaType, $metadataModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds);
+            Queries::insertVideo($title, $plot, $mpaa, $year, $url, $videoPath, $fileType, $mediaType, $metadataModifiedDate, $posterModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds, $sdPosterUrl, $hdPosterUrl);
         }
         $pdo = DbManager::getPdo();
         if (Queries::$stmtUpdateVideo == null) {
             $sql = "update video set "
-                    . "title = :title, plot=:plot, mpaa=:mpaa, release_date=:releaseDate, path=:path, filetype=:fileType, "
-                    . "media_type=:mediaType, metadata_last_modified_date= :metadataLastModifiedDate, video_source_path=:videoSourcePath, video_source_url=:videoSourceUrl, running_time_seconds=:runningTimeSeconds "
+                    . "title = :title, plot=:plot, mpaa=:mpaa, release_date=:year, url=:url, path=:path, filetype=:fileType, "
+                    . "media_type=:mediaType, metadata_last_modified_date= :metadataModifiedDate, poster_last_modified_date = :posterModifiedDate, video_source_path=:videoSourcePath, video_source_url=:videoSourceUrl, running_time_seconds=:runningTimeSeconds, "
+                    . "sd_poster_url=:sdPosterUrl, hd_poster_url=:hdPosterUrl "
                     . "where video_id = :videoId";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtUpdateVideo = $stmt;
@@ -288,15 +306,20 @@ class Queries {
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":plot", $plot);
         $stmt->bindParam(":mpaa", $mpaa);
-        $stmt->bindParam(":releaseDate", $releaseDate);
+        $stmt->bindParam(":year", $year);
+        $stmt->bindParam(":url", $url);
         $stmt->bindParam(":path", $videoPath);
         $stmt->bindParam(":fileType", $fileType);
         $stmt->bindParam(":mediaType", $mediaType);
-        $stmt->bindParam(":metadataLastModifiedDate", $metadataModifiedDate);
+        $stmt->bindParam(":metadataModifiedDate", $metadataModifiedDate);
+        $stmt->bindParam(":posterModifiedDate", $posterModifiedDate);
         $stmt->bindParam(":videoSourcePath", $videoSourcePath);
         $stmt->bindParam(":videoSourceUrl", $videoSourceUrl);
         $stmt->bindParam(":runningTimeSeconds", $runningTimeSeconds);
+        $stmt->bindParam(":sdPosterUrl", $sdPosterUrl);
+        $stmt->bindParam(":hdPosterUrl", $hdPosterUrl);
         $stmt->bindParam(":videoId", $videoId);
+
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
         return $success;
@@ -748,9 +771,9 @@ class Queries {
 
     public static function GetVideosById($videoIds, $columns) {
         $pdo = DbManager::getPdo();
-        if(count($columns) > 0){
+        if (count($columns) > 0) {
             $columnString = implode(",", $columns);
-        }else{
+        } else {
             $columnString = "*";
         }
         $inStmt = DbManager::GenerateInStatement($videoIds, false);

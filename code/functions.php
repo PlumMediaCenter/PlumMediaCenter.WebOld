@@ -1,4 +1,6 @@
 <?php
+include_once(dirname(__FILE__) . '/../code/DbManager.class.php');
+include_once(dirname(__FILE__) . '/../code/PropertyMappings.class.php');
 
 function handleError($errno, $errstr, $errfile, $errline, array $errcontext) {
 // error was suppressed with the @-operator
@@ -13,20 +15,24 @@ function handleError($errno, $errstr, $errfile, $errline, array $errcontext) {
 set_error_handler('handleError');
 
 function getLibrary() {
-    $lib = null;
-    $path = dirname(__FILE__) . "/../api/library.json";
-    if (file_exists($path) === true) {
-    //load the json file into memory
-        $json = $string = file_get_contents($path);
-        $lib = json_decode($json);
-    }
-    if ($lib == null) {
-        $lib = [];
-        $lib["movies"] = [];
-        $lib["tvShows"] = [];
-        $lib = (object) $lib;
-    }
-    return $lib;
+//    $lib = null;
+//    $path = dirname(__FILE__) . "/../api/library.json";
+//    if (file_exists($path) === true) {
+//        //load the json file into memory
+//        $json = $string = file_get_contents($path);
+//        $lib = json_decode($json);
+//    }
+//    if ($lib == null) {
+//        $lib = [];
+//        $lib["movies"] = [];
+//        $lib["tvShows"] = [];
+//        $lib = (object) $lib;
+//    }
+//    return $lib;
+    //get all movies and tv shows from the db
+    $videoRows = DbManager::GetAllClassQuery("select * from video where media_type in('" . Enumerations::MediaType_Movie . "', '" . Enumerations::MediaType_TvShow . "')");
+    $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
+    return $videos;
 }
 
 /**
@@ -215,7 +221,7 @@ function getVideoMetadataRow($v) {
     $txtSuccess = $vSuccess === true ? "true" : "false";
     ?>
     <tr style="cursor:pointer;" data-complete="<?php echo $txtSuccess; ?>" class="videoRow <?php echo $vSuccess ? "success" : "error"; ?>" mediatype="<?php echo $v->getMediaType(); ?>" baseurl="<?php echo htmlspecialchars($v->getVideoSourceUrl()); ?>" basepath="<?php echo htmlspecialchars($v->getVideoSourcePath()); ?>" fullpath="<?php echo htmlspecialchars($v->getFullPath()); ?>">
-        <?php if ($v->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
+    <?php if ($v->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
             <td><?php echo $v->showName; ?></td>
         <?php } ?>
         <td><?php echo $v->title; ?></td>
@@ -332,7 +338,7 @@ function printVideoTable($videoList) {
         <table class="table table-sort">
             <thead>
                 <tr title="sort">
-                    <?php if (isset($videoList[0]) && $videoList[0]->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
+    <?php if (isset($videoList[0]) && $videoList[0]->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
                         <th>Series</th>
                     <?php } ?>
                     <th>Title</th>
@@ -343,17 +349,16 @@ function printVideoTable($videoList) {
                 </tr>
             </thead>
             <tbody>
-                <?php
-                foreach ($videoList as $v) {
-                    printVideoMetadataRow($v);
-                }
-                ?>
+    <?php
+    foreach ($videoList as $v) {
+        printVideoMetadataRow($v);
+    }
+    ?>
             </tbody>
         </table>
     </div>
     <?php
 }
-
 
 function array_pluck($toPluck, $arr) {
     $ret = array();
@@ -365,4 +370,12 @@ function array_pluck($toPluck, $arr) {
     return $ret;
 }
 
+function getLastModifiedDate($file) {
+    try {
+        $modifiedDate = date("Y-m-d H:i:s", filemtime($file));
+    } catch (Exception $e) {
+        return null;
+    }
+    return $modifiedDate;
+}
 ?>

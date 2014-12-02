@@ -279,8 +279,15 @@ abstract class Video {
      * @return type
      */
     public function getNfoPath() {
-        $p = $this->fullPath;
-        $nfoPath = pathinfo($p, PATHINFO_DIRNAME) . "/" . pathinfo($p, PATHINFO_FILENAME) . ".nfo";
+        return Video::GetVideoNfoPath($this->fullPath);
+    }
+
+    /**
+     * Get the path to the nfo file based on the filename
+     * @param string $path
+     */
+    static function GetVideoNfoPath($path) {
+        $nfoPath = pathinfo($path, PATHINFO_DIRNAME) . "/" . pathinfo($path, PATHINFO_FILENAME) . ".nfo";
         return $nfoPath;
     }
 
@@ -326,7 +333,7 @@ abstract class Video {
     }
 
     function getSdPosterPath() {
-        return $this->getFullPathToContainingFolder() . "folder.sd.jpg";
+        return Video::GetVideoSdPosterPath($this->fullPath);
     }
 
     function getHdPosterPath() {
@@ -381,24 +388,32 @@ abstract class Video {
     }
 
     /**
-     * Generates an poster that is sized to the SD image specifications for the roku standard movie grid layout
-     * The existing aspect ratio is retained
-     * @param type $width
-     * @return boolean - true if successful, false if file doesn't exist or failure
-
+     * Get the path to the folder holding this video
+     * @param string $path
+     * @return string
      */
-    public function generateSdPoster($width = Video::SdImageWidth) {
-        $posterPath = $this->getPosterPath();
+    static function GetVideoFullPathToContainingFolder($videoPath) {
+        return pathinfo($videoPath, PATHINFO_DIRNAME) . "/";
+    }
+
+    public static function GetVideoSdPosterPath($videoPath) {
+        return Video::GetVideoFullPathToContainingFolder($videoPath) . "folder.sd.jpg";
+    }
+
+    public static function GetVideoHdPosterPath($videoPath) {
+        return GetVideoFullPathToContainingFolder($path) . "folder.hd.jpg";
+    }
+
+    public static function GeneratePoster($sourcePath, $destinationPath, $width) {
         if (file_exists($posterPath)) {
             $image = new SimpleImage();
             //load the image
             try {
-                $success = $image->load($posterPath);
-
+                $success = $image->load($sourcePath);
                 //resize the image
                 $image->resizeToWidth($width);
                 //re-save the image as folder-small.jpg
-                $image->save($this->getSdPosterPath());
+                $image->save($destinationPath);
             } catch (ErrorException $e) {
                 return false;
             }
@@ -406,6 +421,17 @@ abstract class Video {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Generates an poster that is sized to the SD image specifications for the roku standard movie grid layout
+     * The existing aspect ratio is retained
+     * @param type $width
+     * @return boolean - true if successful, false if file doesn't exist or failure
+
+     */
+    public function generateSdPoster($width = Video::SdImageWidth) {
+        return Video::GeneratePoster($this->getPosterPath(), $this->getSdPosterPath(), $width);
     }
 
     /**
@@ -458,10 +484,10 @@ abstract class Video {
         $videoId = $this->getVideoId();
         //if this is a video that does not yet exist in the database, create a new video
         if ($videoId === -1) {
-            $success = Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds());
+            $success = Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->getUrl(), $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->getPosterLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->getActualSdPosterUrl(), $this->getActualHdPosterUrl());
         } else {
             //this is an existing video that needs to be updated. update it
-            $success = Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds());
+            $success = Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->getUrl(), $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->getPosterLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->getActualSdPosterUrl(), $this->getActualHdPosterUrl());
         }
         $this->videoId = $this->getVideoId(true);
         if ($this->videoId != -1 && $success === true) {
@@ -533,6 +559,15 @@ abstract class Video {
             return $modifiedDate;
         } else {
             return Video::NoMetadata;
+        }
+    }
+    
+    protected function getPosterLastModifiedDate(){
+        if($this->posterExists()){
+            $posterPath = $this->getPosterPath();
+            return getLastModifiedDate($posterPath);
+        }else{
+            return null;
         }
     }
 
@@ -705,7 +740,8 @@ abstract class Video {
         }
         return $videos;
     }
-
+    
+   
 }
 
 ?>

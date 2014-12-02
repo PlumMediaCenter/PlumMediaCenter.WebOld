@@ -113,6 +113,13 @@ class DbManager {
             return true;
         }
     }
+    
+    public static function GetAllClassQuery($sql){
+        $pdo = DbManager::getPdo();
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        return DbManager::FetchAllClass($stmt);
+    }
 
     public static function query($sql, $host = null, $username = null, $password = null, $dbName = null) {
         $pdo = DbManager::getPdo($host, $username, $password, $dbName);
@@ -214,6 +221,34 @@ class DbManager {
     }
 
     /**
+     * Writes an object to the specified table. Assumes that each key in object is tableName 
+     * @param type $tableName
+     * @param type $keyName
+     * @param type $keyValue
+     * @param type $object
+     * @return boolean
+     */
+    public static function WriteObjectToTable($tableName, $keyName, $object) {
+        $sql = "update $tableName set ";
+        $comma = '';
+        foreach ($object as $key => $value) {
+            $sql = "$sql $comma $key=:$value";
+            $comma = ',';
+        }
+        //if no properties are actually being updated, fail
+        if ($comma === '') {
+            return false;
+        }
+        $sql .= " where $keyName = :key";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":key", $object[$keyName]);
+        foreach ($object as $key => $value) {
+            $stmt->bindParam(":$key", $value);
+        }
+        return $stmt->execute();
+    }
+
+    /**
      * Generates a string ready to be used in an 'in' statement for sql
      * @param type $list
      * @return type
@@ -244,7 +279,7 @@ class DbManager {
      * @return boolean|string - false if failure, the in stmt if success
      */
     public static function NotIn($list, $wrapInQuotes = null, $inLength = 1000) {
-        if(count($list) == 0){
+        if (count($list) == 0) {
             return false;
         }
         $q = $wrapInQuotes == true ? "'" : "";
