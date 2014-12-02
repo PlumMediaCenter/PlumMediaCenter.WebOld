@@ -1,3 +1,4 @@
+<h1 class="text-center">Search results for "<?php echo $searchString;?>"</h1>
 <div class="video-container">
     <?php foreach ($videos as $video) { ?>
         <div class="video-tile">
@@ -8,3 +9,4 @@
         </div>
     <?php } ?>  
 </div>
+

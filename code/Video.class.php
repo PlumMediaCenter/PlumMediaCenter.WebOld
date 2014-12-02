@@ -44,7 +44,6 @@ abstract class Video {
     public $_runtime = -1;
     public $runtime = 0;
     protected $nfoReader = null;
-    
 
     function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
         //save the important stuff
@@ -619,8 +618,8 @@ abstract class Video {
     public static function CompareTo($video1, $video2) {
         return strcmp($video1->title, $video2->title);
     }
-    
-    public static function getSearchSuggestions($search){
+
+    public static function getSearchSuggestions($search) {
         $results = [];
         $title = strtolower($search);
 
@@ -649,7 +648,7 @@ abstract class Video {
         }
         $sql = $sql . ') and media_type not like \'' . Enumerations::MediaType_TvEpisode . '\'';
         $matches = DbManager::query($sql);
-        
+
         //rank each result by how many times each part of the search string appears in the title of each video
         foreach ($matches as $match) {
             $match->rank = 0;
@@ -662,7 +661,7 @@ abstract class Video {
         }
 
         usort($matches, array('Video', 'SearchCmp'));
-        foreach($matches as $match){
+        foreach ($matches as $match) {
             $match->videoId = $match->video_id;
             unset($match->video_id);
         }
@@ -672,21 +671,20 @@ abstract class Video {
     public static function searchByTitle($search) {
         $suggestions = Video::getSearchSuggestions($search);
         $videoIds = [];
-        foreach($suggestions as $suggestion){
+        foreach ($suggestions as $suggestion) {
             $videoIds[] = $suggestion->videoId;
         }
-     
-        $sql = 'select * from video where video_id in(' . implode(',', $videoIds) . ')';
-        $videoIds = DbManager::query($sql);
 
         $videos = [];
         //load each video. Yes this is very inefficient, but for now it works...
         foreach ($videoIds as $videoId) {
-            $video = Video::GetVideo($videoId->video_id);
-            if ($video->mediaType === Enumerations::MediaType_TvShow) {
-                $video->loadEpisodesFromDatabase();
+            $video = Video::GetVideo($videoId);
+            if ($video) {
+                if ($video->mediaType === Enumerations::MediaType_TvShow) {
+                    $video->loadEpisodesFromDatabase();
+                }
+                $videos[] = $video;
             }
-            $videos[] = $video;
         }
 
         return $videos;

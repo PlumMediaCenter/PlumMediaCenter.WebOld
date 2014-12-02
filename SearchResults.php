@@ -9,9 +9,10 @@ $model = (object)[];
 $model->videos = [];
 
 $p = new Page(__FILE__);
-$title = isset($_GET["title"]) ? $_GET["title"] : '';
-if (isset($title)) {
-    $model->videos = Video::searchByTitle($title);
+$searchString = isset($_GET["s"]) ? $_GET["s"] : '';
+$model->searchString = $searchString;
+if (isset($searchString)) {
+    $model->videos = Video::searchByTitle($searchString);
 } else {
     
 }
