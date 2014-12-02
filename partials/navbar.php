@@ -22,7 +22,7 @@
                         <div class="form-group">
                             <input id="navbarSearch" name="s" type="text" class="form-control" placeholder="Search" value="<?php echo isset($_GET['s'])?$_GET['s']: '';?>">
                         </div>
-                        <button type="submit" class="btn btn-default">Submit</button>
+                        <button type="submit" class="btn btn-primary form-control">Search</button>
                     </form>
                 </li>
             </ul>
