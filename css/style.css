@@ -342,6 +342,10 @@ div.video-tile:hover{
     border-radius: 5px;
 }
 
+div.video-tile:hover .noPosterText{
+    padding-top:13px;
+}
+
 div.video-tile span{
     display:block;
     text-align:center;
