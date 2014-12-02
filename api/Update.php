@@ -18,7 +18,7 @@ foreach ($tagObjects as $tagObject) {
 
 $highestTagObject = ['tag' => '0.0.0'];
 foreach ($finalTags as $tagObject) {
-    if ($tagObject['tag'] > $highestTagObject['tag']) {
+    if (padTag($tagObject['tag']) > padTag($highestTagObject['tag'])) {
         $highestTagObject = $tagObject;
     }
 }
@@ -27,7 +27,7 @@ foreach ($finalTags as $tagObject) {
 $currentVersion = Version::GetVersion(config::$dbHost, config::$dbUsername, config::$dbPassword, config::$dbName);
 
 echo "Our version is $currentVersion. GitHub latest version is " . $highestTagObject['tag'] . '<br/>';
-if ($currentVersion < $highestTagObject['tag']) {
+if (padTag($currentVersion) < padTag($highestTagObject['tag'])) {
     echo "We need to fetch some updates<br/>";
     loadLatestCode($highestTagObject['sha']);
     echo "Updated server to version " . $highestTagObject['tag'] . '<br/>';
@@ -36,7 +36,7 @@ if ($currentVersion < $highestTagObject['tag']) {
 }
 $output = ob_get_contents();
 ob_end_clean();
-$result = (object)[];
+$result = (object) [];
 $result->success = true;
 $result->message = $output;
 echo json_encode($result);
@@ -130,4 +130,15 @@ function rrmdir($dir) {
         reset($objects);
         rmdir($dir);
     }
+}
+
+function padTag($tag) {
+    $parts = explode('.', $tag);
+    $newTag = '';
+    $period = '';
+    foreach ($parts as $part) {
+        $newTag = $newTag . $period . str_pad($part, 10, '0', STR_PAD_LEFT);
+        $period = '.';
+    }
+    return $newTag;
 }
