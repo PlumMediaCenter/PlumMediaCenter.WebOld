@@ -23,8 +23,7 @@ class CreateDatabase {
         '0.1.6' => 'db0_1_6',
         '0.1.7' => 'db0_1_7',
         '0.1.8' => 'db0_1_8',
-        '0.1.9' => 'db0_1_9',
-        '0.1.10' => 'db0_1_10'
+        '0.1.9' => 'db0_1_9'
     );
 
     function __construct($rootUsername, $rootPassword, $dbHost) {
@@ -223,7 +222,7 @@ class CreateDatabase {
                 WHERE v.video_id = t.video_id");
     }
     
-    function db0_1_10(){
+    function db0_1_9(){
          DbManager::NonQuery(" 
             alter table video 
             add sd_poster_url varchar(2000),
