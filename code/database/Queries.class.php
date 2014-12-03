@@ -250,11 +250,17 @@ class Queries {
      * @param type $mediaType -- the media type of the video (movie, tv show, tv episode   
      * @return boolean - success or failure
      */
-    public static function insertVideo($title, $plot, $mpaa, $year, $url, $videoPath, $filetype, $mediaType, $metadataModifiedDate, $posterModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds, $sdPosterUrl, $hdPosterUrl) {
+    public static function insertVideo($title, $plot, $mpaa, $year, $url, $path, $filetype, $mediaType, $metadataModifiedDate, $posterModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds, $sdPosterUrl, $hdPosterUrl) {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtInsertVideo == null) {
-            $sql = "insert into video(title, plot, mpaa, release_date, :url, path, filetype, media_type, metadata_last_modified_date, poster_last_modified_date, video_source_path, video_source_url, running_time_seconds, sd_poster_url, hd_poster_url)" .
-                    " values(:title, :plot, :mpaa, :year, :url, :filePath, :filetype, :mediaType, :metadataModifiedDate, :posterModifiedDate, :videoSourcePath, :videoSourceUrl, :runningTimeSeconds, :sdPosterUrl, :hdPosterUrl)";
+            $sql = "insert into video("
+                    . "title, plot, mpaa, release_date, url, path, filetype, media_type, "
+                    . "metadata_last_modified_date, poster_last_modified_date, video_source_path, "
+                    . "video_source_url, running_time_seconds, sd_poster_url, hd_poster_url)" 
+                    
+                    . " values(:title, :plot, :mpaa, :year, :url, :path, :fileType, :mediaType, "
+                    . ":metadataModifiedDate, :posterModifiedDate, :videoSourcePath, :videoSourceUrl, "
+                    . ":runningTimeSeconds, :sdPosterUrl, :hdPosterUrl)";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtInsertVideo = $stmt;
         }
@@ -264,11 +270,11 @@ class Queries {
         $stmt->bindParam(":mpaa", $mpaa);
         $stmt->bindParam(":year", $year);
         $stmt->bindParam(":url", $url);
-        $stmt->bindParam(":filePath", $videoPath);
-        $stmt->bindParam(":filetype", $filetype);
+        $stmt->bindParam(":path", $path);
+        $stmt->bindParam(":fileType", $filetype);
         $stmt->bindParam(":mediaType", $mediaType);
         $stmt->bindParam(":metadataModifiedDate", $metadataModifiedDate);     
-        $stmt->bindParam(":posterModifieDate", $posterModifiedDate);
+        $stmt->bindParam(":posterModifiedDate", $posterModifiedDate);
         $stmt->bindParam(":videoSourcePath", $videoSourcePath);
         $stmt->bindParam(":videoSourceUrl", $videoSourceUrl);
         $stmt->bindParam(":runningTimeSeconds", $runningTimeSeconds);

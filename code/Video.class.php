@@ -33,6 +33,7 @@ abstract class Video {
     public $url;
     public $sdPosterUrl;
     public $hdPosterUrl;
+    public $posterModifiedDate;
     public $mpaa = "N/A";
     public $actorList = [];
     public $videoId = null;
@@ -61,6 +62,7 @@ abstract class Video {
         $this->sdPosterUrl = $this->getActualSdPosterUrl();
         $this->hdPosterUrl = $this->getActualHdPosterUrl();
         $this->title = $this->getVideoName();
+        $this->posterModifiedDate = $this->getPosterLastModifiedDate();
     }
 
     public function getFullPath() {
@@ -357,7 +359,7 @@ abstract class Video {
         if ($this->hdPosterExists() == true) {
             return Video::EncodeUrl($this->getHdPosterUrl());
         } else {
-            $url = fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".hd.jpg";
+            $url = 'img/posters/' . $this->getBlankPosterName() . ".hd.jpg";
             $url = url_remove_dot_segments($url);
             return Video::EncodeUrl($url);
         }
@@ -367,7 +369,7 @@ abstract class Video {
         if ($this->sdPosterExists() == true) {
             return Video::EncodeUrl($this->getSdPosterUrl());
         } else {
-            $url = fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".sd.jpg";
+            $url = "img/posters/" . $this->getBlankPosterName() . ".sd.jpg";
             $url = url_remove_dot_segments($url);
             return Video::EncodeUrl($url);
         }
@@ -377,7 +379,7 @@ abstract class Video {
         if ($this->PosterExists() == true) {
             return Video::EncodeUrl($this->getPosterUrl());
         } else {
-            $url = fileUrl(__FILE__) . "/../img/posters/" . $this->getBlankPosterName() . ".jpg";
+            $url = "img/posters/" . $this->getBlankPosterName() . ".jpg";
             $url = url_remove_dot_segments($url);
             return Video::EncodeUrl($url);
         }
@@ -505,8 +507,6 @@ abstract class Video {
         $this->sdPosterUrl = $this->getActualSdPosterUrl();
         $this->runtime = $this->getLengthInSeconds();
         $this->title = '' . $this->title;
-        //if this video has the "no poster found" poster, then mark on this video that it doesn't have a poster
-        $this->hasPoster = $this->posterExists();
         unset($this->_runtime);
     }
 
@@ -593,7 +593,7 @@ abstract class Video {
                 $this->title = $reader->title !== null ? $reader->title : $this->title;
                 $this->plot = $reader->plot !== null ? $reader->plot : "";
                 $this->mpaa = $reader->mpaa !== null ? $reader->mpaa : $this->mpaa;
-                $this->actorList = $reader->actors;
+                //$this->actorList = $reader->actors;
 
                 $success = $this->loadCustomMetadata();
                 return $success;
@@ -732,10 +732,12 @@ abstract class Video {
     public static function PrepareVideosForJsonification($videos) {
         foreach ($videos as $video) {
             $video->prepForJsonification();
+            unset($video->actorList);
+
             if ($video->mediaType === Enumerations::MediaType_TvShow) {
-                foreach ($video->episodes as $episode) {
-                    $episode->prepForJsonification();
-                }
+                unset($video->episodes);
+                unset($video->seasons);
+                unset($video->episodeCount);
             }
         }
         return $videos;

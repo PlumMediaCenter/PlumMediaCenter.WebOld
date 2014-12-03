@@ -39,7 +39,19 @@ class Movie extends Video {
     protected function loadCustomMetadata() {
         //we are assuming that the reader has already been loaded with the metadata file, since this function should only be called from 
         $reader = $this->getNfoReader();
-        $this->year = $reader->year !== null ? $reader->year : "";
+        $year = $reader->year !== null ? $reader->year : "";
+        //we are only concerned with the year value. the reader for movies returns the full release date. rip off the year
+        if ($year !== "") {
+            try {
+                $year = substr($year, 0, 4);
+                if ($year === '0000') {
+                    $year = null;
+                }
+                $this->year = $year;
+            } catch (Exception $e) {
+                $this->year = null;
+            }
+        }
         $this->_runtime = $reader->runtime;
     }
 

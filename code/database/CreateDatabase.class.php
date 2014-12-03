@@ -115,7 +115,7 @@ class CreateDatabase {
                     //call the upgrade function
                     $this->$funct();
                 }
-                $versionNumber = str_replace('db','',$funct);
+                $versionNumber = str_replace('db', '', $funct);
                 $versionNumber = str_replace('_', '.', $versionNumber);
                 DbManager::NonQuery("update app_version set version = '$versionNumber'");
             }
@@ -221,12 +221,12 @@ class CreateDatabase {
                 FROM video v, tv_episode t
                 WHERE v.video_id = t.video_id");
     }
-    
-    function db0_1_9(){
-         DbManager::NonQuery(" 
-            alter table video 
-            add sd_poster_url varchar(2000),
-            add hd_poster_url varchar(2000)");
+
+    function db0_1_9() {
+        DbManager::NonQuery('alter table video add sd_poster_url varchar(2000)');
+        DbManager::NonQuery('alter table video add hd_poster_url varchar(2000)');
+        DbManager::NonQuery('alter table video add year int(4)');
+        DbManager::NonQuery('alter table video drop release_date');
     }
 
 }
