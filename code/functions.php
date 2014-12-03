@@ -202,12 +202,15 @@ function printVideoMetadataRow($v) {
  * @return type
  */
 function getVideoMetadataRow($v) {
+    if($v == null){
+        return "";
+    }
     ob_start();
     $vSuccess = $v->nfoFileExists() && $v->posterExists() && $v->sdPosterExists() && $v->hdPosterExists();
     $txtSuccess = $vSuccess === true ? "true" : "false";
     ?>
     <tr style="cursor:pointer;" data-complete="<?php echo $txtSuccess; ?>" class="videoRow <?php echo $vSuccess ? "success" : "error"; ?>" mediatype="<?php echo $v->getMediaType(); ?>" baseurl="<?php echo htmlspecialchars($v->getVideoSourceUrl()); ?>" basepath="<?php echo htmlspecialchars($v->getVideoSourcePath()); ?>" fullpath="<?php echo htmlspecialchars($v->getFullPath()); ?>">
-    <?php if ($v->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
+        <?php if ($v->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
             <td><?php echo $v->showName; ?></td>
         <?php } ?>
         <td><?php echo $v->title; ?></td>
@@ -324,7 +327,7 @@ function printVideoTable($videoList) {
         <table class="table table-sort">
             <thead>
                 <tr title="sort">
-    <?php if (isset($videoList[0]) && $videoList[0]->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
+                    <?php if (isset($videoList[0]) && method_exists($videoList[0], 'getMediaType') && $videoList[0]->getMediaType() == Enumerations::MediaType_TvEpisode) { ?>
                         <th>Series</th>
                     <?php } ?>
                     <th>Title</th>
@@ -335,11 +338,11 @@ function printVideoTable($videoList) {
                 </tr>
             </thead>
             <tbody>
-    <?php
-    foreach ($videoList as $v) {
-        printVideoMetadataRow($v);
-    }
-    ?>
+                <?php
+                foreach ($videoList as $v) {
+                    printVideoMetadataRow($v);
+                }
+                ?>
             </tbody>
         </table>
     </div>
