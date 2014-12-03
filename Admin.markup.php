@@ -17,9 +17,11 @@
 
             <br/>
             <br/>
-
-            <a href='api/Update.php' class="btn btn-default">Check for and install updates</a>
-            <br/>Currently installed version <?php echo CreateDatabase::CurrentDbVersion(); ?>
+            <form action="api/Update.php">
+                <button type="submit" class="btn btn-default">Check for and install updates</button>
+                <label><input type="checkbox" name="force" value="true"/> Force latest update to install</label>
+                <br/>Currently installed version <?php echo CreateDatabase::CurrentDbVersion(); ?>
+            </form>
 
             <div id="generateLibraryModal" class="modal fade">
                 <div class="modal-dialog">
