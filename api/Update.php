@@ -29,14 +29,14 @@ foreach ($finalTags as $tagObject) {
 //get the current version of this server
 $currentVersion = Version::GetVersion(config::$dbHost, config::$dbUsername, config::$dbPassword, config::$dbName);
 $ourVersionIsOutOfDate = padTag($currentVersion) < padTag($highestTagObject['tag']);
-echo "Our version is $currentVersion. GitHub latest version is " . $highestTagObject['tag'] . '<br/>';
+echo "Our version is $currentVersion. GitHub latest version is " . $highestTagObject['tag'] . '<br/>\n';
 if ($ourVersionIsOutOfDate || $force) {
-    echo $force ? 'Forcing the update<br/>' : '';
-    echo "We need to fetch some updates<br/>";
+    echo $force ? 'Forcing the update<br/>\n' : '';
+    echo "We need to fetch some updates<br/>\n";
     loadLatestCode($highestTagObject['sha']);
-    echo "Updated server to version " . $highestTagObject['tag'] . '<br/>';
+    echo "Updated server to version " . $highestTagObject['tag'] . '<br/>\n';
 } else {
-    echo "Server is up to date. No update needed.<br/>";
+    echo "Server is up to date. No update needed.<br/>\n";
 }
 $output = ob_get_contents();
 ob_end_clean();
@@ -54,21 +54,21 @@ function loadLatestCode($sha) {
     $repoName = config::$repoName;
     $extractedWebPath = "$extractedPath/$repoName-$sha";
     $rootWebPath = dirname(__FILE__) . '/..';
-    echo "Ensuring that temp directory exists: '$tempDir'<br/>";
+    echo "Ensuring that temp directory exists: '$tempDir'<br/>\n";
     if (!file_exists($tempDir)) {
         mkdir($tempDir, 0777, true);
     }
     //empty out the directory
-    echo 'Emptying out temp directory<br/>';
+    echo 'Emptying out temp directory<br/>\n';
     deleteFromDirectory($tempDir . '*');
     $repoOwner = config::$repoOwner;
     $repoName = config::$repoName;
     $url = "https://github.com/$repoOwner/$repoName/archive/$sha.zip";
-    echo "Downloading latest server code from '$url'<br/>";
+    echo "Downloading latest server code from '$url'<br/>\n";
     file_put_contents($zipFolderPath, fopen($url, 'r'));
     //unzip the archive
     $zip = new ZipArchive;
-    echo 'Download complete. Extracting zip archive of server code<br/>';
+    echo 'Download complete. Extracting zip archive of server code<br/>\n';
     if ($zip->open($zipFolderPath) === true) {
         $zip->extractTo($extractedPath);
         $zip->close();
@@ -76,20 +76,20 @@ function loadLatestCode($sha) {
         echo 'failed to unzip archive of new version';
         return;
     }
-    echo 'Extract complete<br/>';
-    echo 'Overwriting files on server with latest code<br/>';
+    echo 'Extract complete<br/>\n';
+    echo 'Overwriting files on server with latest code<br/>\n';
     //copy every file from the extracted web path to the root of this application directory (overwriting every file)
     recurse_copy_overwrite($extractedWebPath, $rootWebPath);
-    echo 'Overwrite complete. Cleaning up temp directory<br/>';
+    echo 'Overwrite complete. Cleaning up temp directory<br/>\n';
     //clean up the temp directory now that the file updates have finished
     rrmdir($tempDir);
 
     //run the database update 
-    echo 'Updating database<br/>';
+    echo 'Updating database<br/>\n';
     include(dirname(__FILE__) . '/../code/database/CreateDatabase.class.php');
     $createDatabase = new CreateDatabase(config::$dbUsername, config::$dbPassword, config::$dbHost);
     $createDatabase->upgradeDatabase();
-    echo 'Database update complete<br/>';
+    echo 'Database update complete<br/>\n';
 }
 
 function deleteFromDirectory($globPattern) {
