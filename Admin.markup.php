@@ -9,6 +9,9 @@
             <a href='VideoSources.php' class="btn btn-default">Add/Remove Video Sources</a>
             <br/>
             <br/>
+            <a href='api/FetchMissingMetadataAndPosters.php' class="btn btn-default">Fetch and Load Missing Metadata and Posters</a>
+            <br/>
+            <br/>
             <a id="metadataManagerBtn" href-original="MetadataManager.php" href="MetadataManager.php" class="btn btn-default">Manage Metadata</a>
             <br/>
             <label class="pointer"><input id="allMetadataType" checked="checked" type="radio" value="" name="metadataType"/>All Media</label>&nbsp;&nbsp;&nbsp;

@@ -410,11 +410,11 @@ abstract class Video {
     }
 
     public static function GeneratePoster($sourcePath, $destinationPath, $width) {
-        if (file_exists($posterPath)) {
+        if (file_exists($sourcePath)) {
             $image = new SimpleImage();
             //load the image
             try {
-                $success = $image->load($sourcePath);
+                $image->load($sourcePath);
                 //resize the image
                 $image->resizeToWidth($width);
                 //re-save the image as folder-small.jpg

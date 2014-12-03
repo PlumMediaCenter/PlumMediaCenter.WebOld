@@ -12,7 +12,7 @@ class Library {
     public $tvEpisodes = [];
     private $tvEpisodeCount = 0;
     //contains a list of all videos, a combination of movies, tv shows and tv episodes
-    private $videos = [];
+    public $videos = [];
 
     public function __construct() {
         //set the time limit for this script to be 10 minutes. If it takes any longer than that, there's something wrong
