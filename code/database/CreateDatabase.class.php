@@ -23,7 +23,7 @@ class CreateDatabase {
         '0.1.6' => 'db0_1_6',
         '0.1.7' => 'db0_1_7',
         '0.1.8' => 'db0_1_8',
-        '0.1.9' => 'db0_1_9'
+        '0.2.0' => 'db0_2_0'
     );
 
     function __construct($rootUsername, $rootPassword, $dbHost) {
@@ -222,10 +222,10 @@ class CreateDatabase {
                 WHERE v.video_id = t.video_id");
     }
 
-    function db0_1_9() {
-        DbManager::NonQuery('alter table video add sd_poster_url varchar(2000)');
-        DbManager::NonQuery('alter table video add hd_poster_url varchar(2000)');
-        DbManager::NonQuery('alter table video add year int(4)');
+    function db0_2_0() {
+        DbManager::NonQuery('alter table video add column sd_poster_url varchar(2000)');
+        DbManager::NonQuery('alter table video add column hd_poster_url varchar(2000)');
+        DbManager::NonQuery('alter table video add column year int(4)');
         DbManager::NonQuery('alter table video drop column release_date');
     }
 
