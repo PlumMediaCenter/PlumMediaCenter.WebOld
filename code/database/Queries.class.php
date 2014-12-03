@@ -254,7 +254,7 @@ class Queries {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtInsertVideo == null) {
             $sql = "insert into video("
-                    . "title, plot, mpaa, release_date, url, path, filetype, media_type, "
+                    . "title, plot, mpaa, year, url, path, filetype, media_type, "
                     . "metadata_last_modified_date, poster_last_modified_date, video_source_path, "
                     . "video_source_url, running_time_seconds, sd_poster_url, hd_poster_url)" 
                     
@@ -301,7 +301,7 @@ class Queries {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtUpdateVideo == null) {
             $sql = "update video set "
-                    . "title = :title, plot=:plot, mpaa=:mpaa, release_date=:year, url=:url, path=:path, filetype=:fileType, "
+                    . "title = :title, plot=:plot, mpaa=:mpaa, year=:year, url=:url, path=:path, filetype=:fileType, "
                     . "media_type=:mediaType, metadata_last_modified_date= :metadataModifiedDate, poster_last_modified_date = :posterModifiedDate, video_source_path=:videoSourcePath, video_source_url=:videoSourceUrl, running_time_seconds=:runningTimeSeconds, "
                     . "sd_poster_url=:sdPosterUrl, hd_poster_url=:hdPosterUrl "
                     . "where video_id = :videoId";
@@ -312,7 +312,7 @@ class Queries {
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":plot", $plot);
         $stmt->bindParam(":mpaa", $mpaa);
-        $stmt->bindParam(":year", $year);
+        $stmt->bindParam(":year", $year, PDO::PARAM_INT);
         $stmt->bindParam(":url", $url);
         $stmt->bindParam(":path", $videoPath);
         $stmt->bindParam(":fileType", $fileType);

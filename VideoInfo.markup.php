@@ -28,7 +28,11 @@
         </div>
         <div class="col-md-9">
             <h1 class="text-center"><?php echo $video->title; ?></h1>
-            Rating: <?php echo $video->mpaa; ?>
+            <div class="text-center full-width">
+                <b><?php echo $video->mpaa; ?></b>&nbsp;&nbsp;               
+                <b><?php echo $video->year; ?></b>
+
+            </div>
             <br/> <br/><?php echo $video->plot; ?>
         </div>
     </div>

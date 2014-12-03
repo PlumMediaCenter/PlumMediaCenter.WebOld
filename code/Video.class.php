@@ -114,7 +114,10 @@ abstract class Video {
             $video->runtime = intval($v->running_time_seconds);
             $video->plot = $v->plot;
             $video->mpaa = $v->mpaa;
-            $video->year = $v->release_date;
+            $video->year = intval($v->year);
+            if ($video->year === 0) {
+                $video->year = null;
+            }
             return $video;
         } catch (Exception $e) {
             return false;
@@ -335,7 +338,7 @@ abstract class Video {
     }
 
     function getSdPosterPath() {
-        return Video::GetVideoSdPosterPath($this->fullPath);
+         return $this->getFullPathToContainingFolder() . "folder.sd.jpg";
     }
 
     function getHdPosterPath() {
@@ -484,6 +487,9 @@ abstract class Video {
         //make sure this video has the latest metadata loaded
         $this->loadMetadata();
         $videoId = $this->getVideoId();
+        if ($this->year === 0 || $this->year === null) {
+            $k = 2;
+        }
         //if this is a video that does not yet exist in the database, create a new video
         if ($videoId === -1) {
             $success = Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->getUrl(), $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->getPosterLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->getActualSdPosterUrl(), $this->getActualHdPosterUrl());
@@ -561,12 +567,12 @@ abstract class Video {
             return Video::NoMetadata;
         }
     }
-    
-    protected function getPosterLastModifiedDate(){
-        if($this->posterExists()){
+
+    protected function getPosterLastModifiedDate() {
+        if ($this->posterExists()) {
             $posterPath = $this->getPosterPath();
             return getLastModifiedDate($posterPath);
-        }else{
+        } else {
             return null;
         }
     }
@@ -729,21 +735,26 @@ abstract class Video {
         return $b->rank > $a->rank;
     }
 
-    public static function PrepareVideosForJsonification($videos) {
+    public static function PrepareVideosForJsonification($videos, $deep = false) {
         foreach ($videos as $video) {
             $video->prepForJsonification();
             unset($video->actorList);
 
             if ($video->mediaType === Enumerations::MediaType_TvShow) {
-                unset($video->episodes);
-                unset($video->seasons);
-                unset($video->episodeCount);
+                if ($deep == false) {
+                    unset($video->episodes);
+                    unset($video->seasons);
+                    unset($video->episodeCount);
+                }else{
+                    foreach($video->episodes as $episode){
+                        $episode->prepForJsonification();
+                    }
+                }
             }
         }
         return $videos;
     }
-    
-   
+
 }
 
 ?>

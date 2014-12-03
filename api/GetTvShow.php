@@ -10,7 +10,7 @@ $videoId = (isset($_GET["videoId"])) ? $_GET["videoId"] : -1;
 $show = Video::GetVideo($videoId);
 $show->loadEpisodesFromDatabase();
 $videos = array_merge([$show], $show->episodes);
-Video::PrepareVideosForJsonification($videos);
+Video::PrepareVideosForJsonification($videos, true);
 header('Content-Type: application/json');
 
 echo json_encode($show, JSON_PRETTY_PRINT);

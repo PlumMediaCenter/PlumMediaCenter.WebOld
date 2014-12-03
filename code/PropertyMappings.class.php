@@ -22,7 +22,7 @@ class PropertyMappings {
         "video_id" => ["name" => "videoId", "dataType" => "integer"],
         "running_time_seconds" => ["name" => "runtime", "dataType" => "integer"],
         "poster_last_modified_date" => "posterModifiedDate",
-        "release_date" => "year",
+        "year" => ["name" => "year", "dataType" => "integer"],
         "video_source_url" => null,
         "video_source_path" => null,
         "metadata_last_modified_date" => null,
@@ -40,7 +40,10 @@ class PropertyMappings {
                     if (is_array($colMapping)) {
                         $newColumnName = $colMapping["name"];
                         if ($colMapping["dataType"] === 'integer') {
-                            $value = intval($value);
+                            //converting null to int results in zero, which is NOT the same as null 
+                            if ($value != null) {
+                                $value = intval($value);
+                            }
                         }
                     } else {
                         $newColumnName = $colMapping;
