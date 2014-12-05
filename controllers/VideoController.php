@@ -229,5 +229,28 @@ class VideoController {
             return true;
         }
     }
+    
+     /**
+     * Deletes any videos that are not in the list of videos to keep.
+     * @param int[] $videoIdsToKeep - the list of videoIds to keep. Any video not in this list will be deleted.
+     * @return boolean - true if successful, false if failure
+     */
+    public static function DeleteVideos($videoIdsToDelete) {
+        $inStmt = DbManager::GenerateInStatement($videoIdsToDelete, false);
+        $inStmt = (strlen($inStmt) != false) ? "where video_id $inStmt" : "";
+        //if the statement got messed up at all, stop the query right here
+        if (strlen($inStmt) < 1 || $inStmt == '' || strlen($inStmt) == false) {
+            return false;
+        }
+        //delete all references to this video in the following tables: tv_episode, video, watch_video
+        $sql = "delete from watch_video $inStmt";
+        $success = DbManager::NonQuery($sql);
+        $sql1 = "delete from tv_episode $inStmt";
+        $success = $success && DbManager::NonQuery($sql1);
+        $sql2 = "delete from video $inStmt";
+        $success = $success && DbManager::NonQuery($sql2);
+        return $success;
+    }
+
 
 }

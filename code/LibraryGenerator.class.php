@@ -1,6 +1,8 @@
 <?php
 
 include_once('database/Queries.class.php');
+include_once('../controllers/VideoController.php');
+
 include_once('Movie.class.php');
 
 class LibraryGenerator {
@@ -43,7 +45,7 @@ class LibraryGenerator {
             }
         }
         //delete all of the videos that are no longer present on the file system
-        Queries::DeleteVideos($deletedVideoIds);
+        VideoController::DeleteVideos($deletedVideoIds);
         //return the list of videos that were NOT deleted
         return $nonDeletedMovies;
     }
