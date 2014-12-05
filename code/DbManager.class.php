@@ -113,11 +113,14 @@ class DbManager {
             return true;
         }
     }
-    
-    public static function GetAllClassQuery($sql){
+
+    public static function GetAllClassQuery($sql) {
         $pdo = DbManager::getPdo();
         $stmt = $pdo->prepare($sql);
-        $stmt->execute();
+        $args = func_get_args();
+        //remove the first argument, which is the $sql stmt
+        array_shift($args);
+        $stmt->execute($args);
         return DbManager::FetchAllClass($stmt);
     }
 
@@ -253,22 +256,8 @@ class DbManager {
      * @param type $list
      * @return type
      */
-    public static function GenerateInStatement($list, $wrapEachWithQuotes = true) {
-        $pdo = DbManager::getPdo();
-        $str = '';
-        $notFirstTime = false;
-        foreach ($list as $item) {
-            if ($notFirstTime == true) {
-                $str .= ",";
-            }
-            $quoted = $pdo->quote($item);
-            if ($wrapEachWithQuotes === false) {
-                $quoted = substr($quoted, 1, -1);
-            }
-            $str .=$quoted;
-            $notFirstTime = true;
-        }
-        return $str;
+    public static function GenerateInStatement($list, $wrapInQuotes = true) {
+        return DbManager::InOrNotIn($list, true, true, $wrapInQuotes);
     }
 
     /**
@@ -278,10 +267,16 @@ class DbManager {
      * @param type $inLength
      * @return boolean|string - false if failure, the in stmt if success
      */
-    public static function NotIn($list, $wrapInQuotes = null, $inLength = 1000) {
+    public static function GenerateNotInStatement($list, $wrapInQuotes = null, $inLength = 1000) {
+        return DbManager::InOrNotIn($list, false, false, $wrapInQuotes, $inLength);
+    }
+
+    public static function InOrNotIn($list, $useInInsteadOfNotIn = true, $useOrInsteadOfAnd = true, $wrapInQuotes = false, $inLength = 1000) {
         if (count($list) == 0) {
             return false;
         }
+        $inNotIn = $useInInsteadOfNotIn ? ' in ' : ' not in ';
+        $andOr = $useOrInsteadOfAnd ? ' or ' : ' and ';
         $q = $wrapInQuotes == true ? "'" : "";
         $lists = [];
         $listIndex = 0;
@@ -297,12 +292,12 @@ class DbManager {
         }
 
         $s = "";
-        $and = "";
+        $actualAndOr = "";
         foreach ($lists as $sizedList) {
             if (count($sizedList) > 0) {
                 //join all of the items together into an IN statement
-                $s .= "$and not in($q" . implode("$q,$q", $sizedList) . "$q)";
-                $and = " and";
+                $s .= "$actualAndOr $inNotIn($q" . implode("$q,$q", $sizedList) . "$q)";
+                $actualInNotIn = $inNotIn;
             }
         }
         return "$s ";

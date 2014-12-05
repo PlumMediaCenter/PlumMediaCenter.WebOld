@@ -139,6 +139,10 @@ class Library {
             $totalSuccess = $totalSuccess && $video->writeToDb();
             $libraryVideoIds[] = $video->getVideoId();
         }
+        foreach ($this->videos as $video) {
+            $totalSuccess = $totalSuccess && $video->writeToDb();
+            $libraryVideoIds[] = $video->getVideoId();
+        }
 
         //delete any videos from the database that are not in this library
         $totalSuccess = $totalSuccess && Queries::DeleteVideosNotInThisList($libraryVideoIds);

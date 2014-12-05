@@ -23,5 +23,5 @@ echo json_encode($result);
 $endSeconds = time();
 $length = $endSeconds - $startSeconds;
 
-file_put_contents(dirname(__FILE__) . '/generateTime.txt', "$length\n", FILE_APPEND);
+//file_put_contents(dirname(__FILE__) . '/generateTime.txt', "$length\n", FILE_APPEND);
 ?>

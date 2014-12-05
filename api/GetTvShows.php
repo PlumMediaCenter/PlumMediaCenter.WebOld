@@ -1,14 +1,17 @@
 <?php
 
 $basePath = dirname(__FILE__) . "/../";
-include_once($basePath . "code/DbManager.class.php");
-include_once($basePath . "code/Enumerations.class.php");
-include_once($basePath . "code/Library.class.php");
+include_once($basePath . "controllers/VideoController.php");
 
+$videoIds = isset($_GET['videoIds']) ? $_GET['videoIds'] : '';
+if (strlen($videoIds) === 0) {
+    $videoIds = [];
+} else {
+    $videoIds = explode(',', $videoIds);
+}
 
-$l = new Library();
-$movies = $l->loadTvShowsFromDatabase(false);
+$videos = VideoController::GetTvShows($videoIds);
 header('Content-Type: application/json');
 
-echo json_encode($movies, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
+echo json_encode($videos, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
 ?>

@@ -20,29 +20,29 @@ class TestDbManager extends UnitTestCase {
         DbManager::query("drop table test_movie");
     }
 
-    function testNotIn() {
+    function testGenerateNotInStatement() {
         $arr = [1];
-        $s = DbManager::NotIn($arr, false, 1);
+        $s = DbManager::GenerateNotInStatement($arr, false, 1);
         $this->assertEqual(" not in(1) ", $s);
 
         $arr = [1, 2];
-        $s = DbManager::NotIn($arr, false, 1);
+        $s = DbManager::GenerateNotInStatement($arr, false, 1);
         $this->assertEqual(" not in(1) and not in(2) ", $s);
 
         $arr = [1, 2, 3, 4, 5];
-        $s = DbManager::NotIn($arr, false, 2);
+        $s = DbManager::GenerateNotInStatement($arr, false, 2);
         $this->assertEqual(" not in(1,2) and not in(3,4) and not in(5) ", $s);
 
         $arr = [1, 2, 3, 4, 5];
-        $s = DbManager::NotIn($arr, false, 3);
+        $s = DbManager::GenerateNotInStatement($arr, false, 3);
         $this->assertEqual(" not in(1,2,3) and not in(4,5) ", $s);
 
         $arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        $s = DbManager::NotIn($arr, false, 10);
+        $s = DbManager::GenerateNotInStatement($arr, false, 10);
         $this->assertEqual(" not in(1,2,3,4,5,6,7,8,9,10) ", $s);
 
         $arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-        $s = DbManager::NotIn($arr, false, 10);
+        $s = DbManager::GenerateNotInStatement($arr, false, 10);
         $this->assertEqual(" not in(1,2,3,4,5,6,7,8,9,10) and not in(11) ", $s);
     }
 

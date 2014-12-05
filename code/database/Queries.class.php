@@ -35,7 +35,7 @@ class Queries {
     private static $statements = [];
 
     public static function GetTvShowFirstEpisode($tvShowVideoId) {
-        $notInStmt = DbManager::NotIn($videoIdsToKeep, false);
+        $notInStmt = DbManager::GenerateNotInStatement($videoIdsToKeep, false);
         $pdo = DbManager::getPdo();
         $sql = "delete from video where video_id $notInStmt";
         $stmt = $pdo->prepare($sql);
@@ -75,7 +75,7 @@ class Queries {
      * @return boolean - true if successful, false if failure
      */
     public static function DeleteVideosNotInThisList($videoIdsToKeep) {
-        $notInStmt = DbManager::NotIn($videoIdsToKeep, false);
+        $notInStmt = DbManager::GenerateNotInStatement($videoIdsToKeep, false);
         $notInStmt = (strlen($notInStmt) != false) ? "where video_id $notInStmt" : "";
 
         //delete all references to this video in the following tables: tv_episode, video, watch_video

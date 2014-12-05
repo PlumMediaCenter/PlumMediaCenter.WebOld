@@ -28,6 +28,15 @@ class PropertyMappings {
         "metadata_last_modified_date" => null,
         "path" => null
     ];
+    static $episodeMapping = [
+        "tv_show_video_id" => "tvShowVideoId",
+        "season_number" => ["name" => "seasonNumber", "dataType" => "integer"],
+        "episode_number" => ["name" => "episodeNumber", "dataType" => "integer"]
+    ];
+    
+    static function MapOne($row, $mapping){
+        return MapMany([$row], $mapping)[0];
+    }
 
     static function MapMany($rows, $mapping) {
         $results = [];

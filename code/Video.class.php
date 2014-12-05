@@ -261,6 +261,7 @@ abstract class Video {
     protected function getUrl() {
         $relativePath = str_replace($this->videoSourcePath, "", $this->fullPath);
         $url = $this->videoSourceUrl . $relativePath;
+        $url = Video::EncodeUrl($url);
         //encode the url and then restore the forward slashes and colons
         return $url;
     }
@@ -660,80 +661,6 @@ abstract class Video {
         return strcmp($video1->title, $video2->title);
     }
 
-    public static function getSearchSuggestions($search) {
-        $results = [];
-        $title = strtolower($search);
-
-        //split the title by spaces.
-        $parts = explode(' ', $search);
-        $trimmedParts = [];
-        //trim all spacing from the 
-        foreach ($parts as $part) {
-            //remove any extra spaces
-            $part = trim($part);
-            if (strlen($part) > 0) {
-                $trimmedParts[] = $part;
-            }
-        }
-
-        if (count($trimmedParts) == 0) {
-            return $results;
-        }
-
-        $sql = 'select video_id, title from video where (';
-        $or = '';
-        //construct the where clause
-        foreach ($trimmedParts as $part) {
-            $sql = $sql . $or . "lower(title) like '%$title%'";
-            $or = ' or ';
-        }
-        $sql = $sql . ') and media_type not like \'' . Enumerations::MediaType_TvEpisode . '\'';
-        $matches = DbManager::query($sql);
-
-        //rank each result by how many times each part of the search string appears in the title of each video
-        foreach ($matches as $match) {
-            $match->rank = 0;
-            $rank = 0;
-            $title = strtolower($match->title);
-            foreach ($trimmedParts as $part) {
-                $rank = $rank + substr_count($title, $part);
-            }
-            $match->rank = $rank;
-        }
-
-        usort($matches, array('Video', 'SearchCmp'));
-        foreach ($matches as $match) {
-            $match->videoId = $match->video_id;
-            unset($match->video_id);
-        }
-        return $matches;
-    }
-
-    public static function searchByTitle($search) {
-        $suggestions = Video::getSearchSuggestions($search);
-        $videoIds = [];
-        foreach ($suggestions as $suggestion) {
-            $videoIds[] = $suggestion->videoId;
-        }
-
-        $videos = [];
-        //load each video. Yes this is very inefficient, but for now it works...
-        foreach ($videoIds as $videoId) {
-            $video = Video::GetVideo($videoId);
-            if ($video) {
-                if ($video->mediaType === Enumerations::MediaType_TvShow) {
-                    $video->loadEpisodesFromDatabase();
-                }
-                $videos[] = $video;
-            }
-        }
-
-        return $videos;
-    }
-
-    public static function SearchCmp($a, $b) {
-        return $b->rank > $a->rank;
-    }
 
     public static function PrepareVideosForJsonification($videos, $deep = false) {
         foreach ($videos as $video) {

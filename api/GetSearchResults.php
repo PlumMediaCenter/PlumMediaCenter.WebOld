@@ -1,10 +1,9 @@
 <?php
-require_once(dirname(__FILE__) . '/../code/Video.class.php');
+
+require_once(dirname(__FILE__) . '/../controllers/VideoController.php');
 
 $title = isset($_GET["title"]) ? $_GET["title"] : '';
-$videos = Video::searchByTitle($title);
-$videos = Video::PrepareVideosForJsonification($videos, false);
-header('Content-Type: application/json');   
+$videos = VideoController::SearchByTitle($title);
+header('Content-Type: application/json');
 echo json_encode($videos);
-
 ?>
