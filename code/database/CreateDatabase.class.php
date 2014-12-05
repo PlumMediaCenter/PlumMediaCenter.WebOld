@@ -230,7 +230,10 @@ class CreateDatabase {
         DbManager::NonQuery('alter table video drop column release_date');
         //delete any duplicate video records. assume the videos with lower video ids are the originals
         $videoIds = DbManager::singleColumnQuery('select v1.video_id from video v1, video v2 where v1.path = v2.path and v1.video_id > v2.video_id');
-        VideoController::DeleteVideos($videoIds);
+        //if we found some dupes, delete them
+        if (count($videoIds) > 0) {
+            VideoController::DeleteVideos($videoIds);
+        }
         //update the table to no longer allow duplicates
         DbManager::NonQuery('alter table video modify column path varchar(767) unique not null');
     }
