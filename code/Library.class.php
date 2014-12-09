@@ -140,10 +140,10 @@ class Library {
             $libraryVideoIds[] = $video->getVideoId();
         }
       
-
+        $deleteOtherVideosSuccess =  Queries::DeleteVideos($libraryVideoIds, true);
         //delete any videos from the database that are not in this library
-        $totalSuccess = $totalSuccess && Queries::DeleteVideosNotInThisList($libraryVideoIds);
-
+        $totalSuccess = $totalSuccess && $deleteOtherVideosSuccess;
+        
         //return success or failure. If at least one item failed, this will be returned as a failure
         return $totalSuccess;
     }

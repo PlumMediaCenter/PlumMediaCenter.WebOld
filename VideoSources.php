@@ -5,7 +5,7 @@ include_once("code/database/Queries.class.php");
 
 //if the delete source button was pressed, delete this video source
 if (isset($_POST["deleteSource"]) && strlen($_POST["deleteSource"]) > 0) {
-    Queries::deleteVideoSource($_POST["deleteSource"]);
+    Queries::DeleteVideoSource($_POST["deleteSource"]);
 }
 
 //if the add/edit source button was pressed, add/edit this video source

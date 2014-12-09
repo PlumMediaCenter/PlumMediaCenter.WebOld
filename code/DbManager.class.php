@@ -62,7 +62,7 @@ class DbManager {
      * @param string $dbName - the name of the database
      * @return PDO
      */
-    public static function getPdo($host = null, $username = null, $password = null, $dbName = null) {
+    public static function GetPdo($host = null, $username = null, $password = null, $dbName = null) {
         if ($host == null || $username == null) {
             //if the parameters were provided, return a one time pdo that is not the singleton
             if (!self::$instance) {
@@ -98,13 +98,16 @@ class DbManager {
 
     /**
      * Execute an sql statement without getting a return value
-     * @param string $sql - the query to execute
-     * @return boolean success or failure
+     * @param type $sql
+     * @param args  - any additional arguments passed to this function will be bound to the statement
      */
-    public static function NonQuery($sql, $host = null, $username = null, $password = null, $dbName = null) {
-        $pdo = DbManager::getPdo($host, $username, $password, $dbName);
+    public static function NonQuery($sql) {
+        $pdo = DbManager::getPdo();
         $stmt = $pdo->prepare($sql);
-        $success = $stmt->execute();
+        $args = func_get_args();
+        //remove the first argument, which is the $sql stmt
+        array_shift($args);
+        $success = $stmt->execute($args);
 
         //if the stmt failed execution, exit failure
         if ($success === false) {
@@ -114,6 +117,12 @@ class DbManager {
         }
     }
 
+    /**
+     * Assume that each row is a class. return the results as an array of classes
+     * @param type $sql
+     * @param args  - any additional arguments passed to this function will be bound to the statement
+     * @return type
+     */
     public static function GetAllClassQuery($sql) {
         $pdo = DbManager::getPdo();
         $stmt = $pdo->prepare($sql);
@@ -124,7 +133,7 @@ class DbManager {
         return DbManager::FetchAllClass($stmt);
     }
 
-    public static function query($sql, $host = null, $username = null, $password = null, $dbName = null) {
+    public static function Query($sql, $host = null, $username = null, $password = null, $dbName = null) {
         $pdo = DbManager::getPdo($host, $username, $password, $dbName);
         //if the pdo object could not be found, cancel the query gracefully
         if ($pdo == null) {
@@ -141,8 +150,20 @@ class DbManager {
         }
     }
 
-    public static function singleColumnQuery($sql, $host = null, $username = null, $password = null, $dbName = null) {
-        $result = DbManager::query($sql, $host, $username, $password, $dbName);
+    /**
+     * @param type $sql
+     * @param args  - any additional arguments passed to this function will be bound to the statement
+     * @return type
+     */
+    public static function SingleColumnQuery($sql) {
+        $pdo = DbManager::getPdo();
+        $stmt = $pdo->prepare($sql);
+        $args = func_get_args();
+        //remove the first argument, which is the $sql stmt
+        array_shift($args);
+        $stmt->execute($args);
+
+        $result = DbManager::FetchAllClass($stmt);
         if ($result == false) {
             return false;
         } else {
@@ -163,7 +184,7 @@ class DbManager {
      * @param string $sql - the query to execute
      * @return array|boolean - the first and only row in a single row query, or false if rownum <> 1
      */
-    public static function queryGetSingleRow($sql, $host = null, $username = null, $password = null, $dbName = null) {
+    public static function QueryGetSingleRow($sql, $host = null, $username = null, $password = null, $dbName = null) {
         $results = DbManager::query($sql, $host, $username, $password, $dbName);
         if (count($results) === 1) {
             return $results[0];

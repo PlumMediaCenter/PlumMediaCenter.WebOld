@@ -681,6 +681,21 @@ abstract class Video {
         }
         return $videos;
     }
+    
+    public static function DeleteMissingVideos(){
+        $minimalVideos = DbManager::GetAllClassQuery('select video_id, path from video');
+        
+        $deletedVideoIds = [];
+        foreach($minimalVideos as $minimalVideo){
+            //if this file path no longer exists, delete it
+            if(!file_exists($minimalVideo->path)){
+                $deletedVideoIds[] = $minimalVideo->video_id;
+            }
+        }
+        
+        //delete any videos that no longer exist on the file system
+        Queries::DeleteVideos($deletedVideoIds);
+    }
 
 }
 
