@@ -137,7 +137,6 @@ class DbManager {
         $pdo = DbManager::getPdo($host, $username, $password, $dbName);
         //if the pdo object could not be found, cancel the query gracefully
         if ($pdo == null) {
-            writeToLog("Could not load the pdo object using host=$host username=$username password=***** dbName = $dbName");
             return [];
         }
         $stmt = $pdo->prepare($sql);

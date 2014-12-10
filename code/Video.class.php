@@ -661,27 +661,6 @@ abstract class Video {
         return strcmp($video1->title, $video2->title);
     }
 
-
-    public static function PrepareVideosForJsonification($videos, $deep = false) {
-        foreach ($videos as $video) {
-            $video->prepForJsonification();
-            unset($video->actorList);
-
-            if ($video->mediaType === Enumerations::MediaType_TvShow) {
-                if ($deep == false) {
-                    unset($video->episodes);
-                    unset($video->seasons);
-                    unset($video->episodeCount);
-                }else{
-                    foreach($video->episodes as $episode){
-                        $episode->prepForJsonification();
-                    }
-                }
-            }
-        }
-        return $videos;
-    }
-    
     public static function DeleteMissingVideos(){
         $minimalVideos = DbManager::GetAllClassQuery('select video_id, path from video');
         

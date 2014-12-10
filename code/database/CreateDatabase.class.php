@@ -50,7 +50,6 @@ class CreateDatabase {
             $success = $dbh->exec("GRANT ALL ON `$db`.* TO '$user'@'192.168.1.%';");
             $success = $dbh->exec("FLUSH PRIVILEGES;");
         } catch (PDOException $e) {
-            writeToLog($e);
             //die("DB ERROR: " . $e->getMessage());
             return false;
         }

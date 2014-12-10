@@ -60,6 +60,10 @@ class Queries {
      * @return type
      */
     public static function DeleteVideos($videoIds, $notIn = false) {
+        //if the video list is empty OR is not a valid array, return immediately
+        if (is_array($videoIds) === false || count($videoIds) === 0) {
+            return;
+        }
         if ($notIn) {
             $inOrNotIn = DbManager::GenerateNotInStatement($videoIds, false);
         } else {
@@ -907,7 +911,6 @@ class Queries {
     private static function LogSql($sql, $bSuccess) {
         if (config::$logQueries == true) {
             $success = ($bSuccess == true) ? "<span style='color: green;font-weight:bold;'>Success</span>" : "<span style='color:red;font-weight:bold;'>Failure</span>";
-            writeToLog("Query: $success: $sql");
         }
     }
 
@@ -917,7 +920,6 @@ class Queries {
             ob_start();
             $success = ($bSuccess == true) ? "<span style='color: green;font-weight:bold;'>Success</span>" : "<span style='color:red;font-weight:bold;'>Failure</span>";
             $stmt->debugDumpParams();
-            writeToLog("Query: $success: " . ob_get_contents());
             ob_end_clean();
         }
     }

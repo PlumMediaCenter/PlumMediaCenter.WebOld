@@ -57,7 +57,6 @@ function getVideosFromDir($dir) {
     try {
         $arr = scandir($dir);
     } catch (Exception $e) {
-        writeToLog($e);
         //return an empty list of videos
         return [];
     }
@@ -141,29 +140,9 @@ function saveImageFromUrl($imageUrl, $imageDest) {
     return false;
 }
 
-function writeToLog($message) {
-//    //format the message to not have any line breaks
-//    $message = str_replace("\n", " ", $message);
-//    $logPath = dirname(__FILE__) . "/../log.txt";
-//    //get current time
-//    $t = date("Y-m-d H:i:s");
-//    //get time since last log
-//    $microtime = microtime(true);
-//    global $microtimeOfLastLog;
-//    if ($microtimeOfLastLog == null) {
-//        $microtimeOfLastLog = $microtime;
-//    }
-//    $secondsSinceLastLog = round(($microtime - $microtimeOfLastLog), 4);
-//    //set the last log time to right now
-//    $microtimeOfLastLog = $microtime;
-//    $message = "$t -- $secondsSinceLastLog -- $message\n";
-//    error_log($message, 3, $logPath);
-}
-
 function clearLog() {
     $logPath = dirname(__FILE__) . "/../log.txt";
     file_put_contents($logPath, "");
-    writeToLog("Logfile cleared");
 }
 
 /**

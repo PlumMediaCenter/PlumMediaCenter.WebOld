@@ -127,32 +127,6 @@ class Library {
     }
 
     /**
-     * Forces every video loaded into memory in this library object to be written to the database. 
-     * Then any videos that are no longer in this library are removed from the database
-     */
-    public function writeToDb() {
-        //writes every video to the database. If it is a new video, it will automatically be added. If it is an existing
-        //video, it will be updated
-        $libraryVideoIds = [];
-        $totalSuccess = true;
-        foreach ($this->videos as $video) {
-            $thisVideoSuccess = $video->writeToDb();
-            $totalSuccess = $totalSuccess && $thisVideoSuccess ;
-            $libraryVideoIds[] = $video->getVideoId();
-        }
-      
-        //delete any videos from the database that are not in this library
-        $deleteOtherVideosSuccess =  Queries::DeleteVideos($libraryVideoIds, true);
-        $totalSuccess = $totalSuccess && $deleteOtherVideosSuccess;
-        
-        //delete any videos that don't exist anymore
-        Video::DeleteMissingVideos();
-        
-        //return success or failure. If at least one item failed, this will be returned as a failure
-        return $totalSuccess;
-    }
-
-    /**
      * Loads this library object totally from the filesystem. This means scanning each video source directory for 
      * videos. 
      */
@@ -176,7 +150,6 @@ class Library {
             $listOfAllFilesInSource = getVideosFromDir($source->location);
 
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
-                //writeToLog("New Movie: $fullPathToFile");
                 //create a new Movie object
                 $video = new Movie($source->base_url, $source->location, $fullPathToFile);
                 $this->movies[] = $video;
@@ -229,40 +202,6 @@ class Library {
         return true;
     }
 
-    /**
-     * Writes the entire library to a json file that can be consumed by any application that knows its form.
-     * @return boolean - success or failure
-     */
-    public function writeLibraryJson() {
-        //clear out any information in the video objects that doesn't need to be there
-        $this->prepareVideosForJsonification();
-        $this->sort();
-        //save the videos to a new object
-        $videoList = [];
-        $videoList["movies"] = $this->movies;
-        $videoList["tvShows"] = $this->tvShows;
-        
-        //delete the episodes list from every tv show since the api provides a way to get the episodes directly
-        foreach($this->tvShows as $show){
-            unset($show->episodes);
-            unset($show->seasons);
-        }
-        $videoJson = json_encode($videoList, JSON_PRETTY_PRINT);
-        $success = file_put_contents(dirname(__FILE__) . "/../api/library.json", $videoJson);
-        return $success;
-    }
-
-    /**
-     * Removes any information that the video class is storing that will not be helpful for
-     * the services consuming the video class outside of this server environment.
-     */
-    public function prepareVideosForJsonification() {
-        /* @var $video Video */
-        foreach ($this->videos as $video) {
-            $video->prepForJsonification();
-        }
-    }
-    
     public function sort(){
         
         //sort the movies and tv shows
@@ -276,31 +215,6 @@ class Library {
         } else {
             return true;
         }
-    }
-
-    /**
-     * Write information to log pertaining to the current status of this library. Logs things like number of new videos
-     */
-    public function logLibraryStatus() {
-        $newMovieCount = 0;
-        $newTvShowCount = 0;
-        $newTvEpisodeCount = 0;
-        foreach ($this->videos as $video) {
-            if ($video->isNew()) {
-                switch ($video->getMediaType()) {
-                    case Enumerations::MediaType_Movie:
-                        $newMovieCount++;
-                        break;
-                    case Enumerations::MediaType_TvShow:
-                        $newTvShowCount++;
-                        break;
-                    case Enumerations::MediaType_TvEpisode:
-                        $newTvEpisodeCount++;
-                        break;
-                }
-            }
-        }
-        writeToLog("Update Library Summary: $newMovieCount new Movies. $newTvShowCount new Tv Shows. $newTvEpisodeCount new Tv Episodes.");
     }
 
     /**
@@ -320,6 +234,33 @@ class Library {
             $stats->tvEpisodeCount = $counts->tvEpisodeCount;
         }
         return $stats;
+    }
+    
+    
+    /**
+     * Forces every video loaded into memory in this library object to be written to the database. 
+     * Then any videos that are no longer in this library are removed from the database
+     */
+    public function writeToDb() {
+        //writes every video to the database. If it is a new video, it will automatically be added. If it is an existing
+        //video, it will be updated
+        $libraryVideoIds = [];
+        $totalSuccess = true;
+        foreach ($this->videos as $video) {
+            $thisVideoSuccess = $video->writeToDb();
+            $totalSuccess = $totalSuccess && $thisVideoSuccess ;
+            $libraryVideoIds[] = $video->getVideoId();
+        }
+      
+        //delete any videos from the database that are not in this library
+        $deleteOtherVideosSuccess =  Queries::DeleteVideos($libraryVideoIds, true);
+        $totalSuccess = $totalSuccess && $deleteOtherVideosSuccess;
+        
+        //delete any videos that don't exist anymore
+        Video::DeleteMissingVideos();
+        
+        //return success or failure. If at least one item failed, this will be returned as a failure
+        return $totalSuccess;
     }
 
 }
