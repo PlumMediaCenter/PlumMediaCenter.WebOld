@@ -23,8 +23,7 @@ class CreateDatabase {
         '0.1.6' => 'db0_1_6',
         '0.1.7' => 'db0_1_7',
         '0.1.8' => 'db0_1_8',
-        '0.2.0' => 'db0_2_0',
-        '0.2.1' => 'db0_2_1'
+        '0.2.0' => 'db0_2_0'
     );
 
     function __construct($rootUsername, $rootPassword, $dbHost) {
@@ -224,18 +223,21 @@ class CreateDatabase {
     }
 
     function db0_2_0() {
-        DbManager::NonQuery('alter table video add column sd_poster_url varchar(2000)');
-        DbManager::NonQuery('alter table video add column hd_poster_url varchar(2000)');
-        DbManager::NonQuery('alter table video add column year int(4)');
-        DbManager::NonQuery('alter table video drop column release_date');
-       
         include_once(dirname(__FILE__) . "/../Video.class.php");
-
         //delete any videos that are no longer on the filesystem but are still in the database
         Video::DeleteMissingVideos();
-       
+        
+        //delete all videos that have previously acceptable invalid columns
+        $videoIds = DbManager::SingleColumnQuery('select video_id from video where path is null or url is null or sd_poster_url is null or hd_poster_url is null');
+        Queries::DeleteVideos($videoIds);
+
+        DbManager::NonQuery('alter table video add column sd_poster_url varchar(767) unique not null');
+        DbManager::NonQuery('alter table video add column hd_poster_url varchar(767) unique not null');
+        DbManager::NonQuery('alter table video add column year int(4)');
+        DbManager::NonQuery('alter table video drop column release_date');
         //update the table to no longer allow duplicates
         DbManager::NonQuery('alter table video modify column path varchar(767) unique not null');
+        DbManager::NonQuery('alter table video modify column url varchar(767) unique not null');
     }
 
 }

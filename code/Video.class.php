@@ -690,6 +690,8 @@ abstract class Video {
             //if this file path no longer exists, delete it
             if(!file_exists($minimalVideo->path)){
                 $deletedVideoIds[] = $minimalVideo->video_id;
+                echo json_encode($deletedVideoIds);
+                return;
             }
         }
         

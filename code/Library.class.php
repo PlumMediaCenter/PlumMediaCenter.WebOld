@@ -136,13 +136,17 @@ class Library {
         $libraryVideoIds = [];
         $totalSuccess = true;
         foreach ($this->videos as $video) {
-            $totalSuccess = $totalSuccess && $video->writeToDb();
+            $thisVideoSuccess = $video->writeToDb();
+            $totalSuccess = $totalSuccess && $thisVideoSuccess ;
             $libraryVideoIds[] = $video->getVideoId();
         }
       
-        $deleteOtherVideosSuccess =  Queries::DeleteVideos($libraryVideoIds, true);
         //delete any videos from the database that are not in this library
+        $deleteOtherVideosSuccess =  Queries::DeleteVideos($libraryVideoIds, true);
         $totalSuccess = $totalSuccess && $deleteOtherVideosSuccess;
+        
+        //delete any videos that don't exist anymore
+        Video::DeleteMissingVideos();
         
         //return success or failure. If at least one item failed, this will be returned as a failure
         return $totalSuccess;
