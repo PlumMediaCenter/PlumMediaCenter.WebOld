@@ -73,8 +73,10 @@ class Queries {
             $tvShowIn = DbManager::GenerateInStatement($tvShowIds);
             $episodeIds = DbManager::SingleColumnQuery("select video_id from tv_episode where tv_show_video_id $inOrNotIn");
 
-            //delete all of the episodes for this show
-            Queries::DeleteVideos($episodeIds);
+            if (count($tvShowIds) > 0) {
+                //delete all of the episodes for this show
+                Queries::DeleteVideos($episodeIds);
+            }
         } catch (Exception $e) {
             
         }
@@ -545,7 +547,7 @@ class Queries {
         $videoIds = DbManager::SingleColumnQuery("select video_id from video where video_source_path like ?", $location);
         $totalSuccess = true;
         $success = Queries::DeleteVideos($videoIds);
-        
+
         $totalSuccess = $totalSuccess && $success;
         $success = DbManager::NonQuery("delete from video_source where location = ?", $location);
         $totalSuccess = $totalSuccess && $success;

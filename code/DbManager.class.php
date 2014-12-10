@@ -164,7 +164,7 @@ class DbManager {
         $stmt->execute($args);
 
         $result = DbManager::FetchAllClass($stmt);
-        if ($result == false) {
+        if ($result === false) {
             return false;
         } else {
             $results = [];

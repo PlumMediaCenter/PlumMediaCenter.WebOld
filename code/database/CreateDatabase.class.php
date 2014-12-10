@@ -226,7 +226,6 @@ class CreateDatabase {
         include_once(dirname(__FILE__) . "/../Video.class.php");
         //delete any videos that are no longer on the filesystem but are still in the database
         Video::DeleteMissingVideos();
-        
         //delete all videos that have previously acceptable invalid columns
         $videoIds = DbManager::SingleColumnQuery('select video_id from video where path is null or url is null or sd_poster_url is null or hd_poster_url is null');
         Queries::DeleteVideos($videoIds);
