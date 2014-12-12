@@ -62,7 +62,7 @@ class Queries {
     public static function DeleteVideos($videoIds, $notIn = false) {
         //if the video list is empty OR is not a valid array, return immediately
         if (is_array($videoIds) === false || count($videoIds) === 0) {
-            return;
+            return true;
         }
         if ($notIn) {
             $inOrNotIn = DbManager::GenerateNotInStatement($videoIds, false);
@@ -547,7 +547,8 @@ class Queries {
      * @return boolean - true if successful, false if failure
      */
     public static function DeleteVideoSource($location) {
-        Queries::DeleteVideosInSource($location);
+        $totalSuccess = true;
+        $success = Queries::DeleteVideosInSource($location);
         $totalSuccess = $totalSuccess && $success;
         $success = DbManager::NonQuery("delete from video_source where location = ?", $location);
         $totalSuccess = $totalSuccess && $success;
@@ -558,8 +559,8 @@ class Queries {
     public static function DeleteVideosInSource($location) {
         //delete all videos that are referenced in this video source
         $videoIds = DbManager::SingleColumnQuery("select video_id from video where video_source_path like ?", $location);
-        $totalSuccess = true;
         $success = Queries::DeleteVideos($videoIds);
+        return $success;
     }
 
     public static function GetVideoCounts() {
