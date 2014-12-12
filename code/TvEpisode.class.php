@@ -83,8 +83,11 @@ class TvEpisode extends Video {
         $filename = pathinfo($this->fullPath, PATHINFO_FILENAME);
         $ext = pathinfo($this->fullPath, PATHINFO_EXTENSION);
         $filenameAndExt = "$filename.$ext";
-        //replace the 
-        return Video::EncodeUrl(str_replace($filenameAndExt, "$filename.$imgExt", $url));
+        //replace the video file name and extension with the image one.
+        $url = str_replace($filenameAndExt, "$filename.$imgExt", $url);
+        //replace the url encoded filename and extension with the image one
+        $url = str_replace(Video::EncodeUrl($filenameAndExt), "$filename.$imgExt", $url);
+        return Video::EncodeUrl($url);
     }
 
     function getPosterPath($imgExt = "jpg") {
