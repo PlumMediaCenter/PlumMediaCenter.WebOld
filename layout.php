@@ -7,6 +7,10 @@ include_once(dirname(__FILE__) . "/code/Enumerations.class.php");
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" sizes="57x57" href="img/apple-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="img/apple-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="img/apple-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="img/apple-icon-144x144.png" />
         <title><?php echo $title != null ? $title . '-' : ""; ?>Plum Media Center</title>
         <!--<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>-->
         <script type="text/javascript" src="lib/lightbox/js/jquery-1.11.0.min.js"></script>
