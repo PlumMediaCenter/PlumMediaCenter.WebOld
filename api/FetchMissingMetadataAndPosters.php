@@ -7,7 +7,7 @@ $result = (object) [];
 require_once(dirname(__FILE__) . '/../code/Library.class.php');
 
 $l = new Library();
-$result->successLoadingFromDatabase = $l->loadFromFilesystem();
+$result->successLoadingFromDatabase = $l->loadFromDatabase();
 /* @var $video Video   */
 foreach ($l->videos as $video) {
     //skip this video if it's not an object

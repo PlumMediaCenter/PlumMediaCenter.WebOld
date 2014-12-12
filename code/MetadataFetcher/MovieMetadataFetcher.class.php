@@ -115,8 +115,11 @@ class MovieMetadataFetcher extends MetadataFetcher {
             $trailers = $this->tmdb->movieTrailer($this->tmdbId);
             if (count($trailers)) {
                 $this->fetchSuccess = true;
-
-                $this->trailer = "http://www.youtube.com/watch?v=" . $trailers["youtube"][0]["source"];
+                if (count($trailers["youtube"]) > 0) {
+                    $this->trailer = "http://www.youtube.com/watch?v=" . $trailers["youtube"][0]["source"];
+                }else{
+                    $this->trailer = "";
+                }
             }
         }
     }
@@ -259,4 +262,5 @@ class MovieMetadataFetcher extends MetadataFetcher {
     }
 
 }
+
 ?>
