@@ -24,7 +24,10 @@ if (isset($_POST["editSource"])) {
     $baseUrl = $_POST["baseUrl"];
     $mediaType = $_POST["mediaType"];
     $securityType = $_POST["securityType"];
-    $success = Queries::updateVideoSource($originalLocation, $location, $baseUrl, $mediaType, $securityType);
+    //delete any videos that were in the original source....since that source has now been changed.
+    //Eventually we want to figure out a way to detect if a file has been moved.
+    Queries::DeleteVideosInSource($originalLocation);
+    $success = Queries::UpdateVideoSource($originalLocation, $location, $baseUrl, $mediaType, $securityType);
 }
 $p = new Page(__FILE__);
 $m = $p->getModel();

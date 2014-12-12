@@ -547,16 +547,19 @@ class Queries {
      * @return boolean - true if successful, false if failure
      */
     public static function DeleteVideoSource($location) {
-        //delete all videos that are referenced in this video source
-        $videoIds = DbManager::SingleColumnQuery("select video_id from video where video_source_path like ?", $location);
-        $totalSuccess = true;
-        $success = Queries::DeleteVideos($videoIds);
-
+        Queries::DeleteVideosInSource($location);
         $totalSuccess = $totalSuccess && $success;
         $success = DbManager::NonQuery("delete from video_source where location = ?", $location);
         $totalSuccess = $totalSuccess && $success;
 
         return $totalSuccess;
+    }
+
+    public static function DeleteVideosInSource($location) {
+        //delete all videos that are referenced in this video source
+        $videoIds = DbManager::SingleColumnQuery("select video_id from video where video_source_path like ?", $location);
+        $totalSuccess = true;
+        $success = Queries::DeleteVideos($videoIds);
     }
 
     public static function GetVideoCounts() {
