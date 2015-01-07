@@ -24,7 +24,8 @@ class CreateDatabase {
         '0.1.7' => 'db0_1_7',
         '0.1.8' => 'db0_1_8',
         '0.2.0' => 'db0_2_0',
-        '0.2.1' => 'db0_2_1'
+        '0.2.1' => 'db0_2_1',
+        '0.2.2' => 'db0_2_2'
     );
 
     function __construct($rootUsername, $rootPassword, $dbHost) {
@@ -237,6 +238,11 @@ class CreateDatabase {
         //update the table to no longer allow duplicates
         DbManager::NonQuery('alter table video modify column path varchar(767) unique not null');
         DbManager::NonQuery('alter table video modify column url varchar(767) unique not null');
+    }
+
+     function db0_2_2() {
+        DbManager::NonQuery('alter table video drop index sd_poster_url');
+        DbManager::NonQuery('alter table video drop index hd_poster_url');
     }
 
 }

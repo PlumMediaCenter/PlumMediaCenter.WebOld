@@ -662,9 +662,15 @@ abstract class Video {
     }
 
     public static function DeleteMissingVideos(){
-        $minimalVideos = DbManager::GetAllClassQuery('select video_id, path from video');
-        
         $deletedVideoIds = [];
+
+        //delete all videos that have a source that is no longer in the video_source table
+        $sourcelessVideos = DbManager::SingleColumnQuery('select video_id from video where video_source_path not in (select location from video_source)');
+
+        $deletedVideoIds = array_merge($deletedVideoIds, $sourcelessVideos);
+        
+        //delete all of the videos that are no longer on disc
+        $minimalVideos = DbManager::GetAllClassQuery('select video_id, path from video');
         foreach($minimalVideos as $minimalVideo){
             //if this file path no longer exists, delete it
             if(!file_exists($minimalVideo->path)){
