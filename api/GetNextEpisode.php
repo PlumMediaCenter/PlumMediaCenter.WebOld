@@ -1,7 +1,7 @@
 <?php
 
 include_once(dirname(__FILE__) . "/../code/TvShow.class.php");
-include_once(dirname(__FILE__) . "/../controllers/VideoController.php");
+include_once(dirname(__FILE__) . "/../code/controllers/VideoController.php");
 ;
 
 

@@ -1,9 +1,9 @@
 <?php
 
 $basePath = dirname(__FILE__) . "/../";
-include_once($basePath . "code/DbManager.class.php");
-include_once($basePath . "code/Enumerations.class.php");
-include_once($basePath . "code/Video.class.php");
+include_once($basePath . "DbManager.class.php");
+include_once($basePath . "Enumerations.class.php");
+include_once($basePath . "Video.class.php");
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -17,13 +17,18 @@ include_once($basePath . "code/Video.class.php");
  */
 class VideoController {
 
+    static function GetVideo($videoId) {
+        return VideoController::GetVideos([$videoId])[0];
+    }
+
     static function GetVideos($videoIds = [], $sort = true) {
         if (count($videoIds) === 0) {
             return [];
         }
-        $inStatement = "video_id " . DbManager::GenerateInStatement($videoIds, false) . " and ";
+        $inStatement = "video_id " . DbManager::GenerateInStatement($videoIds, false);
         $videoRows = DbManager::GetAllClassQuery(
-                        "select * from video");
+                        "select * from video where $inStatement");
+
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         if ($sort) {
             VideoController::SortVideosByTitle($videos);
@@ -229,8 +234,8 @@ class VideoController {
             return true;
         }
     }
-    
-     /**
+
+    /**
      * Deletes any videos that are not in the list of videos to keep.
      * @param int[] $videoIdsToKeep - the list of videoIds to keep. Any video not in this list will be deleted.
      * @return boolean - true if successful, false if failure
@@ -251,6 +256,5 @@ class VideoController {
         $success = $success && DbManager::NonQuery($sql2);
         return $success;
     }
-
 
 }

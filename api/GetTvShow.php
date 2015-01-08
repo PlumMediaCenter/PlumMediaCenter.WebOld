@@ -1,7 +1,7 @@
 <?php
 
 $basePath = dirname(__FILE__) . "/../";
-include_once($basePath . "controllers/VideoController.php");
+include_once($basePath . "code/controllers/VideoController.php");
 
 $videoId = (isset($_GET["videoId"])) ? $_GET["videoId"] : -1;
 $video = VideoController::GetTvShow($videoId);
@@ -9,3 +9,4 @@ header('Content-Type: application/json');
 echo json_encode($video, JSON_PRETTY_PRINT);
 ?>
 
+<a href="../../../../../\\192.168.1.9/www/PlumMediaCenter/controllers/VideoController.php"></a>

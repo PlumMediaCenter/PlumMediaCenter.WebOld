@@ -1,7 +1,7 @@
 <?php
 
 $basePath = dirname(__FILE__) . "/../";
-include_once($basePath . "controllers/VideoController.php");
+include_once($basePath . "code/controllers/VideoController.php");
 
 $videoIds = isset($_GET['videoIds']) ? $_GET['videoIds'] : '';
 if (strlen($videoIds) === 0) {

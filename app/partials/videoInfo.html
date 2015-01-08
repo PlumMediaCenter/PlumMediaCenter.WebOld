@@ -1,0 +1,75 @@
+<script type="text/javascript" src="lib/lightbox/js/lightbox.min.js"></script>
+<link rel="stylesheet" href="lib/lightbox/css/lightbox.css" />
+
+<div class="container">
+    <div class="row " style="margin-top:5px;">
+        <div class="col-md-3 text-center">
+            <div id="videoInfoMainPosterContainer">
+                <a href="{{vm.video.posterUrl}}" data-lightbox="poster">
+                    <img id="videoInfoMainPoster" ng-attr-src="{{vm.video.hdPosterUrl}}" >
+                </a>
+            </div>
+            <a id="videoInfoPlayBtn" ui-sref="Play(vm.video.videoId)" class="btn btn-primary">
+                <span class="glyphicon glyphicon-play"></span>&nbsp;Play
+            </a>
+        </div>
+        <div class="col-md-9">
+            <h1 class="text-center">{{vm.video.title}}</h1>
+            <div class="text-center full-width">
+                <b>{{vm.video.mpaa}}</b>&nbsp;&nbsp;               
+                <b>{{vm.video.year}}</b>
+
+            </div>
+            <br/> <br/>{{vm.video.plot}}
+        </div>
+    </div>
+    <br/>
+    <div class="row " ng-if="vm.episodes">
+        <div class="col-md-5" style="border:0px solid red;">
+            <table class='table'>
+                <tr>
+                    <th>Episode</th>
+                    <th style='display:none;'>VID</th>
+                    <th></th>
+                    <th style='display:none;'>Add To Playlist</th>
+                    <th>Title</th>
+                    <th>Progress</th>
+                </tr>
+                <tr ng-repeat="episode in vm.episodes" 
+                    ng-class="{'nextEpisodeRow': episode.videoId === vm.nextEpisode.videoId, 'selected': vm.selectedEpisode.videoId === episode.videoId}" 
+                    ng-click="vm.selectedEpisode = episode"
+                    class="episodeRow"
+                    style="border:1px solid black;">
+                    <td class="transparent">{{episode.episodeNumber}}</td>
+                    <td class="transparent" style='display:none;'>{{episode.videoId}}</td>
+                    <td class="transparent">
+                        <a class="btn btn-primary btn-sm" style="display:block;" ui-sref="play(episode.videoId)" title="Play">  
+                            <span class="glyphicon glyphicon-play"></span>
+                        </a>
+                    </td>
+                    <td class="transparent">{{episode.title}}</td>
+                    <td class="transparent">
+                        <div class="progressbar" >
+                            <div class="percentWatched" ng-attr-style="{{'width:' + episode.percentWatched + '%'}}">
+                            </div>
+                            <div class="percentWatchedText">{{episode.percentWatched}}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-7" style="border:0px solid red;">
+            <div id="episodeInfo" class="shadow" ng-class="{'hide': !vm.selectedEpisode}">
+                <h1 id="title" style="text-align:center;"></h1>
+                <img align="right" id="episodePoster" ng-attr-src="{{vm.selectedEpisode.sdPosterUrl}}"/>
+                <p>Season {{vm.selectedEpisode.seasonNumber}} Episode {{vm.selectedEpisode.episodeNumber}}
+                    <br/><b>Rating: {{vm.selectedEpisode.mpaa}} </b>
+                    <br/><b>Release Date: {{vm.selectedEpisode.releaseDate}}
+                </p>
+                <span style="font-weight:normal;">{{vm.selectedEpisode.plot}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+

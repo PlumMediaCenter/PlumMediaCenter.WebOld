@@ -1,9 +1,8 @@
-<?php include_once(dirname(__FILE__) . '/code/database/CreateDatabase.class.php'); ?>
 <div class="container">
     <div class="row">
         <div class="col-md-7">
             <br/>
-            <a onclick="generateLibrary();" class="btn btn-default">Generate/Update library</a>
+            <a ng-click="vm.generateLibrary()" class="btn btn-default">Generate/Update library</a>
             <br/>
             <br/>
             <a href='VideoSources.php' class="btn btn-default">Add/Remove Video Sources</a>
@@ -69,18 +68,6 @@
         });
     });
 
-    function generateLibrary() {
-        $("#generateLibraryModal").modal("show", true);
-        var $modalBody = $("#generateLibraryModal .modal-body");
-        $modalBody.html("Generating Library. <img src='img/ajax-loader.gif'/>");
-        $.ajax({url: "api/GenerateLibrary.php", dataType: "json", complete: function(result, status) {
-                if (status === "success") {
-                    $modalBody.html("Library has been successfully generated and is up to date.");
-                } else {
-                    $modalBody.html("There was an error generating library. Please see the <a href='Log.php'>log</a> for more information");
-                }
-            }
-        });
-    }
+   
 
 </script>

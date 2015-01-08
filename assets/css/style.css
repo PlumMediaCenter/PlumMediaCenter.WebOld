@@ -5,9 +5,25 @@
     Description:
         Purpose of the stylesheet follows.
 */
-html{
+html,body{
+    padding:0px;
+    margin:0px;
+}
+
+body{
+    width:100%;
     height:100%;
 }
+
+#bodyContent{
+    height: calc(100% - 51px);
+}
+
+#mainNavbar{
+    margin:0px;
+    border-radius: 0;
+}
+
 .brand{
     color:purple
 }
@@ -51,18 +67,6 @@ body{
 
 .radio{
     padding-left:0px;
-}
-
-.table-sort th.headerSortUp { 
-    background-image: url(../img/tablesort/asc.png); 
-} 
-.table-sort th.headerSortDown { 
-    background-image: url(../img/tablesort/desc.png); 
-} 
-.table-sort th{
-    cursor:pointer;
-    background-image: url(../img/tablesort/bg.png); 
-    padding-left:30px !important;
 }
 
 .videoRow .sd{
@@ -112,14 +116,24 @@ input[type=radio], label{
     border:0px solid black;
     width:500px;
     min-height:250px;
-    display:none;
     padding:20px;
     padding-top:7px;
 }
 #episodeInfo *{
     color:black;
 }
+.episodeRow{
+    cursor:pointer;
+    color:black;
+}
 
+.episodeRow:hover{
+    background-color: lightgrey;
+}
+.episodeRow.selected {
+    background-color: grey;
+    color: white;
+}
 .nextEpisodeRow{
     background-color: #ffcccc;
 }
@@ -197,11 +211,6 @@ input[type=radio], label{
     margin:0px;
     padding:0px;
 }
-
-.ui-icon.white { background-image: url(../lib/jquery-ui-1.10.3.custom/css/dark-hive/images/ui-icons_ffffff_256x240.png); }
-.ui-icon.red { background-image: url(../lib/jquery-ui-1.10.3.custom/css/dark-hive/images/ui-icons_a83300_256x240.png); }
-.ui-icon.green { background-image: url(../lib/jquery-ui-1.10.3.custom/css/dark-hive/images/ui-icons_4b8e0b_256x240.png); }
-
 
 #playbackFinished{
     width:100%;

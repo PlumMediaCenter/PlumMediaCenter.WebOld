@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html ng-app="app" ng-controller="BaseController as base">
+    <head>
+        <base href="http://localhost:8080/PlumMediaCenter/" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">	
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-title" content="PlumMediaCenter">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" sizes="57x57" href="img/apple-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="img/apple-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="img/apple-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="img/apple-icon-144x144.png" />
+        <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+        <title>{{base.globals.title}}</title>
+
+        <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+        <script type="text/javascript" src="lib/angular-ui-router/angular-ui-router.min.js"></script>
+        <script type="text/javascript" src="lib/angular-ui-bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
+
+        <script type="text/javascript" src="app/app.js"></script>     
+        <script type="text/javascript" src="app/routes.js"></script>
+        
+        <script type="text/javascript" src="app/controllers/BaseController.js"></script>       
+        <script type="text/javascript" src="app/controllers/HomeController.js"></script>
+        <script type="text/javascript" src="app/controllers/AdminController.js"></script>
+        <script type="text/javascript" src="app/controllers/VideoInfoController.js"></script>
+
+        <script type="text/javascript" src="app/services/globalsService.js"></script>
+        <script type="text/javascript" src="app/services/VideoService.js"></script>
+        <script type="text/javascript" src="app/services/apiService.js"></script>
+        
+        <script type="text/javascript" src="app/directives/videoTileDirective.js"></script>
+
+        <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="assets/css/style.css" rel="stylesheet">
+    </head>
+    <body>
+    <ng-include src="'app/partials/navbar.html'"></ng-include>
+    <div id="bodyContent">
+        <div ui-view></div>
+    </div>
+</body>
+</html>
