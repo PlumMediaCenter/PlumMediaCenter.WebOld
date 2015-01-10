@@ -1,9 +1,55 @@
-<div class="edit-video-source-container" ng-class="{'disabled-background': vm.loading}">
+<form name="form" novalidate class="edit-video-source-container form" ng-class="{
+            'disabled-background': vm.loading}">
     <div class="row">
         <div class="col-xs-3">Base File Path: </div>
         <div class="col-xs-9">                  
-            <input type="text" ng-model="vm.videoSource.location" ng-disabled="vm.loading" class="form-control" placeholder="ex: c:/videos/Movies/"/>
+            <input type="text" 
+                   name="path"
+                   ng-model="vm.videoSource.location" 
+                   ng-disabled="vm.loading" 
+                   class="form-control" 
+                   placeholder="ex: c:/videos/Movies/"
+                   required 
+                   path-exists-validator
+                   >
+            <span class="text-danger" ng-show="form.path.$error.pathExists">
+                Path does not exist on the server
+            </span>
+            <span class="text-success" ng-show="form.path.$valid">
+                Valid server path
+            </span>
+            <span ng-if="form.path.$pending">
+                <span class="loading"></span> Validating
+            </span>
+            <br/>
             <b>*NOTE: </b>This is a file path that the SERVER can see, not your local computer
+        </div>
+    </div>
+    <br/>
+    <div id="baseUrlRow" class="row" style="display:block;">
+        <div class="col-xs-3">Base URL: </div>
+        <div class="col-xs-9">                  
+            <input type="url" 
+                   name="baseUrl"
+                   ng-model="vm.videoSource.baseUrl" 
+                   ng-disabled="vm.loading"  
+                   class="form-control" 
+                   placeholder="ex: http://localhost/videos/movies/"
+                   url-exists-validator
+                   required/>
+            <span ng-if="form.baseUrl.$pending">
+                <span class="loading"></span> Validating
+            </span>
+            <span class="text-danger" ng-show="form.baseUrl.$error.urlExists">
+                This url does not exist
+            </span>
+            <span class="text-success" ng-show="form.baseUrl.$valid">
+                URL Exists
+            </span>
+            <br/>
+            <b>*NOTE: </b>This is a url that already exists. You must serve the videos over http using your web server.
+            <br/>
+            <br/>
         </div>
     </div>
     <div class="row">
@@ -11,7 +57,7 @@
         <div class="col-xs-3">Security Type: </div>
         <div class="col-xs-9">
             <label>
-                <input type="radio" name="securityType" ng-model="vm.videoSource.securityType"  ng-disabled="vm.loading"  ng-attr-value="{{enums.securityType.public}}">
+                <input type="radio" name="securityType" ng-model="vm.videoSource.securityType" ng-disabled="vm.loading" ng-attr-value="{{enums.securityType.public}}">
                 No Security</label>
             <!-- &nbsp;
             <input type="radio" id="securityTypePrivate" name="securityType"  value="<?php echo Enumerations::SecurityType_LoginRequired; ?>">
@@ -21,34 +67,40 @@
 
         </div>
     </div>
-    <div id="baseUrlRow" class="row" style="display:block;">
-        <div class="col-xs-3">Base URL: </div>
-        <div class="col-xs-9">                  
-            <input type="text" ng-model="vm.videoSource.baseUrl" ng-disabled="vm.loading"  class="form-control" placeholder="ex: http://localhost/videos/movies/"/>
-            <b>*NOTE: </b>This is a url that already exists. You must serve the videos over http using your web server.
-            <br/>
-            <br/>
-        </div>
-    </div>
     <div class="row">
         <div class="col-xs-3">Media Type: </div>
         <div class="col-xs-9">
             <label>
-                <input type="radio" ng-model="vm.videoSource.mediaType" ng-disabled="vm.loading" name="mediaType" ng-attr-value="{{enums.mediaType.movie}}">
+                <input type="radio" 
+                       ng-model="vm.videoSource.mediaType" 
+                       required 
+                       ng-disabled="vm.loading" 
+                       name="mediaType" 
+                       ng-attr-value="{{enums.mediaType.movie}}">
                 Directory full of movies
             </label>
             &nbsp;<br/>
             <label >
-                <input type="radio" ng-disabled="vm.loading" ng-model="vm.videoSource.mediaType" name="mediaType" ng-attr-value="{{enums.mediaType.show}}">
+                <input type="radio" 
+                       ng-disabled="vm.loading" 
+                       ng-model="vm.videoSource.mediaType" 
+                       name="mediaType" 
+                       ng-attr-value="{{enums.mediaType.show}}">
                 Directory full of Tv Shows (Each in its own tv show folder)
             </label>
         </div>
     </div>
+    <br/>
     <div class="row">
-        <div class="col-xs-12">
-            <span ng-show="vm.loading">
+        <div class="col-xs-12 text-center" >
+            <span ng-if="vm.loading">
                 <span class="loading"></span> Loading video source
             </span>
+            <a class="btn btn-warning" ng-click="vm.reset()">Cancel</a>
+            <button ng-if="vm.videoSource && !vm.loading" 
+               class="btn btn-success" 
+               ng-disabled="!form.$valid"
+               ng-click="vm.save()">{{!vm.videoSource.id?'Create new': 'Save updates'}}</button>
         </div>
     </div>
-</div>
+</form>

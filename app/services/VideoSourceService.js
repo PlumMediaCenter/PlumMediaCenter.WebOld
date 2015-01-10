@@ -12,8 +12,8 @@ angular.module('app').service('VideoSource', ['$http', '$q', function($http, $q)
             });
             return deferred.promise;
         };
-        
-          VideoSource.getById = function(id) {
+
+        VideoSource.getById = function(id) {
             var deferred = $q.defer();
             $http.get('api/GetVideoSourceById.php?id=' + id).success(function(data) {
                 deferred.resolve(data);
@@ -21,6 +21,14 @@ angular.module('app').service('VideoSource', ['$http', '$q', function($http, $q)
                 deferred.reject();
             });
             return deferred.promise;
+        };
+
+        VideoSource.save = function(videoSource) {
+            return $q(function(resolve, reject) {
+                $http.post('api/PostVideoSource.php', videoSource).then(function(result) {
+                    resolve(result.data);
+                }, reject);
+            });
         };
 
         return VideoSource;

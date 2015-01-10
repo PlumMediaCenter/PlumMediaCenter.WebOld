@@ -6,7 +6,6 @@ if (!$id) {
     throw new Exception('id was not provided');
 }
 
-sleep(3);
 $videoSources = Queries::GetVideoSourcesById([$id]);
 //if no sources were found, return a 404
 if (count($videoSources) != 1) {

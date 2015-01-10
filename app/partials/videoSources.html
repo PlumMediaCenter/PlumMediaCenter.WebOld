@@ -1,6 +1,6 @@
 <br/>    
 <br/>
-<a class="btn btn-success" ui-sref="editVideoSource({})">Add New Source</a>
+<a class="btn btn-success" ui-sref="editVideoSource({id:0})">Add New Source</a>
 <br/> 
 <br/>
 <table class="table table-hover table-bordered">
@@ -43,10 +43,7 @@
                 <div ui-view></div>
             </div>
             <div class="modal-footer">
-                <span style="color:red; float:left;" id="addEditMessage"></span>
                 <a class="btn btn-default" ui-sref="videoSources">Close</a>
-                <input id="addSourceBtn" type="submit" class="btn btn-primary" name="addSource" value="Save New">
-                <input id="editSourceBtn" type="submit" class="btn btn-primary" name="editSource" value="Save Edit">
             </div>
         </div>
     </div>

@@ -23,6 +23,15 @@ body{
     padding:10px;
 }
 
+
+
+.form input.ng-valid.ng-touched {
+   background-color: #dff0d8;
+}
+
+.form input.ng-invalid.ng-touched{
+    background-color: #f2dede;
+}
 .loading{
     background-image: url('../img/ajax-loader.gif');
     height:32px;

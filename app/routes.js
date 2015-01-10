@@ -17,7 +17,7 @@ angular.module('app')
                             controllerAs: 'vm'
                         })
                         .state('videoInfo', {
-                            url: '/videoInfo/:videoId',
+                            url: '/videoInfo/{videoId:int}',
                             templateUrl: 'app/partials/videoInfo.html',
                             controller: 'VideoInfoController',
                             controllerAs: 'vm'
@@ -29,7 +29,7 @@ angular.module('app')
                             controllerAs: 'vm'
                         })
                         .state('editVideoSource', {
-                            url: '/editVideoSource/:id',
+                            url: '/editVideoSource/{id:int}',
                             parent: 'videoSources',
                             templateUrl: 'app/partials/editVideoSource.html',
                             controller: 'EditVideoSourceController',
