@@ -3,6 +3,7 @@ angular.module('app').controller('VideoSourcesController', ['globals', 'VideoSou
         var vm = this;
         vm.editIsVisible = false;
         vm.deleteVideoSource = deleteVideoSource;
+        vm.refresh = loadVideoSources;
 
         globals.title = 'Video Sources';
         loadVideoSources();
