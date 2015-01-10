@@ -35,6 +35,12 @@ angular.module('app')
                             controller: 'EditVideoSourceController',
                             controllerAs: 'vm'
                         })
+                         .state('play', {
+                            url: '/play/{videoId:int}',
+                            templateUrl: 'app/partials/play.html',
+                            controller: 'PlayController',
+                            controllerAs: 'vm'
+                        })
             }])
 
         .run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams) {

@@ -1,5 +1,6 @@
 angular.module('app').service('globals', [function() {
         return {
-            pageTitle: 'PlumMediaCenter'
+            pageTitle: 'PlumMediaCenter',
+            hideNavbar: false
         };
     }]);

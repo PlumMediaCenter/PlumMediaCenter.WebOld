@@ -1,4 +1,4 @@
-angular.module('app').service('Video', ['$http', '$q', function($http, $q) {
+angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, _) {
         function Video() {
 
         }
@@ -13,11 +13,15 @@ angular.module('app').service('Video', ['$http', '$q', function($http, $q) {
 
         Video.getById = function(id) {
             var deferred = $q.defer();
-            $http.get('api/GetVideo.php?videoId=' + id).success(function(data) {
-                deferred.resolve(data);
-            }).error(function() {
-                deferred.reject(data);
-            });
+            if (!_.isNumber(id)) {
+                deferred.reject();
+            } else {
+                $http.get('api/GetVideo.php?videoId=' + id).success(function(data) {
+                    deferred.resolve(data);
+                }).error(function() {
+                    deferred.reject(data);
+                });
+            }
             return deferred.promise;
         };
 
@@ -30,7 +34,7 @@ angular.module('app').service('Video', ['$http', '$q', function($http, $q) {
             });
             return deferred.promise;
         };
-        
+
         Video.getNextEpisode = function(showId) {
             var deferred = $q.defer();
             $http.get('api/GetNextEpisode.php?videoId=' + showId).success(function(data) {
@@ -40,7 +44,7 @@ angular.module('app').service('Video', ['$http', '$q', function($http, $q) {
             });
             return deferred.promise;
         };
-        
-        
+
+
         return Video;
     }]);
