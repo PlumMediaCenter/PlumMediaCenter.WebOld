@@ -25,7 +25,11 @@
                     <span class="glyphicon glyphicon-edit"></span>
                 </a>
             </td>
-            <td class="text-center"><button class="btn btn-danger btn-sm deleteSource" title="Delete this video source"><span class="glyphicon glyphicon-trash"></span></button></td>
+            <td class="text-center">
+                <button class="btn btn-danger btn-sm deleteSource" title="Delete this video source" confirm-message="'Are you sure you want to delete this video source?'" confirm="vm.deleteVideoSource(videoSource.id)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+            </td>
         </tr>
         <?php } ?>
     </tbody>

@@ -2,12 +2,18 @@ angular.module('app').controller('VideoSourcesController', ['globals', 'VideoSou
     function(globals, VideoSource, notify) {
         var vm = this;
         vm.editIsVisible = false;
+        vm.deleteVideoSource = deleteVideoSource;
 
         globals.title = 'Video Sources';
+        loadVideoSources();
+        
+        function loadVideoSources() {
+            VideoSource.getAll().then(function(videoSources) {
+                vm.videoSources = videoSources;
+            });
+        }
 
-        VideoSource.getAll().then(function(videoSources) {
-            vm.videoSources = videoSources;
-        });
-
-
+        function deleteVideoSource(id) {
+            VideoSource.deleteById(id).then(loadVideoSources);
+        }
     }]);

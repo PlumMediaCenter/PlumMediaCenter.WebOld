@@ -559,19 +559,21 @@ class Queries {
      * @param string $location - the location used as the primary key to identify the video source to delete
      * @return boolean - true if successful, false if failure
      */
-    public static function DeleteVideoSource($location) {
+    public static function DeleteVideoSource($videoSourceId) {
         $totalSuccess = true;
-        $success = Queries::DeleteVideosInSource($location);
+        $success = Queries::DeleteVideosInSource($videoSourceId);
         $totalSuccess = $totalSuccess && $success;
-        $success = DbManager::NonQuery("delete from video_source where location = ?", $location);
+        $success = DbManager::NonQuery("delete from video_source where id = ?", $videoSourceId);
         $totalSuccess = $totalSuccess && $success;
 
         return $totalSuccess;
     }
 
-    public static function DeleteVideosInSource($location) {
+    public static function DeleteVideosInSource($videoSourceId) {
+        $path = Dbmanager::SingleColumnQuery('select location from video_source where id=?', $videoSourceId);
+        $path = $path[0];
         //delete all videos that are referenced in this video source
-        $videoIds = DbManager::SingleColumnQuery("select video_id from video where video_source_path like ?", $location);
+        $videoIds = DbManager::SingleColumnQuery("select video_id from video where video_source_path like ?", $path);
         $success = Queries::DeleteVideos($videoIds);
         return $success;
     }

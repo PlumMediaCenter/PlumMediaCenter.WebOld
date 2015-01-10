@@ -31,5 +31,13 @@ angular.module('app').service('VideoSource', ['$http', '$q', function($http, $q)
             });
         };
 
+        VideoSource.deleteById = function(id) {
+            return $q(function(resolve, reject) {
+                $http.delete('api/DeleteVideoSource.php', {data: {id: id}}).then(function(result) {
+                    resolve(result.data);
+                }, reject);
+            });
+        };
+
         return VideoSource;
     }]);
