@@ -25,7 +25,8 @@ class CreateDatabase {
         '0.1.8' => 'db0_1_8',
         '0.2.0' => 'db0_2_0',
         '0.2.1' => 'db0_2_1',
-        '0.2.2' => 'db0_2_2'
+        '0.2.2' => 'db0_2_2',
+        '0.3.0' => 'db0_3_0'
     );
 
     function __construct($rootUsername, $rootPassword, $dbHost) {
@@ -240,9 +241,13 @@ class CreateDatabase {
         DbManager::NonQuery('alter table video modify column url varchar(767) unique not null');
     }
 
-     function db0_2_2() {
+    function db0_2_2() {
         DbManager::NonQuery('alter table video drop index sd_poster_url');
         DbManager::NonQuery('alter table video drop index hd_poster_url');
+    }
+
+    function db0_3_0() {
+        DbManager::NonQuery('alter table video_source drop primary key, add column id int not null auto_increment primary key');
     }
 
 }

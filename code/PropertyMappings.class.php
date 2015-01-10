@@ -33,9 +33,17 @@ class PropertyMappings {
         "season_number" => ["name" => "seasonNumber", "dataType" => "integer"],
         "episode_number" => ["name" => "episodeNumber", "dataType" => "integer"]
     ];
-    
-    static function MapOne($row, $mapping){
-        return MapMany([$row], $mapping)[0];
+    static $videoSourceMapping = [
+        "id" => ["name" => "id", "dataType" => "integer"],
+        "base_url" => "baseUrl",
+        "media_type" => "mediaType",
+        "security_type" => "securityType",
+        "refresh_videos" => null
+    ];
+
+    static function MapOne($row, $mapping) {
+        $arr = PropertyMappings::MapMany([$row], $mapping);
+        return $arr[0];
     }
 
     static function MapMany($rows, $mapping) {

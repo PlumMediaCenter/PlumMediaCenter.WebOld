@@ -13,10 +13,30 @@ html,body{
 body{
     width:100%;
     height:100%;
+} 
+
+.disabled-background{
+    background-color: #FFF6F4;
+}
+
+.edit-video-source-container{
+    padding:10px;
+}
+
+.loading{
+    background-image: url('../img/ajax-loader.gif');
+    height:32px;
+    width:32px;
+    background-color: transparent;
+    display:inline-block;
+    margin:0;
+    padding: 0;
+    vertical-align: middle;
 }
 
 #bodyContent{
     height: calc(100% - 51px);
+    position:relative;
 }
 
 #mainNavbar{

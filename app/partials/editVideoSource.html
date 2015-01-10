@@ -1,0 +1,54 @@
+<div class="edit-video-source-container" ng-class="{'disabled-background': vm.loading}">
+    <div class="row">
+        <div class="col-xs-3">Base File Path: </div>
+        <div class="col-xs-9">                  
+            <input type="text" ng-model="vm.videoSource.location" ng-disabled="vm.loading" class="form-control" placeholder="ex: c:/videos/Movies/"/>
+            <b>*NOTE: </b>This is a file path that the SERVER can see, not your local computer
+        </div>
+    </div>
+    <div class="row">
+        <br/>
+        <div class="col-xs-3">Security Type: </div>
+        <div class="col-xs-9">
+            <label>
+                <input type="radio" name="securityType" ng-model="vm.videoSource.securityType"  ng-disabled="vm.loading"  ng-attr-value="{{enums.securityType.public}}">
+                No Security</label>
+            <!-- &nbsp;
+            <input type="radio" id="securityTypePrivate" name="securityType"  value="<?php echo Enumerations::SecurityType_LoginRequired; ?>">
+            <label for="securityTypePrivate">Login Required</label>-->
+            <br/>
+            <br/>
+
+        </div>
+    </div>
+    <div id="baseUrlRow" class="row" style="display:block;">
+        <div class="col-xs-3">Base URL: </div>
+        <div class="col-xs-9">                  
+            <input type="text" ng-model="vm.videoSource.baseUrl" ng-disabled="vm.loading"  class="form-control" placeholder="ex: http://localhost/videos/movies/"/>
+            <b>*NOTE: </b>This is a url that already exists. You must serve the videos over http using your web server.
+            <br/>
+            <br/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-3">Media Type: </div>
+        <div class="col-xs-9">
+            <label>
+                <input type="radio" ng-model="vm.videoSource.mediaType" ng-disabled="vm.loading" name="mediaType" ng-attr-value="{{enums.mediaType.movie}}">
+                Directory full of movies
+            </label>
+            &nbsp;<br/>
+            <label >
+                <input type="radio" ng-disabled="vm.loading" ng-model="vm.videoSource.mediaType" name="mediaType" ng-attr-value="{{enums.mediaType.show}}">
+                Directory full of Tv Shows (Each in its own tv show folder)
+            </label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <span ng-show="vm.loading">
+                <span class="loading"></span> Loading video source
+            </span>
+        </div>
+    </div>
+</div>

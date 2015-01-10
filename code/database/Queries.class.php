@@ -464,10 +464,23 @@ class Queries {
      * @return associative array of video sources
      */
     public static function GetVideoSources($type = null) {
-        $sql = "select location, base_url,  media_type, security_type, refresh_videos from video_source";
+        $sql = "select id, location, base_url,  media_type, security_type, refresh_videos from video_source";
         if ($type != null) {
             $sql .= " where media_type = '$type'";
         }
+        $sources = DbManager::query($sql);
+        Queries::LogSql($sql, $sources);
+        return $sources;
+    }
+
+    /**
+     * Gets an associative array of the video sources
+     * @return associative array of video sources
+     */
+    public static function GetVideoSourcesById($ids) {
+        $inStmt = DbManager::GenerateInStatement($ids);
+        $sql = "select id, location, base_url,  media_type, security_type, refresh_videos from video_source where id $inStmt";
+
         $sources = DbManager::query($sql);
         Queries::LogSql($sql, $sources);
         return $sources;

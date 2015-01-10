@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html ng-app="app" ng-controller="BaseController as base">
+<html ng-controller="BaseController as base">
     <head>
         <base href="http://localhost:8080/PlumMediaCenter/" />
 
@@ -16,31 +16,28 @@
 
         <title>{{base.globals.title}}</title>
 
-        <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+        <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="lib/pnotify/pnotify.custom.min.css" rel="stylesheet">
+
+        <script type="text/javascript" src="lib/jquery/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="lib/pnotify/pnotify.custom.min.js"></script>
+
+
+        <script type="text/javascript" src="lib/angular-1.3.8/angular.min.js"></script>
         <script type="text/javascript" src="lib/angular-ui-router/angular-ui-router.min.js"></script>
         <script type="text/javascript" src="lib/angular-ui-bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
 
-        <script type="text/javascript" src="app/app.js"></script>     
-        <script type="text/javascript" src="app/routes.js"></script>
-        
-        <script type="text/javascript" src="app/controllers/BaseController.js"></script>       
-        <script type="text/javascript" src="app/controllers/HomeController.js"></script>
-        <script type="text/javascript" src="app/controllers/AdminController.js"></script>
-        <script type="text/javascript" src="app/controllers/VideoInfoController.js"></script>
+        <script type="text/javascript" src="app/app.min.js"></script>     
 
-        <script type="text/javascript" src="app/services/globalsService.js"></script>
-        <script type="text/javascript" src="app/services/VideoService.js"></script>
-        <script type="text/javascript" src="app/services/apiService.js"></script>
-        
-        <script type="text/javascript" src="app/directives/videoTileDirective.js"></script>
-
-        <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="assets/css/style.css" rel="stylesheet">
-    </head>
+
+    </head>  
     <body>
     <ng-include src="'app/partials/navbar.html'"></ng-include>
-    <div id="bodyContent">
+    <div id="bodyContent"> 
         <div ui-view></div>
     </div>
+
+    <!--<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>-->
 </body>
 </html>

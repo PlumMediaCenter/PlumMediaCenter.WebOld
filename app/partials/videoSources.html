@@ -1,0 +1,53 @@
+<br/>    
+<br/>
+<a class="btn btn-success" ui-sref="editVideoSource({})">Add New Source</a>
+<br/> 
+<br/>
+<table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>Location</th>
+            <th>Media Type</th>
+            <th>Security Type</th>
+            <th>Base URL</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="pointer" ng-repeat="videoSource in vm.videoSources">
+            <td>{{videoSource.location}}</td>
+            <td>{{videoSource.mediaType}}</td>
+            <td>{{videoSource.securityType}}</td>
+            <td><a href='{{videoSource.baseUrl}}'>{{videoSource.baseUrl}}</a></td>
+            <td class="text-center">
+                <a class="btn btn-primary btn-sm editSource" title="Edit" ui-sref="editVideoSource({id: videoSource.id})">
+                    <span class="glyphicon glyphicon-edit"></span>
+                </a>
+            </td>
+            <td class="text-center"><button class="btn btn-danger btn-sm deleteSource" title="Delete this video source"><span class="glyphicon glyphicon-trash"></span></button></td>
+        </tr>
+        <?php } ?>
+    </tbody>
+</table>
+
+
+<div id="newSourceModal" class="modal" ng-class="{show: $state.includes('editVideoSource')}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close" ui-sref="videoSources"><span aria-hidden="true">&times;</span></a>
+                <h4 class="modal-title">Video Source</h4>
+            </div>
+            <div class="modal-body" style="padding:0px; margin:0px;">
+                <div ui-view></div>
+            </div>
+            <div class="modal-footer">
+                <span style="color:red; float:left;" id="addEditMessage"></span>
+                <a class="btn btn-default" ui-sref="videoSources">Close</a>
+                <input id="addSourceBtn" type="submit" class="btn btn-primary" name="addSource" value="Save New">
+                <input id="editSourceBtn" type="submit" class="btn btn-primary" name="editSource" value="Save Edit">
+            </div>
+        </div>
+    </div>
+</div>
