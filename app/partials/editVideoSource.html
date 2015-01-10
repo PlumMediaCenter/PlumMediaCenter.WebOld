@@ -1,4 +1,4 @@
-<form name="form" novalidate class="edit-video-source-container form" ng-class="{
+<form name="vm.form" novalidate class="edit-video-source-container form" ng-class="{
             'disabled-background': vm.loading}">
     <div class="row">
         <div class="col-xs-3">Base File Path: </div>
@@ -12,13 +12,13 @@
                    required 
                    path-exists-validator
                    >
-            <span class="text-danger" ng-show="form.path.$error.pathExists">
+            <span class="text-danger" ng-show="vm.form.path.$error.pathExists">
                 Path does not exist on the server
             </span>
-            <span class="text-success" ng-show="form.path.$valid">
+            <span class="text-success" ng-show="vm.form.path.$valid">
                 Valid server path
             </span>
-            <span ng-if="form.path.$pending">
+            <span ng-if="vm.form.path.$pending">
                 <span class="loading"></span> Validating
             </span>
             <br/>
@@ -35,16 +35,15 @@
                    ng-disabled="vm.loading"  
                    class="form-control" 
                    placeholder="ex: http://localhost/videos/movies/"
-                   url-exists-validator
                    required/>
             <span ng-if="form.baseUrl.$pending">
                 <span class="loading"></span> Validating
             </span>
-            <span class="text-danger" ng-show="form.baseUrl.$error.urlExists">
-                This url does not exist
+            <span class="text-danger" ng-show="!vm.form.baseUrl.$valid && !vm.form.$pristine">
+                URL is invalid
             </span>
-            <span class="text-success" ng-show="form.baseUrl.$valid">
-                URL Exists
+            <span class="text-success" ng-show="vm.form.baseUrl.$valid">
+                URL is valid
             </span>
             <br/>
             <b>*NOTE: </b>This is a url that already exists. You must serve the videos over http using your web server.
@@ -99,7 +98,7 @@
             <a class="btn btn-warning" ng-click="vm.reset()">Cancel</a>
             <button ng-if="vm.videoSource && !vm.loading" 
                class="btn btn-success" 
-               ng-disabled="!form.$valid"
+               ng-disabled="!vm.form.$valid"
                ng-click="vm.save()">{{!vm.videoSource.id?'Create new': 'Save updates'}}</button>
         </div>
     </div>

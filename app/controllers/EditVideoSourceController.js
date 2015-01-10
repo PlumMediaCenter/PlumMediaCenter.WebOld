@@ -21,11 +21,13 @@ angular.module('app').controller('EditVideoSourceController', ['$scope', 'global
 
         function reset() {
             vm.videoSource = vm.originalVideoSource;
+            vm.form.setPristine(true);
         }
 
         function save() {
             VideoSource.save(vm.videoSource).then(function(videoSource) {
                 vm.videoSource = videoSource;
+                 vm.form.setPristine(true);
             }, function() {
                 //handle the error
 
