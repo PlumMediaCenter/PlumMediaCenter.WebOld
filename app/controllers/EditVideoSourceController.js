@@ -1,4 +1,4 @@
-angular.module('app').controller('EditVideoSourceController', ['$scope', 'globals', 'VideoSource', '$stateParams','enums',
+angular.module('app').controller('EditVideoSourceController', ['$scope', 'globals', 'VideoSource', '$stateParams', 'enums',
     function($scope, globals, VideoSource, $stateParams, enums) {
         globals.title = 'Edit Video Source';
         var vm = this;
@@ -7,16 +7,20 @@ angular.module('app').controller('EditVideoSourceController', ['$scope', 'global
         vm.videoSource = {
             securityType: enums.securityType.public
         };
-        vm.originalVideoSource = angular.copy( vm.videoSource);
-        //if an id was provided, go look up the settings for that videoSource
-        if ($stateParams.id && $stateParams.id > 0) {
-            vm.loading = true;
-            VideoSource.getById($stateParams.id).then(function(videoSource) {
-                vm.videoSource = videoSource;
-                vm.originalVideoSource = angular.copy(videoSource);
-            }).finally(function() {
-                vm.loading = false;
-            });
+        vm.originalVideoSource = angular.copy(vm.videoSource);
+        loadVideoSource();
+
+        function loadVideoSource() {
+            //if an id was provided, go look up the settings for that videoSource
+            if ($stateParams.id && $stateParams.id > 0) {
+                vm.loading = true;
+                VideoSource.getById($stateParams.id).then(function(videoSource) {
+                    vm.videoSource = videoSource;
+                    vm.originalVideoSource = angular.copy(videoSource);
+                }).finally(function() {
+                    vm.loading = false;
+                });
+            }
         }
 
         function reset() {
@@ -26,8 +30,8 @@ angular.module('app').controller('EditVideoSourceController', ['$scope', 'global
 
         function save() {
             VideoSource.save(vm.videoSource).then(function(videoSource) {
-                vm.videoSource = videoSource;
-                 vm.form.setPristine(true);
+                loadVideoSource();
+                vm.form.setPristine(true);
             }, function() {
                 //handle the error
 

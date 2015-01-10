@@ -513,21 +513,21 @@ class Queries {
     /**
      * Updates an existing video source in the database
      */
-    public static function UpdateVideoSource($originalLocation, $newLocation, $baseUrl, $mediaType, $securityType, $refreshVideos = 1) {
-        if ($originalLocation != null && $newLocation != null && $baseUrl != null && $mediaType != null && $securityType != null) {
+    public static function UpdateVideoSource($videoSourceId, $path, $baseUrl, $mediaType, $securityType, $refreshVideos = 1) {
+        if ($path != null && $baseUrl != null && $mediaType != null && $securityType != null) {
             $pdo = DbManager::getPdo();
             if (Queries::$stmtUpdateVideoSource == null) {
                 $sql = "update video_source set location=:location, base_url=:baseUrl, media_type=:mediaType, security_type=:securityType, refresh_videos=:refreshVideos
-                                where location=:originalLocation";
+                                where id=:id";
                 $stmt = $pdo->prepare($sql);
                 Queries::$stmtUpdateVideoSource = $stmt;
             }
             $stmt = Queries::$stmtUpdateVideoSource;
-            $stmt->bindParam(":location", $newLocation);
+            $stmt->bindParam(":location", $path);
             $stmt->bindParam(":baseUrl", $baseUrl);
             $stmt->bindParam(":mediaType", $mediaType);
             $stmt->bindParam(":securityType", $securityType);
-            $stmt->bindParam(":originalLocation", $originalLocation);
+            $stmt->bindParam(":id", $videoSourceId);
             $stmt->bindParam(":refreshVideos", $refreshVideos);
             $success = $stmt->execute();
             Queries::LogStmt($stmt, $success);
