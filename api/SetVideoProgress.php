@@ -21,7 +21,7 @@ if ($finished === "true") {
         $timeInSeconds = -1;
     }
 }
-$success = Queries::insertWatchVideo(config::$globalUsername, $videoId, $timeInSeconds);
+$success = Queries::InsertWatchVideo(config::$globalUsername, $videoId, $timeInSeconds);
 $result = (object) [];
 $result->success = $success;
 echo json_encode($result);

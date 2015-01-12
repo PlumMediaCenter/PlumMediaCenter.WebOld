@@ -18,7 +18,8 @@ include_once($basePath . "Video.class.php");
 class VideoController {
 
     static function GetVideo($videoId) {
-        return VideoController::GetVideos([$videoId])[0];
+        $videos = VideoController::GetVideos([$videoId]);
+        return $videos[0];
     }
 
     static function GetVideos($videoIds = [], $sort = true) {

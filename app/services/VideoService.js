@@ -45,6 +45,24 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
             return deferred.promise;
         };
 
+        Video.setProgress = function(videoId, seconds, isFinished) {
+            isFinished = isFinished === true ? true : false;
 
+            var deferred = $q.defer();
+            $http.get('api/PostVideoProgress.php', {params: {
+                    videoId: videoId,
+                    seconds: seconds,
+                    finished: isFinished
+                }}).success(function(data) {
+                if (data.success) {
+                    deferred.resolve();
+                } else {
+                    deferred.reject();
+                }
+            }).error(function() {
+                deferred.reject(data);
+            });
+            return deferred.promise;
+        }
         return Video;
     }]);

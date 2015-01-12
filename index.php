@@ -1,18 +1,31 @@
 <!DOCTYPE HTML>
 <html ng-controller="BaseController as base">
     <head>
-        <base href="http://localhost:8080/PlumMediaCenter/" />
+        <?php
 
+        function baseUrl() {
+            $fullUrl = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}";
+            //remove everything after the root folder
+            $rootFolderName = pathinfo(dirname(__FILE__) . '/', PATHINFO_FILENAME);
+            $baseFolderIndex = strpos($fullUrl, $rootFolderName) + strlen($rootFolderName);
+            $fullUrl = substr($fullUrl, 0, $baseFolderIndex);
+            $fullUrl = $fullUrl . '/';
+            //remove any double slashes
+            return $fullUrl;
+        }
+        ?>
+        <base href="<?php echo baseUrl(); ?>" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="apple-mobile-web-app-capable" content="yes">	
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-title" content="PlumMediaCenter">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="apple-touch-icon" sizes="57x57" href="img/apple-icon-57x57.png" />
-        <link rel="apple-touch-icon" sizes="72x72" href="img/apple-icon-72x72.png" />
-        <link rel="apple-touch-icon" sizes="114x114" href="img/apple-icon-114x114.png" />
-        <link rel="apple-touch-icon" sizes="144x144" href="img/apple-icon-144x144.png" />
-        <link rel="icon" href="favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" sizes="57x57" href="assets/img/apple-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="assets/img/apple-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="assets/img/apple-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="assets/img/apple-icon-144x144.png" />
+        <link rel="icon" href="favicon.ico" type="assets/image/x-icon" />
 
         <title>{{base.globals.title}}</title>
 
