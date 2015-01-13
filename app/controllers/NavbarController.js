@@ -7,6 +7,7 @@ angular.module('app').controller('NavbarController', ['$state', function($state)
 
         function search() {
             $state.go('search', {q: vm.searchTerm});
+            vm.searchTerm = undefined;
         }
 
     }]);
