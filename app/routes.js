@@ -35,10 +35,16 @@ angular.module('app')
                             controller: 'EditVideoSourceController',
                             controllerAs: 'vm'
                         })
-                         .state('play', {
+                        .state('play', {
                             url: '/play/{videoId:int}',
                             templateUrl: 'app/partials/play.html',
                             controller: 'PlayController',
+                            controllerAs: 'vm'
+                        })
+                        .state('search', {
+                            url: '/search?q',
+                            templateUrl: 'app/partials/search.html',
+                            controller: 'SearchController',
                             controllerAs: 'vm'
                         })
             }])

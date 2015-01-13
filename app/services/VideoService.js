@@ -3,6 +3,16 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
 
         }
 
+        Video.search = function(searchTerm) {
+            var deferred = $q.defer();
+            $http.get('api/GetSearchResults.php', {params: {title: searchTerm}}).success(function(data) {
+                deferred.resolve(data);
+            }).error(function() {
+                deferred.reject();
+            });
+            return deferred.promise;
+        };
+
         Video.getAll = function() {
             return $q(function(resolve, reject) {
                 $http.get('api/GetLibrary.php').success(function(data) {
@@ -30,7 +40,7 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
             $http.get('api/GetTvEpisodes.php?videoId=' + showId).success(function(data) {
                 deferred.resolve(data);
             }).error(function() {
-                deferred.reject(data);
+                deferred.reject();
             });
             return deferred.promise;
         };
@@ -40,7 +50,7 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
             $http.get('api/GetNextEpisode.php?videoId=' + showId).success(function(data) {
                 deferred.resolve(data);
             }).error(function() {
-                deferred.reject(data);
+                deferred.reject();
             });
             return deferred.promise;
         };

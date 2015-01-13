@@ -347,6 +347,10 @@ div.video-tile{
         font-size:11px;
         top:53%;
     }
+
+    .navbar-form.navbar-left{
+        display:inline;
+    }
 }
 
 /* Small devices (tablets, 768px and up) */
