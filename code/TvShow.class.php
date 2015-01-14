@@ -116,8 +116,8 @@ class TvShow extends Video {
         $this->seasons = [];
         $episodeInfoList = Queries::GetTvEpisodeVideoIdsForShow($this->getVideoId());
         foreach ($episodeInfoList as $info) {
-			$episode = Video::GetVideo($info->video_id);
-			
+            $episode = Video::GetVideo($info->video_id);
+
             //if no episode was able to be loaded, move on to the next item.
             if ($episode == false) {
                 continue;

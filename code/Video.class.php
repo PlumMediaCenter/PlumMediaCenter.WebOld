@@ -339,7 +339,7 @@ abstract class Video {
     }
 
     function getSdPosterPath() {
-         return $this->getFullPathToContainingFolder() . "folder.sd.jpg";
+        return $this->getFullPathToContainingFolder() . "folder.sd.jpg";
     }
 
     function getHdPosterPath() {
@@ -661,25 +661,66 @@ abstract class Video {
         return strcmp($video1->title, $video2->title);
     }
 
-    public static function DeleteMissingVideos(){
+    public static function DeleteMissingVideos() {
         $deletedVideoIds = [];
 
         //delete all videos that have a source that is no longer in the video_source table
         $sourcelessVideos = DbManager::SingleColumnQuery('select video_id from video where video_source_path not in (select location from video_source)');
 
         $deletedVideoIds = array_merge($deletedVideoIds, $sourcelessVideos);
-        
+
         //delete all of the videos that are no longer on disc
         $minimalVideos = DbManager::GetAllClassQuery('select video_id, path from video');
-        foreach($minimalVideos as $minimalVideo){
+        foreach ($minimalVideos as $minimalVideo) {
             //if this file path no longer exists, delete it
-            if(!file_exists($minimalVideo->path)){
+            if (!file_exists($minimalVideo->path)) {
                 $deletedVideoIds[] = $minimalVideo->video_id;
             }
         }
-        
+
         //delete any videos that no longer exist on the file system
         Queries::DeleteVideos($deletedVideoIds);
+    }
+
+    public static function GetVideoProgressPercent($videoId) {
+        $percent = 0;
+        $video = Video::GetVideo($videoId);
+        if ($video->mediaType === Enumerations::MediaType_TvShow) {
+            //get the next episode
+            $nextEpisode = TvShow::GetNextEpisodeToWatch($videoId);
+            //load the episodes
+            $video->loadEpisodesFromDatabase();
+            $episodes = $video->episodes;
+            $episodeCount = count($episodes);
+            $episodeIndex = 0;
+            for ($i = 0; $i < $episodeCount; $i++) {
+                $episode = $episodes[$i];
+                if ($episode->seasonNumber === $nextEpisode->seasonNumber &&
+                        $episode->episodeNumber === $nextEpisode->episodeNumber) {
+                    $episodeIndex = $i;
+                    break;
+                }
+            }
+            $percent = intval(($episodeIndex / $episodeCount) * 100);
+
+            //if this is the last episode in the list, see how far they have watched it.
+            if ($i === $episodeCount - 1) {
+                $startSeconds = Video::GetVideoStartSeconds($episode->videoId);
+                $length = $episode->runtime;
+                $episodePercent = intval((intval($startSeconds) / intval($length)) * 100);
+                if ($episodePercent > 99) {
+                    $percent = 100;
+                }
+            }
+        } else {
+            $startSeconds = Video::GetVideoStartSeconds($videoId);
+            $length = $video->runtime;
+            $percent = intval((intval($startSeconds) / intval($length)) * 100);
+        }
+        if ($percent < 100 && $percent > 99) {
+            $percent = 100;
+        }
+        return $percent;
     }
 
 }

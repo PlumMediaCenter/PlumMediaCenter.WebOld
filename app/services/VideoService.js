@@ -56,15 +56,15 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
         };
 
         /**
-         * Get how many seconds have already been watched into the video
+         * Get how much percentage watched this video is
          * @param {type} videoId
          * @returns {$q@call;defer.promise}
          */
-        Video.getProgress = function(videoId) {
+        Video.getProgressPercent = function(videoId) {
             var deferred = $q.defer();
-            $http.get('api/GetVideoProgress.php', {params: {videoId: videoId}})
+            $http.get('api/GetVideoProgressPercent.php', {params: {videoId: videoId}})
                     .success(function(result) {
-                        deferred.resolve(result.startSeconds);
+                        deferred.resolve(result.percent);
                     })
                     .error(deferred.reject);
             return deferred.promise;
