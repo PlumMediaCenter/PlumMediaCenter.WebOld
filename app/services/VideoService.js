@@ -55,11 +55,27 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
             return deferred.promise;
         };
 
+        /**
+         * Get how many seconds have already been watched into the video
+         * @param {type} videoId
+         * @returns {$q@call;defer.promise}
+         */
+        Video.getProgress = function(videoId) {
+            var deferred = $q.defer();
+            $http.get('api/GetVideoProgress.php', {params: {videoId: videoId}})
+                    .success(function(result) {
+                        deferred.resolve(result.startSeconds);
+                    })
+                    .error(deferred.reject);
+            return deferred.promise;
+
+        };
+
         Video.setProgress = function(videoId, seconds, isFinished) {
             isFinished = isFinished === true ? true : false;
 
             var deferred = $q.defer();
-            $http.get('api/PostVideoProgress.php', {params: {
+            $http.get('api/SetVideoProgress.php', {params: {
                     videoId: videoId,
                     seconds: seconds,
                     finished: isFinished
@@ -70,7 +86,7 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
                     deferred.reject();
                 }
             }).error(function() {
-                deferred.reject(data);
+                deferred.reject();
             });
             return deferred.promise;
         }

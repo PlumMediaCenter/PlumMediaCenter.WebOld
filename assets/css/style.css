@@ -276,6 +276,10 @@ label{
     color:red;
 }
 
+.full-width{
+    width:100%;
+}
+
 #tablesArea{
     border:1px solid black;
     min-height: 300px;
@@ -294,16 +298,23 @@ label{
     text-align:center;
 }
 
-#videoInfoPlayBtn{
-    width:200px;
-    margin-top:5px;
+.relative{
+    position:relative;
 }
 
-#videoInfoMainPoster{
-    width:200px;
+#videoInfoPosterColumn{
+    display:inline;
+    display:inline-block;
+    width: 200px;
 }
 
+#videoInfoPosterColumn .margin{
+    margin: 5px 0px;
+}
 
+#videoInfoPosterColumn{
+
+}
 
 .video-container{
     margin-right:auto;
