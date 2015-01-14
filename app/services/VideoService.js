@@ -74,5 +74,16 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
             });
             return deferred.promise;
         }
+
+        Video.getCounts = function() {
+            var deferred = $q.defer();
+            $http.get('api/GetVideoCounts.php').success(function(data) {
+                deferred.resolve(data);
+            }).error(function() {
+                deferred.reject();
+            });
+            return deferred.promise;
+        };
+
         return Video;
     }]);

@@ -46,16 +46,16 @@
         <div class="col-md-5">
             <h3>Summary</h3>
             <b>Video Count:</b>
-            <?php echo ($videoCount != null) ? $videoCount : "-"; ?>
+            {{vm.videoCounts.videoCount}}
             <br/>
             <b>Movie Count:</b>
-            <?php echo ($movieCount != null) ? $movieCount : "-"; ?>
+            {{vm.videoCounts.movieCount}}
             <br/>
             <b>Tv Show Count:</b>
-            <?php echo ($tvShowCount != null) ? $tvShowCount : "-"; ?>
+            {{vm.videoCounts.tvShowCount}}
             <br/>
             <b>Tv Episode Count:</b>
-            <?php echo ($tvEpisodeCount != null) ? $tvEpisodeCount : "-"; ?>
+            {{vm.videoCounts.tvEpisodeCount}}
             <br/>
         </div>
     </div>
@@ -69,6 +69,6 @@
         });
     });
 
-   
+
 
 </script>

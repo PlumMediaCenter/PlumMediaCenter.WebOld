@@ -229,9 +229,9 @@ class Library {
         $counts = Queries::GetVideoCounts();
         if ($counts != false) {
             $stats->videoCount = $counts->movieCount + $counts->tvEpisodeCount;
-            $stats->movieCount = $counts->movieCount;
-            $stats->tvShowCount = $counts->tvShowCount;
-            $stats->tvEpisodeCount = $counts->tvEpisodeCount;
+            $stats->movieCount = $counts->movieCount + 0;
+            $stats->tvShowCount = $counts->tvShowCount + 0;
+            $stats->tvEpisodeCount = $counts->tvEpisodeCount + 0;
         }
         return $stats;
     }

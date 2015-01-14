@@ -8,5 +8,3 @@ $video = VideoController::GetTvShow($videoId);
 header('Content-Type: application/json');
 echo json_encode($video, JSON_PRETTY_PRINT);
 ?>
-
-<a href="../../../../../\\192.168.1.9/www/PlumMediaCenter/controllers/VideoController.php"></a>
