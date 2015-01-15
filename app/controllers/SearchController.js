@@ -22,7 +22,8 @@ angular.module('app').controller('SearchController', ['globals', 'Video', '$stat
             endIndex = endIndex > vm.allVideos.length ? vm.allVideos.length : endIndex;
 
             for (var i = beginIndex; i < endIndex; i++) {
-                vm.currentlyLoadedVideos.push(vm.allVideos[i]);
+                var video = vm.allVideos[i];
+                vm.currentlyLoadedVideos.push(video);
             }
         }
 

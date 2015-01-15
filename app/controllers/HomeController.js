@@ -18,7 +18,7 @@ angular.module('app').controller('HomeController', ['globals', 'Video', function
             //if the end index is larger than the list of all videos, change the end index to the length of the list of all videos
             endIndex = endIndex > vm.allVideos.length ? vm.allVideos.length : endIndex;
 
-            for (var i = beginIndex; i <= endIndex; i++) {
+            for (var i = beginIndex; i < endIndex; i++) {
                 vm.currentlyLoadedVideos.push(vm.allVideos[i]);
             }
         }
