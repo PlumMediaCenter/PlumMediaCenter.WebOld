@@ -40,6 +40,8 @@
         <script type="text/javascript" src="lib/angular-1.3.8/angular.min.js"></script>
         <script type="text/javascript" src="lib/angular-ui-router/angular-ui-router.min.js"></script>
         <script type="text/javascript" src="lib/angular-ui-bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
+        <script type="text/javascript" src="lib/ngInfiniteScroll/ng-infinite-scroll.min.js"></script>
+
 
         <script type="text/javascript" src="app/app.min.js"></script>     
 

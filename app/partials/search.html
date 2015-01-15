@@ -1,1 +1,3 @@
-<video-tile video="video" ng-repeat="video in vm.videos"></video-tile>
+<div infinite-scroll='vm.loadMore()' infinite-scroll-distance='2' ng-if='vm.allVideos.length > 0'>
+    <video-tile video="video" ng-repeat="video in vm.currentlyLoadedVideos"></video-tile>
+</div>
