@@ -12,7 +12,7 @@ angular.module('app').controller('HomeController', ['globals', 'Video', function
         });
 
         function loadMore() {
-            var numberToLoad = 20;
+            var numberToLoad = globals.infiniteScrollPageSize;
             var beginIndex = vm.currentlyLoadedVideos.length;
             var endIndex = beginIndex + numberToLoad;
             //if the end index is larger than the list of all videos, change the end index to the length of the list of all videos
