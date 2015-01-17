@@ -2,18 +2,20 @@
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed" >
+            <button type="button" class="navbar-toggle collapsed" ng-click="vm.toggleNavbar()" >
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" ui-sref="home" ng-click="navCollapsed = true"><img src="assets/img/logo.png" style="height:20px;display:inline;">&nbsp;Plum Media Center</a>
+            <a class="navbar-brand" ui-sref="home" ng-click="vm.hideNavbar()">
+                <img src="assets/img/logo.png" style="height:20px;display:inline;">&nbsp;Plum Media Center
+            </a>
         </div>
-        <div class="collapse navbar-collapse" collapse="navCollapsed">
+        <div class="collapse navbar-collapse" collapse="!vm.navbarIsOpen">
             <ul class="nav navbar-nav">
-                <li id="browseNav" ng-click="navCollapsed = true"><a ui-sref="home">Browse</a></li>
-                <li id="adminNav" ng-click="navCollapsed = true"><a ui-sref="admin">Admin</a></li>
+                <li id="browseNav" ng-click="vm.hideNavbar()"><a ui-sref="home">Browse</a></li>
+                <li id="adminNav" ng-click="vm.hideNavbar()"><a ui-sref="admin">Admin</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
@@ -23,7 +25,10 @@
                             <input name="s" type="text" 
                                    class="form-control"  
                                    ng-model="vm.searchTerm" 
-                                   placeholder="Search" />
+                                   placeholder="Search" 
+                                   autocomplete="off"
+                                   focus="vm.focusSearch"
+                                   />
                         </div>
                         <button type="submit" class="btn btn-primary form-control">Search</button>
                     </form>

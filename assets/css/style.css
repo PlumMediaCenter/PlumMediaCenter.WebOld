@@ -60,12 +60,17 @@ body{
     position:relative;
 }
 #bodyContent.navbar-adjust{
-    height: calc(100% - 51px);
+    height: calc(100% - 52px);
+    margin-top:52px;
 }
 
 #mainNavbar{
     margin:0px;
     border-radius: 0;
+    position:fixed;
+    width:100%;
+    top:0px;
+    z-index: 1;
 }
 
 .brand{
