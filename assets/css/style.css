@@ -20,8 +20,16 @@ html,body{
 }
 
 body{
-
 } 
+
+
+#bodyContent{
+    position:relative;
+}
+#bodyContent.navbar-adjust{
+    height: calc(100% - 52px);
+    margin-top:52px;
+}
 
 .disabled-background{
     background-color: #FFF6F4;
@@ -56,13 +64,6 @@ body{
     vertical-align: middle;
 }
 
-#bodyContent{
-    position:relative;
-}
-#bodyContent.navbar-adjust{
-    height: calc(100% - 52px);
-    margin-top:52px;
-}
 
 #mainNavbar{
     margin:0px;
