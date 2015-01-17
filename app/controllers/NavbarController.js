@@ -2,7 +2,6 @@ angular.module('app').controller('NavbarController', ['$state', function($state)
         var vm = angular.extend(this, {
             searchTerm: undefined,
             navbarIsOpen: false,
-            focusSearch: true,
             //api
             search: search,
             hideNavbar: hideNavbar,
@@ -19,7 +18,6 @@ angular.module('app').controller('NavbarController', ['$state', function($state)
 
         function showNavbar() {
             vm.navbarIsOpen = true;
-            vm.focusSearch = true;
         }
 
         function hideNavbar() {
