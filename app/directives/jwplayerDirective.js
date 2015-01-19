@@ -140,7 +140,8 @@ angular.module('app').directive('jwplayer', ['uniqueId', function(uniqueId) {
                         height: '100%',
                         events: {
                             onTime: onTime,
-                            onPlay: onPlay
+                            onPlay: onPlay,
+                            onComplete: onComplete
                         },
                         autostart: true
                     });
@@ -168,6 +169,11 @@ angular.module('app').directive('jwplayer', ['uniqueId', function(uniqueId) {
                     playPositionUpdateTime = new Date();
                     Video.setProgress(vm.video.videoId, positionInSeconds);
                 }
+            }
+            
+            function onComplete(){
+                console.debug('Finished playing video ' + vm.video.videoId);
+                Video.setProgress(vm.video.videoId, -1, true);
             }
 
             /**
