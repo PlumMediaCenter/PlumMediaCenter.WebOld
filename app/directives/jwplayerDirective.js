@@ -69,13 +69,17 @@ angular.module('app').directive('jwplayer', ['uniqueId', function(uniqueId) {
                         togglePlayback: togglePlayback
                     }
             );
-
+            var startSeconds = 0;
             //keeps track of the number of seconds that have passed since the video has saved its position in the database
             var playPositionUpdateTime = new Date();
 
             //load the video
             Video.getById(vm.videoId).then(function(video) {
-                vm.video = video;
+                //get the current progress of this video.
+                Video.getProgress(vm.videoId).then(function(seconds) {
+                    vm.video = video;
+                    startSeconds = seconds;
+                });
             });
 
             $scope.$watch('vm.video', vm.loadVideo);
@@ -153,13 +157,14 @@ angular.module('app').directive('jwplayer', ['uniqueId', function(uniqueId) {
                 if (startVideoWhereWeLeftOffProcessed === false && obj.position > 0) {
                     startVideoWhereWeLeftOffProcessed = true;
                     startVideoWhereWeLeftOff();
+                    return;
                 }
 
                 var positionInSeconds = obj.position;
                 //every so often, update the database with the current video's play position
                 var nowTime = new Date();
                 var timeSinceLastUpdate = nowTime - playPositionUpdateTime;
-                if (timeSinceLastUpdate > 1000) {
+                if (timeSinceLastUpdate > 5000) {
                     playPositionUpdateTime = new Date();
                     Video.setProgress(vm.video.videoId, positionInSeconds);
                 }
@@ -173,7 +178,8 @@ angular.module('app').directive('jwplayer', ['uniqueId', function(uniqueId) {
                 //seek the player to the startPosition
                 //if a startSeconds value greater than 0 was provided, seek to that position in the video
                 if (startSeconds > 0) {
-                    player.seek(startSeconds);
+                    vm.player.seek(startSeconds);
+                    console.debug('seeking to ', startSeconds);
                 }
             }
 

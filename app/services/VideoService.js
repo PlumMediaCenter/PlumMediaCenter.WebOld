@@ -71,6 +71,23 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
 
         };
 
+        /**
+         * Get the number of seconds into a video the current user is. 
+         * @param {type} videoId
+         * @returns {$q@call;defer.promise}
+         */
+        Video.getProgress = function(videoId) {
+            var deferred = $q.defer();
+            $http.get('api/GetVideoProgress.php', {params: {
+                    videoId: videoId
+                }}).success(function(data) {
+                deferred.resolve(data.startSeconds);
+            }).error(function() {
+                deferred.reject();
+            });
+            return deferred.promise;
+        }
+
         Video.setProgress = function(videoId, seconds, isFinished) {
             isFinished = isFinished === true ? true : false;
 

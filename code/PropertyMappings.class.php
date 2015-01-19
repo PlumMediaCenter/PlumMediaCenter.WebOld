@@ -26,7 +26,8 @@ class PropertyMappings {
         "video_source_url" => null,
         "video_source_path" => null,
         "metadata_last_modified_date" => null,
-        "path" => null
+        "path" => null,
+        "online_video_id"=>["name"=>"onlineVideoId","dataType"=>"integer"]
     ];
     static $episodeMapping = [
         "tv_show_video_id" => "tvShowVideoId",

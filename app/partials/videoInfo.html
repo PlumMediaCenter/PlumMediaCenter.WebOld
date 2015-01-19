@@ -21,7 +21,6 @@
             <br/> <br/>{{vm.video.plot}}
         </div>
     </div>
-    <br/>
     <div class="row " ng-if="vm.episodes">
         <div class="col-md-5" style="border:0px solid red;">
             <table class='table'>
@@ -72,6 +71,15 @@
                 <span style="font-weight:normal;">{{vm.selectedEpisode.plot}}</span>
             </div>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 text-center">
+            <div ng-if="!vm.video.onlineVideoId">
+                <a class="btn btn-default">Set {{vm.onlineVideoIdName}}</a>
+            </div>
+            <span ng-if="vm.video.mediaType === enums.mediaType.movie">TMDB ID:</span>
+            {{vm.video.onlineVideoId}}
+        </div> 
     </div>
 </div>
 

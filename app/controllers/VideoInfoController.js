@@ -1,6 +1,7 @@
-angular.module('app').controller('VideoInfoController', ['globals', 'Video', '$stateParams', function(globals, Video, $stateParams) {
+angular.module('app').controller('VideoInfoController', ['globals', 'Video', '$stateParams', 'enums', function(globals, Video, $stateParams, enums) {
         var vm = angular.extend(this, {
             progressPercent: 0,
+            onlineVideoIdName: undefined,
             //api
             getProgressPercentType: getProgressPercentType
         });
@@ -9,7 +10,11 @@ angular.module('app').controller('VideoInfoController', ['globals', 'Video', '$s
         //load the video by id
         Video.getById($stateParams.videoId).then(function(video) {
             vm.video = video;
-
+            if (video.mediaType === enums.mediaType.movie) {
+                vm.onlineVideoIdName = 'TMDB ID';
+            } else {
+                vm.onlineVideoIdName = 'TVDB ID';
+            }
             if (vm.video.mediaType === 'TvShow') {
                 Video.getEpisodes(vm.video.videoId).then(function(episodes) {
                     vm.episodes = episodes;
