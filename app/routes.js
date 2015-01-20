@@ -47,6 +47,12 @@ angular.module('app')
                             controller: 'SearchController',
                             controllerAs: 'vm'
                         })
+                        .state('metadataFetcher', {
+                            url: '/metadataFetcher/{videoId:int}',
+                            templateUrl: 'app/partials/metadataFetcher.html',
+                            controller: 'MetadataFetcherController',
+                            controllerAs: 'vm'
+                        })
             }])
 
         .run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams) {

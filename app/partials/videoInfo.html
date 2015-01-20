@@ -74,11 +74,7 @@
     </div>
     <div class="row">
         <div class="col-md-3 text-center">
-            <div ng-if="!vm.video.onlineVideoId">
-                <a class="btn btn-default">Set {{vm.onlineVideoIdName}}</a>
-            </div>
-            <span ng-if="vm.video.mediaType === enums.mediaType.movie">TMDB ID:</span>
-            {{vm.video.onlineVideoId}}
+            <a class="btn btn-default" ui-sref="metadataFetcher({videoId: vm.video.videoId})">Fetch Metadata</a>
         </div> 
     </div>
 </div>

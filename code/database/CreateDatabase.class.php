@@ -248,7 +248,6 @@ class CreateDatabase {
 
     function db0_3_0() {
         DbManager::NonQuery('alter table video_source drop primary key, add column id int not null auto_increment primary key');
-        DbManager::NonQuery('alter table video add column online_video_id int');
     }
 
 }

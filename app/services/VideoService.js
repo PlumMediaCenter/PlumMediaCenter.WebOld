@@ -118,5 +118,15 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
             return deferred.promise;
         };
 
+        Video.fetchMetadata = function(videoId, onlineVideoId) {
+            var deferred = $q.defer();
+            $http.get('api/FetchVideoMetadata.php', {params: {videoId: videoId, onlineVideoId: onlineVideoId}}).success(function(data) {
+                deferred.resolve(data);
+            }).error(function() {
+                deferred.reject();
+            });
+            return deferred.promise;
+        };
+
         return Video;
     }]);

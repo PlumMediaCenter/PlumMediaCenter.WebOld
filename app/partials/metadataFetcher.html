@@ -1,0 +1,30 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">{{vm.video.url}}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            Search by: 
+            <label><input type="radio" name="searchBy" ng-model="vm.searchBy" value="onlineVideoId">{{vm.video.mediaType === enums.mediaTypeMovie?'TMDB ID': 'TVDB ID'}}:</label>        
+            <!--<label><input type="radio" name="searchBy"  ng-model="vm.searchBy" value="title">Title:</label>-->
+        </div>
+        <div class="col-sm-12" ng-show="vm.searchBy === 'onlineVideoId'">
+            <label>
+                {{vm.video.mediaType === enums.mediaTypeMovie?'TMDB ID': 'TVDB ID'}} 
+                <input class="form-control" type="text" ng-model="vm.onlineVideoId">
+            </label>
+        </div>
+        <div class="col-sm-12" ng-show="vm.searchBy === 'title'">
+            <label>
+                Title
+                <input class="form-control" type="text" ng-model="vm.title">
+            </label>
+        </div>
+        <div class="col-sm-12" ng-if="!vm.fetching">
+            <a class="btn btn-primary" ng-click="vm.generate()">Fetch</a>
+        </div>
+        <div class="col-sm-12" ng-if="vm.fetching">
+            <span class="loading"></span>&nbsp;Fetching video metadata
+        </div>
+    </div>
+</div>
