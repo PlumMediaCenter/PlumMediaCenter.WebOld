@@ -128,5 +128,35 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
             return deferred.promise;
         };
 
+        Video.getMetadataSearchResultsByTitle = function(mediaType, title) {
+            var deferred = $q.defer();
+            $http.get('api/GetMetadataSearchResults.php', {
+                params: {
+                    mediaType: mediaType,
+                    title: videoId
+                }
+            }).success(function(data) {
+                deferred.resolve(data);
+            }).error(function() {
+                deferred.reject();
+            });
+            return deferred.promise;
+        }
+             Video.getMetadataSearchResultsByOnlineVideoId = function(mediaType, onlineVideoId) {
+            var deferred = $q.defer();
+            $http.get('api/GetMetadataSearchResults.php', {
+                params: {
+                    mediaType: mediaType,
+                    onlineVideoId: onlineVideoId
+                }
+            }).success(function(data) {
+                deferred.resolve(data);
+            }).error(function() {
+                deferred.reject();
+            });
+            return deferred.promise;
+        }
+        
+
         return Video;
     }]);

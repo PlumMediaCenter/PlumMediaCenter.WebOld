@@ -76,8 +76,9 @@ class Library {
      */
     public function loadFromDatabase() {
         $this->videos = [];
-        $success = $this->loadMoviesFromDatabase();
-        $success = $success && $this->loadTvShowsFromDatabase();
+        $success = true;
+        $this->loadMoviesFromDatabase();
+        $this->loadTvShowsFromDatabase();
         return $success;
     }
 

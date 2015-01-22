@@ -79,7 +79,7 @@ class TVDB {
 
             case 'show_by_id':
                 $id = $params['id'];
-                $url = self::baseUrl . 'data/series/' . $id . '/';
+                $url = self::apiUrl . self::apiKey . '/series/' .  $id . '/';
 
                 $data = self::fetchData($url);
                 return $data;

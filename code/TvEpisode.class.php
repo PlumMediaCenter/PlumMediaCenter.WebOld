@@ -27,8 +27,8 @@ class TvEpisode extends Video {
     function getBlankPosterName() {
         return "BlankEpisode";
     }
-    
-    function getFullEpisodeName(){
+
+    function getFullEpisodeName() {
         return $this->showName . ' S' . $this->seasonNumber . ':E' . $this->episodeNumber . ' ' . $this->title;
     }
 
@@ -202,7 +202,7 @@ class TvEpisode extends Video {
     /**
      * Returns a new instance of the metadata fetcher for this video type. 
      */
-    protected function getMetadataFetcherClass() {
+    public function getMetadataFetcherClass() {
         $m = new TvEpisodeMetadataFetcher();
         $m->setEpisodeNumber($this->episodeNumber);
         $m->setSeasonNumber($this->seasonNumber);

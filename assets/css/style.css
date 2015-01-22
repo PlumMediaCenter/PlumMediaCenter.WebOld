@@ -429,3 +429,24 @@ label, input[type=radio]{
     cursor:pointer;
 }
 
+#metadataSearchResults .metadata-tile{
+    width: 400px;
+}
+#metadataSearchResults .metadata-tile:hover{
+    background-color:red;
+    cursor:pointer;
+}
+    
+#metadataSearchResults .metadata-tile .text-area{
+    width:50%;
+    float:right;
+    padding-left:5px;
+}
+
+#metadataSearchResults .metadata-tile img{
+    width:50%;
+    float:left;
+    vertical-align:middle
+}
+
+

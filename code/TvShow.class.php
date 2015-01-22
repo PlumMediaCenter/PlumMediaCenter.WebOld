@@ -386,7 +386,7 @@ class TvShow extends Video {
     /**
      * Returns a new instance of the metadata fetcher for this video type. 
      */
-    protected function getMetadataFetcherClass() {
+    public function getMetadataFetcherClass() {
         return new TvShowMetadataFetcher();
     }
 

@@ -15,6 +15,16 @@ abstract class Video {
 
     abstract function fetchMetadata();
 
+    abstract function getMetadataFetcherClass();
+    
+    public static function GetVideoMetadataFetcherClass($mediaType){
+        if($mediaType === Enumerations::MediaType_Movie){
+            return new MovieMetadataFetcher();
+        }else{
+            return new TvShowMetadataFetcher();
+        }
+    }
+
     abstract protected function loadCustomMetadata();
 
     abstract function getNfoReader();

@@ -52,7 +52,7 @@ angular.module('app')
                             templateUrl: 'app/partials/metadataFetcher.html',
                             controller: 'MetadataFetcherController',
                             controllerAs: 'vm'
-                        })
+                        }) 
             }])
 
         .run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams) {
