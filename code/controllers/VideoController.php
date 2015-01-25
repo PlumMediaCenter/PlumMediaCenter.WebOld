@@ -258,4 +258,42 @@ class VideoController {
         return $success;
     }
 
+    public static function FetchMetadata($videoId, $onlineVideoId) {
+        $success = true;
+
+        //load the video
+        $video = Video::GetVideo($videoId);
+        $video->setOnlineVideoDatabaseId($onlineVideoId);
+
+        if (!$onlineVideoId) {
+            throw new Exception('onlineVideoId is required');
+        }
+        try {
+            $video->fetchMetadata($onlineVideoId);
+            $video->loadMetadata(true);
+        } catch (Exception $e) {
+            $success = false;
+        }
+
+        try {
+            $video->fetchPoster();
+            $video->generatePosters();
+        } catch (Exception $ex) {
+            $success = false;
+        }
+        $writeToDbSuccess = $video->writeToDb();
+        $success = $success && $writeToDbSuccess;
+
+        if ($video->mediaType === Enumerations::MediaType_TvShow) {
+            //fetch metadata for EVERY tv episode
+            $video->loadEpisodesFromDatabase();
+            foreach ($video->episodes as $episode) {
+                $episodeSuccess = VideoController::FetchMetadata($episode->videoId, $onlineVideoId);
+                $success = $success && $episodeSuccess;
+            }
+        }
+
+        return $success;
+    }
+
 }

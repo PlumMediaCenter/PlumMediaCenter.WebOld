@@ -248,7 +248,10 @@ class TvEpisode extends Video {
      * It then stores that information into an .nfo file named the same as the video file name .
      * Deletes any previous metadata files that exist, BEFORE anything else. 
      */
-    function fetchMetadata() {
+    function fetchMetadata($showTvdbId=null) {
+        if($showTvdbId === null){
+            $showTvdbId = $this->onlineVideoDatabaseId;
+        }
         //this tv episode shouldn't take longer than 3 minutes to run. if it does, then php will cancel the running of this script.
         set_time_limit(180);
         $metadataDestination = $this->getNfoPath();
@@ -257,7 +260,7 @@ class TvEpisode extends Video {
             //delete the file
             unlink($metadataDestination);
         }
-        $e = $this->getMetadataFetcher();
+        $e = $this->getMetadataFetcher(false, $showTvdbId);
 
         $title = $e->title();
         $rating = $e->rating();
