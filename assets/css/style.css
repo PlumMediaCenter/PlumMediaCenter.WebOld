@@ -446,6 +446,7 @@ label, input[type=radio]{
     display:inline-block;
     width:100%;
     background-color: lightgrey;
+    margin:5px;
 }
 #metadataSearchResults .metadata-tile:hover{
     cursor:pointer;

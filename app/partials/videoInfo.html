@@ -5,10 +5,11 @@
                 <a ng-attr-href="{{vm.video.posterUrl}}">
                     <img ng-attr-src="{{vm.video.hdPosterUrl}}" class="full-width">
                 </a>
+                <progressbar title="progress" class="margin" style="background-color: grey;margin-top:5px;" type="{{vm.getProgressPercentType()}}" value="vm.progressPercent < 15? 15: vm.progressPercent " max="100"><span>{{vm.progressPercent}}%</progressbar>
+                <a class="btn btn-default full-width margin" ui-sref="metadataFetcher({videoId: vm.video.videoId})">Fetch Metadata</a>
                 <a ui-sref="play(vm.video)" class="btn btn-primary full-width margin">
                     <span class="glyphicon glyphicon-play"></span>&nbsp;Play
                 </a>
-                <progressbar title="progress" style="background-color: grey;" type="{{vm.getProgressPercentType()}}" value="vm.progressPercent < 15? 15: vm.progressPercent " max="100"><span>{{vm.progressPercent}}%</progressbar>
             </div>
         </div>
         <div class="col-md-9">
@@ -71,11 +72,6 @@
                 <span style="font-weight:normal;">{{vm.selectedEpisode.plot}}</span>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3 text-center">
-            <a class="btn btn-default" ui-sref="metadataFetcher({videoId: vm.video.videoId})">Fetch Metadata</a>
-        </div> 
     </div>
 </div>
 
