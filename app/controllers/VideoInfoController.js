@@ -11,16 +11,16 @@ angular.module('app').controller('VideoInfoController', ['globals', 'Video', '$s
         //load the video by id
         Video.getById($stateParams.videoId).then(function(video) {
             vm.video = video;
-            if (vm.preventCache) {
-                var time =  new Date().getTime();
-                //append a date to the image url so we can be sure to load the latest image. 
-                vm.video.posterUrl = vm.video.posterUrl + '?' +time;
-                vm.video.hdPosterUrl = vm.video.hdPosterUrl + '?' +time;
-                vm.video.sdePosterUrl = vm.video.sdePosterUrl + '?' +time;
-
-            }
+//            if (vm.preventCache) {
+//                var time =  new Date().getTime();
+//                //append a date to the image url so we can be sure to load the latest image. 
+//                vm.video.posterUrl = vm.video.posterUrl + '?' +time;
+//                vm.video.hdPosterUrl = vm.video.hdPosterUrl + '?' +time;
+//                vm.video.sdePosterUrl = vm.video.sdePosterUrl + '?' +time;
+//
+//            }
             if (video.mediaType === enums.mediaType.movie) {
-                vm.onlineVideoIdName = 'TMDB ID';
+                vm.onlineVideoIdName = 'TMDB ID';  
             } else {
                 vm.onlineVideoIdName = 'TVDB ID';
             }

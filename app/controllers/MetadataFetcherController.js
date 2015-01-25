@@ -1,5 +1,5 @@
-angular.module('app').controller('MetadataFetcherController', ['$scope', 'globals', 'Video', '$state', '$stateParams', 'notify', 'enums',
-    function($scope, globals, Video, $state, $stateParams, notify, enums) {
+angular.module('app').controller('MetadataFetcherController', ['$scope', '$q', 'globals', 'refreshImage', 'Video', '$state', '$stateParams', 'notify', 'enums',
+    function($scope, $q, globals, refreshImage, Video, $state, $stateParams, notify, enums) {
         globals.title = 'Fetch Metadata';
         var vm = angular.extend(this, {
             searchByOptions: {
@@ -29,7 +29,7 @@ angular.module('app').controller('MetadataFetcherController', ['$scope', 'global
             vm.calculateTextboxLabel();
             if (vm.searchBy === vm.searchByOptions.title) {
                 vm.searchValue = vm.video.title;
-            }else{
+            } else {
                 vm.searchValue = '';
             }
         }
@@ -74,13 +74,33 @@ angular.module('app').controller('MetadataFetcherController', ['$scope', 'global
         function fetchMetadataByOnlineVideoId(onlineVideoId) {
             vm.metadataIsBeingFetched = true;
             Video.fetchMetadata(vm.video.videoId, onlineVideoId).then(function() {
+                return Video.getById(vm.video.videoId);
+            }).then(function(video) {
+                //refresh the posters so that when we go back to videoInfo, the poster cache has been cleared
+                return refreshImage(video.sdPosterUrl).then(function() {
+                    return refreshImage(video.hdPosterUrl);
+                })['catch'](function(){
+                    //this was just to refresh the images. Don't worry if this fails. It's probably just a cross domain issue...
+                    var deferred = $q.defer();
+                    //there was an issue getting the browser to refresh the cached images. try reloading the page (after we have 
+                    //navigated to the videoInfo page)
+                    setTimeout(function(){
+                        window.location.reload();
+                    }, 200);
+                    deferred.resolve();
+                    return deferred.promise;
+                });
+            }).then(function() {
                 vm.metadataResults = undefined;
                 vm.metadataIsBeingFetched = false;
-                $state.go('videoInfo', {videoId: vm.videoId, preventCache: true});
+
                 notify('Updated video with selected metadata', 'success');
-            }, function(err) {
+                $state.go('videoInfo', {videoId: vm.videoId});
+            })['catch'](function(err) {
                 vm.metadataIsBeingFetched = false;
-                notify('There was an error fetching metadata for the video you selected', 'error');
-            });
+                notify('There was an error fetching metadata for the video you selected: ' + err, 'error');
+            })
         }
+
+
     }]);

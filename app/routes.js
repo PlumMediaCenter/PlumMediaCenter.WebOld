@@ -17,7 +17,7 @@ angular.module('app')
                             controllerAs: 'vm'
                         })
                         .state('videoInfo', {
-                            url: '/videoInfo/{videoId:int}?preventCache',
+                            url: '/videoInfo/{videoId:int}',
                             templateUrl: 'app/partials/videoInfo.html',
                             controller: 'VideoInfoController',
                             controllerAs: 'vm'
