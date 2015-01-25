@@ -51,9 +51,9 @@
     <body>
     <ng-include ng-if="!base.globals.hideNavbar" src="'app/partials/navbar.html'"></ng-include>
     <div id="bodyContent" ng-class="{fill: base.globals.hideNavbar, 'navbar-adjust': !base.globals.hideNavbar}"> 
-        <div class="fill" ui-view></div>
+        <div class="fill" ui-view autoscroll="true"></div>
     </div>
-
+    
     <!--<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>-->
 </body>
 </html>

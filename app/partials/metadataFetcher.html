@@ -1,36 +1,60 @@
 <div class="container">
+    <a ui-sref="videoInfo({videoId: vm.videoId})">&lt; Back to video</a>
     <br/>
     <div class="row">
-        <div class="col-sm-2"><b>Video URL: </b></div>
-        <div class="col-sm-10">{{vm.video.url}}</div>
+        <div class="col-sm-2"><b>Path: </b></div>
+        <div class="col-sm-10">{{vm.video.path}}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2"><b>Source Path: </b></div>
+        <div class="col-sm-10">{{vm.video.sourcePath}}</div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-2"><b>Media Type: </b></div>
+        <div class="col-sm-10">{{vm.video.mediaType}}</div>
     </div>
     <br/>   
     <!-- "Search By" row -->
-    <div class="row">
+    <div id="searchByRow" class="row">
         <div class="col-sm-2">
             <b>Search by: </b>
         </div>
         <div class="col-sm-10">
-            <label><input type="radio" name="searchBy" ng-model="vm.searchBy" value="onlineVideoId">{{vm.video.mediaType === enums.mediaTypeMovie?'TMDB ID': 'TVDB ID'}}</label>        
-            <label><input type="radio" name="searchBy"  ng-model="vm.searchBy" value="title">Title</label>
-        </div>       
-    </div>
-    <br/>   
-    <div class="row">
-        <div class="col-sm-2">
-            <b>{{vm.textboxLabel}}: </b>
-        </div>       
-        <div class="col-sm-10">
-            <label>
-                <input class="form-control" type="text" ng-model="vm.searchValue" ng-init="vm.searchValue = 79349">
+            <label class="non-bold">
+                <input type="radio" 
+                       name="searchBy"  
+                       ng-model="vm.searchBy" 
+                       value="title" 
+                       ng-init="vm.searchBy = 'title'">
+                Title
             </label>
+            <label class="non-bold">
+                <input type="radio" 
+                       name="searchBy" 
+                       ng-model="vm.searchBy" 
+                       value="onlineVideoId">
+                {{vm.video.mediaType === enums.mediaType.movie?'TMDB ID': 'TVDB ID'}}
+            </label>        
         </div>       
     </div>
-    <div class="row"  ng-if="!vm.isSearching">
-        <div class="col-sm-12">
-            <a class="btn btn-primary" ng-click="vm.search()">Search</a>
+    <form ng-submit="vm.search()">
+        <div class="row">
+            <div class="col-sm-2">
+                <b>{{vm.textboxLabel}}: </b>
+            </div>       
+            <div class="col-sm-8">
+                <label>
+                    <input class="form-control" type="text" ng-model="vm.searchValue" />
+                </label>
+            </div>    
+            <div class="col-sm-2 text-center">
+                <label>
+                    <button type="submit" ng-if="!vm.isSearching" class="btn btn-primary form-control">Search</button>
+                </label>
+            </div>   
         </div>
-    </div>
+    </form>
     <div class="row"  ng-if="vm.isSearching">
         <div class="col-sm-12">
             <span class="loading"></span>&nbsp;Fetching video metadata
@@ -39,15 +63,50 @@
     <br/>
     <!-- Search results -->
     <div id="metadataSearchResults">
-        Please select the correct video from the results below<br/>
-        <div ng-repeat="video in vm.metadataResults" class="row metadata-tile">
-            <div class="text-area">
-                <b>Title: </b>
-                {{video.title}}<br/>
-                <b>Plot: </b>
-                {{video.plot}}
+        <div class="loading-metadata"  ng-show="vm.metadataIsBeingFetched">
+            <h3>
+                <span class="loading"></span>
+                Updating video with selected metadata
+            </h3>
+        </div>
+        <div ng-hide="vm.metadataIsBeingFetched">
+            <div ng-if="vm.metadataResults"><h2>Select the correct video from the results below</h2></div>
+            <div ng-repeat="video in vm.metadataResults" class="metadata-tile" ng-click="vm.fetchMetadataByOnlineVideoId(video.onlineVideoId);">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="video-tile">
+                            <img ng-attr-src="{{video.posterUrl}}">
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="text-area">
+                            <b>Title: </b>{{video.title}}<br/>
+                            <b>MPAA: </b>{{video.mpaa}}<br/>
+                            <span ng-if="video.mediaType === enums.mediaType.movie">
+                                <b>TMDB ID: </b>
+                                <a target="_blank" href="https://www.themoviedb.org/movie/{{video.onlineVideoId}}">
+                                    {{video.onlineVideoId}}
+                                </a>
+                            </span>
+                            <span ng-if="video.mediaType === enums.mediaType.show">
+                                <b>TVDB ID: </b>
+                                <a target="_blank" href="http://thetvdb.com/?tab=series&id={{video.onlineVideoId}}">
+                                    {{video.onlineVideoId}}
+                                </a>
+                            </span>
+                            <span ng-if="video.mediaType === enums.mediaType.episode">
+                                <b>TVDB ID: </b>
+                                <a target="_blank" href="http://thetvdb.com/?tab=episode&id={{video.onlineVideoId}}">
+                                    {{video.onlineVideoId}}
+                                </a>
+                            </span>
+                            <br/>
+                            <b>Plot: </b>
+                            {{video.plot| limitTo: 500}}<span ng-if="video.plot.length > 500">...</span>
+                        </div>        
+                    </div>      
+                </div>        
             </div>
-            <img ng-attr-src="{{video.posterUrl}}">
         </div>
     </div>
 </div>

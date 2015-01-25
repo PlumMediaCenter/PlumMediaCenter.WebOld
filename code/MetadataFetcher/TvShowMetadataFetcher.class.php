@@ -109,6 +109,10 @@ class TvShowMetadataFetcher extends MetadataFetcher {
     function tmdbId() {
         return $this->fetchSuccess ? $this->tvShowObject->id : null;
     }
+    
+    function onlineVideoId(){
+        return $this->tmdbId();
+    }
 
 }
 

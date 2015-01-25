@@ -42,6 +42,30 @@ class MovieMetadataFetcher extends MetadataFetcher {
 
         return $this->fetchSuccess;
     }
+    
+        /**
+     * Searched tmdb to find the tmdb id of the first video in the search results matching the provided movie title.
+     * Then sets the tmdb id of the movie we want to fetch metadata for. This search function does not actually do the searching.
+     * The searching is performed once the metadata starts being requested. In this way, only the metadata actually being used
+     * will be fetched.
+     * @param type $id - the tmdb id
+     */
+    function getFetchersByTitle($title) {
+        $this->fetchSuccess = false;
+        $fetchers = [];
+        $searchResults = $this->tmdb->searchMovie($title, 1, false);
+        $results = $searchResults["results"];
+        $resultCount = count($results); 
+        for($i = 0; $i < $resultCount; $i++){
+            $result = $results[$i];
+            $id = $result["id"];
+            $fetcher = new MovieMetadataFetcher();
+            $fetcher->searchById($id);
+            $fetchers[] = $fetcher;
+        }
+
+        return $fetchers;
+    }
 
     /**
      * Sets the tmdb id of the movie we want to fetch metadata for. This search function does not actually do the searching.
@@ -99,8 +123,17 @@ class MovieMetadataFetcher extends MetadataFetcher {
             if (count($releases) > 0) {
                 $this->fetchSuccess = true;
 
-                //just grab the first release in the list, should usually be the US
-                $this->release = $releases["countries"][0];
+                if(count($releases["countries"]) > 0){
+                    //just grab the first release in the list, should usually be the US
+                    $this->release = $releases["countries"][0];
+                }else{
+                    //we couldn't find ANY release countries. just make an empty one
+                    $this->release = [
+                        "iso_3166_1" => null,
+                        "certification"=>null,
+                        "release_date"=> null
+                    ];
+                }
             }
         }
     }
@@ -149,6 +182,10 @@ class MovieMetadataFetcher extends MetadataFetcher {
     function rating() {
         // return $this->info["rating"];
         return 10.0;
+    }
+    
+    function onlineVideoId(){
+        return $this->tmdbId;
     }
 
     function year() {

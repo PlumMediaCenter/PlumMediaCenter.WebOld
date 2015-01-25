@@ -100,6 +100,10 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher {
     public function id() {
         return $this->episodeObject->id;
     }
+    
+    public function onlineVideoId(){
+        return $this->id();
+    }
 
     public function imdbId() {
         return $this->episodeObject->imdbId;
