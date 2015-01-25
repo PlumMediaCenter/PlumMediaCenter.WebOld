@@ -19,6 +19,22 @@ class TvShowMetadataFetcher extends MetadataFetcher {
         return $this->fetchSuccess;
     }
 
+    function getFetchersByTitle($title) {
+        $this->fetchSuccess = false;
+        $fetchers = [];
+        $searchResults = TV_Shows::search($title);
+        $resultCount = count($searchResults);
+        for ($i = 0; $i < $resultCount; $i++) {
+            $result = $searchResults[$i];
+            $id = $result->id;
+            $fetcher = new TvShowMetadataFetcher();
+            $fetcher->searchById($id);
+            $fetchers[] = $fetcher;
+        }
+
+        return $fetchers;
+    }
+
     static function GetSearchByTitle($title) {
         //query the TvDb to find a tv show that matches this folder's title. 
         $tvShowsList = TV_Shows::search($title);
@@ -95,7 +111,7 @@ class TvShowMetadataFetcher extends MetadataFetcher {
     }
 
     function runtime() {
-        return $this->fetchSuccess && isset($this->tvShowObject->runtime )? $this->tvShowObject->runtime : null;
+        return $this->fetchSuccess && isset($this->tvShowObject->runtime) ? $this->tvShowObject->runtime : null;
     }
 
     function seriesName() {
@@ -109,8 +125,8 @@ class TvShowMetadataFetcher extends MetadataFetcher {
     function tmdbId() {
         return $this->fetchSuccess ? $this->tvShowObject->id : null;
     }
-    
-    function onlineVideoId(){
+
+    function onlineVideoId() {
         return $this->tmdbId();
     }
 

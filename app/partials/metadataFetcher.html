@@ -71,6 +71,7 @@
         </div>
         <div ng-hide="vm.metadataIsBeingFetched">
             <div ng-if="vm.metadataResults"><h2>Select the correct video from the results below</h2></div>
+            <div ng-if="vm.metadataResults.length === 0">No results found</div>
             <div ng-repeat="video in vm.metadataResults" class="metadata-tile" ng-click="vm.fetchMetadataByOnlineVideoId(video.onlineVideoId);">
                 <div class="row">
                     <div class="col-sm-3">

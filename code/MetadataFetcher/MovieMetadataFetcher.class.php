@@ -43,13 +43,6 @@ class MovieMetadataFetcher extends MetadataFetcher {
         return $this->fetchSuccess;
     }
     
-        /**
-     * Searched tmdb to find the tmdb id of the first video in the search results matching the provided movie title.
-     * Then sets the tmdb id of the movie we want to fetch metadata for. This search function does not actually do the searching.
-     * The searching is performed once the metadata starts being requested. In this way, only the metadata actually being used
-     * will be fetched.
-     * @param type $id - the tmdb id
-     */
     function getFetchersByTitle($title) {
         $this->fetchSuccess = false;
         $fetchers = [];
