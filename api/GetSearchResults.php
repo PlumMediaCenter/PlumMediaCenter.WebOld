@@ -2,8 +2,8 @@
 
 require_once(dirname(__FILE__) . '/../code/controllers/VideoController.php');
 
-$title = isset($_GET["title"]) ? $_GET["title"] : '';
-$videos = VideoController::SearchByTitle($title);
+$query = isset($_GET["q"]) ? $_GET["q"] : '';
+$videos = VideoController::SearchByTitle($query);
 header('Content-Type: application/json');
 echo json_encode($videos);
 ?>

@@ -5,7 +5,7 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
 
         Video.search = function(searchTerm) {
             var deferred = $q.defer();
-            $http.get('api/GetSearchResults.php', {params: {title: searchTerm}}).success(function(data) {
+            $http.get('api/GetSearchResults.php', {params: {q: searchTerm}}).success(function(data) {
                 deferred.resolve(data);
             }).error(function() {
                 deferred.reject();
