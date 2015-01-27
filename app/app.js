@@ -1,6 +1,7 @@
 angular.module('app', ['ui.router', 'ui.bootstrap', 'infinite-scroll'])
-        .run(['$rootScope', 'enums', function($rootScope, enums) {
+        .run(['$rootScope', 'enums', 'globals', function($rootScope, enums, globals) {
                 $rootScope.enums = enums;
+                $rootScope.globals = globals;
             }]);
 
 fetchConstants().then(bootstrapApplication);

@@ -198,6 +198,20 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
             return deferred.promise;
         }
 
-
+        /**
+         * Finds a poster and metadata for every video in the library that does not have one yet.
+         * @returns {$q@call;defer.promise}
+         */
+        Video.fetchMissingMetadata = function() {
+            var deferred = $q.defer();
+            $http.get('api/FetchMissingMetadataAndPosters.php')
+                    .success(function(result) {
+                        deferred.resolve(result);
+                    })
+                    .error(function() {
+                        deferred.reject();
+                    });
+            return deferred.promise;
+        }
         return Video;
     }]);

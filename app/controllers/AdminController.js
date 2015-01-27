@@ -1,20 +1,25 @@
 angular.module('app').controller('AdminController', ['globals', 'api', 'notify', 'Video',
     function(globals, api, notify, Video) {
-        var vm = this;
-        vm.generatingLibrary = false;
         globals.title = 'Admin';
+
+        var vm = angular.extend(this, {
+            //api
+            fetchMissingMetadata: fetchMissingMetadata,
+            generateLibrary: generateLibrary
+        });
+
+
         getVideoCounts();
-        
-        vm.generateLibrary = function() {
+
+        function generateLibrary() {
             var n = notify('Generating library', 'info');
-            vm.generatingLibrary = true;
-            console.log(n);
+            globals.generateLibraryIsPending = true;
             api.generateLibrary().then(function() {
                 notify('Library has been generated', 'success');
             }).catch(function(err) {
                 notify('There was an error generating the library: "' + err.message + '"', 'danger');
             }).finally(function() {
-                vm.generatingLibrary = false;
+                globals.generateLibraryIsPending = false;
                 getVideoCounts();
             });
         }
@@ -25,4 +30,15 @@ angular.module('app').controller('AdminController', ['globals', 'api', 'notify',
             });
         }
 
+        function fetchMissingMetadata() {
+            globals.fetchMissingMetadataIsPending = true;
+            notify('Fetching missing metadata', 'info');
+            Video.fetchMissingMetadata().then(function() {
+                notify('Finished fetching missing metata for videos', 'success');
+            }, function() {
+                notify('There was an error fetching missing metadata', 'error');
+            }).finally(function() {
+                globals.fetchMissingMetadataIsPending = false;
+            });
+        }
     }]);
