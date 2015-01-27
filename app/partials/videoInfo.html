@@ -1,4 +1,5 @@
 <div class="container">
+    <a ng-if="vm.video.mediaType === enums.mediaType.episode" ng-click="vm.navigateToShow()">&lt;Back to Show</a>
     <div class="row " style="margin-top:5px;">
         <div class="col-md-3 text-center">
             <div id="videoInfoPosterColumn">
@@ -43,17 +44,20 @@
                     <td class="transparent">{{episode.episodeNumber}}</td>
                     <td class="transparent" style='display:none;'>{{episode.videoId}}</td>
                     <td class="transparent">
-                        <a class="btn btn-primary btn-sm" style="display:block;" ui-sref="play(episode)" title="Play">  
+                        <a class="btn btn-primary btn-sm" style="display:block;" ui-sref="play({videoId: episode.videoId, showVideoId: vm.videoId})" title="Play">  
                             <span class="glyphicon glyphicon-play"></span>
                         </a>
                     </td>
                     <td class="transparent">{{episode.title}}</td>
                     <td class="transparent">
-                        <div class="progressbar" >
+                        <div class="progressbar" ng-if="episode.percentWatched !== undefined">
                             <div class="percentWatched" ng-attr-style="{{'width:' + episode.percentWatched + '%'}}">
                             </div>
                             <div class="percentWatchedText">{{episode.percentWatched}}
                             </div>
+                        </div>
+                        <div ng-if="episode.percentWatched === undefined">
+
                         </div>
                     </td>
                 </tr>

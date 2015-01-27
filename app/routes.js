@@ -36,7 +36,7 @@ angular.module('app')
                             controllerAs: 'vm'
                         })
                         .state('play', {
-                            url: '/play/{videoId:int}',
+                            url: '/play/{videoId:int}?{showVideoId:int}',
                             templateUrl: 'app/partials/play.html',
                             controller: 'PlayController',
                             controllerAs: 'vm'

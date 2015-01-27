@@ -69,6 +69,13 @@ class VideoController {
         $videos = VideoController::GetTvShows([$videoId]);
         return count($videos) === 1 ? $videos[0] : null;
     }
+    
+    
+    static function GetTvShowByEpisodeId($episodeId = -1) {
+        $tvShowVideoId = Queries::GetTvShowVideoIdFromEpisodeTable($episodeId);
+        $show = Video::GetVideo($tvShowVideoId);
+        return $show;
+    }
 
     /**
      * Get a single movie with the specified videoId

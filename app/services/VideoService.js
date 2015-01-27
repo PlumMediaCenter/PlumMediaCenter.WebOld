@@ -68,7 +68,24 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
                     })
                     .error(deferred.reject);
             return deferred.promise;
+        };
 
+        /**
+         * Get how much percentage watched each video is
+         * @param {type} videoId
+         * @returns {$q@call;defer.promise}
+         */
+        Video.getProgressPercentMultiple = function(videoIds) {
+            videoIds = _.isArray(videoIds) ? videoIds : [];
+            var deferred = $q.defer();
+            $http.get('api/GetVideoProgressPercentMultiple.php', {
+                params: {
+                    videoIds: videoIds.join(',')
+                }
+            }).success(function(result) {
+                deferred.resolve(result);
+            }).error(deferred.reject);
+            return deferred.promise;
         };
 
         /**
@@ -160,6 +177,18 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
         Video.getPathInfo = function(videoId) {
             var deferred = $q.defer();
             $http.get('api/GetVideoPathInfo.php?videoId=' + videoId)
+                    .success(function(video) {
+                        deferred.resolve(video);
+                    })
+                    .error(function() {
+                        deferred.reject();
+                    });
+            return deferred.promise;
+        }
+
+        Video.getShowFromEpisodeId = function(episodeId) {
+            var deferred = $q.defer();
+            $http.get('api/GetTvShowByEpisodeId.php?videoId=' + episodeId)
                     .success(function(video) {
                         deferred.resolve(video);
                     })

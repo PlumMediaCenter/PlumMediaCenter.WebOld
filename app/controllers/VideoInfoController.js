@@ -1,45 +1,64 @@
-angular.module('app').controller('VideoInfoController', ['globals', 'Video', '$stateParams', 'enums', function(globals, Video, $stateParams, enums) {
+angular.module('app').controller('VideoInfoController', ['$scope', 'globals', 'Video', '$state', '$stateParams', 'enums',
+    function($scope, globals, Video,$state,  $stateParams, enums) {
         var vm = angular.extend(this, {
             progressPercent: 0,
-            onlineVideoIdName: undefined,
             preventCache: $stateParams.preventCache,
+            episodes: undefined,
+            videoId: $stateParams.videoId,
             //api
-            getProgressPercentType: getProgressPercentType
+            getProgressPercentType: getProgressPercentType,
+            navigateToShow: navigateToShow
         });
         globals.title = 'VideoInfo';
 
+        $scope.$watch('vm.episodes', fetchAllEpisodePercentWatched);
+
         //load the video by id
-        Video.getById($stateParams.videoId).then(function(video) {
+        Video.getById(vm.videoId).then(function(video) {
             vm.video = video;
-//            if (vm.preventCache) {
-//                var time =  new Date().getTime();
-//                //append a date to the image url so we can be sure to load the latest image. 
-//                vm.video.posterUrl = vm.video.posterUrl + '?' +time;
-//                vm.video.hdPosterUrl = vm.video.hdPosterUrl + '?' +time;
-//                vm.video.sdePosterUrl = vm.video.sdePosterUrl + '?' +time;
-//
-//            }
-            if (video.mediaType === enums.mediaType.movie) {
-                vm.onlineVideoIdName = 'TMDB ID';  
-            } else {
-                vm.onlineVideoIdName = 'TVDB ID';
-            }
-            if (vm.video.mediaType === 'TvShow') {
+
+            if (vm.video.mediaType === enums.mediaType.show) {
+                //get all of the episodes for this show
                 Video.getEpisodes(vm.video.videoId).then(function(episodes) {
                     vm.episodes = episodes;
-                });
-                Video.getNextEpisode(vm.video.videoId).then(function(episode) {
-                    vm.nextEpisode = episode;
+                    //find the next episode that should be watched
+                }).then(function() {
+                    return Video.getNextEpisode(vm.video.videoId);
+                    //select the episode in our local list of episodes that matches the next episode
+                }).then(function(nextEpisode) {
+                    vm.nextEpisode = _.where(vm.episodes, {videoId: nextEpisode.videoId})[0];
+                    //figure out how much of this episode has been watched
+                }).then(function() {
+                    return Video.getProgressPercent(vm.nextEpisode.videoId);
+                    //save the percentWatched to the episode
+                }).then(function(percent) {
+                    vm.nextEpisode.percentWatched = percent;
                 });
             }
 
-            //this is a show or an episode
             //load the progress of this video
             Video.getProgressPercent(vm.video.videoId).then(function(percent) {
                 vm.progressPercent = percent;
             });
 
         })
+
+        /**
+         * Grabs the percent watched for every episode
+         * @returns {undefined}
+         */
+        function fetchAllEpisodePercentWatched() {
+            var videoIds = _.pluck(vm.episodes, 'videoId');
+            Video.getProgressPercentMultiple(videoIds).then(function(percentObjects) {
+                for (var i in percentObjects) {
+                    var percentObj = percentObjects[i];
+                    var episode = _.where(vm.episodes, {videoId: percentObj.videoId})[0];
+                    if (episode) {
+                        episode.percentWatched = percentObj.percent;
+                    }
+                }
+            });
+        }
 
         function getProgressPercentType() {
             if (vm.progressPercent < 40) {
@@ -49,5 +68,11 @@ angular.module('app').controller('VideoInfoController', ['globals', 'Video', '$s
             } else if (vm.progressPercent < 101) {
                 return 'success';
             }
+        }
+
+        function navigateToShow() {
+            Video.getShowFromEpisodeId(vm.videoId).then(function(show) {
+                $state.go('videoInfo', {videoId: show.videoId});
+            });
         }
     }]);

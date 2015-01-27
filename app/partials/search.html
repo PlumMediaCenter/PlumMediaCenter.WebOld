@@ -1,3 +1,4 @@
+<h1 class="text-center full-width">Search results for "{{vm.searchTerm}}"</h1>
 <div infinite-scroll='vm.loadMore()' infinite-scroll-distance='2' ng-if='vm.allVideos.length > 0'>
     <video-tile video="video" ng-repeat="video in vm.currentlyLoadedVideos"></video-tile>
 </div>
