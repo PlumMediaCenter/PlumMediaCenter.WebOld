@@ -52,11 +52,12 @@ angular.module('app').controller('AdminController', ['$timeout', '$window', 'glo
         }
 
         function updateApplication() {
+            globals.checkForUpdatesIsPending = true;
             notify('Checking for updates. Please wait until this operation has completed', 'info');
             admin.updateApplication().then(function(result) {
                 if (result.updateWasApplied) {
                     notify('Application has been updated. Reloading page.', 'success');
-                    $timeout(function(){
+                    $timeout(function() {
                         $window.location.reload();
                     }, 4000);
                 } else {
@@ -64,6 +65,8 @@ angular.module('app').controller('AdminController', ['$timeout', '$window', 'glo
                 }
             }, function() {
                 notify('Unable to check and install updates', 'error');
+            }).finally(function() {
+                globals.checkForUpdatesIsPending = false;
             });
         }
     }]);

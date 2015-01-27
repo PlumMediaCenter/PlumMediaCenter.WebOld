@@ -13,12 +13,16 @@
             <span ng-show="globals.fetchMissingMetadataIsPending"><span class="loading"></span>Fetching missing metadata</span>
             <br/>
             <br/>
-            <a class="btn btn-default" ng-click="vm.updateApplication()">Check for and install updates</a>
-            <br/>
-            <label><input type="checkbox" name="force" value="true"/> Force latest update to install</label>
-            <div ng-if="vm.serverVersionNumber">
-                Currently installed version: {{vm.serverVersionNumber}}
+            <div ng-show="!globals.checkForUpdatesIsPending">
+                <a class="btn btn-default" ng-click="vm.updateApplication()">Check for and install updates</a>
+
+                <br/>
+                <label><input type="checkbox" name="force" value="true"/> Force latest update to install</label>
+                <div ng-if="vm.serverVersionNumber">
+                    Currently installed version: {{vm.serverVersionNumber}}
+                </div>
             </div>
+            <span ng-show="globals.checkForUpdatesIsPending"><span class="loading"></span>Checking for and installing updates</span>
 
             <div id="generateLibraryModal" class="modal fade">
                 <div class="modal-dialog">
