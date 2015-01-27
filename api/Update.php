@@ -2,8 +2,9 @@
 
 require(dirname(__FILE__) . '/../code/functions.php');
 require(dirname(__FILE__) . '/../code/database/Version.class.php');
-ob_start();
 
+ob_start();
+$updateWasApplied = false;
 $force = isset($_GET['force']) ? true : false;
 $repoOwner = config::$repoOwner;
 $repoName = config::$repoName;
@@ -35,13 +36,16 @@ if ($ourVersionIsOutOfDate || $force) {
     echo "We need to fetch some updates<br/>\n";
     loadLatestCode($highestTagObject['sha']);
     echo "Updated server to version " . $highestTagObject['tag'] . '<br/>\n';
+    $updateWasApplied = true;
 } else {
     echo "Server is up to date. No update needed.<br/>\n";
+    $updateWasApplied = false;
 }
 $output = ob_get_contents();
 ob_end_clean();
 $result = (object) [];
 $result->success = true;
+$result->updateWasApplied = $updateWasApplied;
 $result->message = $output;
 
 header('Content-Type: application/json');

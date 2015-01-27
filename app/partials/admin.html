@@ -3,21 +3,22 @@
         <div class="col-md-7">
             <br/>
             <a ng-show="!globals.generateLibraryIsPending" ng-click="vm.generateLibrary()" class="btn btn-default">Generate/Update library</a>
-            <span ng-show="globals.generateLibraryIsPending "><span class="loading"></span> Generating Library </span>
+            <span ng-show="globals.generateLibraryIsPending"><span class="loading"></span> Generating Library </span>
             <br/>
             <br/>
             <a ui-sref="videoSources" class="btn btn-default">Manage Video Sources</a>
             <br/>
             <br/>
             <a ng-show="!globals.fetchMissingMetadataIsPending" class="btn btn-default" ng-click="vm.fetchMissingMetadata()">Fetch Missing Metadata</a>
-            <span ng-show="globals.fetchMissingMetadataIsPending "><span class="loading"></span>Fetching missing metadata</span>
+            <span ng-show="globals.fetchMissingMetadataIsPending"><span class="loading"></span>Fetching missing metadata</span>
             <br/>
             <br/>
-            <form action="api/Update.php">
-                <button type="submit" class="btn btn-default">Check for and install updates</button>
-                <label><input type="checkbox" name="force" value="true"/> Force latest update to install</label>
-                <br/>Currently installed version <?php echo CreateDatabase::CurrentDbVersion(); ?>
-            </form>
+            <a class="btn btn-default" ng-click="vm.updateApplication()">Check for and install updates</a>
+            <br/>
+            <label><input type="checkbox" name="force" value="true"/> Force latest update to install</label>
+            <div ng-if="vm.serverVersionNumber">
+                Currently installed version: {{vm.serverVersionNumber}}
+            </div>
 
             <div id="generateLibraryModal" class="modal fade">
                 <div class="modal-dialog">
