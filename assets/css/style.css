@@ -31,12 +31,16 @@ input[type=text]{
     position:relative;
 }
 #bodyContent.navbar-adjust{
-    height: calc(100% - 52px);
-    top:52px;
+    height: calc(100% - 55px);
+    top:55px;
 }
 
 .disabled-background{
     background-color: #FFF6F4;
+}
+
+#mainNavbar{
+    padding-top:3px;
 }
 
 .edit-video-source-container{
