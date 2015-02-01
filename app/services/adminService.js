@@ -26,7 +26,6 @@ angular.module('app').service('admin', ['$http', '$q', '_', function($http, $q, 
          */
         function updateApplication() {
             var deferred = $q.defer();
-            debugger;
             $http.get('api/Update.php')
                     .success(function(result) {
                         if (result.success === true) {
