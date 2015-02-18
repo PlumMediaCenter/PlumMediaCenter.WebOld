@@ -7,7 +7,7 @@ More detailed instructions to come as I have time.
 
 You must have a web server that can run PHP. You must also have root access to a mysql database. 
 
-Copy the contents of "Web" to a folder inside of your public web server folder.
+Copy the contents of this folder to a folder inside of your web server and name that folder 'PlumMediaCenter'
 
 Navigate to Setup.php and follow the instructions. 
 
