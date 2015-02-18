@@ -1,12 +1,18 @@
-<form name="vm.form" novalidate class="edit-video-source-container form" ng-class="{
-            'disabled-background': vm.loading}">
+<form name="vm.form" 
+      novalidate 
+      class="edit-video-source-container form" 
+      ng-class="{
+            'disabled-background': vm.isLoading
+        }"
+      ng-submit="vm.save()"
+      >
     <div class="row">
         <div class="col-xs-3">Base File Path: </div>
         <div class="col-xs-9">                  
             <input type="text" 
                    name="path"
                    ng-model="vm.videoSource.location" 
-                   ng-disabled="vm.loading" 
+                   ng-disabled="vm.isLoading" 
                    class="form-control" 
                    placeholder="ex: c:/videos/Movies/"
                    required 
@@ -32,7 +38,7 @@
             <input type="url" 
                    name="baseUrl"
                    ng-model="vm.videoSource.baseUrl" 
-                   ng-disabled="vm.loading"  
+                   ng-disabled="vm.isLoading"  
                    class="form-control" 
                    placeholder="ex: http://localhost/videos/movies/"
                    required/>
@@ -56,7 +62,7 @@
         <div class="col-xs-3">Security Type: </div>
         <div class="col-xs-9">
             <label>
-                <input type="radio" name="securityType" ng-model="vm.videoSource.securityType" ng-disabled="vm.loading" ng-attr-value="{{enums.securityType.public}}">
+                <input type="radio" name="securityType" ng-model="vm.videoSource.securityType" ng-disabled="vm.isLoading" ng-attr-value="{{enums.securityType.public}}">
                 No Security</label>
             <!-- &nbsp;
             <input type="radio" id="securityTypePrivate" name="securityType"  value="<?php echo Enumerations::SecurityType_LoginRequired; ?>">
@@ -73,7 +79,7 @@
                 <input type="radio" 
                        ng-model="vm.videoSource.mediaType" 
                        required 
-                       ng-disabled="vm.loading" 
+                       ng-disabled="vm.isLoading" 
                        name="mediaType" 
                        ng-attr-value="{{enums.mediaType.movie}}">
                 Directory full of movies
@@ -81,7 +87,7 @@
             &nbsp;<br/>
             <label >
                 <input type="radio" 
-                       ng-disabled="vm.loading" 
+                       ng-disabled="vm.isLoading" 
                        ng-model="vm.videoSource.mediaType" 
                        name="mediaType" 
                        ng-attr-value="{{enums.mediaType.show}}">
@@ -92,14 +98,21 @@
     <br/>
     <div class="row">
         <div class="col-xs-12 text-center" >
-            <span ng-if="vm.loading">
-                <span class="loading"></span> Loading video source
+            <span ng-if="vm.isLoading">
+                <span class="loading"></span>Loading video source
+            </span>
+            <span ng-if="vm.isSaving">
+                <span class="loading"></span>Saving
             </span>
             <a class="btn btn-warning" ng-click="vm.reset()">Cancel</a>
-            <button ng-if="vm.videoSource && !vm.loading" 
-               class="btn btn-success" 
-               ng-disabled="!vm.form.$valid"
-               ng-click="vm.save()">{{!vm.videoSource.id?'Create new': 'Save updates'}}</button>
+            <button 
+                type="submit"
+                ng-if="vm.videoSource && !vm.isLoading" 
+                class="btn btn-success" 
+                ng-disabled="!vm.form.$valid"
+                >
+                {{!vm.videoSource.id?'Create new': 'Save updates'}}
+            </button>
         </div>
     </div>
 </form>

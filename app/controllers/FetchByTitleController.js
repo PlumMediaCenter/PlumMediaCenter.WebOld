@@ -1,4 +1,4 @@
-angular.module('app').controller('EditVideoSourceController', ['$stateParams',
+angular.module('app').controller('FetchByTitleController', ['$stateParams',
     function($stateParams) {
         var vm = angular.extend(this, {
             //properties
