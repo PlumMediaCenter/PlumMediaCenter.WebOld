@@ -139,8 +139,12 @@ class TV_Show extends TVDB {
         $y = (string) substr($firstAired, 0, 4);
         $m = substr($firstAired, 5, 2);
         $d = substr($firstAired, 8, 2);
-        $d = new DateTime("$m/$d/$y");
-        $this->firstAired = $d;
+        try{
+            $date = new DateTime("$m/$d/$y");
+        }catch(Exception $e){
+            $date = new DateTime("01/01/0001");
+        }
+        $this->firstAired = $date;
         $this->network = (string) $config->Network;
         $this->_runtime = (string) $config->Runtime;
         $this->genres = $this->removeEmptyIndexes(explode('|', (string) $config->Genre));
