@@ -139,7 +139,7 @@ class TvShow extends Video {
     function remainingEpisodes($tvEpisode) {
         //load all tv episodes
         if (count($this->episodes) == 0) {
-            $this->loadEpisodesFromDatabase();
+                $this->loadEpisodesFromDatabase();
         }
         $remainingEpisodes = [];
         $sNum = $tvEpisode->seasonNumber;

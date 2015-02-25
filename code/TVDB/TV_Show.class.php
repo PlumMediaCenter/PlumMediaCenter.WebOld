@@ -142,7 +142,7 @@ class TV_Show extends TVDB {
         try{
             $date = new DateTime("$m/$d/$y");
         }catch(Exception $e){
-            $date = new DateTime("01/01/0001");
+            $date = null;
         }
         $this->firstAired = $date;
         $this->network = (string) $config->Network;

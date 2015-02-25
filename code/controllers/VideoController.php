@@ -137,14 +137,16 @@ class VideoController {
      * @param type $videoId
      * @return type
      */
-    static function GetTvEpisodesByShowVideoId($tvShowVideoId) {
+ static function GetTvEpisodesByShowVideoId($tvShowVideoId) {
         //get all movies and tv shows from the db
         $videoRows = DbManager::GetAllClassQuery(
                         "select * "
                         . " from video, tv_episode "
                         . " where video.video_id = tv_episode.video_id "
-                        . " and tv_episode.tv_show_video_id = ?"
-                        . " and video.media_type = ?", $tvShowVideoId, Enumerations::MediaType_TvEpisode);
+                        . "     and tv_episode.tv_show_video_id = ?"
+                        . "     and video.media_type = ?"
+                        . " order by tv_episode.season_number asc, "
+                        . "     tv_episode.episode_number asc", $tvShowVideoId, Enumerations::MediaType_TvEpisode);
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         $videos = PropertyMappings::MapMany($videos, PropertyMappings::$episodeMapping);
         VideoController::SortEpisodes($videos);
