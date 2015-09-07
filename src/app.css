@@ -62,7 +62,7 @@ input[type=text]{
     background-color: #f2dede;
 }
 .loading{
-    background-image: url('../img/ajax-loader.gif');
+    background-image: url('../assets/img/ajax-loader.gif');
     height:32px;
     width:32px;
     background-color: transparent;
