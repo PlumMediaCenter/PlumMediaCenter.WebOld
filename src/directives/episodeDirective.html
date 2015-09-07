@@ -3,7 +3,7 @@
     <div class="season-episode-number">
         Season {{vm.episode.seasonNumber}}, Episode {{vm.episode.episodeNumber}}<br/>
     </div>
-    <div class="title-info">
+    <div class="title-info" title="{{vm.episode.title}}">
         {{vm.title}} {{::vm.runtimeText}}
     </div>
     <img ng-attr-src="{{vm.episode.hdPosterUrl}}" />
