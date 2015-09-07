@@ -18,17 +18,18 @@ angular.module('app').directive('episode', [function () {
                 //episode
             }, this);
             
-            var maxTitleLength = 20;
+            var maxTitleLength = 16;
             //truncate the title 
             
             vm.title = vm.episode.title;
             if(vm.episode.title.length > maxTitleLength){
-                vm.title = vm.episode.title.substring(0, 20) + '...';
+                vm.title = vm.episode.title.substring(0, maxTitleLength) + '...';
             }
-            
+
             //calculate the runtime text
             if(typeof vm.episode.runtime === 'number' && vm.episode.runtime > -1){
-                vm.runtimeText = '(' + vm.episode.runtime + ')';
+                var runtimeMinutes = parseInt(vm.episode.runtime / 60);
+                vm.runtimeText = '(' + runtimeMinutes + ' min)';
             }   
         }
     }
