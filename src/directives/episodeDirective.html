@@ -1,0 +1,13 @@
+<div class="episode" ng-mouseenter="vm.hover = true" ng-mouseleave="vm.hover = false">
+    <div class="blur-screen"></div>
+    <div class="season-episode-number">
+        Season {{vm.episode.seasonNumber}}, Episode {{vm.episode.episodeNumber}}<br/>
+    </div>
+    <div class="title-info">
+        {{vm.title}} {{::vm.runtimeText}}
+    </div>
+    <img ng-attr-src="{{vm.episode.hdPosterUrl}}" />
+    <a ng-if="vm.hover" class="play" ui-sref="play({videoId: vm.episode.videoId, showVideoId: vm.episode.videoId})" title="Play">
+        <span class="glyphicon glyphicon-play-circle"></span>
+    </a>
+</div> 

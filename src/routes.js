@@ -6,50 +6,50 @@ angular.module('app')
                 $stateProvider
                         .state('home', {
                             url: '/home',
-                            templateUrl: 'app/partials/home.html',
+                            templateUrl: 'home.html',
                             controller: 'HomeController',
                             controllerAs: 'vm'
                         })
                         .state('admin', {
                             url: '/admin',
-                            templateUrl: 'app/partials/admin.html',
+                            templateUrl: 'admin.html',
                             controller: 'AdminController',
                             controllerAs: 'vm'
                         })
                         .state('videoInfo', {
                             url: '/videoInfo/{videoId:int}',
-                            templateUrl: 'app/partials/videoInfo.html',
+                            templateUrl: 'videoInfo.html',
                             controller: 'VideoInfoController',
                             controllerAs: 'vm'
                         })
                         .state('videoSources', {
                             url: '/videoSources',
-                            templateUrl: 'app/partials/videoSources.html',
+                            templateUrl: 'videoSources.html',
                             controller: 'VideoSourcesController',
                             controllerAs: 'vm'
                         })
                         .state('editVideoSource', {
                             url: '/editVideoSource/{id:int}',
                             parent: 'videoSources',
-                            templateUrl: 'app/partials/editVideoSource.html',
+                            templateUrl: 'editVideoSource.html',
                             controller: 'EditVideoSourceController',
                             controllerAs: 'vm'
                         })
                         .state('play', {
                             url: '/play/{videoId:int}?{showVideoId:int}',
-                            templateUrl: 'app/partials/play.html',
+                            templateUrl: 'play.html',
                             controller: 'PlayController',
                             controllerAs: 'vm'
                         })
                         .state('search', {
                             url: '/search?q',
-                            templateUrl: 'app/partials/search.html',
+                            templateUrl: 'search.html',
                             controller: 'SearchController',
                             controllerAs: 'vm'
                         })
                         .state('metadataFetcher', {
                             url: '/metadataFetcher/{videoId:int}',
-                            templateUrl: 'app/partials/metadataFetcher.html',
+                            templateUrl: 'metadataFetcher.html',
                             controller: 'MetadataFetcherController',
                             controllerAs: 'vm'
                         }) 

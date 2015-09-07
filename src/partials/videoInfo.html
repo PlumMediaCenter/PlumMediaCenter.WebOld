@@ -1,0 +1,86 @@
+<div class="container">
+    <a ng-if="vm.video.mediaType === enums.mediaType.episode" ng-click="vm.navigateToShow()">&lt;Back to Show</a>
+    <div class="row " style="margin-top:5px;">
+        <div class="col-md-3 text-center">
+            <div id="videoInfoPosterColumn">
+                <a ng-attr-href="{{vm.video.posterUrl}}">
+                    <img ng-attr-src="{{vm.video.hdPosterUrl}}" class="full-width">
+                </a>
+                <progressbar title="progress" class="margin" style="background-color: grey;margin-top:5px;" type="{{vm.getProgressPercentType()}}" value="vm.progressPercent < 15? 15: vm.progressPercent " max="100"><span>{{vm.progressPercent}}%</progressbar>
+                <a class="btn btn-default full-width margin" ui-sref="metadataFetcher({videoId: vm.video.videoId})">Fetch Metadata</a>
+                <a ui-sref="play(vm.video)" class="btn btn-primary full-width margin">
+                    <span class="glyphicon glyphicon-play"></span>&nbsp;Play
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h1 class="text-center">{{vm.video.title}}</h1>
+            <div class="text-center full-width">
+                <b>{{vm.video.mpaa}}</b>&nbsp;&nbsp;               
+                <b>{{vm.video.year}}</b>
+
+            </div>
+            <br/> <br/>{{vm.video.plot}}
+        </div>
+    </div>
+    <div class="row"> 
+        <div class="col-xs-12">
+            <episode episode="episode" ng-repeat="episode in vm.episodes"></episode>
+        </div>
+    </div>
+    <!--    <div class="row " ng-if="vm.episodes">
+            <div class="col-md-5" style="border:0px solid red;">
+                <table class='table'> 
+                    <tr>
+                        <th>Episode</th>
+                        <th style='display:none;'>VID</th>
+                        <th></th>
+                        <th style='display:none;'>Add To Playlist</th>
+                        <th>Title</th>
+                        <th>Progress</th>
+                    </tr>
+                    <tr ng-repeat="episode in vm.episodes" 
+                        ng-class="{
+                                'nextEpisodeRow'
+                                : episode.videoId === vm.nextEpisode.videoId, 'selected': vm.selectedEpisode.videoId === episode.videoId}" 
+                        ng-click="vm.selectedEpisode = episode"
+                        class="episodeRow"
+                        style="border:1px solid black;">
+                        <td class="transparent">{{episode.episodeNumber}}</td>
+                        <td class="transparent" style='display:none;'>{{episode.videoId}}</td>
+                        <td class="transparent">
+                            <a class="btn btn-primary btn-sm" style="display:block;" ui-sref="play({videoId: episode.videoId, showVideoId: vm.videoId})" title="Play">  
+                                <span class="glyphicon glyphicon-play"></span>
+                            </a>
+                        </td>
+                        <td class="transparent">{{episode.title}}</td>
+                        <td class="transparent">
+                            <div class="progressbar" ng-if="episode.percentWatched !== undefined">
+                                <div class="percentWatched" ng-attr-style="{{'width:' + episode.percentWatched + '%'}}">
+                                </div>
+                                <div class="percentWatchedText">{{episode.percentWatched}}
+                                </div>
+                            </div>
+                            <div ng-if="episode.percentWatched === undefined">
+    
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-7" style="border:0px solid red;">
+                <div id="episodeInfo" class="shadow" ng-class="{
+                        'hide'
+                        : !vm.selectedEpisode}">
+                    <h1 id="title" style="text-align:center;"></h1>
+                    <img align="right" id="episodePoster" ng-attr-src="{{vm.selectedEpisode.sdPosterUrl}}"/>
+                    <p>Season {{vm.selectedEpisode.seasonNumber}} Episode {{vm.selectedEpisode.episodeNumber}}
+                        <br/><b>Rating: {{vm.selectedEpisode.mpaa}} </b>
+                        <br/><b>Release Date: {{vm.selectedEpisode.releaseDate}}
+                    </p>
+                    <span style="font-weight:normal;">{{vm.selectedEpisode.plot}}</span>
+                </div>
+            </div>
+        </div>-->
+</div>
+

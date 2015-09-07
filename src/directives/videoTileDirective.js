@@ -7,7 +7,7 @@ angular.module('app').directive('videoTile', [function() {
             scope: {
                 video: '='
             },
-            templateUrl: 'app/directives/videoTileDirective.html'
+            templateUrl: 'videoTileDirective.html'
         }
 
         function Controller() {

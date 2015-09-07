@@ -42,17 +42,18 @@
         <script type="text/javascript" src="lib/ngInfiniteScroll/ng-infinite-scroll.min.js"></script>
 
 
-        <script type="text/javascript" src="app/app.min.js"></script>     
-
-        <link href="assets/css/style.css" rel="stylesheet">
+        <script type="text/javascript" src="dist/app.min.js"></script>
+        <script type="text/javascript" src="dist/templates.js"></script> 
+ 
+        <link href="dist/app.min.css" rel="stylesheet">
 
     </head>  
     <body>
-    <ng-include ng-if="!base.globals.hideNavbar" src="'app/partials/navbar.html'"></ng-include>
+    <ng-include ng-if="!base.globals.hideNavbar" src="'navbar.html'"></ng-include>
     <div id="bodyContent" ng-class="{fill: base.globals.hideNavbar, 'navbar-adjust': !base.globals.hideNavbar}"> 
         <div class="fill" ui-view autoscroll="true"></div>
     </div>
-    
-    <!--<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>-->
+
+    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 </body>
 </html>
