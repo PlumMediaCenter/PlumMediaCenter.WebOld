@@ -16,7 +16,7 @@ set_error_handler('handleError');
 
 function getLibrary() {
     //get all movies and tv shows from the db
-    $videoRows = DbManager::GetAllClassQuery("select * from video where media_type in('" . Enumerations::MediaType_Movie . "', '" . Enumerations::MediaType_TvShow . "')");
+    $videoRows = DbManager::GetAllClassQuery("select * from video where media_type in('" . Enumerations::MediaType_Movie . "', '" . Enumerations::MediaType_TvShow . "') order by title asc");
     $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
     return $videos;
 }
@@ -46,7 +46,6 @@ function getFoldersFromDirectory($baseDirectory) {
     return $folders;
 }
 
-
 function endsWith($haystack, $needle) {
     // search forward starting from end minus needle length characters
     return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
@@ -59,7 +58,7 @@ function endsWith($haystack, $needle) {
  */
 function getVideosFromDir($dir) {
     //if the directory does not have an ending slash, add one now
-    if(endsWith($dir, '/') === false && endsWith($dir, '\\') === false){
+    if (endsWith($dir, '/') === false && endsWith($dir, '\\') === false) {
         $dir = $dir . '/';
     }
     ob_start();
@@ -191,7 +190,7 @@ function printVideoMetadataRow($v) {
  * @return type
  */
 function getVideoMetadataRow($v) {
-    if($v == null){
+    if ($v == null) {
         return "";
     }
     ob_start();
