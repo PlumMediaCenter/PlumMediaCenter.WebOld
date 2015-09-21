@@ -16,6 +16,6 @@ if ($id) {
     Queries::DeleteVideosInSource($id);
     $success = Queries::UpdateVideoSource($id, $location, $baseUrl, $mediaType, $securityType);
 } else {
-    Queries::addVideoSource($location, $baseUrl, $mediaType, $securityType);
+    Queries::AddVideoSource($location, $baseUrl, $mediaType, $securityType);
 }
 

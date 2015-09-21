@@ -203,8 +203,8 @@ class Library {
         return true;
     }
 
-    public function sort(){
-        
+    public function sort() {
+
         //sort the movies and tv shows
         usort($this->movies, array($this, 'cmp'));
         usort($this->tvShows, array($this, 'cmp'));
@@ -236,7 +236,7 @@ class Library {
         }
         return $stats;
     }
-    
+
     
     /**
      * Forces every video loaded into memory in this library object to be written to the database. 
@@ -248,12 +248,12 @@ class Library {
         $totalSuccess = true;
         foreach ($this->videos as $video) {
             $thisVideoSuccess = $video->writeToDb();
-            $totalSuccess = $totalSuccess && $thisVideoSuccess ;
+            $totalSuccess = $totalSuccess && $thisVideoSuccess;
         }
-      
+
         //delete any videos that don't exist anymore
         Video::DeleteMissingVideos();
-        
+
         //return success or failure. If at least one item failed, this will be returned as a failure
         return $totalSuccess;
     }

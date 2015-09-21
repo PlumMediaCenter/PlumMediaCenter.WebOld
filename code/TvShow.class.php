@@ -53,6 +53,19 @@ class TvShow extends Video {
     function getEpisodes() {
         return $this->episodes;
     }
+    
+    /**
+     * Add an episode to the show manually. This is usually only called when iterating through episode objects outside and needing to store them
+     * in this class
+     * @param type $episode
+     */
+    function addEpisode($episode){
+        if(isset($this->seasons[$episode->seasonNumber] ) === false){
+            $this->seasons[$episode->seasonNumber] = [];
+        }
+        $this->seasons[$episode->seasonNumber][] = $episode;
+        $this->episodes[] = $episode;
+    }
 
     /**
      * Set the list of tv episodes for this show based on

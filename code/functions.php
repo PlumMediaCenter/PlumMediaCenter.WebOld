@@ -46,12 +46,22 @@ function getFoldersFromDirectory($baseDirectory) {
     return $folders;
 }
 
+
+function endsWith($haystack, $needle) {
+    // search forward starting from end minus needle length characters
+    return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
+}
+
 /**
  * Gets all files in a directory recursively
  * @param String - $dir - the full path to the directory to start in
  * @return array - list of all file paths found in or under this directory
  */
 function getVideosFromDir($dir) {
+    //if the directory does not have an ending slash, add one now
+    if(endsWith($dir, '/') === false && endsWith($dir, '\\') === false){
+        $dir = $dir . '/';
+    }
     ob_start();
     $files = array();
     try {

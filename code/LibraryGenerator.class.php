@@ -1,7 +1,7 @@
 <?php
 
 include_once('database/Queries.class.php');
-include_once('../controllers/VideoController.php');
+include_once('controllers/VideoController.php');
 
 include_once('Movie.class.php');
 
@@ -97,7 +97,8 @@ class LibraryGenerator {
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
                 //if we don't already have this one in the database, add it to the new list
                 if (!isset($hash[$fullPathToFile])) {
-                    $video = new Movie($source->base_url, $source->location, $fullPathToFile);
+                    $movie = new Movie($source->base_url, $source->location, $fullPathToFile);
+                    $movies[] = $movie;
                 }
             }
         }
@@ -107,6 +108,99 @@ class LibraryGenerator {
             $movie->writeToDb();
         }
         return true;
+    }
+
+    /**
+     * Add a new media item to the library
+     * @param int $videoSourceId - if null, attempt to auto-detect it
+     * @param string $path
+     */
+    public static function AddNewMediaItem($videoSourceId, $path) {
+        $realpath = realpath($path);
+        //get a video source somehow
+        $videoSource = null;
+        if ($videoSourceId === null) {
+            //get all of the video sources
+            $videoSources = Queries::GetVideoSources();
+            foreach ($videoSources as $source) {
+                if (strpos($realpath, realpath($source->location)) !== false) {
+                    //this video source was found in the path    
+                    if ($videoSource === null) {
+                        $videoSource = $source;
+                    } else {
+                        throw new Exception('Cannot auto-detect new media item video source: multiple source matches were found');
+                    }
+                }
+            }
+            if ($videoSource === null) {
+                throw new Exception('Cannot auto-detect new media item video source: no source matches were found');
+            }
+        } else {
+            $videoSourceResults = Queries::GetVideoSourcesById([$videoSourceId]);
+            if (count($videoSourceResults) === 1) {
+                $videoSource = $videoSourceResults[0];
+            } else {
+                throw new Exception('Unable to find video source with that id');
+            }
+        }
+        $pathIsFile = false;
+        if (fileIsValidVideo($path)) {
+            $pathIsFile = true;
+        }
+
+        if ($videoSource->media_type === Enumerations::MediaType_Movie) {
+            $movies = [];
+            $paths = [];
+            if ($pathIsFile === true) {
+                $paths = [$path];
+            } else {
+                //find all movies beneath this path
+                $paths = getVideosFromDir($path);
+            }
+
+            foreach ($paths as $path) {
+                $movie = new Movie($videoSource->base_url, $videoSource->location, $path);
+                $movies[] = $movie;
+            }
+            foreach ($movies as $movie) {
+                $movie->writeToDb();
+            }
+        } else if ($videoSource->media_type === Enumerations::MediaType_TvShow) {
+            //for now, assume any file or folder found under a tv show folder will just re-import the entire tv show folder
+            $paths = [];
+            if ($pathIsFile === true) {
+                $paths = [$path];
+            } else {
+                $paths = getVideosFromDir($path);
+            }
+
+            $shows = [];
+            foreach ($paths as $path) {
+                $episode = new TvEpisode($videoSource->base_url, $videoSource->location, $path);
+                //get the name of the tv show for this episode
+                $showName = $episode->getShowName();
+                $show = null;
+                if (isset($shows[$showName]) === false) {
+                    $showPath = $videoSource->location . '/' . $showName;
+                    $show = new TvShow($videoSource->base_url, $videoSource->location, $showPath);
+                    $shows[$showName] = $show;
+                } else {
+                    $show = $shows[$showName];
+                }
+                //set the tv show object for this episode;
+                $episode->tvShow = $show;
+                $show->addEpisode($episode);
+            }
+
+            //at this point we have all of the episodes loaded into the tv shows that we care about
+
+            foreach ($shows as $show) {
+                $show->writeToDb();
+                foreach ($show->episodes as $episode) {
+                    $episode->writeToDb();
+                }
+            }
+        }
     }
 
 }

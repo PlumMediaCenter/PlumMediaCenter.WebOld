@@ -35,12 +35,13 @@
     <div id="baseUrlRow" class="row" style="display:block;">
         <div class="col-xs-3">Base URL: </div>
         <div class="col-xs-9">                  
-            <input type="url" 
+            <input type="text" 
                    name="baseUrl"
                    ng-model="vm.videoSource.baseUrl" 
                    ng-disabled="vm.isLoading"  
                    class="form-control" 
                    placeholder="ex: http://localhost/videos/movies/"
+                   url-exists-validator
                    required/>
             <span ng-if="form.baseUrl.$pending">
                 <span class="loading"></span> Validating

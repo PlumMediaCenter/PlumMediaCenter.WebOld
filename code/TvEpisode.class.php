@@ -52,7 +52,11 @@ class TvEpisode extends Video {
     }
 
     function getShowName() {
-        $str = str_replace($this->videoSourcePath, "", $this->fullPath);
+       return TvEpisode::GetTvShowName($this->videoSourcePath, $this->fullPath);
+    }
+    
+    static function GetTvShowName($videoSourcePath, $fullPath){
+         $str = str_replace($videoSourcePath, "", $fullPath);
         //if the first character is a slash, remove it
         if (strpos($str, "/") === 0) {
             $str = substr($str, 1);

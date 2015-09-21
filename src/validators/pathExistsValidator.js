@@ -1,5 +1,5 @@
-angular.module('app').directive('pathExistsValidator', function($http, $q) {
-    return {
+angular.module('app').directive('pathExistsValidator', ['$http', '$q', function($http, $q) {
+    return { 
         require: 'ngModel',
         link: function(scope, element, attrs, ngModel) {
             ngModel.$asyncValidators.pathExists = function(modelValue, viewValue) {
@@ -15,4 +15,4 @@ angular.module('app').directive('pathExistsValidator', function($http, $q) {
             };
         }
     };
-});
+}]);

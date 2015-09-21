@@ -1,55 +1,55 @@
-angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, _) {
+angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q, _) {
         function Video() {
 
         }
 
-        Video.search = function(searchTerm) {
+        Video.search = function (searchTerm) {
             var deferred = $q.defer();
-            $http.get('api/GetSearchResults.php', {params: {q: searchTerm}}).success(function(data) {
+            $http.get('api/GetSearchResults.php', {params: {q: searchTerm}}).success(function (data) {
                 deferred.resolve(data);
-            }).error(function() {
+            }).error(function () {
                 deferred.reject();
             });
             return deferred.promise;
         };
 
-        Video.getAll = function() {
-            return $q(function(resolve, reject) {
-                $http.get('api/GetLibrary.php').success(function(data) {
+        Video.getAll = function () {
+            return $q(function (resolve, reject) {
+                $http.get('api/GetLibrary.php').success(function (data) {
                     resolve(data);
                 });
             });
         };
 
-        Video.getById = function(id) {
+        Video.getById = function (id) {
             var deferred = $q.defer();
             if (!_.isNumber(id)) {
                 deferred.reject();
             } else {
-                $http.get('api/GetVideo.php?videoId=' + id).success(function(data) {
+                $http.get('api/GetVideo.php?videoId=' + id).success(function (data) {
                     deferred.resolve(data);
-                }).error(function() {
+                }).error(function () {
                     deferred.reject(data);
                 });
             }
             return deferred.promise;
         };
 
-        Video.getEpisodes = function(showId) {
+        Video.getEpisodes = function (showId) {
             var deferred = $q.defer();
-            $http.get('api/GetTvEpisodes.php?videoId=' + showId).success(function(data) {
+            $http.get('api/GetTvEpisodes.php?videoId=' + showId).success(function (data) {
                 deferred.resolve(data);
-            }).error(function() {
+            }).error(function () {
                 deferred.reject();
             });
             return deferred.promise;
         };
 
-        Video.getNextEpisode = function(showId) {
+        Video.getNextEpisode = function (showId) {
             var deferred = $q.defer();
-            $http.get('api/GetNextEpisode.php?videoId=' + showId).success(function(data) {
+            $http.get('api/GetNextEpisode.php?videoId=' + showId).success(function (data) {
                 deferred.resolve(data);
-            }).error(function() {
+            }).error(function () {
                 deferred.reject();
             });
             return deferred.promise;
@@ -60,10 +60,10 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
          * @param {type} videoId
          * @returns {$q@call;defer.promise}
          */
-        Video.getProgressPercent = function(videoId) {
+        Video.getProgressPercent = function (videoId) {
             var deferred = $q.defer();
             $http.get('api/GetVideoProgressPercent.php', {params: {videoId: videoId}})
-                    .success(function(result) {
+                    .success(function (result) {
                         deferred.resolve(result.percent);
                     })
                     .error(deferred.reject);
@@ -75,14 +75,14 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
          * @param {type} videoId
          * @returns {$q@call;defer.promise}
          */
-        Video.getProgressPercentMultiple = function(videoIds) {
+        Video.getProgressPercentMultiple = function (videoIds) {
             videoIds = _.isArray(videoIds) ? videoIds : [];
             var deferred = $q.defer();
             $http.get('api/GetVideoProgressPercentMultiple.php', {
                 params: {
                     videoIds: videoIds.join(',')
                 }
-            }).success(function(result) {
+            }).success(function (result) {
                 deferred.resolve(result);
             }).error(deferred.reject);
             return deferred.promise;
@@ -93,19 +93,19 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
          * @param {type} videoId
          * @returns {$q@call;defer.promise}
          */
-        Video.getProgress = function(videoId) {
+        Video.getProgress = function (videoId) {
             var deferred = $q.defer();
             $http.get('api/GetVideoProgress.php', {params: {
                     videoId: videoId
-                }}).success(function(data) {
+                }}).success(function (data) {
                 deferred.resolve(data.startSeconds);
-            }).error(function() {
+            }).error(function () {
                 deferred.reject();
             });
             return deferred.promise;
         }
 
-        Video.setProgress = function(videoId, seconds, isFinished) {
+        Video.setProgress = function (videoId, seconds, isFinished) {
             isFinished = isFinished === true ? true : false;
 
             var deferred = $q.defer();
@@ -113,86 +113,86 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
                     videoId: videoId,
                     seconds: seconds,
                     finished: isFinished
-                }}).success(function(data) {
+                }}).success(function (data) {
                 if (data.success) {
                     deferred.resolve();
                 } else {
                     deferred.reject();
                 }
-            }).error(function() {
+            }).error(function () {
                 deferred.reject();
             });
             return deferred.promise;
         }
 
-        Video.getCounts = function() {
+        Video.getCounts = function () {
             var deferred = $q.defer();
-            $http.get('api/GetVideoCounts.php').success(function(data) {
+            $http.get('api/GetVideoCounts.php').success(function (data) {
                 deferred.resolve(data);
-            }).error(function() {
+            }).error(function () {
                 deferred.reject();
             });
             return deferred.promise;
         };
 
-        Video.fetchMetadata = function(videoId, onlineVideoId) {
+        Video.fetchMetadata = function (videoId, onlineVideoId) {
             var deferred = $q.defer();
-            $http.get('api/FetchVideoMetadata.php', {params: {videoId: videoId, onlineVideoId: onlineVideoId}}).success(function(data) {
+            $http.get('api/FetchVideoMetadata.php', {params: {videoId: videoId, onlineVideoId: onlineVideoId}}).success(function (data) {
                 deferred.resolve(data);
-            }).error(function() {
+            }).error(function () {
                 deferred.reject();
             });
             return deferred.promise;
         };
 
-        Video.getMetadataSearchResultsByTitle = function(mediaType, title) {
+        Video.getMetadataSearchResultsByTitle = function (mediaType, title) {
             var deferred = $q.defer();
             $http.get('api/GetMetadataSearchResults.php', {
                 params: {
                     mediaType: mediaType,
                     title: title
                 }
-            }).success(function(data) {
+            }).success(function (data) {
                 deferred.resolve(data);
-            }).error(function() {
+            }).error(function () {
                 deferred.reject();
             });
             return deferred.promise;
         }
-        Video.getMetadataSearchResultsByOnlineVideoId = function(mediaType, onlineVideoId) {
+        Video.getMetadataSearchResultsByOnlineVideoId = function (mediaType, onlineVideoId) {
             var deferred = $q.defer();
             $http.get('api/GetMetadataSearchResults.php', {
                 params: {
                     mediaType: mediaType,
                     onlineVideoId: onlineVideoId
                 }
-            }).success(function(data) {
+            }).success(function (data) {
                 deferred.resolve(data);
-            }).error(function() {
+            }).error(function () {
                 deferred.reject();
             });
             return deferred.promise;
         }
 
-        Video.getPathInfo = function(videoId) {
+        Video.getPathInfo = function (videoId) {
             var deferred = $q.defer();
             $http.get('api/GetVideoPathInfo.php?videoId=' + videoId)
-                    .success(function(video) {
+                    .success(function (video) {
                         deferred.resolve(video);
                     })
-                    .error(function() {
+                    .error(function () {
                         deferred.reject();
                     });
             return deferred.promise;
         }
 
-        Video.getShowFromEpisodeId = function(episodeId) {
+        Video.getShowFromEpisodeId = function (episodeId) {
             var deferred = $q.defer();
             $http.get('api/GetTvShowByEpisodeId.php?videoId=' + episodeId)
-                    .success(function(video) {
+                    .success(function (video) {
                         deferred.resolve(video);
                     })
-                    .error(function() {
+                    .error(function () {
                         deferred.reject();
                     });
             return deferred.promise;
@@ -202,16 +202,25 @@ angular.module('app').service('Video', ['$http', '$q', '_', function($http, $q, 
          * Finds a poster and metadata for every video in the library that does not have one yet.
          * @returns {$q@call;defer.promise}
          */
-        Video.fetchMissingMetadata = function() {
+        Video.fetchMissingMetadata = function () {
             var deferred = $q.defer();
             $http.get('api/FetchMissingMetadataAndPosters.php')
-                    .success(function(result) {
+                    .success(function (result) {
                         deferred.resolve(result);
                     })
-                    .error(function() {
+                    .error(function () {
                         deferred.reject();
                     });
             return deferred.promise;
         }
+
+        Video.addNewMediaItem = function (videoSourceId, newMediaItemPath) {
+            return $http.get('api/AddNewMediaItem.php', {params: {videoSourceId: videoSourceId, path: newMediaItemPath}}).success(function (result) {
+                return result;
+            }).error(function (error) {
+                return error;
+            });
+
+        };
         return Video;
     }]);

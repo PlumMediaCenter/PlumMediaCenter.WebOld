@@ -1,0 +1,17 @@
+<form ng-submit="vm.addNewMediaItem()">
+    <div class="container">
+        <h2>Add new media item</h2>
+
+        <label><b>Video Source: </b>
+            <select class="form-control" ng-model="vm.newMediaItem.videoSourceId" ng-options="source.id as source.location for source in vm.videoSources">
+                <option value="">Detect automatically</option>
+            </select>
+        </label>
+        <br/>
+        <label><b>Path to folder containing new videos, or the full path to the new video</b>
+            <input type="text" ng-model="vm.newMediaItem.path" class="form-control" />
+        </label>
+        <br/>
+        <button class="btn btn-success center-block form-control">Add</button>
+    </div>
+</form>

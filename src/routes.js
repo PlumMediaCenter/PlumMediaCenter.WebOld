@@ -4,6 +4,12 @@ angular.module('app')
                 $urlRouterProvider.otherwise('/home');
 
                 $stateProvider
+                   .state('addNewMediaItem', {
+                            url: '/addNewMediaItem',
+                            templateUrl: 'addNewMediaItem.html',
+                            controller: 'AddNewMediaItemController',
+                            controllerAs: 'vm'
+                        }) 
                         .state('home', {
                             url: '/home',
                             templateUrl: 'home.html',

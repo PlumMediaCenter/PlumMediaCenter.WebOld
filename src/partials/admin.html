@@ -13,6 +13,9 @@
             <span ng-show="globals.fetchMissingMetadataIsPending"><span class="loading"></span>Fetching missing metadata</span>
             <br/>
             <br/>
+            <a class="btn btn-default" ui-sref="addNewMediaItem">Add new item to library</a>
+            <br/>
+            <br/>
             <div ng-show="!globals.checkForUpdatesIsPending">
                 <a class="btn btn-default" ng-click="vm.updateApplication()">Check for and install updates</a>
 
