@@ -14,12 +14,12 @@ var paths = {
     templates: ['src/**/*.html']
 };
 
-gulp.task('scripts', function () {
+    gulp.task('scripts', function() {
     return gulp.src(paths.scripts)
-            .pipe(sourcemaps.init())
-            .pipe(concat('app.min.js'))
-            .pipe(uglify())
-            .pipe(sourcemaps.write('./'))
+                .pipe(sourcemaps.init())
+                .pipe(concat('app.min.js'))
+                .pipe(uglify())
+                .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('dist'));
 });
 
@@ -36,17 +36,17 @@ gulp.task('css', function () {
             .pipe(rename('app.min.css'))
             .pipe(gulp.dest('dist'));
 
-});
+    });
 
-gulp.task('watch', ['default'], function () {
-    var server = livereload();
+    gulp.task('watch', ['default'], function() {
+        var server = livereload();
     gulp.watch(paths.scripts, ['scripts']);
     gulp.watch(paths.templates, ['templates']);
     gulp.watch(paths.css, ['css']);
 
     gulp.watch(['index.php', 'dist/**/*.*']).on('change', function (file) {
-        server.changed(file.path);
+            server.changed(file.path);
+        });
     });
-});
 
 gulp.task('default', ['scripts', 'templates', 'css']);

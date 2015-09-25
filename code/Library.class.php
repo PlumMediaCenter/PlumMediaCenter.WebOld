@@ -2,6 +2,7 @@
 
 include_once("database/Queries.class.php");
 include_once("Video.class.php");
+include_once("Category.class.php");
 
 class Library {
 
@@ -237,7 +238,6 @@ class Library {
         return $stats;
     }
 
-    
     /**
      * Forces every video loaded into memory in this library object to be written to the database. 
      * Then any videos that are no longer in this library are removed from the database
@@ -257,6 +257,46 @@ class Library {
         //return success or failure. If at least one item failed, this will be returned as a failure
         return $totalSuccess;
     }
+
+    public static function GetCategories($categoryNames = null) {
+        if ($categoryNames === null) {
+            $categoryNames = Library::GetCategoryNames();
+        }
+        $categories = [];
+        $lib = null;
+
+        $moviesCategoryIsPresent = in_array('Movies', $categoryNames);
+        $tvShowsCategoryIsPresent = in_array('TV Shows', $categoryNames);
+        if ($moviesCategoryIsPresent === true && $tvShowsCategoryIsPresent === true) {
+            $lib = new Library();
+            $lib->loadFromDatabase();
+        } else if ($moviesCategoryIsPresent === true && $tvShowsCategoryIsPresent === false) {
+            $lib = new Library();
+            $lib->loadMoviesFromDatabase();
+        } else if ($moviesCategoryIsPresent === false && $tvShowsCategoryIsPresent === true) {
+            $lib = new Library();
+            $lib->loadTvShowsFromDatabase();
+        }
+
+        if ($tvShowsCategoryIsPresent) {
+            $categories[] = new Category("TV Shows", $lib->tvShows);
+        }
+
+        if ($moviesCategoryIsPresent) {
+            $categories[] = new Category("Movies", $lib->movies);
+        }
+
+        if (in_array('Recently Watched', $categoryNames)) {
+            $categories[] = new Category("Recently Watched", []);
+        }
+
+        return $categories;
+    }
+
+    public static function GetCategoryNames() {
+        return ['Movies', 'TV Shows', 'Recently Watched'];
+    }
+
 }
 
 ?>
