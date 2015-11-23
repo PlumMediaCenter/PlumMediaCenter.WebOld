@@ -67,7 +67,7 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
             }, function () {
                 vm.calculateVisibleVideoTileCount();
             });
-
+  
             $scope.$watch(function () {
                 return vm.visibleVideoTileCount;
             }, function (newVisibleVideoTileCount, oldVisibleVideoTileCount) {
@@ -85,7 +85,9 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                 for (var i = vm.leftmostVideoIndex; i < endIndex; i++) {
                     var index = i % vm.category.videos.length;
                     var video = vm.category.videos[index];
-                    vm.visibleVideos.push(video);
+                    if (video) { 
+                        vm.visibleVideos.push(video);
+                    }
                 }
             }
 
@@ -130,7 +132,8 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
             }
 
             function getLocationText() {
-                return (vm.leftmostVideoIndex + 1) + '-' + (vm.leftmostVideoIndex + vm.visibleVideos.length) + ' of ' + vm.category.videos.length;
+                var text = (vm.leftmostVideoIndex + 1) + '-' + (vm.leftmostVideoIndex + vm.visibleVideos.length) + ' of ' + vm.category.videos.length;
+                return text;
             }
         }
     }
