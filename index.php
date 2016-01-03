@@ -26,7 +26,7 @@
         <link rel="apple-touch-icon" sizes="144x144" href="assets/img/apple-icon-144x144.png" />
         <link rel="icon" href="favicon.ico" type="assets/image/x-icon" />
 
-        <title>{{base.globals.title}}</title>
+        <title ng-bind="base.globals.title">Plum Media Center</title>
 
         <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="lib/pnotify/pnotify.custom.min.css" rel="stylesheet">

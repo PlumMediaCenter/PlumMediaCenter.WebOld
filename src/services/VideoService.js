@@ -222,5 +222,23 @@ angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q,
             });
 
         };
+
+
+        Video.getCategoryNames = function () {
+            return $http.get('api/GetCategoryNames.php').then(function (result) {
+                return result.data;
+            }, function (error) {
+                return error;
+            });
+        };
+
+        Video.getCategories = function (names) {
+            names = typeof names !== 'string' && typeof names.length === 'number'?names: [];
+            return $http.get('api/GetCategories.php', {params: {names: names.join(',')}}).then(function (result) {
+                return result.data;
+            }, function (error) {
+                return error;
+            });
+        };
         return Video;
     }]);

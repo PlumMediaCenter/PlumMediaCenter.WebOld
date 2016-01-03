@@ -44,9 +44,10 @@ gulp.task('watch', ['default'], function () {
     gulp.watch(paths.templates, ['templates']);
     gulp.watch(paths.css, ['css']);
 
-    gulp.watch(['index.php', 'dist/**/*.*']).on('change', function (file) {
+     gulp.watch(['index.php', 'dist/**/*.*']).on('change', function (file) {
         server.changed(file.path);
     });
+    livereload.listen();
 });
 
 gulp.task('default', ['scripts', 'templates', 'css']);
