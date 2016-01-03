@@ -2,6 +2,7 @@
 
 include_once(dirname(__FILE__) . "/../code/Video.class.php");
 include_once(dirname(__FILE__) . "/../code/Enumerations.class.php");
+include_once(dirname(__FILE__) . "/../config.php");
 
 class Metadata {
 
@@ -24,7 +25,6 @@ $results = [];
 //load the video
 
 $metadataFetcherClass = Video::GetVideoMetadataFetcherClass($mediaType);
-
 if ($onlineVideoId !== null) {
     $metadataFetcherClass->searchById($onlineVideoId);
     $results[] = new Metadata($mediaType, $metadataFetcherClass);

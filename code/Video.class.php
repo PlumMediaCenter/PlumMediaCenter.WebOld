@@ -19,10 +19,12 @@ abstract class Video {
     
     public static function GetVideoMetadataFetcherClass($mediaType){
         if($mediaType === Enumerations::MediaType_Movie){
-            return new MovieMetadataFetcher();
+            $fetcher = new MovieMetadataFetcher();
+			$fetcher->setLanguage(config::$language);
         }else{
-            return new TvShowMetadataFetcher();
+            $fetcher = new TvShowMetadataFetcher();
         }
+		return $fetcher;
     }
 
     abstract protected function loadCustomMetadata();

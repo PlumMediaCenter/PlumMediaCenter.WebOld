@@ -4,7 +4,6 @@ include_once("Video.class.php");
 include_once("NfoReader/MovieNfoReader.class.php");
 include_once("MetadataFetcher/MovieMetadataFetcher.class.php");
 
-
 class Movie extends Video {
 
     function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
@@ -355,7 +354,9 @@ class Movie extends Video {
      * Returns a new instance of the metadata fetcher for this video type. 
      */
     public function getMetadataFetcherClass() {
-        return new MovieMetadataFetcher();
+        $fetcher = new MovieMetadataFetcher();
+        $fetcher->setLanguage(config::$language);
+        return $fetcher;
     }
 
     /**

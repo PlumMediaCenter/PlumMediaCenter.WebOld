@@ -17,7 +17,12 @@ abstract class MetadataFetcher {
     abstract function searchByTitle($title);
 
     abstract function searchById($id);
-    
+
+    public $language;
+
+    function setLanguage($language) {
+        $this->language = $language;
+    }
 
     protected $fetchSuccess = false;
 

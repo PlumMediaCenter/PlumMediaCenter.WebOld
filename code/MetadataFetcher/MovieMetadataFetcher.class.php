@@ -42,17 +42,18 @@ class MovieMetadataFetcher extends MetadataFetcher {
 
         return $this->fetchSuccess;
     }
-    
+
     function getFetchersByTitle($title) {
         $this->fetchSuccess = false;
         $fetchers = [];
         $searchResults = $this->tmdb->searchMovie($title, 1, false);
         $results = $searchResults["results"];
-        $resultCount = count($results); 
-        for($i = 0; $i < $resultCount; $i++){
+        $resultCount = count($results);
+        for ($i = 0; $i < $resultCount; $i++) {
             $result = $results[$i];
             $id = $result["id"];
             $fetcher = new MovieMetadataFetcher();
+            $fetcher->setLanguage($this->language);
             $fetcher->searchById($id);
             $fetchers[] = $fetcher;
         }
@@ -116,15 +117,15 @@ class MovieMetadataFetcher extends MetadataFetcher {
             if (count($releases) > 0) {
                 $this->fetchSuccess = true;
 
-                if(count($releases["countries"]) > 0){
+                if (count($releases["countries"]) > 0) {
                     //just grab the first release in the list, should usually be the US
                     $this->release = $releases["countries"][0];
-                }else{
+                } else {
                     //we couldn't find ANY release countries. just make an empty one
                     $this->release = [
                         "iso_3166_1" => null,
-                        "certification"=>null,
-                        "release_date"=> null
+                        "certification" => null,
+                        "release_date" => null
                     ];
                 }
             }
@@ -143,7 +144,7 @@ class MovieMetadataFetcher extends MetadataFetcher {
                 $this->fetchSuccess = true;
                 if (count($trailers["youtube"]) > 0) {
                     $this->trailer = "http://www.youtube.com/watch?v=" . $trailers["youtube"][0]["source"];
-                }else{
+                } else {
                     $this->trailer = "";
                 }
             }
@@ -176,8 +177,8 @@ class MovieMetadataFetcher extends MetadataFetcher {
         // return $this->info["rating"];
         return 10.0;
     }
-    
-    function onlineVideoId(){
+
+    function onlineVideoId() {
         return $this->tmdbId;
     }
 
@@ -283,8 +284,23 @@ class MovieMetadataFetcher extends MetadataFetcher {
         if (!isset($this->posters[0])) {
             return null;
         }
+        $img = null;
         //grab the first image in the list
-        $img = $this->posters[0];
+        if (isset($this->language)) {
+            foreach ($this->posters as $poster) {
+
+                if ($poster["iso_639_1"] === $this->language) {
+                    $img = $poster;
+                    break;
+                }
+            }
+        } else {
+            
+        }
+        //if we didn't find the poster with the desired language, just grab the first poster
+        if ($img === null) {
+            $img = $this->posters[0];
+        }
         $filepath = $img["file_path"];
         $size = "original";
         $url = $this->tmdb->getImageURL() . $img["file_path"];

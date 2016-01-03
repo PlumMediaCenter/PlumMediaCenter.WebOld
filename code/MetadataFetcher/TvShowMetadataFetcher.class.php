@@ -28,6 +28,7 @@ class TvShowMetadataFetcher extends MetadataFetcher {
             $result = $searchResults[$i];
             $id = $result->id;
             $fetcher = new TvShowMetadataFetcher();
+            $fetcher->setLanguage($this->language);
             $fetcher->searchById($id);
             $fetchers[] = $fetcher;
         }
