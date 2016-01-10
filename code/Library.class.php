@@ -287,7 +287,10 @@ class Library {
         }
 
         if (in_array('Recently Watched', $categoryNames)) {
-            $categories[] = new Category("Recently Watched", []);
+            $recentlyWatched = [];
+            
+            $categories[] = new Category("Recently Watched", $recentlyWatched);
+            
         }
 
         return $categories;

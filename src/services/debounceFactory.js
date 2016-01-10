@@ -65,7 +65,7 @@ angular.module('app').factory('debounce', ['$rootScope', function ($rootScope) {
                 } else {
                     //do nothing. something else has bumped the expiration date, so let that one's timeout handle it
                 }
-            }, expirationMilliseconds);
+            }, expirationMilliseconds + 5);
         }
         return debounce;
     }

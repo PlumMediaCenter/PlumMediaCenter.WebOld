@@ -18,7 +18,7 @@ gulp.task('scripts', function () {
     return gulp.src(paths.scripts)
             .pipe(sourcemaps.init())
             .pipe(concat('app.min.js'))
-            .pipe(uglify())
+            //.pipe(uglify())
             .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('dist'));
 });
@@ -47,7 +47,7 @@ gulp.task('watch', ['default'], function () {
      gulp.watch(['index.php', 'dist/**/*.*']).on('change', function (file) {
         server.changed(file.path);
     });
-    livereload.listen();
+    livereload.listen({port: 35729});
 });
 
 gulp.task('default', ['scripts', 'templates', 'css']);

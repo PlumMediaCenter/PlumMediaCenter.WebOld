@@ -4,6 +4,7 @@ $basePath = dirname(__FILE__) . "/../";
 include_once($basePath . "DbManager.class.php");
 include_once($basePath . "Enumerations.class.php");
 include_once($basePath . "Video.class.php");
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -34,6 +35,7 @@ class VideoController {
         if ($sort) {
             VideoController::SortVideosByTitle($videos);
         }
+        VideoController::RepairRelativeUrls($videos);
         return $videos;
     }
 
@@ -62,6 +64,7 @@ class VideoController {
                         . "where video_id $inStatement and media_type = ?", Enumerations::MediaType_Movie);
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         VideoController::SortVideosByTitle($videos);
+        VideoController::RepairRelativeUrls($videos);
         return $videos;
     }
 
@@ -69,8 +72,7 @@ class VideoController {
         $videos = VideoController::GetTvShows([$videoId]);
         return count($videos) === 1 ? $videos[0] : null;
     }
-    
-    
+
     static function GetTvShowByEpisodeId($episodeId = -1) {
         $tvShowVideoId = Queries::GetTvShowVideoIdFromEpisodeTable($episodeId);
         $show = Video::GetVideo($tvShowVideoId);
@@ -93,6 +95,7 @@ class VideoController {
                         . "where $inStatement media_type = ?", Enumerations::MediaType_TvShow);
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         VideoController::SortVideosByTitle($videos);
+        VideoController::RepairRelativeUrls($videos);
         return $videos;
     }
 
@@ -107,6 +110,7 @@ class VideoController {
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         $videos = PropertyMappings::MapMany($videos, PropertyMappings::$episodeMapping);
         $video = isset($videos[0]) ? $videos[0] : null;
+        VideoController::RepairRelativeUrls([$video]);
         return $video;
     }
 
@@ -129,6 +133,7 @@ class VideoController {
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         $videos = PropertyMappings::MapMany($videos, PropertyMappings::$episodeMapping);
         VideoController::SortEpisodes($videos);
+        VideoController::RepairRelativeUrls($videos);
         return $videos;
     }
 
@@ -137,7 +142,7 @@ class VideoController {
      * @param type $videoId
      * @return type
      */
- static function GetTvEpisodesByShowVideoId($tvShowVideoId) {
+    static function GetTvEpisodesByShowVideoId($tvShowVideoId) {
         //get all movies and tv shows from the db
         $videoRows = DbManager::GetAllClassQuery(
                         "select * "
@@ -150,6 +155,7 @@ class VideoController {
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         $videos = PropertyMappings::MapMany($videos, PropertyMappings::$episodeMapping);
         VideoController::SortEpisodes($videos);
+        VideoController::RepairRelativeUrls($videos);
         return $videos;
     }
 
@@ -303,6 +309,17 @@ class VideoController {
         }
 
         return $success;
+    }
+
+    static function RepairRelativeUrls($videos) {
+        $bUrl = getBaseUrl();
+        //for each poster url, if its a relative url, append the server url to the beginning of it
+        foreach ($videos as $video) {
+            if (strpos($video->sdPosterUrl, "http") === false) {
+                $video->sdPosterUrl = $bUrl . $video->sdPosterUrl;
+                $video->hdPosterUrl = $bUrl . $video->hdPosterUrl;
+            }
+        }
     }
 
 }

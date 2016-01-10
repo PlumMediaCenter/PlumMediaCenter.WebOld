@@ -15,13 +15,14 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                 angular.element($window).bind('resize', function () {
                     calculateElementWidth();
                 });
+               
                 function calculateElementWidth() {
                     console.log('debouncing ' + myId);
-                    debounce(vm, function () {
+                    debounce(myId, function () {
                         console.log('calling ' + myId);
                         var rect = element[0].getBoundingClientRect();
                         vm.width = rect.width;
-                    }, 300);
+                    }, 100);
                 }
 
                 //anytime the width changes, calculate the size of the first video tile in the list

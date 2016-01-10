@@ -589,3 +589,19 @@ category-scroller .navigate:active{
     left:0px; 
     top:0px;
 }
+
+.wait-small {
+    background-image: url(../assets/img/ajax-loader.gif);
+    background-size: 24px 24px;
+    height: 24px;
+    width: 24px;
+    border-style: none;
+    background-color: transparent;
+    border-collapse: collapse;
+    border-spacing: 0;
+    outline: none;
+    border: none 0;
+    display: inline;
+    display: inline-block;
+    vertical-align: middle;
+}
