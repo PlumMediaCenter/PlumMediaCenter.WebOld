@@ -36,8 +36,11 @@
         <script type="text/javascript" src="lib/pnotify/pnotify.custom.min.js"></script>
         <script type="text/javascript" src="lib/jwplayer-6.11/jwplayer.js"></script>
 
-        <script type="text/javascript" src="lib/angular-1.3.8/angular.min.js"></script>
-        <script type="text/javascript" src="lib/angular-ui-router/angular-ui-router.min.js"></script>
+        <script type="text/javascript" src="lib/angular-1.5.0-rc.0/angular.min.js"></script>
+        <script type="text/javascript" src="lib/angular-1.5.0-rc.0/angular-touch.min.js"></script>    
+        <script type="text/javascript" src="lib/angular-1.5.0-rc.0/angular-animate.min.js"></script>
+
+        <script type="text/javascript" src="lib/angular-ui-router/angular-ui-router.min.js"></script>;
         <script type="text/javascript" src="lib/angular-ui-bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
         <script type="text/javascript" src="lib/ngInfiniteScroll/ng-infinite-scroll.min.js"></script>
 

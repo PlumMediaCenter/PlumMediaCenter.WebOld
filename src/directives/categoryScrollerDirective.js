@@ -56,6 +56,7 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
         function Controller($scope, Video) {
             var vm = angular.extend(this, {
                 category: this.category,
+                direction: undefined,
                 width: 0,
                 videoTileWidth: 0,
                 visibleVideoTileCount: 0,
@@ -144,6 +145,7 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                 }
                 vm.leftmostVideoIndex = newLeftmostIndex;
                 vm.populateVisibleVideos();
+                vm.direction = 'left';
             }
 
             function pageRight() {
@@ -155,6 +157,7 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                 vm.leftmostVideoIndex = newLeftmostIndex;
                 console.log('leftmost idx' + vm.leftmostVideoIndex);
                 vm.populateVisibleVideos();
+                vm.direction = 'right';
             }
 
             function videoCount() {

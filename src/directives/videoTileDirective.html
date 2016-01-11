@@ -1,6 +1,4 @@
-<div class="video-tile">
-    <a ui-sref="videoInfo({videoId: vm.video.videoId})">
-        <span ng-if="!vm.video.posterModifiedDate" class="noPosterText">{{vm.video.title}}</span>
-        <img class="poster" ng-attr-src="{{vm.video.hdPosterUrl}}">
-    </a>
-</div>
+<a ui-sref="videoInfo({videoId: vm.video.videoId})">
+    <span ng-if="!vm.video.posterModifiedDate" class="noPosterText">{{vm.video.title}}</span>
+    <img class="poster" ng-attr-src="{{vm.video.hdPosterUrl}}">
+</a>

@@ -9,7 +9,7 @@ var templateCache = require('gulp-angular-templatecache');
 var uglify = require('gulp-uglify');
 
 var paths = {
-    css: ['src/**/*.css'],
+    css: ['src/app.css', 'src/**/*.css'],
     scripts: ['src/app.js', 'src/**/*.js'],
     templates: ['src/**/*.html']
 };
@@ -32,8 +32,10 @@ gulp.task('templates', function () {
 
 gulp.task('css', function () {
     return gulp.src(paths.css)
+            .pipe(sourcemaps.init())
+            .pipe(concat('app.min.css'))
             .pipe(minifyCss())
-            .pipe(rename('app.min.css'))
+            .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('dist'));
 
 });

@@ -1,0 +1,93 @@
+video-tile{
+    /* display: inline; */
+    display: inline;
+    display: inline-block;
+    *zoom: 1;
+    cursor:pointer;
+    margin: 0px;
+    width:150px;
+    height:220px;
+    overflow:hidden;
+    padding:2px;
+    border: 2px solid transparent;
+    position:relative;
+}
+
+.noPosterText{
+    position:absolute;
+    top:60%;
+    width:100%;
+    text-align:center;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px #000000;
+    padding:10px;
+    font-size: 16px;
+}
+
+/* extra small devices (less than 768px)*/
+@media (max-width:767px) {
+    video-tile{
+        width:100px;
+        height:146px;
+    }
+    .noPosterText{
+        font-size:11px;
+        top:53%;
+    }
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+    video-tile{
+        width:135px;
+        height:197px;
+    }
+    .noPosterText{
+        font-size:14px;
+    }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px){ 
+    video-tile{
+        width:174px;
+        height:256px;
+    }
+    .noPosterText{
+        font-size:16px;
+    }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    video-tile{
+        width:210px;
+        height:310px;
+    }  
+    .noPosterText{
+        font-size:18px;
+    }
+}
+
+video-tile img.poster{
+    width:100%;
+    cursor:pointer;
+    border:0px solid white;
+}
+video-tile{
+    border:5px solid transparent;
+}
+video-tile:hover{
+    border:3px solid #AAAAAA;
+    border-radius: 5px;
+}
+
+video-tile:hover .noPosterText{
+    padding-top:13px;
+}
+
+video-tile span{
+    display:block;
+    text-align:center;
+}

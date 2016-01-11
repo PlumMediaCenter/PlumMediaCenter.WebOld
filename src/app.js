@@ -1,4 +1,4 @@
-angular.module('app', ['ui.router', 'ui.bootstrap', 'infinite-scroll'])
+angular.module('app', ['ui.router', 'ui.bootstrap', 'infinite-scroll', 'ngTouch', 'ngAnimate'])
         .run(['$rootScope', 'enums', 'globals', function($rootScope, enums, globals) {
                 $rootScope.enums = enums;
                 $rootScope.globals = globals;

@@ -297,7 +297,7 @@ class Library {
     }
 
     public static function GetCategoryNames() {
-        return ['Recently Watched', 'TV Shows', 'Movies'];
+        return [ 'Movies', 'Recently Watched', 'TV Shows'];
     }
 
     public static function GetRecentlyWatchedVideos() {

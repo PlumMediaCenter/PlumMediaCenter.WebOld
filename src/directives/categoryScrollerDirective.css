@@ -1,0 +1,108 @@
+category-scroller{
+    width:100%;
+    display:block;
+    position:relative;
+}
+
+.navigate{
+    height: 100%;
+    position:absolute;
+    top: 0px;
+    background-color:#A41CFF !important;
+    opacity: .2;
+    cursor:pointer;
+    transition: opacity .25s ease-in-out;
+    -moz-transition: opacity .25s ease-in-out;
+    -webkit-transition: opacity .25s ease-in-out;
+    width:50px;
+    z-index:1000000;
+
+}
+
+.navigate.navigate-left{
+    left:0px;
+}
+
+.navigate.navigate-right{
+    right:0px;
+}
+
+.navigate .glyphicon-chevron-left, .navigate .glyphicon-chevron-right{
+    position:absolute;
+    top: calc(50% - 5px);
+    left: calc(50% - 25%);
+}
+
+category-scroller:hover .navigate{
+    opacity: .2;
+}
+category-scroller .navigate:hover{
+    opacity:.8;
+}
+
+category-scroller .navigate:active{
+    box-shadow: inset 0 53px 55px rgba(0,0,0,.125);
+}
+
+.category-scroller-video-container{
+    position:relative;
+    padding-left:30px;
+    padding-right:30px;
+    text-align:center;
+    overflow:hidden;
+    height:364px;
+}
+.hidden-video{
+    visibility:hidden; 
+    position:absolute; 
+    left:0px; 
+    top:0px;
+}
+
+/* Animations */
+.right video-tile.ng-enter, video-tile.ng-move,
+.left video-tile.ng-enter, video-tile.ng-move ,
+.right video-tile.ng-leave,
+.left video-tile.ng-leave {
+/*    -webkit-transition: 1400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -moz-transition: 1400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -ms-transition: 1400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -o-transition: 1400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    transition: 1400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) translateX;*/
+
+}
+
+.left video-tile.ng-enter, 
+.left video-tile.ng-move{
+    left: -100%;
+}
+
+.left video-tile.ng-enter.ng-enter-active,
+.left video-tile.ng-move.ng-move-active {
+    left: 0;
+}
+
+.left video-tile.ng-leave {
+
+}
+.left video-tile.ng-leave.ng-leave-active{
+
+}
+
+
+.right video-tile.ng-enter, 
+.right video-tile.ng-move{
+    right: -100%;
+}
+
+.right video-tile.ng-enter.ng-enter-active,
+.right video-tile.ng-move.ng-move-active {
+    right: 0;
+}
+
+.right video-tile.ng-leave {
+
+}
+.right video-tile.ng-leave.ng-leave-active{
+
+}
