@@ -2,12 +2,13 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
         var id = 0;
         return {
             restrict: 'E',
-            controller: ['$scope', Controller],
+            controller: ['$scope', 'Video', Controller],
             controllerAs: 'vm',
             bindToController: true,
             templateUrl: 'categoryScrollerDirective.html',
             scope: {
-                category: '='
+                category: '=?',
+                categoryName: '=?'
             },
             link: function ($scope, element, attributes, vm) {
                 var myId = id++;
@@ -29,18 +30,30 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                 $scope.$watch(function () {
                     return vm.width;
                 }, function (width) {
-                    //get the first video tile
+                   getTileWidth();
+                });
+                
+                function getTileWidth(){
+                     //get the first video tile
                     var videoTile = element[0].querySelector('video-tile');
                     var rect = videoTile.getBoundingClientRect();
                     vm.videoTileWidth = rect.width;
+                }
+                //the first time the length of the video list is greater than zero, recalculate the tile width
+                $scope.$watch(function(){
+                    return vm.category &&  vm.category.videos.length? true: false;
+                }, function(newValue, oldValue){
+                    if(newValue){
+                        getTileWidth();
+                    }
                 });
-
+                
                 calculateElementWidth();
 
             }
         };
 
-        function Controller($scope) {
+        function Controller($scope, Video) {
             var vm = angular.extend(this, {
                 category: this.category,
                 width: 0,
@@ -55,7 +68,20 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                 pageLeft: pageLeft,
                 pageRight: pageRight,
                 showPageLeft: showPageLeft,
-                showPageRight: showPageRight
+                showPageRight: showPageRight,
+                videoCount: videoCount
+            });
+
+            //anytime the categoryName changes, reload the video list
+            $scope.$watch(function () {
+                return vm.categoryName;
+            }, function (newValue, oldValue) {
+                if (newValue) {
+                    Video.getCategories([newValue]).then(function (categories) {
+                        vm.category = categories[0];
+                        populateVisibleVideos();
+                    });
+                }
             });
 
             $scope.$watch(function () {
@@ -80,15 +106,18 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                     vm.visibleVideos = [];
                     return;
                 }
+                if (!vm.category) {
+                    return;
+                }
                 //if the list of videos is smaller than the maximum displayable, then just add all of them
-                if (vm.category.videos.length <= vm.visibleVideoTileCount) {
+                if (vm.videoCount() <= vm.visibleVideoTileCount) {
                     vm.visibleVideos = vm.category.videos.slice(0);
                 } else {
                     //find the index of the leftmost video
                     var endIndex = vm.leftmostVideoIndex + vm.visibleVideoTileCount;
                     vm.visibleVideos = [];
                     for (var i = vm.leftmostVideoIndex; i < endIndex; i++) {
-                        var index = i % vm.category.videos.length;
+                        var index = i % vm.videoCount();
                         var video = vm.category.videos[index];
                         if (video) {
                             vm.visibleVideos.push(video);
@@ -119,7 +148,7 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
 
             function pageRight() {
                 var newLeftmostIndex = vm.leftmostVideoIndex + vm.visibleVideoTileCount;
-                var maxLeftmostIndex = (vm.category.videos.length + 1) - vm.visibleVideoTileCount;
+                var maxLeftmostIndex = (vm.videoCount() + 1) - vm.visibleVideoTileCount;
                 if (newLeftmostIndex > maxLeftmostIndex) {
                     newLeftmostIndex = maxLeftmostIndex;
                 }
@@ -128,17 +157,23 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                 vm.populateVisibleVideos();
             }
 
+            function videoCount() {
+                return vm.category ? vm.category.videos.length : 0;
+            }
+
             function showPageLeft() {
                 return vm.leftmostVideoIndex > 0
             }
 
             function showPageRight() {
-                var maxLeftmostIndex = (vm.category.videos.length - 1) - vm.visibleVideoTileCount;
+                var maxLeftmostIndex = (vm.videoCount() - 1) - vm.visibleVideoTileCount;
                 return vm.leftmostVideoIndex < maxLeftmostIndex;
             }
 
             function getLocationText() {
-                var text = (vm.leftmostVideoIndex + 1) + '-' + (vm.leftmostVideoIndex + vm.visibleVideos.length) + ' of ' + vm.category.videos.length;
+                return "";
+                var firstNumber = vm.leftmostVideoIndex = 0 ? 0 : (vm.leftmostVideoIndex + 1);
+                var text = firstNumber + '-' + (vm.leftmostVideoIndex + vm.visibleVideos.length) + ' of ' + vm.videoCount();
                 return text;
             }
         }

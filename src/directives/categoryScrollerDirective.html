@@ -1,4 +1,5 @@
 <h1>{{::vm.category.name}} {{vm.getLocationText()}}</h1>
+<load-message message="vm.category? undefined: 'Loading'"></load-message>
 <div class="category-scroller-video-container" >
     <a class="btn btn-default navigate navigate-left" ng-click="vm.pageLeft()" ng-if="vm.showPageLeft()">
         <span class="glyphicon glyphicon-chevron-left"></span>

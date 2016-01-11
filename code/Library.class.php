@@ -278,26 +278,26 @@ class Library {
             $lib = new Library();
             $lib->loadTvShowsFromDatabase();
         }
+        
+        foreach ($categoryNames as $categoryName) {
+            if ($categoryName === "TV Shows") {
+                $categories[] = new Category("TV Shows", $lib->tvShows);
+            }
 
-        if ($tvShowsCategoryIsPresent) {
-            $categories[] = new Category("TV Shows", $lib->tvShows);
+            if ($categoryName === "Movies") {
+                $categories[] = new Category("Movies", $lib->movies);
+            }
+
+            if ($categoryName === 'Recently Watched') {
+                $videos = Library::GetRecentlyWatchedVideos();
+                $categories[] = new Category("Recently Watched", $videos);
+            }
         }
-
-        if ($moviesCategoryIsPresent) {
-            $categories[] = new Category("Movies", $lib->movies);
-        }
-
-        if (in_array('Recently Watched', $categoryNames)) {
-            $recentlyWatched = [];
-            $videos = Library::GetRecentlyWatchedVideos();
-            $categories[] = new Category("Recently Watched", $videos);
-        }
-
         return $categories;
     }
 
     public static function GetCategoryNames() {
-        return ['Movies', 'TV Shows', 'Recently Watched'];
+        return ['Recently Watched', 'TV Shows', 'Movies'];
     }
 
     public static function GetRecentlyWatchedVideos() {
