@@ -3,6 +3,7 @@
 include_once("database/Queries.class.php");
 include_once("Video.class.php");
 include_once("Category.class.php");
+include_once("controllers/VideoController.php");
 
 class Library {
 
@@ -288,9 +289,8 @@ class Library {
 
         if (in_array('Recently Watched', $categoryNames)) {
             $recentlyWatched = [];
-            
-            $categories[] = new Category("Recently Watched", $recentlyWatched);
-            
+            $videos = Library::GetRecentlyWatchedVideos();
+            $categories[] = new Category("Recently Watched", $videos);
         }
 
         return $categories;
@@ -298,6 +298,69 @@ class Library {
 
     public static function GetCategoryNames() {
         return ['Movies', 'TV Shows', 'Recently Watched'];
+    }
+
+    public static function GetRecentlyWatchedVideos() {
+        //select the last n videos from the watch_video table
+
+        $recentVideoIds = DbManager::SingleColumnQuery(
+                        "select video_id "
+                        . "from watch_video "
+                        . "where username = '" . config::$globalUsername . "' "
+                        . "order by date_watched desc "
+                        . "limit 50");
+        // get the video records with those IDs
+
+        $videoRecords = DbManager::Query(
+                        "select video_id, media_type "
+                        . "from video "
+                        . "where video_id " . DbManager::GenerateInStatement($recentVideoIds) . " "
+                        . "order by field(video_id, " . implode(",", $recentVideoIds) . ")");
+
+        $tvEpisodeVideoIds = [];
+
+        foreach ($videoRecords as $videoRecord) {
+            if ($videoRecord->media_type === Enumerations::MediaType_TvEpisode) {
+                //this is a tv episode. 
+                $tvEpisodeVideoIds[] = $videoRecord->video_id;
+            }
+        }
+
+
+        $showLookup = [];
+        // get the tv show video records for all of these episodes
+        if (count($tvEpisodeVideoIds) > 0) {
+            $tvShows = DbManager::Query(
+                            "select tv_show_video_id as video_id, '" . Enumerations::MediaType_TvShow . "' as media_type"
+                            . " from tv_episode_v"
+                            . " where video_id " . DbManager::GenerateInStatement($tvEpisodeVideoIds) . " "
+                            . "order by field(video_id, " . implode(",", $recentVideoIds) . ")");
+            $i = 0;
+            foreach ($tvShows as $show) {
+                $episodeId = $tvEpisodeVideoIds[$i];
+                $showLookup[$episodeId] = $show;
+                $i++;
+            }
+        }
+
+        $videoIds = [];
+        $videoIdLookup = [];
+        foreach ($videoRecords as $videoRecord) {
+            if ($videoRecord->media_type === Enumerations::MediaType_Movie || $videoRecord->media_type === Enumerations::MediaType_TvShow) {
+                $videoId = $videoRecord->video_id;
+            } else {
+                //this is an episode. go get its show record
+                $show = $showLookup[$videoRecord->video_id];
+                $videoId = $show->video_id;
+            }
+            if (!isset($videoIdLookup[$videoId])) {
+                $videoIdLookup[$videoId] = $videoId;
+                $videoIds[] = $videoId;
+            }
+        }
+
+        $videos = VideoController::GetVideos($videoIds, false);
+        return $videos;
     }
 
 }

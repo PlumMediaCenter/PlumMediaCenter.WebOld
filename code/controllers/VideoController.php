@@ -23,7 +23,7 @@ class VideoController {
         return $videos[0];
     }
 
-    static function GetVideos($videoIds = [], $sort = true) {
+    static function GetVideos($videoIds = [], $sortByTitle = true) {
         if (count($videoIds) === 0) {
             return [];
         }
@@ -32,8 +32,11 @@ class VideoController {
                         "select * from video where $inStatement");
 
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
-        if ($sort) {
+        if ($sortByTitle) {
             VideoController::SortVideosByTitle($videos);
+        } else {
+            //sort the videos by the provided videoId list
+            $videos = VideoController::SortVideosByVideoId($videos, $videoIds);
         }
         VideoController::RepairRelativeUrls($videos);
         return $videos;
@@ -225,11 +228,24 @@ class VideoController {
     }
 
     static function SortVideosByTitle($videos) {
-        usort($videos, array("VIdeoController", 'CmpByName'));
+        usort($videos, array("VideoController", 'CmpByName'));
+    }
+
+    static function SortVideosByVideoId($videos, $videoIds) {
+        $result = [];
+        foreach ($videoIds as $videoId) {
+            foreach ($videos as $video) {
+                if ($video->videoId == $videoId) {
+                    $result[] = $video;
+                    break;
+                }
+            }
+        }
+        return $result;
     }
 
     static function SortEpisodes($videos) {
-        usort($videos, array("VIdeoController", 'CmpEpisodes'));
+        usort($videos, array("VideoController", 'CmpEpisodes'));
     }
 
     static function CmpByName($a, $b) {

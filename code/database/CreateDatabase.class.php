@@ -34,7 +34,8 @@ class CreateDatabase {
         '0.3.5' => 'db0_3_5',
         '0.3.6' => 'db0_3_6',
         '0.3.7' => 'db0_3_7',
-        '0.3.8' => 'db0_3_8'
+        '0.3.8' => 'db0_3_8',
+        '0.3.9' => 'db0_3_9'
     );
 
     function __construct($rootUsername, $rootPassword, $dbHost) {
@@ -256,6 +257,33 @@ class CreateDatabase {
 
     function db0_3_0() {
         DbManager::NonQuery('alter table video_source drop primary key, add column id int not null auto_increment primary key');
+    }
+    
+    
+    function db0_3_9() {
+         DbManager::nonQuery("CREATE OR REPLACE VIEW tv_episode_v
+            AS
+                SELECT v.video_id,
+                    v.title,
+                    t.tv_show_video_id,
+                    t.season_number,
+                    t.episode_number,
+                    v.running_time_seconds,
+                    v.path,
+                    v.url,
+                    v.filetype,
+                    v.metadata_last_modified_date,
+                    v.poster_last_modified_date,
+                    v.mpaa,
+                    v.year,
+                    v.media_type,
+                    v.video_source_path,
+                    v.video_source_url,
+                    t.writer,
+                    t.director,
+                    v.plot
+                FROM video v, tv_episode t
+                WHERE v.video_id = t.video_id");
     }
 
 }

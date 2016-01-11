@@ -15,7 +15,7 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                 angular.element($window).bind('resize', function () {
                     calculateElementWidth();
                 });
-               
+
                 function calculateElementWidth() {
                     console.log('debouncing ' + myId);
                     debounce(myId, function () {
@@ -68,7 +68,7 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
             }, function () {
                 vm.calculateVisibleVideoTileCount();
             });
-  
+
             $scope.$watch(function () {
                 return vm.visibleVideoTileCount;
             }, function (newVisibleVideoTileCount, oldVisibleVideoTileCount) {
@@ -80,14 +80,19 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                     vm.visibleVideos = [];
                     return;
                 }
-                //find the index of the leftmost video
-                var endIndex = vm.leftmostVideoIndex + vm.visibleVideoTileCount;
-                vm.visibleVideos = [];
-                for (var i = vm.leftmostVideoIndex; i < endIndex; i++) {
-                    var index = i % vm.category.videos.length;
-                    var video = vm.category.videos[index];
-                    if (video) { 
-                        vm.visibleVideos.push(video);
+                //if the list of videos is smaller than the maximum displayable, then just add all of them
+                if (vm.category.videos.length <= vm.visibleVideoTileCount) {
+                    vm.visibleVideos = vm.category.videos.slice(0);
+                } else {
+                    //find the index of the leftmost video
+                    var endIndex = vm.leftmostVideoIndex + vm.visibleVideoTileCount;
+                    vm.visibleVideos = [];
+                    for (var i = vm.leftmostVideoIndex; i < endIndex; i++) {
+                        var index = i % vm.category.videos.length;
+                        var video = vm.category.videos[index];
+                        if (video) {
+                            vm.visibleVideos.push(video);
+                        }
                     }
                 }
             }
