@@ -6,3 +6,4 @@
 api/library.json
 api/generateTime.txt
 node_modules/
+cache/

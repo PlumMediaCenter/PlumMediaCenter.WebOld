@@ -123,14 +123,14 @@ class DbManager {
      * @param args  - any additional arguments passed to this function will be bound to the statement
      * @return type
      */
-    public static function GetAllClassQuery($sql) {
+    public static function GetAllClassQuery($sql, $recordCount = null) {
         $pdo = DbManager::getPdo();
         $stmt = $pdo->prepare($sql);
         $args = func_get_args();
         //remove the first argument, which is the $sql stmt
         array_shift($args);
         $stmt->execute($args);
-        return DbManager::FetchAllClass($stmt);
+        return DbManager::FetchAllClass($stmt, $recordCount);
     }
 
     public static function Query($sql, $host = null, $username = null, $password = null, $dbName = null) {
@@ -212,9 +212,18 @@ class DbManager {
      * @param obj $stmt -the pdo handler for the statement. This MUST have already been executed
      * @return array of arrays
      */
-    public static function FetchAllClass($stmt) {
-        $result = $stmt->fetchAll(PDO::FETCH_CLASS);
-        return $result;
+    public static function FetchAllClass($stmt, $recordCount = null) {
+        if (!$recordCount) {
+            $result = $stmt->fetchAll(PDO::FETCH_CLASS);
+            return $result;
+        } else {
+            $result = new SplFixedArray($recordCount);
+            $i = 0;
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
+                $result[$i++] = (object) $row;
+            }
+            return $result;
+        }
     }
 
     public static function FetchAllColumn($stmt, $colNum) {

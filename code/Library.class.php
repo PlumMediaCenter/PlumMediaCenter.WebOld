@@ -263,41 +263,58 @@ class Library {
         if ($categoryNames === null) {
             $categoryNames = Library::GetCategoryNames();
         }
+
         $categories = [];
         $lib = null;
-
-        $moviesCategoryIsPresent = in_array('Movies', $categoryNames);
-        $tvShowsCategoryIsPresent = in_array('TV Shows', $categoryNames);
-        if ($moviesCategoryIsPresent === true && $tvShowsCategoryIsPresent === true) {
-            $lib = new Library();
-            $lib->loadFromDatabase();
-        } else if ($moviesCategoryIsPresent === true && $tvShowsCategoryIsPresent === false) {
-            $lib = new Library();
-            $lib->loadMoviesFromDatabase();
-        } else if ($moviesCategoryIsPresent === false && $tvShowsCategoryIsPresent === true) {
-            $lib = new Library();
-            $lib->loadTvShowsFromDatabase();
-        }
-        
         foreach ($categoryNames as $categoryName) {
-            if ($categoryName === "TV Shows") {
-                $categories[] = new Category("TV Shows", $lib->tvShows);
-            }
-
-            if ($categoryName === "Movies") {
-                $categories[] = new Category("Movies", $lib->movies);
-            }
-
             if ($categoryName === 'Recently Watched') {
                 $videos = Library::GetRecentlyWatchedVideos();
                 $categories[] = new Category("Recently Watched", $videos);
+            }
+            $cacheName = "category-$categoryName";
+            if (Library::CacheExists($cacheName)) {
+                $categories[$categoryName] = Library::GetFromCache($cacheName);
+            } else {
+                if ($lib === null) {
+                    $lib = new Library();
+                }
+                if ($categoryName === "TV Shows") {
+                    $lib->loadTvShowsFromDatabase();
+                    $videos = $lib->tvShows;
+                    Library::PutCache($cacheName, $videos);
+                    $categories[] = new Category("TV Shows", $videos);
+                }
+                if ($categoryName === "Movies") {
+                    $lib->loadMoviesFromDatabase();
+                    $videos = $lib->movies;
+                    Library::PutCache($cacheName, $videos);
+                    $categories[] = new Category("Movies", $videos);
+                }
             }
         }
         return $categories;
     }
 
+    public static function CacheExists($cacheName) {
+        $cachePath = dirname(__FILE__) . '/../cache/' . $cacheName;
+        return file_exists($cachePath);
+    }
+
+    public static function GetFromCache($cacheName) {
+        $cachePath = dirname(__FILE__) . '/../cache/' . $cacheName;
+        return json_decode(file_get_contents($cachePath));
+    }
+
+    public static function PutCache($cacheName, $obj) {
+        if (!file_exists(dirname(__FILE__) . '/../cache/')) {
+            mkdir(dirname(__FILE__) . '/../cache/', 0777, true);
+        }
+        $cachePath = dirname(__FILE__) . '/../cache/' . $cacheName;
+        file_put_contents($cachePath, json_encode($obj));
+    }
+
     public static function GetCategoryNames() {
-        return [ 'Movies', 'Recently Watched', 'TV Shows'];
+        return ['Recently Watched', 'Movies', 'TV Shows'];
     }
 
     public static function GetRecentlyWatchedVideos() {

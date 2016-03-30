@@ -52,6 +52,21 @@ function endsWith($haystack, $needle) {
 }
 
 /**
+ * A low-memory process to convert an array of video paths into a hash of video paths.
+ * @param type $dir
+ * @return type
+ */
+function getVideoHashFromDir($dir) {
+    $hash = [];
+    $videos = getVideosFromDir($dir);
+    foreach ($videos as $key => $path) {
+        $hash[$path] = true;
+        unset($videos[$key]);
+    }
+    return $hash;
+}
+
+/**
  * Gets all files in a directory recursively
  * @param String - $dir - the full path to the directory to start in
  * @return array - list of all file paths found in or under this directory

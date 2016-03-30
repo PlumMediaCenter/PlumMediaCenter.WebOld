@@ -2,10 +2,79 @@
 
 include_once('database/Queries.class.php');
 include_once('controllers/VideoController.php');
+include_once('Models/GenerateLibraryResultModel.php');
 
 include_once('Movie.class.php');
 
-class LibraryGenerator {
+class LibraryGeneratorOld {
+
+    const DELETE_PAGE_SIZE = 200;
+    const ADD_PAGE_SIZE = 50;
+
+
+    function ___deleteMissingVideos() {
+        $deleteCount = 0;
+        $idsToDelete = [];
+        $pageSize = 200;
+        //get the number of videos in the library
+        $videoCount = intval(DbManager::SingleColumnQuery('select count(video_id) from video'));
+
+        $iterations = ceil($videoCount / $pageSize);
+
+        //grab the videos in chunks, make sure they exist
+        for ($i = 0; $i < $iterations; $i++) {
+            $offset = $i * $pageSize;
+            $videos = DbManager::GetAllClassQuery("select video_id, path from video limit $offset,$pageSize");
+            foreach ($videos as $video) {
+                if (file_exists($video->path) === false) {
+                    $idsToDelete[] = $video->video_id;
+                }
+            }
+            //if we have videos to delete, delete them.
+            if (!empty($idsToDelete)) {
+                $success = DbManager::NonQuery('delete from tv_episode where video_id in(' . implode(',', $idsToDelete) . ')');
+                $success = DbManager::NonQuery('delete from tv_show where video_id in(' . implode(',', $idsToDelete) . ')');
+                $success = DbManager::NonQuery('delete from video where video_id in(' . implode(',', $idsToDelete) . ')');
+                $deleteCount = $deleteCount + count($idsToDelete);
+                unset($idsToDelete);
+                $idsToDelete = [];
+            }
+        }
+        return $deleteCount;
+    }
+
+    function ___addNewMovies() {
+        $insertCount = 0;
+        //list of all video sources
+        $movieSources = Queries::getVideoSources(Enumerations::MediaType_Movie);
+
+        $movies = [];
+        foreach ($movieSources as $source) {
+            //get a list of each video in this movies source folder
+            $listOfAllFilesInSource = getVideosFromDir($source->location);
+
+            foreach ($listOfAllFilesInSource as $fullPathToFile) {
+                $movies[] = (object) [
+                            'path' => $fullPathToFile,
+                            'url' => '',
+                            'filetype' => '',
+                            'media_type' => '',
+                            'video_source_path' => $source->location,
+                            'video_source_url' => $source->base_url
+                ];
+                if (count($movies) === LibraryGenerator::ADD_PAGE_SIZE) {
+                    $insertCount = $insertCount + count($movies);
+                    $movies = [];
+                }
+            }
+        }
+
+        //write each of the new movies to the database
+        foreach ($movies as $movie) {
+            $movie->writeToDb();
+        }
+        return true;
+    }
 
     /**
      * Scans all source folders for media files and synchronizes the database with the watch folders 
@@ -81,7 +150,7 @@ class LibraryGenerator {
         }
     }
 
-    private function addNewMovies($existingMovies) {
+    private function addNewMovies_orig($existingMovies) {
         //create a hashtable of all of the paths that are ALREADY in our database
         $hash = [];
         foreach ($existingMovies as $movie) {

@@ -1,4 +1,6 @@
 <?php
+//clear the cache
+include 'ClearCache.php';
 
 $startSeconds = time();
 //allow up to half hour for this script to run
