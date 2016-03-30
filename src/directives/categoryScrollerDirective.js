@@ -30,24 +30,24 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                 $scope.$watch(function () {
                     return vm.width;
                 }, function (width) {
-                   getTileWidth();
+                    getTileWidth();
                 });
-                
-                function getTileWidth(){
-                     //get the first video tile
+
+                function getTileWidth() {
+                    //get the first video tile
                     var videoTile = element[0].querySelector('video-tile');
                     var rect = videoTile.getBoundingClientRect();
                     vm.videoTileWidth = rect.width;
                 }
                 //the first time the length of the video list is greater than zero, recalculate the tile width
-                $scope.$watch(function(){
-                    return vm.category &&  vm.category.videos.length? true: false;
-                }, function(newValue, oldValue){
-                    if(newValue){
+                $scope.$watch(function () {
+                    return vm.category && vm.category.videos && vm.category.videos.length ? true : false;
+                }, function (newValue, oldValue) {
+                    if (newValue) {
                         getTileWidth();
                     }
                 });
-                
+
                 calculateElementWidth();
 
             }
@@ -161,7 +161,7 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
             }
 
             function videoCount() {
-                return vm.category ? vm.category.videos.length : 0;
+                return vm.category && vm.category.videos ? vm.category.videos.length : 0;
             }
 
             function showPageLeft() {

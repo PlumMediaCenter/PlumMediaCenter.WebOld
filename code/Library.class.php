@@ -269,8 +269,14 @@ class Library {
         foreach ($categoryNames as $categoryName) {
             if ($categoryName === 'Recently Watched') {
                 $videos = Library::GetRecentlyWatchedVideos();
-                $categories[] = new Category("Recently Watched", $videos);
+                $categories[$categoryName] = new Category("Recently Watched", $videos);
+                continue;
             }
+            // if we already have this category in the list, don't get it again
+            if (isset($categories[$categoryName])) {
+                continue;
+            }
+
             $cacheName = "category-$categoryName";
             if (Library::CacheExists($cacheName)) {
                 $categories[$categoryName] = Library::GetFromCache($cacheName);
@@ -278,21 +284,25 @@ class Library {
                 if ($lib === null) {
                     $lib = new Library();
                 }
+
                 if ($categoryName === "TV Shows") {
                     $lib->loadTvShowsFromDatabase();
-                    $videos = $lib->tvShows;
-                    Library::PutCache($cacheName, $videos);
-                    $categories[] = new Category("TV Shows", $videos);
+                    $categories[$categoryName] = new Category($categoryName, $lib->tvShows);
+                    Library::PutCache($cacheName, $categories[$categoryName]);
                 }
                 if ($categoryName === "Movies") {
                     $lib->loadMoviesFromDatabase();
                     $videos = $lib->movies;
-                    Library::PutCache($cacheName, $videos);
-                    $categories[] = new Category("Movies", $videos);
+                    $categories[$categoryName] = new Category($categoryName, $videos);
+                    Library::PutCache($cacheName, $categories[$categoryName]);
                 }
             }
         }
-        return $categories;
+        $result = [];
+        foreach ($categories as $category) {
+            $result[] = $category;
+        }
+        return $result;
     }
 
     public static function CacheExists($cacheName) {
