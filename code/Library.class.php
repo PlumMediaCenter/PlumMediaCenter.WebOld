@@ -105,7 +105,7 @@ class Library {
      * Loads an array of all tv shows found in the database. All metadata is loaded into the tv show objects. 
      * @return TvShow[] - returns the tv shows in the library that was loaded from the database
      */
-    public function loadTvShowsFromDatabase() {
+    public function loadTvShowsFromDatabase($loadEpisodes = true) {
         $this->tvShows = [];
         $this->tvEpisodes = [];
         $this->tvShowCount = 0;
@@ -120,11 +120,13 @@ class Library {
             if (is_object($tvShow) == false) {
                 continue;
             }
-            //load all of the episodes for this tv show
-            $tvShow->loadEpisodesFromDatabase();
-            $this->videos = array_merge($this->videos, $tvShow->episodes);
-            $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
-            $this->tvEpisodeCount += $tvShow->episodeCount;
+            if ($loadEpisodes) {
+                //load all of the episodes for this tv show
+                $tvShow->loadEpisodesFromDatabase();
+                $this->videos = array_merge($this->videos, $tvShow->episodes);
+                $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
+                $this->tvEpisodeCount += $tvShow->episodeCount;
+            }
         }
         return $this->tvShows;
     }
@@ -286,7 +288,7 @@ class Library {
                 }
 
                 if ($categoryName === "TV Shows") {
-                    $lib->loadTvShowsFromDatabase();
+                    $lib->loadTvShowsFromDatabase(false);
                     $categories[$categoryName] = new Category($categoryName, $lib->tvShows);
                     Library::PutCache($cacheName, $categories[$categoryName]);
                 }
