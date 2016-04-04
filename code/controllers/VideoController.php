@@ -227,7 +227,7 @@ class VideoController {
         return $videos;
     }
 
-    static function SortVideosByTitle($videos) {
+    static function SortVideosByTitle(&$videos) {
         usort($videos, array("VideoController", 'CmpByName'));
     }
 
@@ -249,8 +249,19 @@ class VideoController {
     }
 
     static function CmpByName($a, $b) {
-        if (isset($a) && isset($b) && isset($a->name) && isset($b->name)) {
-            return strcmp($b->name, $a->name);
+        if (isset($a) && isset($b) && isset($a->title) && isset($b->title)) {
+            //remove 'The' from the front
+            $aName = trim(strtolower($a->title));
+            $bName = trim(strtolower($b->title));
+
+            if (strpos($aName, 'the') === 0) {
+                $aName = substr($aName, 4);
+            }
+            if (strpos($bName, 'the' === 0)) {
+                $bName = substr($bName, 4);
+            }
+
+            return strcmp($aName, $bName);
         } else {
             return true;
         }

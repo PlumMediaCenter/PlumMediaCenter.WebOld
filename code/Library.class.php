@@ -98,6 +98,7 @@ class Library {
             $this->videos[] = $movie;
             $this->movieCount++;
         }
+        VideoController::SortVideosByTitle($this->movies);
         return $this->movies;
     }
 
@@ -128,6 +129,7 @@ class Library {
                 $this->tvEpisodeCount += $tvShow->episodeCount;
             }
         }
+        VideoController::SortVideosByTitle($this->tvShows);
         return $this->tvShows;
     }
 
@@ -280,7 +282,8 @@ class Library {
             }
 
             $cacheName = "category-$categoryName";
-            if (Library::CacheExists($cacheName)) {
+            if (false) {
+                //if (Library::CacheExists($cacheName)) {
                 $categories[$categoryName] = Library::GetFromCache($cacheName);
             } else {
                 if ($lib === null) {
