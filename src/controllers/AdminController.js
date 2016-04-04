@@ -1,11 +1,12 @@
 angular.module('app').controller('AdminController', ['$timeout', '$window', 'globals', 'api', 'notify', 'Video', 'admin',
-    function($timeout, $window, globals, api, notify, Video, admin) {
+    function ($timeout, $window, globals, api, notify, Video, admin) {
         globals.title = 'Admin';
 
         var vm = angular.extend(this, {
             //properties
             serverVersionNumber: undefined,
             //api
+            clearCache: clearCache,
             fetchMissingMetadata: fetchMissingMetadata,
             generateLibrary: generateLibrary,
             updateApplication: updateApplication
@@ -15,26 +16,35 @@ angular.module('app').controller('AdminController', ['$timeout', '$window', 'glo
         getVideoCounts();
         getServerVersionNumber();
 
+        function clearCache() {
+            var n = notify('Clearing cache', 'info');
+            api.clearCache().then(function(){
+                notify('Cache has been cleared', 'success');
+            }).catch(function(err){
+                notify('There was an error clearing the cache', 'danger');
+            });
+        }
+
         function generateLibrary() {
             var n = notify('Generating library', 'info');
             globals.generateLibraryIsPending = true;
-            api.generateLibrary().then(function() {
+            api.generateLibrary().then(function () {
                 notify('Library has been generated', 'success');
-            }).catch(function(err) {
+            }).catch(function (err) {
                 notify('There was an error generating the library: "' + err.message + '"', 'danger');
-            }).finally(function() {
+            }).finally(function () {
                 globals.generateLibraryIsPending = false;
                 getVideoCounts();
             });
         }
 
         function getServerVersionNumber() {
-            admin.getServerVersionNumber().then(function(version) {
+            admin.getServerVersionNumber().then(function (version) {
                 vm.serverVersionNumber = version;
             });
         }
         function getVideoCounts() {
-            Video.getCounts().then(function(videoCounts) {
+            Video.getCounts().then(function (videoCounts) {
                 vm.videoCounts = videoCounts;
             });
         }
@@ -42,11 +52,11 @@ angular.module('app').controller('AdminController', ['$timeout', '$window', 'glo
         function fetchMissingMetadata() {
             globals.fetchMissingMetadataIsPending = true;
             notify('Fetching missing metadata', 'info');
-            Video.fetchMissingMetadata().then(function() {
+            Video.fetchMissingMetadata().then(function () {
                 notify('Finished fetching missing metata for videos', 'success');
-            }, function() {
+            }, function () {
                 notify('There was an error fetching missing metadata', 'error');
-            }).finally(function() {
+            }).finally(function () {
                 globals.fetchMissingMetadataIsPending = false;
             });
         }
@@ -54,18 +64,18 @@ angular.module('app').controller('AdminController', ['$timeout', '$window', 'glo
         function updateApplication() {
             globals.checkForUpdatesIsPending = true;
             notify('Checking for updates. Please wait until this operation has completed', 'info');
-            admin.updateApplication().then(function(result) {
+            admin.updateApplication().then(function (result) {
                 if (result.updateWasApplied) {
                     notify('Application has been updated. Reloading page.', 'success');
-                    $timeout(function() {
+                    $timeout(function () {
                         $window.location.reload();
                     }, 4000);
                 } else {
                     notify('No updates were found', 'success');
                 }
-            }, function() {
+            }, function () {
                 notify('Unable to check and install updates', 'error');
-            }).finally(function() {
+            }).finally(function () {
                 globals.checkForUpdatesIsPending = false;
             });
         }
