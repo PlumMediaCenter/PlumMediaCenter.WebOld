@@ -1,4 +1,4 @@
-<div class="episode" ng-mouseenter="vm.hover = true" ng-mouseleave="vm.hover = false">
+<div class="episode" ng-mouseenter="vm.hover = true" ng-mouseleave="vm.hover = false" ng-class="{selected: vm.selected}">
     <div class="blur-screen"></div>
     <div class="season-episode-number">
         Season {{vm.episode.seasonNumber}}, Episode {{vm.episode.episodeNumber}}<br/>

@@ -4,6 +4,7 @@ angular.module('app').controller('VideoInfoController', ['$scope', 'globals', 'V
             progressPercent: 0,
             preventCache: $stateParams.preventCache,
             episodes: undefined,
+            nextEpisode: undefined,
             videoId: $stateParams.videoId,
             //api
             getProgressPercentType: getProgressPercentType,
@@ -12,7 +13,7 @@ angular.module('app').controller('VideoInfoController', ['$scope', 'globals', 'V
         globals.title = 'VideoInfo';
 
         $scope.$watch('vm.episodes', fetchAllEpisodePercentWatched);
-
+     
         //load the video by id
         Video.getById(vm.videoId).then(function(video) {
             vm.video = video;
@@ -40,6 +41,7 @@ angular.module('app').controller('VideoInfoController', ['$scope', 'globals', 'V
             Video.getProgressPercent(vm.video.videoId).then(function(percent) {
                 vm.progressPercent = percent;
             });
+            
 
         })
 

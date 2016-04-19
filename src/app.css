@@ -394,55 +394,6 @@ label, input[type=radio]{
     padding-right: 10px;
 }
 
-
-
-.episode{
-    border:1px solid #AAAAAA;
-    display:inline-block; 
-    width:212px;
-    height:120px;
-    position:relative;
-    margin:10px;
-}
-
-.episode .blur-screen{
-    position:absolute;
-    left:0px;
-    top:0px;
-    right:0px;
-    bottom:0px;
-    width:100%;
-    height:100%;
-    border:0px;
-    padding:0px;
-    margin:0px;
-    background-color:black;
-    opacity: .3;
-    background: -webkit-linear-gradient(top,black, black);
-}
-
-.episode .season-episode-number{ 
-    position:absolute;
-    left:10px;
-    bottom:20px;
-    color:white;
-    font-weight:bold;
-}
-
-.episode .title-info{
-    position:absolute;
-    left:10px;
-    bottom:5px;
-    color: #DFDFDF;
-}
-
-.episode .play{
-    position:absolute;
-    top: 45px;
-    left: 91px;
-    font-size:30px;
-}
-
 .wait-small {
     background-image: url(../assets/img/ajax-loader.gif);
     background-size: 24px 24px;
