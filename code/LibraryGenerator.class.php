@@ -6,11 +6,10 @@ include_once('Models/GenerateLibraryResultModel.php');
 
 include_once('Movie.class.php');
 
-class LibraryGeneratorOld {
+class LibraryGenerator {
 
     const DELETE_PAGE_SIZE = 200;
     const ADD_PAGE_SIZE = 50;
-
 
     function ___deleteMissingVideos() {
         $deleteCount = 0;
@@ -185,6 +184,7 @@ class LibraryGeneratorOld {
      * @param string $path
      */
     public static function AddNewMediaItem($videoSourceId, $path) {
+        $newVideoIds = [];
         $realpath = realpath($path);
         //get a video source somehow
         $videoSource = null;
@@ -232,6 +232,9 @@ class LibraryGeneratorOld {
                 $movies[] = $movie;
             }
             foreach ($movies as $movie) {
+                if ($movie->isNew()) {
+                    $newVideoIds[] = $movie->getVideoId();
+                }
                 $movie->writeToDb();
             }
         } else if ($videoSource->media_type === Enumerations::MediaType_TvShow) {
@@ -246,6 +249,9 @@ class LibraryGeneratorOld {
             $shows = [];
             foreach ($paths as $path) {
                 $episode = new TvEpisode($videoSource->base_url, $videoSource->location, $path);
+                if ($episode->isNew()) {
+                    $newVideoIds[] = $episode->getVideoId();
+                }
                 //get the name of the tv show for this episode
                 $showName = $episode->getShowName();
                 $show = null;
@@ -262,14 +268,17 @@ class LibraryGeneratorOld {
             }
 
             //at this point we have all of the episodes loaded into the tv shows that we care about
-
             foreach ($shows as $show) {
+                if ($show->isNew()) {
+                    $newVideoIds[] = $show->getVideoId();
+                }
                 $show->writeToDb();
                 foreach ($show->episodes as $episode) {
                     $episode->writeToDb();
                 }
             }
         }
+        return $newVideoIds;
     }
 
 }

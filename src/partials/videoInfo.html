@@ -8,6 +8,11 @@
                 </a>
                 <progressbar title="progress" class="margin" style="background-color: grey;margin-top:5px;" type="{{vm.getProgressPercentType()}}" value="vm.progressPercent < 15? 15: vm.progressPercent " max="100"><span>{{vm.progressPercent}}%</progressbar>
                 <a class="btn btn-default full-width margin" ui-sref="metadataFetcher({videoId: vm.video.videoId})">Fetch Metadata</a>
+                <a class="btn btn-default full-width margin" ng-click="vm.scanForNewMedia()">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                    Scan for New Media
+                </a>
+                <load-message message="vm.loadMessage"></load-message>
                 <a ui-sref="play(vm.video)" class="btn btn-primary full-width margin">
                     <span class="glyphicon glyphicon-play"></span>&nbsp;Play
                 </a>

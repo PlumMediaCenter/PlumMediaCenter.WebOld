@@ -159,6 +159,21 @@ angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q,
             });
             return deferred.promise;
         }
+
+        Video.scanForNewMedia = function (videoId) {
+            var deferred = $q.defer();
+            $http.get('api/ScanForNewMedia.php', {
+                params: {
+                    videoId: videoId
+                }
+            }).then(function (result) {
+                deferred.resolve(result.data);
+            }, function (err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        }
+
         Video.getMetadataSearchResultsByOnlineVideoId = function (mediaType, onlineVideoId) {
             var deferred = $q.defer();
             $http.get('api/GetMetadataSearchResults.php', {
@@ -215,12 +230,11 @@ angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q,
         }
 
         Video.addNewMediaItem = function (videoSourceId, newMediaItemPath) {
-            return $http.get('api/AddNewMediaItem.php', {params: {videoSourceId: videoSourceId, path: newMediaItemPath}}).success(function (result) {
-                return result;
-            }).error(function (error) {
+            return $http.get('api/AddNewMediaItem.php', {params: {videoSourceId: videoSourceId, path: newMediaItemPath}}).then(function (result) {
+                return result.data;
+            }, function (error) {
                 return error;
             });
-
         };
 
 
@@ -233,7 +247,7 @@ angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q,
         };
 
         Video.getCategories = function (names) {
-            names = typeof names !== 'string' && typeof names.length === 'number'?names: [];
+            names = typeof names !== 'string' && typeof names.length === 'number' ? names : [];
             return $http.get('api/GetCategories.php', {params: {names: names.join(',')}}).then(function (result) {
                 return result.data;
             }, function (error) {
