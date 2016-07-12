@@ -1,14 +1,16 @@
-<h1>{{::vm.category.name}} {{vm.getLocationText()}}</h1>
-<load-message message="vm.category? undefined: 'Loading'"></load-message>
-<div ng-if="!vm.visibleVideos || vm.visibleVideos.length === 0">No videos found</div>
-<div ng-if="vm.visibleVideos.length > 0" class="category-scroller-video-container"  ng-swipe-right="vm.pageLeft()" ng-swipe-left="vm.pageRight()" ng-class="vm.direction">
-    <a class="btn btn-default navigate navigate-left" ng-click="vm.pageLeft()" ng-if="vm.showPageLeft()">
-        <span class="glyphicon glyphicon-chevron-left"></span>
-    </a>
-    <video-tile video="video" ng-repeat="video in vm.visibleVideos" class="video-tile"></video-tile>
-    <div class="btn btn-default navigate navigate-right" ng-click="vm.pageRight()" ng-if="vm.showPageRight()">
-        <span class="glyphicon glyphicon-chevron-right"></span>
+<div ng-if="vm.category.videos.length > 0">
+    <h1>{{::vm.category.name}} {{vm.getLocationText()}}</h1>
+    <load-message message="vm.category? undefined: 'Loading'"></load-message>
+    <div ng-if="!vm.visibleVideos || vm.visibleVideos.length === 0">No videos found</div>
+    <div ng-if="vm.visibleVideos.length > 0" class="category-scroller-video-container"  ng-swipe-right="vm.pageLeft()" ng-swipe-left="vm.pageRight()" ng-class="vm.direction">
+        <a class="btn btn-default navigate navigate-left" ng-click="vm.pageLeft()" ng-if="vm.showPageLeft()">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <video-tile video="video" ng-repeat="video in vm.visibleVideos" class="video-tile"></video-tile>
+        <div class="btn btn-default navigate navigate-right" ng-click="vm.pageRight()" ng-if="vm.showPageRight()">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </div>
     </div>
+    <!-- add the first video as a hidden tile so that we always have a way of determine the video-tile's size -->
+    <video-tile class="hidden-video" video="vm.category.videos[0]"></video-tile>
 </div>
-<!-- add the first video as a hidden tile so that we always have a way of determine the video-tile's size -->
-<video-tile class="hidden-video" video="vm.category.videosz[0]"></video-tile>

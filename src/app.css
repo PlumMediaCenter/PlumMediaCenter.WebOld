@@ -395,7 +395,7 @@ label, input[type=radio]{
 }
 
 .wait-small {
-    background-image: url(../assets/img/ajax-loader.gif);
+    background-image: url('../assets/img/ajax-loader.gif');
     background-size: 24px 24px;
     height: 24px;
     width: 24px;

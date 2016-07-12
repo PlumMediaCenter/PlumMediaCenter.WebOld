@@ -262,10 +262,10 @@ class Queries {
             $sql = "insert into video("
                     . "title, plot, mpaa, year, url, path, filetype, media_type, "
                     . "metadata_last_modified_date, poster_last_modified_date, video_source_path, "
-                    . "video_source_url, running_time_seconds, sd_poster_url, hd_poster_url)"
+                    . "video_source_url, running_time_seconds, sd_poster_url, hd_poster_url, date_added, date_modified)"
                     . " values(:title, :plot, :mpaa, :year, :url, :path, :fileType, :mediaType, "
                     . ":metadataModifiedDate, :posterModifiedDate, :videoSourcePath, :videoSourceUrl, "
-                    . ":runningTimeSeconds, :sdPosterUrl, :hdPosterUrl)";
+                    . ":runningTimeSeconds, :sdPosterUrl, :hdPosterUrl, CURDATE(), CURDATE())";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtInsertVideo = $stmt;
         }
@@ -308,7 +308,7 @@ class Queries {
             $sql = "update video set "
                     . "title = :title, plot=:plot, mpaa=:mpaa, year=:year, url=:url, path=:path, filetype=:fileType, "
                     . "media_type=:mediaType, metadata_last_modified_date= :metadataModifiedDate, poster_last_modified_date = :posterModifiedDate, video_source_path=:videoSourcePath, video_source_url=:videoSourceUrl, running_time_seconds=:runningTimeSeconds, "
-                    . "sd_poster_url=:sdPosterUrl, hd_poster_url=:hdPosterUrl "
+                    . "sd_poster_url=:sdPosterUrl, hd_poster_url=:hdPosterUrl, date_modified=CURDATE()"
                     . "where video_id = :videoId";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtUpdateVideo = $stmt;
