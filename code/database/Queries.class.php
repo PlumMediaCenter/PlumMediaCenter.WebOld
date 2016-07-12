@@ -515,6 +515,7 @@ class Queries {
      */
     public static function UpdateVideoSource($videoSourceId, $path, $baseUrl, $mediaType, $securityType, $refreshVideos = 1) {
         if ($path != null && $baseUrl != null && $mediaType != null && $securityType != null) {
+            $oldVideoSource = Queries::GetVideoSourcesById([$videoSourceId])[0];
             $pdo = DbManager::getPdo();
             if (Queries::$stmtUpdateVideoSource == null) {
                 $sql = "update video_source set location=:location, base_url=:baseUrl, media_type=:mediaType, security_type=:securityType, refresh_videos=:refreshVideos
@@ -529,6 +530,30 @@ class Queries {
             $stmt->bindParam(":securityType", $securityType);
             $stmt->bindParam(":id", $videoSourceId);
             $stmt->bindParam(":refreshVideos", $refreshVideos);
+            $success = $stmt->execute();
+            Queries::LogStmt($stmt, $success);
+
+            //replace all videos with the video source changes
+            $success = $success && (Queries::StringReplace("video", "path", $oldVideoSource->location, $path));
+            $success = $success && (Queries::StringReplace("video", "url", $oldVideoSource->base_url, $baseUrl));
+            $success = $success && (Queries::StringReplace("video", "video_source_path", $oldVideoSource->location, $path));
+            $success = $success && (Queries::StringReplace("video", "video_source_url", $oldVideoSource->base_url, $baseUrl));
+
+            return $success;
+        }
+        return false;
+    }
+
+    public static function StringReplace($tableName, $columnName, $oldValue, $newValue) {
+        if ($tableName != null && $columnName != null && $oldValue != null && $newValue != null) {
+            $pdo = DbManager::getPdo();
+            $sql = "UPDATE $tableName SET $columnName = REPLACE($columnName, :oldValue1, :newValue) WHERE $columnName LIKE :oldValue2;";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(":oldValue1", $oldValue);
+            $stmt->bindParam(":newValue", $newValue);
+            $fuzzyOldValue = "%$oldValue%";
+            $stmt->bindParam(":oldValue2", $fuzzyOldValue);
+
             $success = $stmt->execute();
             Queries::LogStmt($stmt, $success);
             return $success;
