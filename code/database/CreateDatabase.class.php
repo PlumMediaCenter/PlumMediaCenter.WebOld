@@ -43,7 +43,8 @@ class CreateDatabase {
         '0.3.14' => 'db0_3_14',
         '0.3.15' => 'db0_3_15',
         '0.3.16' => 'db0_3_16',
-        '0.4.0' => 'db0_4_0'
+        '0.4.0' => 'db0_4_0',
+        '0.4.1' => 'db0_4_1'
     );
 
     function __construct($rootUsername, $rootPassword, $dbHost) {
@@ -297,6 +298,10 @@ class CreateDatabase {
         DbManager::NonQuery("alter table video add column date_added date not null");
         DbManager::NonQuery("alter table video add column date_modified date not null");
 
+    }
+    function db0_4_1() {
+        $videoIds = DbManager::SingleColumnQuery("select video_id from video where path like '%.extra.%'");
+        Queries::DeleteVideos($videoIds);
     }
 
 }

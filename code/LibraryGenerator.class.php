@@ -228,6 +228,9 @@ class LibraryGenerator {
             }
 
             foreach ($paths as $path) {
+                if (strpos(strtolower($path), ".extra.") !== false) {
+                    continue;
+                }
                 $movie = new Movie($videoSource->base_url, $videoSource->location, $path);
                 $movies[] = $movie;
             }
@@ -248,6 +251,9 @@ class LibraryGenerator {
 
             $shows = [];
             foreach ($paths as $path) {
+                if (strpos(strtolower($path), ".extra.") !== false) {
+                    continue;
+                }
                 $episode = new TvEpisode($videoSource->base_url, $videoSource->location, $path);
                 if ($episode->isNew()) {
                     $newVideoIds[] = $episode->getVideoId();

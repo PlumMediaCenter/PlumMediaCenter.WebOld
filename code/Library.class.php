@@ -157,6 +157,10 @@ class Library {
             $listOfAllFilesInSource = getVideosFromDir($source->location);
 
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
+                //if the movie contains the word ".extra.", skip it for now. Eventually those will get added to the library
+                if (strpos(strtolower($fullPathToFile), ".extra.") !== false) {
+                    continue;
+                }
                 //create a new Movie object
                 $video = new Movie($source->base_url, $source->location, $fullPathToFile);
                 $this->movies[] = $video;
@@ -340,7 +344,8 @@ class Library {
     }
 
     public static function GetCategoryNames() {
-        return ['Recently Watched', 'Recently Added', 'Recently Updated', 'Movies', 'TV Shows'];
+        //ignore 'Recently Updated' for now because the library generator auto-saves every video by default
+        return ['Recently Watched', 'Recently Added',  'TV Shows', 'Movies'];
     }
 
     /**
@@ -408,8 +413,8 @@ class Library {
         $videos = VideoController::GetVideos($videoIds, false);
         return $videos;
     }
-    
-        public static function GetRecentlyUpdated($numberOfDays) {
+
+    public static function GetRecentlyUpdated($numberOfDays) {
         $recentVideoIds = DbManager::SingleColumnQuery(
                         "select video_id "
                         . "from video "
