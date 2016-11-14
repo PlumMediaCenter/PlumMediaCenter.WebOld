@@ -198,7 +198,7 @@ class Library {
                     //include episodes
                     $this->videos = array_merge($this->videos, $tvShow->episodes);
                     $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
-                    $this->tvEpisodeCount+= $tvShow->episodeCount;
+                    $this->tvEpisodeCount += $tvShow->episodeCount;
                 }
             }
         }
@@ -278,7 +278,7 @@ class Library {
             $lib = new Library();
             $lib->loadTvShowsFromDatabase();
         }
-        
+
         foreach ($categoryNames as $categoryName) {
             if ($categoryName === "TV Shows") {
                 $categories[] = new Category("TV Shows", $lib->tvShows);
@@ -301,12 +301,23 @@ class Library {
     }
 
     public static function GetRecentlyWatchedVideos() {
+        $videoIds = DbManager::SingleColumnQuery("
+                        select video_id 
+                        from recently_watched 
+                        where user_id = " . config::$globalUserId ." 
+                        order by date_watched desc
+                        limit 20");
+        $videos = VideoController::GetVideos($videoIds, false);
+        return $videos;
+    }
+
+    public static function GetRecentlyWatchedVideos_old() {
         //select the last n videos from the watch_video table
 
         $recentVideoIds = DbManager::SingleColumnQuery(
                         "select video_id "
                         . "from watch_video "
-                        . "where username = '" . config::$globalUsername . "' "
+                        . "where userId = " . config::$globalUserId . " "
                         . "order by date_watched desc "
                         . "limit 50");
         // get the video records with those IDs

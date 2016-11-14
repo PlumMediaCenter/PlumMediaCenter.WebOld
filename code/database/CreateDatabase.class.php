@@ -36,7 +36,8 @@ class CreateDatabase {
         '0.3.7' => 'db0_3_7',
         '0.3.8' => 'db0_3_8',
         '0.3.9' => 'db0_3_9',
-        '0.3.10' => 'db0_3_10'
+        '0.3.10' => 'db0_3_10',
+        '0.3.11' => 'db0_3_11'
     );
 
     function __construct($rootUsername, $rootPassword, $dbHost) {
@@ -259,10 +260,9 @@ class CreateDatabase {
     function db0_3_0() {
         DbManager::NonQuery('alter table video_source drop primary key, add column id int not null auto_increment primary key');
     }
-    
-    
+
     function db0_3_9() {
-         DbManager::nonQuery("CREATE OR REPLACE VIEW tv_episode_v
+        DbManager::nonQuery("CREATE OR REPLACE VIEW tv_episode_v
             AS
                 SELECT v.video_id,
                     v.title,
@@ -285,6 +285,39 @@ class CreateDatabase {
                     v.plot
                 FROM video v, tv_episode t
                 WHERE v.video_id = t.video_id");
+    }
+
+    function db0_3_11() {
+        //create the users table
+        try {
+            DbManager::nonQuery("
+            create table user(
+                user_id int not null auto_increment primary key,
+                email_address varchar(128) not null,
+                password varchar(128) not null
+            );
+        ");
+            //add the default user for now
+            DbManager::NonQuery("insert into user(email_address, password) values('system@plummediacenter.com', 'password'");
+        } catch (Exception $e) {
+            
+        }
+        //change username to user_id
+        DbManager::nonQuery("alter table watch_video drop column username;");
+        DbManager::nonQuery("alter table watch_video ADD user_id int not null default 1");
+        DbManager::nonQuery("alter table watch_video add foreign key (user_id) references user(user_id);");
+
+
+        DbManager::nonQuery("
+            create table recently_watched(
+                video_id int not null,
+                user_id int not null,
+                date_watched datetime not null,
+                foreign key (user_id) references user(user_id),
+                foreign key (video_id) references video(video_id),
+                primary key (video_id, user_id)
+            );"
+        );
     }
 
 }

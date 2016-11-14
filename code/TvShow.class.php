@@ -293,7 +293,7 @@ class TvShow extends Video {
             //the video associated with the videoId provided is not a tv episode or tv show, nothing more can be done
             return -1;
         }
-        $result = Queries::getLastEpisodeWatched(config::$globalUsername, $tvShowVideoId);
+        $result = Queries::getLastEpisodeWatched(config::$globalUserId, $tvShowVideoId);
         $lastVideoIdWatched = $result === false ? -1 : $result->video_id;
         $lastWatchedSecondsProgress = $result === false ? 0 : $result->time_in_seconds;
         //if there IS a last video watched, then see if the user hadn't finished it yet
