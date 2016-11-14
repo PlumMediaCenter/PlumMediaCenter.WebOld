@@ -286,8 +286,7 @@ class Library {
             }
 
             $cacheName = "category-$categoryName";
-            if (false) {
-                //if (Library::CacheExists($cacheName)) {
+            if (Library::CacheExists($cacheName)) {
                 $categories[$categoryName] = Library::GetFromCache($cacheName);
             } else {
                 if ($lib === null) {
