@@ -53,23 +53,6 @@ class Queries {
         return Queries::DeleteVideos([$videoId]);
     }
 
-    public static function InsertRecentlyWatched($userId, $videoId) {
-        $dateWatched = date("Y-m-d H:i:s");
-
-        $pdo = DbManager::getPdo();
-        $sql = "
-            INSERT INTO recently_watched (user_id, video_id, date_watched) 
-                VALUES(:userId, :videoId, :dateWatched ) 
-                ON DUPLICATE KEY UPDATE user_id=:userId, video_id=:videoId, date_watched=:dateWatched";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(":userId", $userId);
-        $stmt->bindParam(":videoId", $videoId);
-        $stmt->bindParam(":dateWatched", $dateWatched);
-        $success = $stmt->execute();
-        return $success;
-    }
-
     /**
      * Deletes the videos with the specified videoIds
      * @param int[] $videoId
@@ -984,24 +967,23 @@ class Queries {
             ob_end_clean();
         }
     }
-    
-     public static function InsertRecentlyWatched($username, $videoId) {
+   
+    public static function InsertRecentlyWatched($userId, $videoId) {
         $dateWatched = date("Y-m-d H:i:s");
 
         $pdo = DbManager::getPdo();
         $sql = "
-            INSERT INTO recently_watched (username, video_id, date_watched) 
-                VALUES(:username, :videoId, :dateWatched ) 
-                ON DUPLICATE KEY UPDATE username=:username, video_id=:videoId, date_watched=:dateWatched";
+            INSERT INTO recently_watched (user_id, video_id, date_watched) 
+                VALUES(:userId, :videoId, :dateWatched ) 
+                ON DUPLICATE KEY UPDATE user_id=:userId, video_id=:videoId, date_watched=:dateWatched";
 
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":userId", $userId);
         $stmt->bindParam(":videoId", $videoId);
         $stmt->bindParam(":dateWatched", $dateWatched);
         $success = $stmt->execute();
         return $success;
     }
-
 }
 
 ?>
