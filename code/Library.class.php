@@ -206,7 +206,7 @@ class Library {
                     //include episodes
                     $this->videos = array_merge($this->videos, $tvShow->episodes);
                     $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
-                    $this->tvEpisodeCount+= $tvShow->episodeCount;
+                    $this->tvEpisodeCount += $tvShow->episodeCount;
                 }
             }
         }
@@ -345,7 +345,7 @@ class Library {
 
     public static function GetCategoryNames() {
         //ignore 'Recently Updated' for now because the library generator auto-saves every video by default
-        return ['Recently Watched', 'Recently Added',  'TV Shows', 'Movies'];
+        return ['Recently Watched', 'Recently Added', 'TV Shows', 'Movies'];
     }
 
     /**
@@ -427,7 +427,7 @@ class Library {
         return $videos;
     }
 
-    public static function GetRecentlyWatchedVideos() {
+    public static function GetRecentlyWatchedVideos_old() {
         //select the last n videos from the watch_video table
 
         $recentVideoIds = DbManager::SingleColumnQuery(
@@ -439,6 +439,17 @@ class Library {
         // get the video records with those IDs
 
         $videoIds = Library::ReduceVideoIds($recentVideoIds);
+        $videos = VideoController::GetVideos($videoIds, false);
+        return $videos;
+    }
+
+    public static function GetRecentlyWatchedVideos() {
+        $videoIds = DbManager::SingleColumnQuery("
+                        select video_id 
+                        from recently_watched 
+                        where username = '" . config::$globalUsername . "' 
+                        order by date_watched desc
+                        limit 20");
         $videos = VideoController::GetVideos($videoIds, false);
         return $videos;
     }

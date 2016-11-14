@@ -967,6 +967,23 @@ class Queries {
             ob_end_clean();
         }
     }
+    
+     public static function InsertRecentlyWatched($username, $videoId) {
+        $dateWatched = date("Y-m-d H:i:s");
+
+        $pdo = DbManager::getPdo();
+        $sql = "
+            INSERT INTO recently_watched (username, video_id, date_watched) 
+                VALUES(:username, :videoId, :dateWatched ) 
+                ON DUPLICATE KEY UPDATE username=:username, video_id=:videoId, date_watched=:dateWatched";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":videoId", $videoId);
+        $stmt->bindParam(":dateWatched", $dateWatched);
+        $success = $stmt->execute();
+        return $success;
+    }
 
 }
 

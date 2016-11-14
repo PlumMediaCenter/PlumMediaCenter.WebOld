@@ -7,9 +7,9 @@ angular.module('app').controller('HomeController', ['globals', 'Video', function
         });
         globals.title = 'Home';
 
-        Video.getAll().then(function(videos) {
-            vm.allVideos = videos;
-        });
+//        Video.getAll().then(function(videos) {
+//            vm.allVideos = videos;
+//        });
 
         function loadMore() {
             var numberToLoad = globals.infiniteScrollPageSize;
