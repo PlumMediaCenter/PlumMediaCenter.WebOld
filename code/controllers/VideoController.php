@@ -64,7 +64,7 @@ class VideoController {
         $videoRows = DbManager::GetAllClassQuery(
                         "select * "
                         . "from video "
-                        . "where video_id $inStatement and media_type = ?", Enumerations::MediaType_Movie);
+                        . "where video_id $inStatement and media_type = '" . Enumerations::MediaType_Movie . "'");
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         VideoController::SortVideosByTitle($videos);
         VideoController::RepairRelativeUrls($videos);
@@ -95,7 +95,7 @@ class VideoController {
         $videoRows = DbManager::GetAllClassQuery(
                         "select * "
                         . "from video "
-                        . "where $inStatement media_type = ?", Enumerations::MediaType_TvShow);
+                        . "where $inStatement media_type = '" . Enumerations::MediaType_TvShow . "'");
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         VideoController::SortVideosByTitle($videos);
         VideoController::RepairRelativeUrls($videos);
@@ -108,8 +108,8 @@ class VideoController {
                         "select * "
                         . " from video, tv_episode "
                         . " where video.video_id = tv_episode.video_id "
-                        . " and video.video_id = ? "
-                        . " and video.media_type = ?", $videoId, Enumerations::MediaType_TvEpisode);
+                        . " and video.video_id = $videoId "
+                        . " and video.media_type = '" . Enumerations::MediaType_TvEpisode . "'");
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         $videos = PropertyMappings::MapMany($videos, PropertyMappings::$episodeMapping);
         $video = isset($videos[0]) ? $videos[0] : null;
@@ -131,8 +131,8 @@ class VideoController {
                         . " from video, tv_episode "
                         . " where video.video_id = tv_episode.video_id "
                         . " and video.video_id $inStatement"
-                        . " and tv_show_video_id = ?$tvShowVideoId "
-                        . " and video.media_type = ?", $tvShowVideoId, Enumerations::MediaType_TvEpisode);
+                        . " and tv_show_video_id = $tvShowVideoId "
+                        . " and video.media_type = '" . Enumerations::MediaType_TvEpisode . "'");
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         $videos = PropertyMappings::MapMany($videos, PropertyMappings::$episodeMapping);
         VideoController::SortEpisodes($videos);
@@ -151,10 +151,10 @@ class VideoController {
                         "select * "
                         . " from video, tv_episode "
                         . " where video.video_id = tv_episode.video_id "
-                        . "     and tv_episode.tv_show_video_id = ?"
-                        . "     and video.media_type = ?"
+                        . "     and tv_episode.tv_show_video_id = $tvShowVideoId"
+                        . "     and video.media_type = '" . Enumerations::MediaType_TvEpisode . "'"
                         . " order by tv_episode.season_number asc, "
-                        . "     tv_episode.episode_number asc", $tvShowVideoId, Enumerations::MediaType_TvEpisode);
+                        . "     tv_episode.episode_number asc");
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         $videos = PropertyMappings::MapMany($videos, PropertyMappings::$episodeMapping);
         VideoController::SortEpisodes($videos);
@@ -227,7 +227,7 @@ class VideoController {
         return $videos;
     }
 
-    static function SortVideosByTitle($videos) {
+    static function SortVideosByTitle(&$videos) {
         usort($videos, array("VideoController", 'CmpByName'));
     }
 
@@ -249,8 +249,19 @@ class VideoController {
     }
 
     static function CmpByName($a, $b) {
-        if (isset($a) && isset($b) && isset($a->name) && isset($b->name)) {
-            return strcmp($b->name, $a->name);
+        if (isset($a) && isset($b) && isset($a->title) && isset($b->title)) {
+            //remove 'The' from the front
+            $aName = trim(strtolower($a->title));
+            $bName = trim(strtolower($b->title));
+
+            if (strpos($aName, 'the') === 0) {
+                $aName = substr($aName, 4);
+            }
+            if (strpos($bName, 'the' === 0)) {
+                $bName = substr($bName, 4);
+            }
+
+            return strcmp($aName, $bName);
         } else {
             return true;
         }
@@ -331,7 +342,7 @@ class VideoController {
         $bUrl = getBaseUrl();
         //for each poster url, if its a relative url, append the server url to the beginning of it
         foreach ($videos as $video) {
-            if (strpos($video->sdPosterUrl, "http") === false) {
+            if (strpos($video->sdPosterUrl, "http") === false && $video->sdPosterUrl !== null) {
                 $video->sdPosterUrl = $bUrl . $video->sdPosterUrl;
                 $video->hdPosterUrl = $bUrl . $video->hdPosterUrl;
             }

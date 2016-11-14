@@ -1,19 +1,25 @@
-angular.module('app').service('api', ['$q', '$http', function($q, $http) {
+angular.module('app').service('api', ['$q', '$http', function ($q, $http) {
         return {
+            clearCache: clearCache,
             generateLibrary: generateLibrary
         };
 
+        function clearCache() {
+            return $http.get('api/ClearCache.php');
+        }
+
+
         function generateLibrary() {
-            return $q(function(resolve, reject) {
+            return $q(function (resolve, reject) {
                 $http.get('api/GenerateLibrary.php')
-                        .success(function(result) {
+                        .success(function (result) {
                             if (result.success) {
                                 resolve();
                             } else {
                                 reject();
                             }
                         })
-                        .error(function() {
+                        .error(function () {
                             reject();
                         })
 

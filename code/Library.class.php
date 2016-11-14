@@ -98,6 +98,7 @@ class Library {
             $this->videos[] = $movie;
             $this->movieCount++;
         }
+        VideoController::SortVideosByTitle($this->movies);
         return $this->movies;
     }
 
@@ -105,7 +106,7 @@ class Library {
      * Loads an array of all tv shows found in the database. All metadata is loaded into the tv show objects. 
      * @return TvShow[] - returns the tv shows in the library that was loaded from the database
      */
-    public function loadTvShowsFromDatabase() {
+    public function loadTvShowsFromDatabase($loadEpisodes = true) {
         $this->tvShows = [];
         $this->tvEpisodes = [];
         $this->tvShowCount = 0;
@@ -120,12 +121,15 @@ class Library {
             if (is_object($tvShow) == false) {
                 continue;
             }
-            //load all of the episodes for this tv show
-            $tvShow->loadEpisodesFromDatabase();
-            $this->videos = array_merge($this->videos, $tvShow->episodes);
-            $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
-            $this->tvEpisodeCount += $tvShow->episodeCount;
+            if ($loadEpisodes) {
+                //load all of the episodes for this tv show
+                $tvShow->loadEpisodesFromDatabase();
+                $this->videos = array_merge($this->videos, $tvShow->episodes);
+                $this->tvEpisodes = array_merge($this->tvEpisodes, $tvShow->episodes);
+                $this->tvEpisodeCount += $tvShow->episodeCount;
+            }
         }
+        VideoController::SortVideosByTitle($this->tvShows);
         return $this->tvShows;
     }
 
@@ -153,6 +157,10 @@ class Library {
             $listOfAllFilesInSource = getVideosFromDir($source->location);
 
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
+                //if the movie contains the word ".extra.", skip it for now. Eventually those will get added to the library
+                if (strpos(strtolower($fullPathToFile), ".extra.") !== false) {
+                    continue;
+                }
                 //create a new Movie object
                 $video = new Movie($source->base_url, $source->location, $fullPathToFile);
                 $this->movies[] = $video;
@@ -263,70 +271,92 @@ class Library {
         if ($categoryNames === null) {
             $categoryNames = Library::GetCategoryNames();
         }
+
         $categories = [];
         $lib = null;
-
-        $moviesCategoryIsPresent = in_array('Movies', $categoryNames);
-        $tvShowsCategoryIsPresent = in_array('TV Shows', $categoryNames);
-        if ($moviesCategoryIsPresent === true && $tvShowsCategoryIsPresent === true) {
-            $lib = new Library();
-            $lib->loadFromDatabase();
-        } else if ($moviesCategoryIsPresent === true && $tvShowsCategoryIsPresent === false) {
-            $lib = new Library();
-            $lib->loadMoviesFromDatabase();
-        } else if ($moviesCategoryIsPresent === false && $tvShowsCategoryIsPresent === true) {
-            $lib = new Library();
-            $lib->loadTvShowsFromDatabase();
-        }
-
         foreach ($categoryNames as $categoryName) {
-            if ($categoryName === "TV Shows") {
-                $categories[] = new Category("TV Shows", $lib->tvShows);
-            }
-
-            if ($categoryName === "Movies") {
-                $categories[] = new Category("Movies", $lib->movies);
-            }
-
             if ($categoryName === 'Recently Watched') {
                 $videos = Library::GetRecentlyWatchedVideos();
-                $categories[] = new Category("Recently Watched", $videos);
+                $categories[$categoryName] = new Category("Recently Watched", $videos);
+                continue;
+            }
+            // if we already have this category in the list, don't get it again
+            if (isset($categories[$categoryName])) {
+                continue;
+            }
+
+            $cacheName = "category-$categoryName";
+            if (false) {
+                //if (Library::CacheExists($cacheName)) {
+                $categories[$categoryName] = Library::GetFromCache($cacheName);
+            } else {
+                if ($lib === null) {
+                    $lib = new Library();
+                }
+
+                if ($categoryName === 'Recently Added') {
+                    $videos = Library::GetRecentlyAdded(30);
+                    $categories[$categoryName] = new Category($categoryName, $videos);
+                    Library::PutCache($cacheName, $categories[$categoryName]);
+                }
+                if ($categoryName === 'Recently Updated') {
+                    $videos = Library::GetRecentlyUpdated(30);
+                    $categories[$categoryName] = new Category($categoryName, $videos);
+                    Library::PutCache($cacheName, $categories[$categoryName]);
+                }
+
+                if ($categoryName === "TV Shows") {
+                    $lib->loadTvShowsFromDatabase(false);
+                    $categories[$categoryName] = new Category($categoryName, $lib->tvShows);
+                    Library::PutCache($cacheName, $categories[$categoryName]);
+                }
+                if ($categoryName === "Movies") {
+                    $lib->loadMoviesFromDatabase();
+                    $videos = $lib->movies;
+                    $categories[$categoryName] = new Category($categoryName, $videos);
+                    Library::PutCache($cacheName, $categories[$categoryName]);
+                }
             }
         }
-        return $categories;
+        $result = [];
+        foreach ($categories as $category) {
+            $result[] = $category;
+        }
+        return $result;
+    }
+
+    public static function CacheExists($cacheName) {
+        $cachePath = dirname(__FILE__) . '/../cache/' . $cacheName;
+        return file_exists($cachePath);
+    }
+
+    public static function GetFromCache($cacheName) {
+        $cachePath = dirname(__FILE__) . '/../cache/' . $cacheName;
+        return json_decode(file_get_contents($cachePath));
+    }
+
+    public static function PutCache($cacheName, $obj) {
+        if (!file_exists(dirname(__FILE__) . '/../cache/')) {
+            mkdir(dirname(__FILE__) . '/../cache/', 0777, true);
+        }
+        $cachePath = dirname(__FILE__) . '/../cache/' . $cacheName;
+        file_put_contents($cachePath, json_encode($obj));
     }
 
     public static function GetCategoryNames() {
-        return [ 'Movies', 'Recently Watched', 'TV Shows'];
+        //ignore 'Recently Updated' for now because the library generator auto-saves every video by default
+        return ['Recently Watched', 'Recently Added', 'TV Shows', 'Movies'];
     }
 
-    public static function GetRecentlyWatchedVideos() {
-        $videoIds = DbManager::SingleColumnQuery("
-                        select video_id 
-                        from recently_watched 
-                        where user_id = " . config::$globalUserId ." 
-                        order by date_watched desc
-                        limit 20");
-        $videos = VideoController::GetVideos($videoIds, false);
-        return $videos;
-    }
-
-    public static function GetRecentlyWatchedVideos_old() {
-        //select the last n videos from the watch_video table
-
-        $recentVideoIds = DbManager::SingleColumnQuery(
-                        "select video_id "
-                        . "from watch_video "
-                        . "where userId = " . config::$globalUserId . " "
-                        . "order by date_watched desc "
-                        . "limit 50");
-        // get the video records with those IDs
-
+    /**
+     * Takes a list of videoIDs and reduces them to tv show and movie ids (converts the episode ids to a single tv show id
+     */
+    public static function ReduceVideoIds($videoIds) {
         $videoRecords = DbManager::Query(
                         "select video_id, media_type "
                         . "from video "
-                        . "where video_id " . DbManager::GenerateInStatement($recentVideoIds) . " "
-                        . "order by field(video_id, " . implode(",", $recentVideoIds) . ")");
+                        . "where video_id " . DbManager::GenerateInStatement($videoIds) . " "
+                        . "order by field(video_id, " . implode(",", $videoIds) . ")");
 
         $tvEpisodeVideoIds = [];
 
@@ -345,7 +375,7 @@ class Library {
                             "select tv_show_video_id as video_id, '" . Enumerations::MediaType_TvShow . "' as media_type"
                             . " from tv_episode_v"
                             . " where video_id " . DbManager::GenerateInStatement($tvEpisodeVideoIds) . " "
-                            . "order by field(video_id, " . implode(",", $recentVideoIds) . ")");
+                            . "order by field(video_id, " . implode(",", $videoIds) . ")");
             $i = 0;
             foreach ($tvShows as $show) {
                 $episodeId = $tvEpisodeVideoIds[$i];
@@ -354,7 +384,7 @@ class Library {
             }
         }
 
-        $videoIds = [];
+        $resultVideoIds = [];
         $videoIdLookup = [];
         foreach ($videoRecords as $videoRecord) {
             if ($videoRecord->media_type === Enumerations::MediaType_Movie || $videoRecord->media_type === Enumerations::MediaType_TvShow) {
@@ -366,10 +396,60 @@ class Library {
             }
             if (!isset($videoIdLookup[$videoId])) {
                 $videoIdLookup[$videoId] = $videoId;
-                $videoIds[] = $videoId;
+                $resultVideoIds[] = $videoId;
             }
         }
+        return $resultVideoIds;
+    }
 
+    public static function GetRecentlyAdded($numberOfDays) {
+        $recentVideoIds = DbManager::SingleColumnQuery(
+                        "select video_id "
+                        . "from video "
+                        . "where date_added between DATE_SUB(NOW(), INTERVAL $numberOfDays DAY) AND NOW() "
+                        . "order by date_added desc "
+                        . "limit 50");
+        $videoIds = Library::ReduceVideoIds($recentVideoIds);
+        $videos = VideoController::GetVideos($videoIds, false);
+        return $videos;
+    }
+
+    public static function GetRecentlyUpdated($numberOfDays) {
+        $recentVideoIds = DbManager::SingleColumnQuery(
+                        "select video_id "
+                        . "from video "
+                        . "where date_modified between DATE_SUB(NOW(), INTERVAL $numberOfDays DAY) AND NOW() "
+                        . "and date_modified > date_added "
+                        . "order by date_added desc "
+                        . "limit 50");
+        $videoIds = Library::ReduceVideoIds($recentVideoIds);
+        $videos = VideoController::GetVideos($videoIds, false);
+        return $videos;
+    }
+
+    public static function GetRecentlyWatchedVideos_old() {
+        //select the last n videos from the watch_video table
+
+        $recentVideoIds = DbManager::SingleColumnQuery(
+                        "select video_id "
+                        . "from watch_video "
+                        . "where username = '" . config::$globalUsername . "' "
+                        . "order by date_watched desc "
+                        . "limit 50");
+        // get the video records with those IDs
+
+        $videoIds = Library::ReduceVideoIds($recentVideoIds);
+        $videos = VideoController::GetVideos($videoIds, false);
+        return $videos;
+    }
+
+    public static function GetRecentlyWatchedVideos() {
+        $videoIds = DbManager::SingleColumnQuery("
+                        select video_id 
+                        from recently_watched 
+                        where username = '" . config::$globalUsername . "' 
+                        order by date_watched desc
+                        limit 20");
         $videos = VideoController::GetVideos($videoIds, false);
         return $videos;
     }

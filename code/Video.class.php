@@ -16,15 +16,15 @@ abstract class Video {
     abstract function fetchMetadata();
 
     abstract function getMetadataFetcherClass();
-    
-    public static function GetVideoMetadataFetcherClass($mediaType){
-        if($mediaType === Enumerations::MediaType_Movie){
+
+    public static function GetVideoMetadataFetcherClass($mediaType) {
+        if ($mediaType === Enumerations::MediaType_Movie) {
             $fetcher = new MovieMetadataFetcher();
-			$fetcher->setLanguage(config::$language);
-        }else{
+            $fetcher->setLanguage(config::$language);
+        } else {
             $fetcher = new TvShowMetadataFetcher();
         }
-		return $fetcher;
+        return $fetcher;
     }
 
     abstract protected function loadCustomMetadata();
@@ -266,8 +266,7 @@ abstract class Video {
     }
 
     public function getVideoName() {
-        //For now, just return the filename without the extension.
-        return pathinfo($this->fullPath, PATHINFO_FILENAME);
+        return self::CalculateTitle($this->fullPath);
     }
 
     protected function getUrl() {
@@ -486,7 +485,7 @@ abstract class Video {
     public function getFiletype() {
         //if the filetype has not yet been determined, determine it
         if ($this->filetype === null) {
-            $this->filetype = strtolower(pathinfo($this->fullPath, PATHINFO_EXTENSION));
+            $this->filetype = Video::CalculateFileType($this->fullPath);
         }
         return $this->filetype;
     }
@@ -692,6 +691,31 @@ abstract class Video {
 
         //delete any videos that no longer exist on the file system
         Queries::DeleteVideos($deletedVideoIds);
+    }
+
+    public static function CalculateFileType($path) {
+        return strtolower(pathinfo($path, PATHINFO_EXTENSION));
+    }
+
+    public static function CalculateTitle($path) {
+        return pathinfo($path, PATHINFO_FILENAME);
+    }
+
+    /**
+     * Get the url for a given movie
+     */
+    static function CalculateUrl($videoSourcePath, $videoSourceUrl, $videoPath) {
+        $relativePath = str_replace($videoSourcePath, "", $videoPath);
+        $len = strlen($videoSourceUrl);
+        //remove the trailing slash from video source url
+        if ($videoSourceUrl[$len - 1] === '/') {
+            $videoSourceUrl = substr($videoSourceUrl, 0, $len - 1);
+        }
+        $url = $videoSourceUrl . $relativePath;
+
+        $url = Video::EncodeUrl($url);
+        //encode the url and then restore the forward slashes and colons
+        return $url;
     }
 
     public static function GetVideoProgressPercent($videoId) {

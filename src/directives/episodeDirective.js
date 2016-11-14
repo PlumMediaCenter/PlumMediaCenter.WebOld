@@ -2,7 +2,8 @@ angular.module('app').directive('episode', [function () {
         return {
             restrict: 'E',
             scope: {
-                episode: '='
+                episode: '=',
+                selected: '=?'
             },
             controller: Controller,
             controllerAs: 'vm',
@@ -18,7 +19,7 @@ angular.module('app').directive('episode', [function () {
                 //episode
             }, this);
             
-            var maxTitleLength = 16;
+            var maxTitleLength = 19;
             //truncate the title 
             
             vm.title = vm.episode.title;

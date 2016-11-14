@@ -1,45 +1,49 @@
-angular.module('app').controller('VideoInfoController', ['$scope', 'globals', 'Video', '$state', '$stateParams', 'enums',
-    function($scope, globals, Video,$state,  $stateParams, enums) {
+angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', 'globals', 'Video', '$state', '$stateParams', 'enums', 'notify',
+    function ($scope, $timeout, globals, Video, $state, $stateParams, enums, notify) {
         var vm = angular.extend(this, {
             progressPercent: 0,
             preventCache: $stateParams.preventCache,
             episodes: undefined,
+            nextEpisode: undefined,
             videoId: $stateParams.videoId,
+            loadMessage: undefined,
             //api
             getProgressPercentType: getProgressPercentType,
-            navigateToShow: navigateToShow
+            navigateToShow: navigateToShow,
+            scanForNewMedia: scanForNewMedia
         });
         globals.title = 'VideoInfo';
 
         $scope.$watch('vm.episodes', fetchAllEpisodePercentWatched);
 
         //load the video by id
-        Video.getById(vm.videoId).then(function(video) {
+        Video.getById(vm.videoId).then(function (video) {
             vm.video = video;
 
             if (vm.video.mediaType === enums.mediaType.show) {
                 //get all of the episodes for this show
-                Video.getEpisodes(vm.video.videoId).then(function(episodes) {
+                Video.getEpisodes(vm.video.videoId).then(function (episodes) {
                     vm.episodes = episodes;
                     //find the next episode that should be watched
-                }).then(function() {
+                }).then(function () {
                     return Video.getNextEpisode(vm.video.videoId);
                     //select the episode in our local list of episodes that matches the next episode
-                }).then(function(nextEpisode) {
+                }).then(function (nextEpisode) {
                     vm.nextEpisode = _.where(vm.episodes, {videoId: nextEpisode.videoId})[0];
                     //figure out how much of this episode has been watched
-                }).then(function() {
+                }).then(function () {
                     return Video.getProgressPercent(vm.nextEpisode.videoId);
                     //save the percentWatched to the episode
-                }).then(function(percent) {
+                }).then(function (percent) {
                     vm.nextEpisode.percentWatched = percent;
                 });
             }
 
             //load the progress of this video
-            Video.getProgressPercent(vm.video.videoId).then(function(percent) {
+            Video.getProgressPercent(vm.video.videoId).then(function (percent) {
                 vm.progressPercent = percent;
             });
+
 
         })
 
@@ -49,7 +53,7 @@ angular.module('app').controller('VideoInfoController', ['$scope', 'globals', 'V
          */
         function fetchAllEpisodePercentWatched() {
             var videoIds = _.pluck(vm.episodes, 'videoId');
-            Video.getProgressPercentMultiple(videoIds).then(function(percentObjects) {
+            Video.getProgressPercentMultiple(videoIds).then(function (percentObjects) {
                 for (var i in percentObjects) {
                     var percentObj = percentObjects[i];
                     var episode = _.where(vm.episodes, {videoId: percentObj.videoId})[0];
@@ -70,8 +74,34 @@ angular.module('app').controller('VideoInfoController', ['$scope', 'globals', 'V
             }
         }
 
+        function scanForNewMedia() {
+            vm.loadMessage = 'Scanning for new media';
+            Video.scanForNewMedia(vm.videoId).then(function (result) {
+                debugger;
+                if (!result || result.success !== true) {
+                    throw new Error('An error occurred' + JSON.stringify(result));
+                }
+                if (result && result.newVideoIds && result.newVideoIds.length > 0) {
+                    notify(result.newVideoIds.length + ' new media ' + (result.newVideoIds.length === 1 ? 'item was' : 'items were') + ' successfully added', 'success');
+                    vm.loadMessage = 'Refreshing page';
+                    return $timeout(function () {
+                        //reload the current state to get any new videos
+                        $state.reload($state.current.name);
+                        vm.loadMessage = undefined;
+                    }, 1500);
+                } else {
+                    notify('No new media items were found');
+                }
+
+            }, function (error) {
+                notify(error.message, 'danger');
+            }).finally(function () {
+                vm.loadMessage = undefined;
+            });
+        }
+
         function navigateToShow() {
-            Video.getShowFromEpisodeId(vm.videoId).then(function(show) {
+            Video.getShowFromEpisodeId(vm.videoId).then(function (show) {
                 $state.go('videoInfo', {videoId: show.videoId});
             });
         }

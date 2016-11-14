@@ -36,9 +36,9 @@
         <script type="text/javascript" src="lib/pnotify/pnotify.custom.min.js"></script>
         <script type="text/javascript" src="lib/jwplayer-6.11/jwplayer.js"></script>
 
-        <script type="text/javascript" src="lib/angular-1.5.0-rc.0/angular.min.js"></script>
-        <script type="text/javascript" src="lib/angular-1.5.0-rc.0/angular-touch.min.js"></script>    
-        <script type="text/javascript" src="lib/angular-1.5.0-rc.0/angular-animate.min.js"></script>
+        <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+        <script type="text/javascript" src="lib/angular/angular-touch.min.js"></script>    
+        <script type="text/javascript" src="lib/angular/angular-animate.min.js"></script>
 
         <script type="text/javascript" src="lib/angular-ui-router/angular-ui-router.min.js"></script>;
         <script type="text/javascript" src="lib/angular-ui-bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
@@ -47,7 +47,7 @@
 
         <script type="text/javascript" src="dist/app.min.js"></script>
         <script type="text/javascript" src="dist/templates.js"></script> 
- 
+
         <link href="dist/app.min.css" rel="stylesheet">
 
     </head>  
@@ -57,6 +57,11 @@
         <div class="fill" ui-view autoscroll="true"></div>
     </div>
 
-    <!--<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>-->
+    <script>
+        //only run livereload when on localhost
+        if (window.location.href.indexOf('localhost') > -1) {
+            document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')
+        }
+    </script>
 </body>
 </html>

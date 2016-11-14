@@ -279,10 +279,10 @@ class Queries {
             $sql = "insert into video("
                     . "title, plot, mpaa, year, url, path, filetype, media_type, "
                     . "metadata_last_modified_date, poster_last_modified_date, video_source_path, "
-                    . "video_source_url, running_time_seconds, sd_poster_url, hd_poster_url)"
+                    . "video_source_url, running_time_seconds, sd_poster_url, hd_poster_url, date_added, date_modified)"
                     . " values(:title, :plot, :mpaa, :year, :url, :path, :fileType, :mediaType, "
                     . ":metadataModifiedDate, :posterModifiedDate, :videoSourcePath, :videoSourceUrl, "
-                    . ":runningTimeSeconds, :sdPosterUrl, :hdPosterUrl)";
+                    . ":runningTimeSeconds, :sdPosterUrl, :hdPosterUrl, CURDATE(), CURDATE())";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtInsertVideo = $stmt;
         }
@@ -325,7 +325,7 @@ class Queries {
             $sql = "update video set "
                     . "title = :title, plot=:plot, mpaa=:mpaa, year=:year, url=:url, path=:path, filetype=:fileType, "
                     . "media_type=:mediaType, metadata_last_modified_date= :metadataModifiedDate, poster_last_modified_date = :posterModifiedDate, video_source_path=:videoSourcePath, video_source_url=:videoSourceUrl, running_time_seconds=:runningTimeSeconds, "
-                    . "sd_poster_url=:sdPosterUrl, hd_poster_url=:hdPosterUrl "
+                    . "sd_poster_url=:sdPosterUrl, hd_poster_url=:hdPosterUrl, date_modified=CURDATE()"
                     . "where video_id = :videoId";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtUpdateVideo = $stmt;
@@ -532,6 +532,7 @@ class Queries {
      */
     public static function UpdateVideoSource($videoSourceId, $path, $baseUrl, $mediaType, $securityType, $refreshVideos = 1) {
         if ($path != null && $baseUrl != null && $mediaType != null && $securityType != null) {
+            $oldVideoSource = Queries::GetVideoSourcesById([$videoSourceId])[0];
             $pdo = DbManager::getPdo();
             if (Queries::$stmtUpdateVideoSource == null) {
                 $sql = "update video_source set location=:location, base_url=:baseUrl, media_type=:mediaType, security_type=:securityType, refresh_videos=:refreshVideos
@@ -546,6 +547,30 @@ class Queries {
             $stmt->bindParam(":securityType", $securityType);
             $stmt->bindParam(":id", $videoSourceId);
             $stmt->bindParam(":refreshVideos", $refreshVideos);
+            $success = $stmt->execute();
+            Queries::LogStmt($stmt, $success);
+
+            //replace all videos with the video source changes
+            $success = $success && (Queries::StringReplace("video", "path", $oldVideoSource->location, $path));
+            $success = $success && (Queries::StringReplace("video", "url", $oldVideoSource->base_url, $baseUrl));
+            $success = $success && (Queries::StringReplace("video", "video_source_path", $oldVideoSource->location, $path));
+            $success = $success && (Queries::StringReplace("video", "video_source_url", $oldVideoSource->base_url, $baseUrl));
+
+            return $success;
+        }
+        return false;
+    }
+
+    public static function StringReplace($tableName, $columnName, $oldValue, $newValue) {
+        if ($tableName != null && $columnName != null && $oldValue != null && $newValue != null) {
+            $pdo = DbManager::getPdo();
+            $sql = "UPDATE $tableName SET $columnName = REPLACE($columnName, :oldValue1, :newValue) WHERE $columnName LIKE :oldValue2;";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(":oldValue1", $oldValue);
+            $stmt->bindParam(":newValue", $newValue);
+            $fuzzyOldValue = "%$oldValue%";
+            $stmt->bindParam(":oldValue2", $fuzzyOldValue);
+
             $success = $stmt->execute();
             Queries::LogStmt($stmt, $success);
             return $success;
@@ -958,6 +983,23 @@ class Queries {
             $stmt->debugDumpParams();
             ob_end_clean();
         }
+    }
+    
+     public static function InsertRecentlyWatched($username, $videoId) {
+        $dateWatched = date("Y-m-d H:i:s");
+
+        $pdo = DbManager::getPdo();
+        $sql = "
+            INSERT INTO recently_watched (username, video_id, date_watched) 
+                VALUES(:username, :videoId, :dateWatched ) 
+                ON DUPLICATE KEY UPDATE username=:username, video_id=:videoId, date_watched=:dateWatched";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":videoId", $videoId);
+        $stmt->bindParam(":dateWatched", $dateWatched);
+        $success = $stmt->execute();
+        return $success;
     }
 
 }

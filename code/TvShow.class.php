@@ -53,14 +53,14 @@ class TvShow extends Video {
     function getEpisodes() {
         return $this->episodes;
     }
-    
+
     /**
      * Add an episode to the show manually. This is usually only called when iterating through episode objects outside and needing to store them
      * in this class
      * @param type $episode
      */
-    function addEpisode($episode){
-        if(isset($this->seasons[$episode->seasonNumber] ) === false){
+    function addEpisode($episode) {
+        if (isset($this->seasons[$episode->seasonNumber]) === false) {
             $this->seasons[$episode->seasonNumber] = [];
         }
         $this->seasons[$episode->seasonNumber][] = $episode;
@@ -152,7 +152,7 @@ class TvShow extends Video {
     function remainingEpisodes($tvEpisode) {
         //load all tv episodes
         if (count($this->episodes) == 0) {
-                $this->loadEpisodesFromDatabase();
+            $this->loadEpisodesFromDatabase();
         }
         $remainingEpisodes = [];
         $sNum = $tvEpisode->seasonNumber;
@@ -178,9 +178,13 @@ class TvShow extends Video {
         //get the list of videos from this tv series 
         $videosList = getVideosFromDir($this->fullPath);
 
-        $this->episodeCount = count($videosList);
+        $this->episodeCount = isset($this->episodeCount) ? $this->episodeCount : 0;
+        
         //spin through every folder in the source location
         foreach ($videosList as $fullPathToFile) {
+            if (strpos(strtolower($fullPathToFile), ".extra.") !== false) {
+                continue;
+            }
             //create a new Episode object
             $episode = new TvEpisode($this->videoSourceUrl, $this->videoSourcePath, $fullPathToFile, Enumerations::MediaType_Movie);
 
@@ -195,6 +199,7 @@ class TvShow extends Video {
             $seasonList[$episode->seasonNumber][$episode->episodeNumber] = $episode;
             //add this episode to the episode list array
             $this->episodes[] = $episode;
+            $this->episodeCount = $this->episodeCount + 1;
         }
 
         //short the season list ascending
