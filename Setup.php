@@ -28,34 +28,34 @@ if (isset($_POST["setup"])) {
         <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="lib/bootstrap/css/js/bootstrap.min.js"></script>
     </head>
-    <body>
+    <body class="container">
         <?php if ($success === true) { ?>
             PlumVideoPlayer has successfully installed on the database and is ready to go! Add video sources to the player <a href="VideoSources.php">here</a>. 
         <?php } else if ($success === false) { ?>
             There was an error installing the PlumVideoPlayer on the database. Please check the <a href="Log.php">log</a> for more information.
         <?php } else { ?>
-            <form method="post" style="">
+            <form method="post">
                 <p>Welcome to the Plum Video Player. <br/>In order to install this web application, you must have a MySql database available and know the root login information.</p>
                 <p>This process will create a new database on your mysql instance called '<?php echo config::$dbName; ?>' and will create all necessary tables/triggers/etc.. needed for this application.</p>
                 <p>Simply enter your root database login information and click setup, and let us do the rest!</p>
-                <div class="row">
+                <div>
                     <div class="span3"> MySql Root Username: </div>
                     <div class="span2">
                         <input type="text" name="mysqlRootUsername" placeholder="MySql Root Username" value="root"/>
                     </div>
                 </div>
-                <div class="row">
+                <div>
                     <div class="span3">MySql Root Password: </div>
                     <div class="span2">
                         <input type="text" name="mysqlRootPassword" placeholder="MySql Root Password" />
                     </div>
                 </div>
-                <div class="row">
+                <div>
                     <div class="span3">MySql host name:</div>
                     <div class="span2"> <input type="text" name="mysqlHostName" placeholder="MySql Host Name" value="localhost"/>
                     </div>
                 </div>
-                <div class="row">
+                <div>
                     <div class="span3"></div>
                     <div class="span2" style="text-align:left;">
                         <br/>
