@@ -5,7 +5,7 @@ include_once(dirname(__FILE__) . "/../code/Video.class.php");
 
 include_once(dirname(__FILE__) . "/../config.php");
 
-//$userId = $_GET["userId"];
+//$username = $_GET["username"];
 $videoId = isset($_GET["videoId"]) ? $_GET["videoId"] : -1;
 $timeInSeconds = isset($_GET["seconds"]) ? $_GET["seconds"] : 0;
 $finished = isset($_GET["finished"]) ? $_GET["finished"] : false;

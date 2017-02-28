@@ -18,7 +18,7 @@ class TestPlaylist extends UnitTestCase {
 
     function testConstruct() {
         $p = new Playlist($this->username, $this->playlistName);
-        $this->assertEqual($this->username, $p->getUserId());
+        $this->assertEqual($this->username, $p->GetUsername());
         $this->assertEqual($this->playlistName, $p->getPlaylistName());
     }
 

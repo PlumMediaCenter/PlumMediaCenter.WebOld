@@ -2,10 +2,10 @@
 
 require_once(dirname(__FILE__) . '/../code/Playlist.class.php');
 
-$userId = isset($_GET["userId"]) ? $_GET["userId"] : config::$globalUserId;
+$username = isset($_GET["username"]) ? $_GET["username"] : config::$globalusername;
 $playlistName = isset($_GET["playlistName"]) ? $_GET["playlistName"] : "";
 
-$p = new Playlist($userId, $playlistName);
+$p = new Playlist($username, $playlistName);
 $p->loadFromDb();
 
 echo json_encode($p->getPlaylistVideos());

@@ -15,8 +15,8 @@ class Security {
         
     }
 
-    static function GetUserId() {
-        return config::$globalUserId;
+    static function GetUsername() {
+        return config::$globalUsername;
     }
 
     static function DatabaseIsUpToDate() {

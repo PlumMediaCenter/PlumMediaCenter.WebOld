@@ -13,7 +13,7 @@
                     Scan for New Media
                 </a>
                 <load-message message="vm.loadMessage"></load-message>
-                <a ui-sref="play(vm.video)" class="btn btn-primary full-width margin">
+                <a ui-sref="play(vm.nextEpisode)" ng-disabled="!vm.nextEpisode" class="btn btn-primary full-width margin">
                     <span class="glyphicon glyphicon-play"></span>&nbsp;Play
                 </a>
             </div>

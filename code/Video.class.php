@@ -224,7 +224,7 @@ abstract class Video {
      * @return int - the number of seconds into the video that the video was stopped at
      */
     public function videoStartSeconds($finishedBuffer = 45) {
-        $progress = Queries::getVideoProgress(Security::GetUserId(), $this->videoId);
+        $progress = Queries::getVideoProgress(Security::GetUsername(), $this->videoId);
         $totalVideoLength = $this->getLengthInSeconds();
         if (($progress + $finishedBuffer > $totalVideoLength) || ($progress == -1)) {
             return 0;
