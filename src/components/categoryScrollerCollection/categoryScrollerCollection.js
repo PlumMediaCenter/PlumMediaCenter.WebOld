@@ -4,7 +4,7 @@ angular.module('app').directive('categoryScrollerCollection', [function () {
             controller: ['Video', Controller],
             controllerAs: 'vm',
             bindToController: true,
-            templateUrl: 'categoryScrollerCollectionDirective.html',
+            templateUrl: 'categoryScrollerCollection.html',
             link: function () {
 
             }

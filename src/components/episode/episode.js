@@ -11,7 +11,7 @@ angular.module('app').directive('episode', [function () {
             link: function($scope, element, attributes, vm){
                 
             },
-            templateUrl: 'episodeDirective.html'
+            templateUrl: 'episode.html'
         };
         
         function Controller(){
