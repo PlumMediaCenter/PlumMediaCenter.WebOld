@@ -21,13 +21,15 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                     console.log('debouncing ' + myId);
                     debounce(myId, function () {
                         console.log('calling ' + myId);
-                        var rect = element[0].getBoundingClientRect();
-                        vm.width = rect.width;
+                        if(element) {
+                            var rect = element[0].getBoundingClientRect();
+                            vm.width = rect.width;
+                        }
                     }, 100);
                 }
 
                 //anytime the width changes, calculate the size of the first video tile in the list
-                $scope.$watch(function () {
+                $scope.$watchCollection(function () {
                     return vm.width;
                 }, function (width) {
                     getTileWidth();
@@ -36,8 +38,10 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                 function getTileWidth() {
                     //get the first video tile
                     var videoTile = element[0].querySelector('video-tile');
-                    var rect = videoTile.getBoundingClientRect();
-                    vm.videoTileWidth = rect.width;
+                    if(videoTile) {
+                        var rect = videoTile.getBoundingClientRect();
+                        vm.videoTileWidth = rect.width;
+                    }
                 }
                 //the first time the length of the video list is greater than zero, recalculate the tile width
                 $scope.$watch(function () {
