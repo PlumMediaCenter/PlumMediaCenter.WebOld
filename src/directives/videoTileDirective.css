@@ -13,6 +13,12 @@ video-tile{
     position:relative;
 }
 
+video-tile a{
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
 .noPosterText{
     position:absolute;
     top:60%;
