@@ -52,7 +52,7 @@
 
     </head>  
     <body>
-    <ng-include ng-if="!base.globals.hideNavbar" src="'navbar.html'"></ng-include>
+    <navbar ng-if="!base.globals.hideNavbar"></navbar>
     <div id="bodyContent" ng-class="{fill: base.globals.hideNavbar, 'navbar-adjust': !base.globals.hideNavbar}"> 
         <div class="fill" ui-view autoscroll="true"></div>
     </div>

@@ -1,4 +1,15 @@
-angular.module('app').controller('NavbarController', ['$state', function($state) {
+angular.module('app').directive('navbar', ['$state', function ($state) {
+    return {
+        restrict: 'E',
+        controller: ['$state', Controller],
+        controllerAs: 'vm',
+        bindToController: true,
+        templateUrl: 'navbar.html',
+        scope: {
+        }
+    };
+
+    function Controller($state) {
         var vm = angular.extend(this, {
             searchTerm: undefined,
             navbarIsOpen: false,
@@ -7,10 +18,9 @@ angular.module('app').controller('NavbarController', ['$state', function($state)
             hideNavbar: hideNavbar,
             toggleNavbar: toggleNavbar
         });
-
         function search() {
             if (vm.searchTerm && vm.searchTerm.trim().length > 0) {
-                $state.go('search', {q: vm.searchTerm});
+                $state.go('search', { q: vm.searchTerm });
                 vm.searchTerm = undefined;
                 hideNavbar();
             }
@@ -27,5 +37,5 @@ angular.module('app').controller('NavbarController', ['$state', function($state)
         function toggleNavbar() {
             vm.navbarIsOpen ? hideNavbar() : showNavbar();
         }
-
-    }]);
+    }
+}]);
