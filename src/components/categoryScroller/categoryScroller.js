@@ -41,6 +41,7 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                     if(videoTile) {
                         var rect = videoTile.getBoundingClientRect();
                         vm.videoTileWidth = rect.width;
+                        vm.videoTileHeight = rect.height;
                     }
                 }
                 //the first time the length of the video list is greater than zero, recalculate the tile width
@@ -63,6 +64,7 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                 direction: undefined,
                 width: 0,
                 videoTileWidth: 0,
+                videoTileHeight: 0,
                 visibleVideoTileCount: 0,
                 visibleVideos: [],
                 leftmostVideoIndex: 0,
