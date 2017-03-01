@@ -1,8 +1,8 @@
 angular.module('app', ['ui.router', 'ui.bootstrap', 'infinite-scroll', 'ngTouch', 'ngAnimate'])
-        .run(['$rootScope', 'enums', 'globals', function($rootScope, enums, globals) {
-                $rootScope.enums = enums;
-                $rootScope.globals = globals;
-            }]);
+    .run(['$rootScope', 'enums', 'globals', function ($rootScope, enums, globals) {
+        $rootScope.enums = enums;
+        $rootScope.globals = globals;
+    }]);
 
 fetchConstants().then(bootstrapApplication);
 
@@ -17,8 +17,8 @@ function fetchConstants() {
     var $q = injector.get('$q');
 
     var promises = [
-        $q(function(resolve, reject) {
-            $http.get('api/GetEnumerations.php').then(function(result) {
+        $q(function (resolve, reject) {
+            $http.get('api/GetEnumerations.php').then(function (result) {
                 angular.module('app').constant("enums", result.data);
                 resolve();
             }, reject);
@@ -29,7 +29,7 @@ function fetchConstants() {
 }
 
 function bootstrapApplication() {
-    angular.element(document).ready(function() {
+    angular.element(document).ready(function () {
         angular.bootstrap(document, ["app"]);
     });
 }
