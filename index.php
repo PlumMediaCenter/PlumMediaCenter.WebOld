@@ -40,10 +40,13 @@
         <script type="text/javascript" src="lib/angular/angular-touch.min.js"></script>    
         <script type="text/javascript" src="lib/angular/angular-animate.min.js"></script>
 
-        <script type="text/javascript" src="lib/angular-ui-router/angular-ui-router.min.js"></script>;
+        <script type="text/javascript" src="lib/angular-ui-router/angular-ui-router.min.js"></script>
         <script type="text/javascript" src="lib/angular-ui-bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
         <script type="text/javascript" src="lib/ngInfiniteScroll/ng-infinite-scroll.min.js"></script>
 
+
+        <link href="lib/video-js/video-js.css" rel="stylesheet">
+        <script src="lib/video-js/video.js"></script>
 
         <script type="text/javascript" src="dist/app.min.js"></script>
         <script type="text/javascript" src="dist/templates.js"></script> 
