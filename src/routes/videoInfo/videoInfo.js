@@ -10,7 +10,8 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
             //api
             getProgressPercentType: getProgressPercentType,
             navigateToShow: navigateToShow,
-            scanForNewMedia: scanForNewMedia
+            scanForNewMedia: scanForNewMedia,
+            playIsDisabled: playIsDisabled
         });
         globals.title = 'VideoInfo';
 
@@ -29,7 +30,7 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
                     return Video.getNextEpisode(vm.video.videoId);
                     //select the episode in our local list of episodes that matches the next episode
                 }).then(function (nextEpisode) {
-                    vm.nextEpisode = _.where(vm.episodes, {videoId: nextEpisode.videoId})[0];
+                    vm.nextEpisode = _.where(vm.episodes, { videoId: nextEpisode.videoId })[0];
                     //figure out how much of this episode has been watched
                 }).then(function () {
                     return Video.getProgressPercent(vm.nextEpisode.videoId);
@@ -47,6 +48,14 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
 
         })
 
+        function playIsDisabled() {
+            if (!vm.video || (vm.video.mediaType === enums.mediaType.show && !vm.nextEpisode)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         /**
          * Grabs the percent watched for every episode
          * @returns {undefined}
@@ -56,7 +65,7 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
             Video.getProgressPercentMultiple(videoIds).then(function (percentObjects) {
                 for (var i in percentObjects) {
                     var percentObj = percentObjects[i];
-                    var episode = _.where(vm.episodes, {videoId: percentObj.videoId})[0];
+                    var episode = _.where(vm.episodes, { videoId: percentObj.videoId })[0];
                     if (episode) {
                         episode.percentWatched = percentObj.percent;
                     }
@@ -66,7 +75,7 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
 
         function getProgressPercentType() {
             if (vm.progressPercent < 40) {
-                return'danger';
+                return 'danger';
             } else if (vm.progressPercent < 99) {
                 return 'warning';
             } else if (vm.progressPercent < 101) {
@@ -102,7 +111,7 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
 
         function navigateToShow() {
             Video.getShowFromEpisodeId(vm.videoId).then(function (show) {
-                $state.go('videoInfo', {videoId: show.videoId});
+                $state.go('videoInfo', { videoId: show.videoId });
             });
         }
     }]);
