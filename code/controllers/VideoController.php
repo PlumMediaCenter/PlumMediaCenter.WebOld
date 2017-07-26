@@ -186,7 +186,8 @@ class VideoController {
         $or = '';
         //construct the where clause
         foreach ($trimmedParts as $part) {
-            $sql = $sql . $or . "lower(title) like '%$title%'";
+            $part = strtolower(str_replace("'", "''", $part));
+            $sql = $sql . $or . "lower(title) like '%$part%'";
             $or = ' or ';
         }
         $sql = $sql . ') and media_type not like \'' . Enumerations::MediaType_TvEpisode . '\'';
