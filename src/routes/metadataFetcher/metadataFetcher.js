@@ -86,6 +86,8 @@ angular.module('app').controller('MetadataFetcherController', ['$scope', '$q', '
                         window.location.reload();
                     }, 200);
                     return undefined;
+                }, function(err){
+                    return $q.reject(err);
                 });
             }).then(function() {
                 vm.metadataResults = undefined;
