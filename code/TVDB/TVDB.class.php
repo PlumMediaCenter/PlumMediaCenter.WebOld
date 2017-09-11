@@ -26,19 +26,19 @@ class TVDB {
      * @var string
      */
 
-    CONST baseUrl = PHPTVDB_URL;
+     CONST baseUrl = PHPTVDB_URL;
 
     /**
      * Base url for api requests
      */
-    CONST apiUrl = PHPTVDB_API_URL;
+     CONST apiUrl = PHPTVDB_API_URL;
 
     /**
      * API key for thetvdb.com
      *
      * @var string
      */
-    CONST apiKey = PHPTVDB_API_KEY;
+     CONST apiKey = PHPTVDB_API_KEY;
 
     /**
      * Fetches data via curl and returns result
@@ -47,7 +47,7 @@ class TVDB {
      * @param $url string The url to fetch data from
      * @return string The data
      * */
-    static protected function fetchData($url) {
+     static protected function fetchData($url) {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, 1);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -73,7 +73,7 @@ class TVDB {
      * @param $params An array containing parameters for the request to thetvdb.com
      * @return string The data from thetvdb.com
      * */
-    static protected function request($params) {
+     static protected function request($params) {
 
         switch ($params['action']) {
 
@@ -117,7 +117,21 @@ class TVDB {
                 $data = self::fetchData($url);
                 return $data;
                 break;
+            case 'get_poster':
+                $id = $params['id'];
+                $url = self::apiUrl . self::apiKey . '/series/' .  $id . '/banners.xml';
+                $data = self::fetchData($url);
 
+                $xml = @simplexml_load_string($data);
+                //keep the first poster in the english language
+                foreach ($xml->Banner as $banner) {
+                    if ($banner->BannerType == 'poster' && $banner->Language == 'en') {
+                        return $banner->BannerPath;
+                    }
+                }
+                //return null if no banner was found matching our description: the caller will have to use the default
+                return null;
+                break;
             default:
                 return false;
                 break;

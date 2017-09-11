@@ -39,9 +39,14 @@
 		public static function findById($showId) {
 			$params = array('action' => 'show_by_id', 'id' => $showId);
 			$data = self::request($params);
-			
+
+			$posterUrl = self::request(array('action'=> 'get_poster', 'id'=> $showId));
+
 			if ($data) {
 				$xml = @simplexml_load_string($data);
+				if($posterUrl !== null){
+					$xml->Series->poster = $posterUrl;
+				}
                 if($xml) {
     				$show = new TV_Show($xml->Series);
     				return $show;
