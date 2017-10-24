@@ -34,7 +34,6 @@
         <script type="text/javascript" src="lib/jquery/jquery-1.11.2.min.js"></script>       
         <script type="text/javascript" src="lib/lodash/lodash.min.js"></script>
         <script type="text/javascript" src="lib/pnotify/pnotify.custom.min.js"></script>
-        <script type="text/javascript" src="lib/jwplayer-6.11/jwplayer.js"></script>
 
         <script type="text/javascript" src="lib/angular/angular.min.js"></script>
         <script type="text/javascript" src="lib/angular/angular-touch.min.js"></script>    

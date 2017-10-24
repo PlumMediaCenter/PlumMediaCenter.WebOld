@@ -12,6 +12,9 @@
                     <span class="glyphicon glyphicon-refresh"></span>
                     Scan for New Media
                 </a>
+                <a class="btn btn-warning full-width margin" title="Runs the library generation process for just this video" ng-click="vm.processVideo()">
+                    Process
+                </a>
                 <load-message message="vm.loadMessage"></load-message>
                 <a ui-sref="play(vm.nextEpisode || vm.video)" ng-disabled="vm.playIsDisabled()" class="btn btn-primary full-width margin">
                     <span class="glyphicon glyphicon-play"></span>&nbsp;Play
@@ -23,6 +26,7 @@
             <div class="text-center full-width">
                 <b>{{vm.video.mpaa}}</b>&nbsp;&nbsp;               
                 <b>{{vm.video.year}}</b>
+                <b ng-if="vm.runtimeMinutes()">&nbsp;&nbsp;{{vm.runtimeMinutes()}} min</b>
 
             </div>
             <br/> <br/>{{vm.video.plot}}

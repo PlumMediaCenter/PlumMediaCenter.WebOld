@@ -19,7 +19,7 @@ angular.module('app').directive('episode', [function () {
                 //episode
             }, this);
             
-            var maxTitleLength = 19;
+            var maxTitleLength = 17;
             //truncate the title 
             
             vm.title = vm.episode.title;

@@ -46,7 +46,7 @@ angular.module('app').directive('videoPlayer', [function () {
                 })
                 //when the video finishes, mark it as complete
                 this.on('ended', function () {
-                    Video.setProgress(vm.video.videoId, -1);
+                    Video.setProgress(vm.video.videoId, -1, true);
                 })
             });
         }

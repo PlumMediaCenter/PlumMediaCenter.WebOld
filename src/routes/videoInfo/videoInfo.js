@@ -9,9 +9,11 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
             loadMessage: undefined,
             //api
             getProgressPercentType: getProgressPercentType,
+            runtimeMinutes: runtimeMinutes,
             navigateToShow: navigateToShow,
             scanForNewMedia: scanForNewMedia,
-            playIsDisabled: playIsDisabled
+            playIsDisabled: playIsDisabled,
+            processVideo: processVideo
         });
         globals.title = 'VideoInfo';
 
@@ -44,9 +46,23 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
             Video.getProgressPercent(vm.video.videoId).then(function (percent) {
                 vm.progressPercent = percent;
             });
+        });
 
+        function processVideo() {
+            Video.processVideo(vm.videoId).then(function () {
+                notify('Video was processed', 'success');
+            }, function () {
+                notify('There was a problem processing the video', 'error');
+            });
+        }
 
-        })
+        function runtimeMinutes() {
+            if (vm.video && vm.video.runtime) {
+                return Math.ceil(vm.video.runtime / 60);
+            } else {
+                return null;
+            }
+        }
 
         function playIsDisabled() {
             if (!vm.video || (vm.video.mediaType === enums.mediaType.show && !vm.nextEpisode)) {
