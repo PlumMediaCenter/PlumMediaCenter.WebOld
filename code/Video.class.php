@@ -177,7 +177,7 @@ abstract class Video {
             }
             //seconds was not able to be determined from the file. try reading it from the metadata.
             $this->lengthInSeconds = $this->getLengthInSecondsFromMetadata();
-            if ($this->lengthInSeconds !== -1) {
+            if ($this->lengthInSeconds > 0) {
                 return $this->lengthInSeconds;
             } else {
                 return -1;
@@ -226,6 +226,8 @@ abstract class Video {
     public function videoStartSeconds($finishedBuffer = 45) {
         $progress = Queries::getVideoProgress(Security::GetUsername(), $this->videoId);
         $totalVideoLength = $this->getLengthInSeconds();
+       
+        //if the user has watched enough of the video for it to be consiered 'complete', return 0 which means to start video over
         if (($progress + $finishedBuffer > $totalVideoLength) || ($progress == -1)) {
             return 0;
         } else {
@@ -757,6 +759,18 @@ abstract class Video {
             $percent = 100;
         }
         return $percent;
+    }
+
+    function fetchMetadataIfMissing(){
+        if ($this->nfoFileExists() == false) {
+            $this->fetchMetadata();
+        }
+        if ($this->posterExists() == false) {
+            $this->fetchPoster();
+        }
+        if ($this->sdPosterExists() == false || $this->hdPosterExists() == false) {
+            $this->generatePosters();
+        }
     }
 
 }

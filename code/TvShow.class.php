@@ -313,11 +313,12 @@ class TvShow extends Video {
             $videoLengthInSeconds = $lastEpisodeWatched->getLengthInSeconds();
             if ($videoLengthInSeconds === false) {
                 //we couldn't determine the lengh of the video from its metadata. 
-            } else {
-                //if the $lastWatchedSecondsProgress is farther than $finishedBuffer away from the end, return THIS videoId
-                if ($lastWatchedSecondsProgress + $finishedBuffer < $videoLengthInSeconds) {
-                    return $lastVideoIdWatched;
-                }
+            } else if($videoLengthInSeconds === -1 && intval($lastWatchedSecondsProgress) !== -1){
+                return $lastVideoIdWatched;
+            }
+            //if the $lastWatchedSecondsProgress is farther than $finishedBuffer away from the end, return THIS videoId
+            else if ($lastWatchedSecondsProgress + $finishedBuffer < $videoLengthInSeconds) {
+                return $lastVideoIdWatched;
             }
         }
         //if we didn't find anything from the query above, that means we haven't watched this series before. 
