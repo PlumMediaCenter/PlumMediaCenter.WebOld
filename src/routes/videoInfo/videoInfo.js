@@ -7,6 +7,7 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
             nextEpisode: undefined,
             videoId: $stateParams.videoId,
             loadMessage: undefined,
+            isProcessingVideo: false,
             //api
             getProgressPercentType: getProgressPercentType,
             runtimeMinutes: runtimeMinutes,
@@ -49,10 +50,13 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
         });
 
         function processVideo() {
+            vm.isProcessingVideo = true;
             Video.processVideo(vm.videoId).then(function () {
                 notify('Video was processed', 'success');
             }, function () {
                 notify('There was a problem processing the video', 'error');
+            }).finally(function(){
+                vm.isProcessingVideo = false;
             });
         }
 
