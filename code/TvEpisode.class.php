@@ -45,7 +45,11 @@ class TvEpisode extends Video {
         return $this->tvShow;
     }
 
-    protected function getLengthInSecondsFromMetadata() {
+    protected function getLengthInSecondsFromMetadata()
+    {
+        if (isset($this->runtime)) {
+            return $this->runtime;
+        }
         //make sure the metadata has been loaded
         $tvShow = $this->getTvShowObject();
         return $tvShow->_runtime;
