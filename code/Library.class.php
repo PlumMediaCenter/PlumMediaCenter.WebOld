@@ -158,7 +158,11 @@ class Library {
 
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
                 //if the movie contains the word ".extra." or '.trailer.', skip it for now. Eventually those will get added to the library
-                if (strpos(strtolower($fullPathToFile), ".extra.") !== false || strpos(strtolower($fullPathToFile), ".trailer.") !== false) {
+                if (
+                    strpos(strtolower($fullPathToFile), ".extra.") !== false || 
+                    strpos(strtolower($fullPathToFile), ".trailer.") !== false ||
+                    strpos(strtolower($fullPathToFile), ".preview.") !== false||
+                    strpos(strtolower($fullPathToFile), ".recap.") !== false) {
                     continue;
                 }
                 //create a new Movie object
