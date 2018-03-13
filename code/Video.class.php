@@ -288,8 +288,13 @@ abstract class Video {
         return $dirname . "/";
     }
 
+    /**
+     * Replace common invalid characters that appear in the url with the urlencoded alternatives (like space and singlequote)
+     */
     public static function EncodeUrl($url) {
-        return str_replace(" ", "%20", $url);
+        $url = str_replace(" ", "%20", $url);
+        $url = str_replace("'", "%27", $url);
+        return $url;
     }
 
     /**

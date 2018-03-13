@@ -55,7 +55,7 @@ class CreateDatabase {
         '0.3.26' => 'db0_3_26',
         '0.3.27' => 'db0_3_27',
         '0.3.28' => 'db0_3_28',
-        '0.3.29' => 'db0_3_29'
+        '0.3.30' => 'db0_3_30'
     );
 
     function __construct($rootUsername, $rootPassword, $dbHost) {
