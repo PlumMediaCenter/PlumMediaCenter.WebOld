@@ -375,15 +375,12 @@ class Library {
         // get the tv show video records for all of these episodes
         if (count($tvEpisodeVideoIds) > 0) {
             $tvShows = DbManager::Query(
-                            "select tv_show_video_id as video_id, '" . Enumerations::MediaType_TvShow . "' as media_type"
+                            "select video_id as episode_video_id, tv_show_video_id as video_id, '" . Enumerations::MediaType_TvShow . "' as media_type"
                             . " from tv_episode_v"
                             . " where video_id " . DbManager::GenerateInStatement($tvEpisodeVideoIds) . " "
                             . "order by field(video_id, " . implode(",", $videoIds) . ")");
-            $i = 0;
             foreach ($tvShows as $show) {
-                $episodeId = $tvEpisodeVideoIds[$i];
-                $showLookup[$episodeId] = $show;
-                $i++;
+                $showLookup[$show->episode_video_id] = $show;
             }
         }
 
@@ -393,9 +390,13 @@ class Library {
             if ($videoRecord->media_type === Enumerations::MediaType_Movie || $videoRecord->media_type === Enumerations::MediaType_TvShow) {
                 $videoId = $videoRecord->video_id;
             } else {
+                if(isset($showLookup[$videoRecord->video_id])){
                 //this is an episode. go get its show record
                 $show = $showLookup[$videoRecord->video_id];
                 $videoId = $show->video_id;
+                }else{
+                    //this is an orphaned tv episode...skip this video
+                }
             }
             if (!isset($videoIdLookup[$videoId])) {
                 $videoIdLookup[$videoId] = $videoId;
