@@ -226,9 +226,9 @@ abstract class Video {
     public function videoStartSeconds($finishedBuffer = 45) {
         $progress = Queries::getVideoProgress(Security::GetUsername(), $this->videoId);
         $totalVideoLength = $this->getLengthInSeconds();
-       
+
         //if the user has watched enough of the video for it to be consiered 'complete', return 0 which means to start video over
-        if (($progress + $finishedBuffer > $totalVideoLength) || ($progress == -1)) {
+        if (($totalVideoLength > 0 && $progress + $finishedBuffer > $totalVideoLength) || ($progress == -1)) {
             return 0;
         } else {
             return $progress;
