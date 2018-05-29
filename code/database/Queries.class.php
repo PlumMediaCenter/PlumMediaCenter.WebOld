@@ -59,23 +59,19 @@ class Queries {
      * @param boolean $notIn - if true, this function deletes videos NOT in the provided list. if false, the videos with the specified ids are deleted
      * @return type
      */
-    public static function DeleteVideos($videoIds, $notIn = false) {
+    public static function DeleteVideos($videoIds) {
         //if the video list is empty OR is not a valid array, return immediately
         if (is_array($videoIds) === false || count($videoIds) === 0) {
             return true;
         }
-        if ($notIn) {
-            $inOrNotIn = DbManager::GenerateNotInStatement($videoIds, false);
-        } else {
-            $inOrNotIn = DbManager::GenerateInStatement($videoIds, false);
-        }
+        $inStmt = DbManager::GenerateInStatement($videoIds, false);
         $finalSuccess = true;
 
         try {
             //get the video_ids of all of the tv shows
-            $tvShowIds = DbManager::SingleColumnQuery("select video_id from video where video_id $inOrNotIn and media_type = '" . Enumerations::MediaType_TvShow . "'");
+            $tvShowIds = DbManager::SingleColumnQuery("select video_id from video where video_id $inStmt and media_type = '" . Enumerations::MediaType_TvShow . "'");
             $tvShowIn = DbManager::GenerateInStatement($tvShowIds);
-            $episodeIds = DbManager::SingleColumnQuery("select video_id from tv_episode where tv_show_video_id $inOrNotIn");
+            $episodeIds = DbManager::SingleColumnQuery("select video_id from tv_episode where tv_show_video_id $inStmt");
 
             if (count($tvShowIds) > 0) {
                 //delete all of the episodes for this show
@@ -84,15 +80,18 @@ class Queries {
         } catch (Exception $e) {
             
         }
-        //delete all references to this video in the following tables: tv_episode, video, watch_video
-        $success = DbManager::NonQuery("delete from watch_video where video_id $inOrNotIn");
-        $finalSuccess = $finalSuccess && $success;
+        //delete all references to this video from related tables
+        $success = DbManager::NonQuery("delete from watch_video where video_id $inStmt");
+        $finalSuccess = $finalSuccess === true && $success === true;
 
-        $success = DbManager::NonQuery("delete from tv_episode where video_id $inOrNotIn");
-        $finalSuccess = $finalSuccess && $success;
+        $success = DbManager::NonQuery("delete from tv_episode where video_id $inStmt");
+        $finalSuccess = $finalSuccess === true && $success === true;
 
-        $success = DbManager::NonQuery("delete from video where video_id $inOrNotIn");
-        $finalSuccess = $finalSuccess && $success;
+        $success = DbManager::NonQuery("delete from recently_watched where video_id $inStmt");
+        $finalSuccess = $finalSuccess === true && $success === true;
+
+        $success = DbManager::NonQuery("delete from video where video_id $inStmt");
+        $finalSuccess = $finalSuccess === true && $success === true;
 
         return $finalSuccess;
     }
