@@ -270,17 +270,31 @@ class TvEpisode extends Video {
         }
         $e = $this->getMetadataFetcher(false, $showTvdbId);
 
-        $title = $e->title();
-        $rating = $e->rating();
-        $seasonNumber = $e->season();
-        $episodeNumber = $e->episode();
-        $plot = $e->plot();
-        $thumb = $e->posterUrl();
-        $mpaa = $e->mpaa();
-        $writers = implode(",", $e->writers());
-        $directorList = implode(",", $e->directors());
-        $actorList = $e->actors();
-        $firstAired = $e->firstAired();
+        $title = $this->title;
+        $rating = '';
+        $seasonNumber = '';
+        $episodeNumber = '';
+        $plot = '';
+        $thumb = '';
+        $mpaa = 'unknown';
+        $writers = '';
+        $directorList = '';
+        $actorList = array();
+        $firstAired = '';
+        
+        if($e->hasData()){
+            $title = $e->title();
+            $rating = $e->rating();
+            $seasonNumber = $e->season();
+            $episodeNumber = $e->episode();
+            $plot = $e->plot();
+            $thumb = $e->posterUrl();
+            $mpaa = $e->mpaa();
+            $writers = implode(",", $e->writers());
+            $directorList = implode(",", $e->directors());
+            $actorList = $e->actors();
+            $firstAired = $e->firstAired();
+        }
 
 
         //create the xml nfo doc

@@ -53,6 +53,14 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher {
         $this->episodeObject = $this->tvShowObject->getEpisode($seasonNumber, $episodeNumber);
     }
 
+    public function hasData(){
+        if(isset($this->tvShowObject) && isset($this->episodeObject)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     /**
      * Set the episode number of the episode to be fetched
      * @param int $eNum
@@ -118,7 +126,11 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher {
     }
 
     public function posterUrl() {
-        return $this->episodeObject->thumbnail;
+        if(isset($this->episodeObject) && isset($this->episodeObject->thumbnail)) {
+            return $this->episodeObject->thumbnail;
+        } else {
+            return null;
+        }
     }
 
     public function rating() {

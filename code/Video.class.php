@@ -639,9 +639,13 @@ abstract class Video {
      * Returns true if successful, returns false and echoes error if failure
      */
     public function fetchPoster() {
-
         $adapter = $this->getMetadataFetcher();
-        return $this->downloadPoster($adapter->posterUrl());
+        $posterUrl = $adapter->posterUrl();
+        if($posterUrl) {
+            return $this->downloadPoster($adapter->posterUrl());
+        } else {
+            return false;
+        }
     }
 
     public function setOnlineVideoDatabaseId($id) {
