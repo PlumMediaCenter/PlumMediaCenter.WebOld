@@ -1,6 +1,6 @@
 <?php
 
-define("BASE_URL", "http://localhost:8080/PlumMediaCenter/");
+define("BASE_URL", "http://localhost/PlumMediaCenter/");
 
 class config {
 
