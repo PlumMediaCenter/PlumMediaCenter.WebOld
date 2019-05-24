@@ -1,6 +1,8 @@
 <?php
 include_once("code/database/Queries.class.php");
+include_once("code/functions.php");
 include_once("config.php");
+
 
 $success = null;
 //if the generateDatabase button was clicked, generate the database
@@ -30,7 +32,7 @@ if (isset($_POST["setup"])) {
     </head>
     <body class="container">
         <?php if ($success === true) { ?>
-            PlumVideoPlayer has successfully installed on the database and is ready to go! Add video sources to the player <a href="VideoSources.php">here</a>. 
+            PlumVideoPlayer has successfully installed on the database and is ready to go! Add video sources to the player <a href="<?php echo getBaseUrl();?>#/videoSources">here</a>. 
         <?php } else if ($success === false) { ?>
             There was an error installing the PlumVideoPlayer on the database. Please check the <a href="Log.php">log</a> for more information.
         <?php } else { ?>
