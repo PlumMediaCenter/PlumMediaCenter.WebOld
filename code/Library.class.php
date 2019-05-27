@@ -5,7 +5,8 @@ include_once("Video.class.php");
 include_once("Category.class.php");
 include_once("controllers/VideoController.php");
 
-class Library {
+class Library
+{
 
     public $movies = [];
     private $movieCount = 0;
@@ -16,7 +17,8 @@ class Library {
     //contains a list of all videos, a combination of movies, tv shows and tv episodes
     public $videos = [];
 
-    public function __construct() {
+    public function __construct()
+    {
         //set the time limit for this script to be 10 minutes. If it takes any longer than that, there's something wrong
         set_time_limit(600);
     }
@@ -25,7 +27,8 @@ class Library {
      * Returns the number of movies in the library
      * @return int - the number of movies in the library
      */
-    public function getMovieCount() {
+    public function getMovieCount()
+    {
         return $this->movieCount;
     }
 
@@ -33,7 +36,8 @@ class Library {
      * Fetches any missing metadata for the videos and fetches any missing posters for the videos and generates posters for
      * any video that doesn't have the posters generated yet.
      */
-    public function fetchMissingMetadataAndPosters() {
+    public function fetchMissingMetadataAndPosters()
+    {
         /* @var $video Video   */
         foreach ($this->videos as $video) {
             //skip this video if it's not an object
@@ -50,9 +54,7 @@ class Library {
                 if ($video->sdPosterExists() == false || $video->hdPosterExists() == false) {
                     $video->generatePosters();
                 }
-            } catch (Exception $e) {
-                
-            }
+            } catch (Exception $e) { }
         }
         return true;
     }
@@ -61,7 +63,8 @@ class Library {
      * Returns the number of tv shows found in the library
      * @return int - the number of tv shows in the library
      */
-    public function getTvShowCount() {
+    public function getTvShowCount()
+    {
         return $this->tvShowCount;
     }
 
@@ -69,14 +72,16 @@ class Library {
      * Returns the number of episodes found in the library
      * @return int - the number of episodes found in the library
      */
-    public function getTvEpisodeCount() {
+    public function getTvEpisodeCount()
+    {
         return $this->tvEpisodeCount;
     }
 
     /**
      * Loads all movies and tv shows from the database
      */
-    public function loadFromDatabase() {
+    public function loadFromDatabase()
+    {
         $this->videos = [];
         $success = true;
         $this->loadMoviesFromDatabase();
@@ -88,7 +93,8 @@ class Library {
      * Populates the movies array with all movies found in the database. All metadata is loaded into the movies. 
      * @return Movie[] - returns the array of movies loaded from the database
      */
-    public function loadMoviesFromDatabase() {
+    public function loadMoviesFromDatabase()
+    {
         $this->movies = [];
         $this->movieCount = 0;
         $videoIds = Queries::GetVideoIds(Enumerations::MediaType_Movie);
@@ -106,7 +112,8 @@ class Library {
      * Loads an array of all tv shows found in the database. All metadata is loaded into the tv show objects. 
      * @return TvShow[] - returns the tv shows in the library that was loaded from the database
      */
-    public function loadTvShowsFromDatabase($loadEpisodes = true) {
+    public function loadTvShowsFromDatabase($loadEpisodes = true)
+    {
         $this->tvShows = [];
         $this->tvEpisodes = [];
         $this->tvShowCount = 0;
@@ -137,7 +144,8 @@ class Library {
      * Loads this library object totally from the filesystem. This means scanning each video source directory for 
      * videos. 
      */
-    public function loadFromFilesystem() {
+    public function loadFromFilesystem()
+    {
         //for each movie
         $success = $this->loadMoviesFromFilesystem();
         $success = $success && $this->loadTvShowsFromFilesystem();
@@ -147,7 +155,8 @@ class Library {
     /**
      * Loads the movies array with movies found in the different video sources marked as movie sources
      */
-    public function loadMoviesFromFilesystem() {
+    public function loadMoviesFromFilesystem()
+    {
         //list of all video sources
         $movieSources = Queries::getVideoSources(Enumerations::MediaType_Movie);
         $this->movies = [];
@@ -159,10 +168,11 @@ class Library {
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
                 //if the movie contains the word ".extra." or '.trailer.', skip it for now. Eventually those will get added to the library
                 if (
-                    strpos(strtolower($fullPathToFile), ".extra.") !== false || 
+                    strpos(strtolower($fullPathToFile), ".extra.") !== false ||
                     strpos(strtolower($fullPathToFile), ".trailer.") !== false ||
-                    strpos(strtolower($fullPathToFile), ".preview.") !== false||
-                    strpos(strtolower($fullPathToFile), ".recap.") !== false) {
+                    strpos(strtolower($fullPathToFile), ".preview.") !== false ||
+                    strpos(strtolower($fullPathToFile), ".recap.") !== false
+                ) {
                     continue;
                 }
                 //create a new Movie object
@@ -179,7 +189,8 @@ class Library {
      * loads the libary TvShow object with tv shows found in the source paths marked as tv show sources
      * @return TvShow[] - the array of TvShows found at the source path
      */
-    public function loadTvShowsFromFilesystem() {
+    public function loadTvShowsFromFilesystem()
+    {
         $this->tvShows = [];
         $this->tvEpisodes = [];
         $this->tvEpisodeCount = 0;
@@ -217,14 +228,16 @@ class Library {
         return true;
     }
 
-    public function sort() {
+    public function sort()
+    {
 
         //sort the movies and tv shows
         usort($this->movies, array($this, 'cmp'));
         usort($this->tvShows, array($this, 'cmp'));
     }
 
-    function cmp($a, $b) {
+    function cmp($a, $b)
+    {
         if (isset($a) && isset($b) && isset($a->name) && isset($b->name)) {
             return strcmp($b->name, $a->name);
         } else {
@@ -235,8 +248,9 @@ class Library {
     /**
      * Returns a set of stats (counts) based on the library.
      */
-    public static function GetVideoCounts() {
-        $stats = (object) [];
+    public static function GetVideoCounts()
+    {
+        $stats = (object)[];
         $stats->videoCount = null;
         $stats->movieCount = null;
         $stats->tvShowCount = null;
@@ -255,7 +269,8 @@ class Library {
      * Forces every video loaded into memory in this library object to be written to the database. 
      * Then any videos that are no longer in this library are removed from the database
      */
-    public function writeToDb() {
+    public function writeToDb()
+    {
         //writes every video to the database. If it is a new video, it will automatically be added. If it is an existing
         //video, it will be updated
         $totalSuccess = true;
@@ -271,7 +286,22 @@ class Library {
         return $totalSuccess;
     }
 
-    public static function GetCategories($categoryNames = null) {
+    public static function GetCategoryNames()
+    {
+        //get the full list of categories for this user
+        $userCategoryNames = DbManager::Query("
+            select name 
+            from list 
+            where user_id = " . Security::GetUserId() . "
+                and name <> 'My List'
+        ");
+
+        //ignore 'Recently Updated' for now because the library generator auto-saves every video by default
+        return ['Recently Watched', 'My List', 'Recently Added', 'TV Shows', 'Movies'];
+    }
+
+    public static function GetCategories($categoryNames = null)
+    {
         if ($categoryNames === null) {
             $categoryNames = Library::GetCategoryNames();
         }
@@ -318,6 +348,15 @@ class Library {
                     $videos = $lib->movies;
                     $categories[$categoryName] = new Category($categoryName, $videos);
                     Library::PutCache($cacheName, $categories[$categoryName]);
+                } else {
+
+                    $videoIds = Queries::GetVideoIdsForListName($categoryName);
+                    $videos = [];
+                    foreach ($videoIds as $videoId) {
+                        $video = Video::GetVideo($videoId);
+                        $videos[] = $video;
+                    }
+                    $categories[$categoryName] = new Category($categoryName, $videos);
                 }
             }
         }
@@ -328,17 +367,20 @@ class Library {
         return $result;
     }
 
-    public static function CacheExists($cacheName) {
+    public static function CacheExists($cacheName)
+    {
         $cachePath = dirname(__FILE__) . '/../cache/' . $cacheName;
         return file_exists($cachePath);
     }
 
-    public static function GetFromCache($cacheName) {
+    public static function GetFromCache($cacheName)
+    {
         $cachePath = dirname(__FILE__) . '/../cache/' . $cacheName;
         return json_decode(file_get_contents($cachePath));
     }
 
-    public static function PutCache($cacheName, $obj) {
+    public static function PutCache($cacheName, $obj)
+    {
         if (!file_exists(dirname(__FILE__) . '/../cache/')) {
             mkdir(dirname(__FILE__) . '/../cache/', 0777, true);
         }
@@ -346,20 +388,19 @@ class Library {
         file_put_contents($cachePath, json_encode($obj));
     }
 
-    public static function GetCategoryNames() {
-        //ignore 'Recently Updated' for now because the library generator auto-saves every video by default
-        return ['Recently Watched', 'Recently Added', 'TV Shows', 'Movies'];
-    }
+
 
     /**
      * Takes a list of videoIDs and reduces them to tv show and movie ids (converts the episode ids to a single tv show id
      */
-    public static function ReduceVideoIds($videoIds) {
+    public static function ReduceVideoIds($videoIds)
+    {
         $videoRecords = DbManager::Query(
-                        "select video_id, media_type "
-                        . "from video "
-                        . "where video_id " . DbManager::GenerateInStatement($videoIds) . " "
-                        . "order by field(video_id, " . implode(",", $videoIds) . ")");
+            "select video_id, media_type "
+                . "from video "
+                . "where video_id " . DbManager::GenerateInStatement($videoIds) . " "
+                . "order by field(video_id, " . implode(",", $videoIds) . ")"
+        );
 
         $tvEpisodeVideoIds = [];
 
@@ -375,10 +416,11 @@ class Library {
         // get the tv show video records for all of these episodes
         if (count($tvEpisodeVideoIds) > 0) {
             $tvShows = DbManager::Query(
-                            "select video_id as episode_video_id, tv_show_video_id as video_id, '" . Enumerations::MediaType_TvShow . "' as media_type"
-                            . " from tv_episode_v"
-                            . " where video_id " . DbManager::GenerateInStatement($tvEpisodeVideoIds) . " "
-                            . "order by field(video_id, " . implode(",", $videoIds) . ")");
+                "select video_id as episode_video_id, tv_show_video_id as video_id, '" . Enumerations::MediaType_TvShow . "' as media_type"
+                    . " from tv_episode_v"
+                    . " where video_id " . DbManager::GenerateInStatement($tvEpisodeVideoIds) . " "
+                    . "order by field(video_id, " . implode(",", $videoIds) . ")"
+            );
             foreach ($tvShows as $show) {
                 $showLookup[$show->episode_video_id] = $show;
             }
@@ -390,11 +432,11 @@ class Library {
             if ($videoRecord->media_type === Enumerations::MediaType_Movie || $videoRecord->media_type === Enumerations::MediaType_TvShow) {
                 $videoId = $videoRecord->video_id;
             } else {
-                if(isset($showLookup[$videoRecord->video_id])){
-                //this is an episode. go get its show record
-                $show = $showLookup[$videoRecord->video_id];
-                $videoId = $show->video_id;
-                }else{
+                if (isset($showLookup[$videoRecord->video_id])) {
+                    //this is an episode. go get its show record
+                    $show = $showLookup[$videoRecord->video_id];
+                    $videoId = $show->video_id;
+                } else {
                     //this is an orphaned tv episode...skip this video
                 }
             }
@@ -406,40 +448,46 @@ class Library {
         return $resultVideoIds;
     }
 
-    public static function GetRecentlyAdded($numberOfDays) {
+    public static function GetRecentlyAdded($numberOfDays)
+    {
         $recentVideoIds = DbManager::SingleColumnQuery(
-                        "select video_id "
-                        . "from video "
-                        . "where date_added between DATE_SUB(NOW(), INTERVAL $numberOfDays DAY) AND NOW() "
-                        . "order by date_added desc "
-                        . "limit 50");
+            "select video_id "
+                . "from video "
+                . "where date_added between DATE_SUB(NOW(), INTERVAL $numberOfDays DAY) AND NOW() "
+                . "order by date_added desc "
+                . "limit 50"
+        );
         $videoIds = Library::ReduceVideoIds($recentVideoIds);
         $videos = VideoController::GetVideos($videoIds, false);
         return $videos;
     }
 
-    public static function GetRecentlyUpdated($numberOfDays) {
+    public static function GetRecentlyUpdated($numberOfDays)
+    {
         $recentVideoIds = DbManager::SingleColumnQuery(
-                        "select video_id "
-                        . "from video "
-                        . "where date_modified between DATE_SUB(NOW(), INTERVAL $numberOfDays DAY) AND NOW() "
-                        . "and date_modified > date_added "
-                        . "order by date_added desc "
-                        . "limit 50");
+            "select video_id "
+                . "from video "
+                . "where date_modified between DATE_SUB(NOW(), INTERVAL $numberOfDays DAY) AND NOW() "
+                . "and date_modified > date_added "
+                . "order by date_added desc "
+                . "limit 50"
+        );
         $videoIds = Library::ReduceVideoIds($recentVideoIds);
         $videos = VideoController::GetVideos($videoIds, false);
         return $videos;
     }
 
-    public static function GetRecentlyWatchedVideos_old() {
+    public static function GetRecentlyWatchedVideos_old()
+    {
         //select the last n videos from the watch_video table
 
         $recentVideoIds = DbManager::SingleColumnQuery(
-                        "select video_id "
-                        . "from watch_video "
-                        . "where username = '" . config::$globalUsername . "' "
-                        . "order by date_watched desc "
-                        . "limit 50");
+            "select video_id "
+                . "from watch_video "
+                . "where user_id = '" . config::$defaultUserId . "' "
+                . "order by date_watched desc "
+                . "limit 50"
+        );
         // get the video records with those IDs
 
         $videoIds = Library::ReduceVideoIds($recentVideoIds);
@@ -447,17 +495,15 @@ class Library {
         return $videos;
     }
 
-    public static function GetRecentlyWatchedVideos() {
+    public static function GetRecentlyWatchedVideos()
+    {
         $videoIds = DbManager::SingleColumnQuery("
                         select video_id 
                         from recently_watched 
-                        where username = '" . config::$globalUsername . "' 
+                        where user_id = '" . config::$defaultUserId . "' 
                         order by date_watched desc
                         limit 20");
         $videos = VideoController::GetVideos($videoIds, false);
         return $videos;
     }
-
 }
-
-?>

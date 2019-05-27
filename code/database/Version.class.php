@@ -15,8 +15,8 @@ include_once(dirname(__FILE__) . "/../DbManager.class.php");
  */
 class Version {
 
-    static function GetVersion($host, $username, $password, $dbName) {
-        $version = DbManager::GetSingleItem("select * from app_version", $host, $username, $password, $dbName);
+    static function GetVersion($host, $userId, $password, $dbName) {
+        $version = DbManager::GetSingleItem("select * from app_version", $host, $userId, $password, $dbName);
         return $version;
     }
 

@@ -5,7 +5,8 @@ include_once(dirname(__FILE__) . "/../functions.php");
 include_once(dirname(__FILE__) . "/../DbManager.class.php");
 include_once(dirname(__FILE__) . "/../Enumerations.class.php");
 
-class Queries {
+class Queries
+{
 
     private static $stmtInsertVideo = null;
     private static $stmtGetAllVideoPaths = null;
@@ -26,30 +27,23 @@ class Queries {
     private static $stmtGetEpisodesInTvShow = null;
     private static $stmtGetVideoProgress = null;
     private static $stmtClearPlaylist = null;
+    private static $stmtGetVideoIdsForListName = null;
     private static $stmtGetPlaylistVideoIds = null;
     private static $stmtAddPlaylistName = null;
     private static $stmtDeletePlaylistName = null;
     private static $stmtDeletePlaylist = null;
     private static $stmtGetPlaylistNames = null;
     private static $stmtGetVideoIds = null;
+    private static $stmtGetListId = null;
     private static $statements = [];
-
-    public static function GetTvShowFirstEpisode($tvShowVideoId) {
-        $notInStmt = DbManager::GenerateNotInStatement($videoIdsToKeep, false);
-        $pdo = DbManager::getPdo();
-        $sql = "delete from video where video_id $notInStmt";
-        $stmt = $pdo->prepare($sql);
-        $success = $stmt->execute();
-        Queries::LogSql($sql, $success);
-        return $success;
-    }
 
     /**
      * Deletes the video with the specified videoId
      * @param type $videoId
      * @return type
      */
-    public static function DeleteVideo($videoId) {
+    public static function DeleteVideo($videoId)
+    {
         return Queries::DeleteVideos([$videoId]);
     }
 
@@ -59,7 +53,8 @@ class Queries {
      * @param boolean $notIn - if true, this function deletes videos NOT in the provided list. if false, the videos with the specified ids are deleted
      * @return type
      */
-    public static function DeleteVideos($videoIds) {
+    public static function DeleteVideos($videoIds)
+    {
         //if the video list is empty OR is not a valid array, return immediately
         if (is_array($videoIds) === false || count($videoIds) === 0) {
             return true;
@@ -77,9 +72,7 @@ class Queries {
                 //delete all of the episodes for this show
                 Queries::DeleteVideos($episodeIds);
             }
-        } catch (Exception $e) {
-            
-        }
+        } catch (Exception $e) { }
         //delete all references to this video from related tables
         $success = DbManager::NonQuery("delete from watch_video where video_id $inStmt");
         $finalSuccess = $finalSuccess === true && $success === true;
@@ -96,18 +89,19 @@ class Queries {
         return $finalSuccess;
     }
 
-    public static function getPlaylistItems($username, $playlistName) {
+    public static function getPlaylistItems($userId, $playlistName)
+    {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtGetPlaylistVideoIds == null) {
             $sql = "select item_id, video_id "
-                    . "from playlist "
-                    . "where username = :username and name = :playlistName "
-                    . "order by idx asc";
+                . "from playlist "
+                . "where user_id = :userId and name = :playlistName "
+                . "order by idx asc";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtGetPlaylistVideoIds = $stmt;
         }
         $stmt = Queries::$stmtGetPlaylistVideoIds;
-        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":userId", $userId);
         $stmt->bindParam(":playlistName", $playlistName);
 
         $success = $stmt->execute();
@@ -116,37 +110,166 @@ class Queries {
         return Queries::FetchAll($stmt, "video_id");
     }
 
-    public static function clearPlaylist($username, $playlistName) {
+    public static function clearPlaylist($userId, $playlistName)
+    {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtClearPlaylist == null) {
-            $sql = "delete from playlist where username = :username and name = :playlistName";
+            $sql = "delete from playlist where user_id = :userId and name = :playlistName";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtClearPlaylist = $stmt;
         }
         $stmt = Queries::$stmtClearPlaylist;
-        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":userId", $userId);
         $stmt->bindParam(":playlistName", $playlistName);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
         return $success;
     }
 
+    public static function GetListId($listName, $userId)
+    {
+        $pdo = DbManager::getPdo();
+        if (Queries::$stmtGetListId == null) {
+            $sql = "  
+                select list_id
+                from list
+                where name = :listName
+                and user_id = :userId
+            ";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtGetListId = $stmt;
+        }
+        $stmt = Queries::$stmtGetListId;
+        $stmt->bindParam(":listName", $listName);
+        $stmt->bindParam(":userId", $userId);
+        $stmt->execute();
+        $row = Queries::FetchAllSingleColumn($stmt, "list_id");
+        if (count($row) > 0) {
+            return $row[0];
+        } else {
+            throw new Exception("Cannot determine listId for list '$listName' and user with id $userId");
+        }
+    }
+
+    public static function GetVideoIdsForListName($listName)
+    {
+        $pdo = DbManager::getPdo();
+        if (Queries::$stmtGetVideoIdsForListName == null) {
+            $sql = "  
+                select video_id
+                from list_item
+                where list_id in (
+                    select list_id
+                    from list
+                    where name = :listName
+                )
+            ";
+            $stmt = $pdo->prepare($sql);
+            Queries::$stmtGetVideoIdsForListName = $stmt;
+        }
+        $stmt = Queries::$stmtGetVideoIdsForListName;
+        $stmt->bindParam(":listName", $listName);
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        return Queries::FetchAllSingleColumn($stmt, "video_id");
+    }
+
+    /**
+     * Add a video to the specified list
+     */
+    public static function AddToList($listName, $videoIds, $userId)
+    {
+        $stmt = Queries::GetOrAddStatement('addToList', function () {
+            $pdo = DbManager::getPdo();
+            return $pdo->prepare("  
+                insert into list_item (list_id, video_id, display_order)
+                values(
+                    :listId,
+                    :videoId,
+                    :displayOrder
+                );
+            ");
+        });
+        foreach ($videoIds as $videoId) {
+            $listId = Queries::GetListId($listName, $userId);
+            $currentMax = DbManager::GetSingleItem("
+                select max(display_order)
+                from list_item
+                where list_id = $listId
+            ");
+
+            $currentMax = $currentMax !== null ?  $currentMax : 0;
+            $displayOrder = $currentMax + 1;
+
+            $stmt->bindParam(":listId", $listId);
+            $stmt->bindParam(":videoId", $videoId);
+            $stmt->bindParam(":displayOrder", $displayOrder);
+            $success = $stmt->execute();
+            Queries::LogStmt($stmt, $success);
+        }
+    }
+
+    /**
+     * Add a video to the specified list
+     */
+    public static function RemoveFromList($listName, $videoIds, $userId)
+    {
+        $stmt = Queries::GetOrAddStatement('removeFromList', function () {
+            $pdo = DbManager::getPdo();
+            return $pdo->prepare("  
+                delete from list_item
+                where video_id = :videoId
+                and list_id = :listId
+            ");
+        });
+
+        $listId = Queries::GetListId($listName, $userId);
+        foreach ($videoIds as $videoId) {
+            $stmt->bindParam(":listId", $listId);
+            $stmt->bindParam(":videoId", $videoId);
+            $success = $stmt->execute();
+            Queries::LogStmt($stmt, $success);
+        }
+    }
+
+    public static function IsInList($listName, $videoId, $userId)
+    {
+        $listId = Queries::GetListId($listName, $userId);
+        $stmt = Queries::GetOrAddStatement('isInList', function () {
+            $pdo = DbManager::getPdo();
+            return $pdo->prepare("  
+                select count(*) as count from list_item
+                where video_id = :videoId
+                and list_id = :listId
+            ");
+        });
+
+        $listId = Queries::GetListId($listName, $userId);
+        $stmt->bindParam(":listId", $listId);
+        $stmt->bindParam(":videoId", $videoId);
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        $count = Queries::FetchAllSingleColumn($stmt, "count")[0];
+        return $count > 0;
+    }
+
     /**
      * Adds a playlist name to the playlist table. If the playlist name already exists, this will overwrite it.
-     * @param string $username - the username of the user who owns the playlist
+     * @param string $userId - the userId of the user who owns the playlist
      * @param string $playlistName - the name of the playlist 
      * @return boolean - success or failure.
      */
-    public static function AddPlaylistName($username, $playlistName) {
+    public static function AddPlaylistName($userId, $playlistName)
+    {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtAddPlaylistName == null) {
-            $sql = "insert into playlist_name (username, name) values(:username, :name) "
-                    . "on duplicate key update username=:username, name=:name";
+            $sql = "insert into playlist_name (user_id, name) values(:userId, :name) "
+                . "on duplicate key update user_id=:userId, name=:name";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtAddPlaylistName = $stmt;
         }
         $stmt = Queries::$stmtAddPlaylistName;
-        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":userId", $userId);
         $stmt->bindParam(":name", $playlistName);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
@@ -155,19 +278,20 @@ class Queries {
 
     /**
      * Deletes a playlist name from the playlist_name table
-     * @param string $username - the username of the user who owns the playlist
+     * @param string $userId - the userId of the user who owns the playlist
      * @param string $playlistName - the name of the playlist 
      * @return boolean - success or failure.
      */
-    public static function DeletePlaylistName($username, $playlistName) {
+    public static function DeletePlaylistName($userId, $playlistName)
+    {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtDeletePlaylistName == null) {
-            $sql = "delete from playlist_name where username=:username and name=:name";
+            $sql = "delete from playlist_name where user_id=:userId and name=:name";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtDeletePlaylistName = $stmt;
         }
         $stmt = Queries::$stmtDeletePlaylistName;
-        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":userId", $userId);
         $stmt->bindParam(":name", $playlistName);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
@@ -176,31 +300,33 @@ class Queries {
 
     /**
      * Deletes all entries of a playlist from the playlist table
-     * @param string $username - the username of the user who owns the playlist
+     * @param string $userId - the userId of the user who owns the playlist
      * @param string $playlistName - the name of the playlist 
      * @return boolean - success or failure.
      */
-    public static function DeletePlaylist($username, $playlistName) {
+    public static function DeletePlaylist($userId, $playlistName)
+    {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtDeletePlaylist == null) {
-            $sql = "delete from playlist where username=:username and name=:name";
+            $sql = "delete from playlist where user_id=:userId and name=:name";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtDeletePlaylist = $stmt;
         }
         $stmt = Queries::$stmtDeletePlaylist;
-        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":userId", $userId);
         $stmt->bindParam(":name", $playlistName);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
         return $success;
     }
 
-    public static function setPlaylistItems($username, $playlistName, $items) {
+    public static function setPlaylistItems($userId, $playlistName, $items)
+    {
         //pdo is annoying for this kind of query. just make a normal query
-        $sql = "insert into playlist(username, name, item_id, idx, video_id) values";
+        $sql = "insert into playlist(user_id, name, item_id, idx, video_id) values";
         $comma = "";
         foreach ($items as $rank => $item) {
-            $sql .= "$comma('$username', '$playlistName', $item->itemId, $rank, $item->videoId)";
+            $sql .= "$comma('$userId', '$playlistName', $item->itemId, $rank, $item->videoId)";
             $comma = ",";
         }
         $success = DbManager::nonQuery($sql);
@@ -208,15 +334,16 @@ class Queries {
         return $success;
     }
 
-    public static function GetPlaylistNames($username) {
+    public static function GetPlaylistNames($userId)
+    {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtGetPlaylistNames == null) {
-            $sql = "select distinct name from playlist_name where username=:username";
+            $sql = "select distinct name from playlist_name where user_id=:userId";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtGetPlaylistNames = $stmt;
         }
         $stmt = Queries::$stmtGetPlaylistNames;
-        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":userId", $userId);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
         return Queries::FetchAllSingleColumn($stmt, "name");
@@ -225,7 +352,8 @@ class Queries {
     /**
      * Retrieves the list of all video file paths currently in the database
      */
-    public static function getAllVideoPathsInCurrentLibrary() {
+    public static function getAllVideoPathsInCurrentLibrary()
+    {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtGetAllVideoPaths == null) {
             $sql = "select video_id, path from video";
@@ -239,14 +367,6 @@ class Queries {
         return $list;
     }
 
-    public static function GetMoviePaths() {
-        $stmt = $pdo->prepare("select video_id, path from video where media_type = :mediaType");
-        $stmt->bindParam(':mediaType', Enumerations::MediaType_Movie);
-        $stmt->execute();
-        $list = Queries::FetchAllKeyValuePair($stmt, "video_id", "path");
-        return $list;
-    }
-
     /**
      * Inserts a record into the video table 
      * @param type $title -- the title of the video
@@ -255,16 +375,17 @@ class Queries {
      * @param type $mediaType -- the media type of the video (movie, tv show, tv episode   
      * @return boolean - success or failure
      */
-    public static function insertVideo($title, $plot, $mpaa, $year, $url, $path, $filetype, $mediaType, $metadataModifiedDate, $posterModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds, $sdPosterUrl, $hdPosterUrl) {
+    public static function insertVideo($title, $plot, $mpaa, $year, $url, $path, $filetype, $mediaType, $metadataModifiedDate, $posterModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds, $sdPosterUrl, $hdPosterUrl)
+    {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtInsertVideo == null) {
             $sql = "insert into video("
-                    . "title, plot, mpaa, year, url, path, filetype, media_type, "
-                    . "metadata_last_modified_date, poster_last_modified_date, video_source_path, "
-                    . "video_source_url, running_time_seconds, sd_poster_url, hd_poster_url, date_added, date_modified)"
-                    . " values(:title, :plot, :mpaa, :year, :url, :path, :fileType, :mediaType, "
-                    . ":metadataModifiedDate, :posterModifiedDate, :videoSourcePath, :videoSourceUrl, "
-                    . ":runningTimeSeconds, :sdPosterUrl, :hdPosterUrl, CURDATE(), CURDATE())";
+                . "title, plot, mpaa, year, url, path, filetype, media_type, "
+                . "metadata_last_modified_date, poster_last_modified_date, video_source_path, "
+                . "video_source_url, running_time_seconds, sd_poster_url, hd_poster_url, date_added, date_modified)"
+                . " values(:title, :plot, :mpaa, :year, :url, :path, :fileType, :mediaType, "
+                . ":metadataModifiedDate, :posterModifiedDate, :videoSourcePath, :videoSourceUrl, "
+                . ":runningTimeSeconds, :sdPosterUrl, :hdPosterUrl, CURDATE(), CURDATE())";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtInsertVideo = $stmt;
         }
@@ -298,17 +419,18 @@ class Queries {
      * @param string $filetype -- the filetype of the video
      * @param string $mediaType -- the media type of the video (movie, tv show, tv episode   
      */
-    public static function updateVideo($videoId, $title, $plot, $mpaa, $year, $url, $videoPath, $fileType, $mediaType, $metadataModifiedDate, $posterModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds, $sdPosterUrl, $hdPosterUrl) {
+    public static function updateVideo($videoId, $title, $plot, $mpaa, $year, $url, $videoPath, $fileType, $mediaType, $metadataModifiedDate, $posterModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds, $sdPosterUrl, $hdPosterUrl)
+    {
         if ($videoId == null || $videoId == -1) {
             Queries::insertVideo($title, $plot, $mpaa, $year, $url, $videoPath, $fileType, $mediaType, $metadataModifiedDate, $posterModifiedDate, $videoSourcePath, $videoSourceUrl, $runningTimeSeconds, $sdPosterUrl, $hdPosterUrl);
         }
         $pdo = DbManager::getPdo();
         if (Queries::$stmtUpdateVideo == null) {
             $sql = "update video set "
-                    . "title = :title, plot=:plot, mpaa=:mpaa, year=:year, url=:url, path=:path, filetype=:fileType, "
-                    . "media_type=:mediaType, metadata_last_modified_date= :metadataModifiedDate, poster_last_modified_date = :posterModifiedDate, video_source_path=:videoSourcePath, video_source_url=:videoSourceUrl, running_time_seconds=:runningTimeSeconds, "
-                    . "sd_poster_url=:sdPosterUrl, hd_poster_url=:hdPosterUrl, date_modified=CURDATE()"
-                    . "where video_id = :videoId";
+                . "title = :title, plot=:plot, mpaa=:mpaa, year=:year, url=:url, path=:path, filetype=:fileType, "
+                . "media_type=:mediaType, metadata_last_modified_date= :metadataModifiedDate, poster_last_modified_date = :posterModifiedDate, video_source_path=:videoSourcePath, video_source_url=:videoSourceUrl, running_time_seconds=:runningTimeSeconds, "
+                . "sd_poster_url=:sdPosterUrl, hd_poster_url=:hdPosterUrl, date_modified=CURDATE()"
+                . "where video_id = :videoId";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtUpdateVideo = $stmt;
         }
@@ -335,12 +457,13 @@ class Queries {
         return $success;
     }
 
-    public static function insertTvEpisode($videoId, $tvShowVideoId, $seasonNumber, $episodeNumber, $writer = "", $director = "") {
+    public static function insertTvEpisode($videoId, $tvShowVideoId, $seasonNumber, $episodeNumber, $writer = "", $director = "")
+    {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtInsertTvEpisode == null) {
             $sql = "insert into tv_episode(video_id, tv_show_video_id, season_number, episode_number, writer, director)" .
-                    " values(:videoId, :tvShowVideoId, :seasonNumber, :episodeNumber, :writer, :director) " .
-                    " on duplicate key update tv_show_video_id=:tvShowVideoId, season_number=:seasonNumber,
+                " values(:videoId, :tvShowVideoId, :seasonNumber, :episodeNumber, :writer, :director) " .
+                " on duplicate key update tv_show_video_id=:tvShowVideoId, season_number=:seasonNumber,
                                     episode_number=:episodeNumber, writer=:writer, director=:director;";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtInsertTvEpisode = $stmt;
@@ -360,7 +483,8 @@ class Queries {
     /**
      * deletes all videos from the video table. 
      */
-    public static function TruncateTableVideo() {
+    public static function TruncateTableVideo()
+    {
         $pdo = DbManager::getPdo();
         $sql = "truncate table video";
         $stmt = $pdo->prepare($sql);
@@ -372,7 +496,8 @@ class Queries {
     /**
      * Deletes all videos from the tv_episode table. 
      */
-    public static function TruncateTableTvEpisode() {
+    public static function TruncateTableTvEpisode()
+    {
         $pdo = DbManager::getPdo();
         $sql = "truncate table tv_episode";
         $stmt = $pdo->prepare($sql);
@@ -384,7 +509,8 @@ class Queries {
     /**
      * Deletes all rows from the tv_episode table that are no longer associated with a valid video
      */
-    public static function DeleteOrphanedTvEpisodes() {
+    public static function DeleteOrphanedTvEpisodes()
+    {
         $pdo = DbManager::getPdo();
         $sql = "delete from tv_episode where video_id not in (select video_id from video)";
         $stmt = $pdo->prepare($sql);
@@ -393,7 +519,8 @@ class Queries {
         return $success;
     }
 
-    public static function GetTvShowVideoIdFromEpisodeTable($videoId) {
+    public static function GetTvShowVideoIdFromEpisodeTable($videoId)
+    {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtGetTvShowVideoIdFromEpisodeTable == null) {
             $sql = "select tv_show_video_id from tv_episode where video_id = :videoId";
@@ -414,7 +541,8 @@ class Queries {
         }
     }
 
-    public static function GetVideoIdByVideoPath($videoPath) {
+    public static function GetVideoIdByVideoPath($videoPath)
+    {
         $videoId = null;
         $pdo = DbManager::getPdo();
         if (Queries::$stmtGetVideoIdByVideoPath == null) {
@@ -437,7 +565,8 @@ class Queries {
         return intval($videoId);
     }
 
-    public static function GetVideoMetadataLastModifiedDate($videoId) {
+    public static function GetVideoMetadataLastModifiedDate($videoId)
+    {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtGetVideoMetadataLastModifiedDate == null) {
             $sql = "select metadata_last_modified_date from video where video_id = :videoId";
@@ -462,7 +591,8 @@ class Queries {
      * Gets an associative array of the video sources
      * @return associative array of video sources
      */
-    public static function GetVideoSources($type = null) {
+    public static function GetVideoSources($type = null)
+    {
         $sql = "select id, location, base_url,  media_type, security_type, refresh_videos from video_source";
         if ($type != null) {
             $sql .= " where media_type = '$type'";
@@ -476,7 +606,8 @@ class Queries {
      * Gets an associative array of the video sources
      * @return associative array of video sources
      */
-    public static function GetVideoSourcesById($ids) {
+    public static function GetVideoSourcesById($ids)
+    {
         $inStmt = DbManager::GenerateInStatement($ids);
         $sql = "select id, location, base_url,  media_type, security_type, refresh_videos from video_source where id $inStmt";
 
@@ -488,7 +619,8 @@ class Queries {
     /**
      * Adds a new video source to the vide_source table
      */
-    public static function AddVideoSource($location, $baseUrl, $mediaType, $securityType) {
+    public static function AddVideoSource($location, $baseUrl, $mediaType, $securityType)
+    {
         if ($location != null && $baseUrl != null && $mediaType != null && $securityType != null) {
             $pdo = DbManager::getPdo();
             if (Queries::$stmtAddVideoSource == null) {
@@ -512,7 +644,8 @@ class Queries {
     /**
      * Updates an existing video source in the database
      */
-    public static function UpdateVideoSource($videoSourceId, $path, $baseUrl, $mediaType, $securityType, $refreshVideos = 1) {
+    public static function UpdateVideoSource($videoSourceId, $path, $baseUrl, $mediaType, $securityType, $refreshVideos = 1)
+    {
         if ($path != null && $baseUrl != null && $mediaType != null && $securityType != null) {
             $oldVideoSource = Queries::GetVideoSourcesById([$videoSourceId])[0];
             $pdo = DbManager::getPdo();
@@ -543,7 +676,8 @@ class Queries {
         return false;
     }
 
-    public static function StringReplace($tableName, $columnName, $oldValue, $newValue) {
+    public static function StringReplace($tableName, $columnName, $oldValue, $newValue)
+    {
         if ($tableName != null && $columnName != null && $oldValue != null && $newValue != null) {
             $pdo = DbManager::getPdo();
             $sql = "UPDATE $tableName SET $columnName = REPLACE($columnName, :oldValue1, :newValue) WHERE $columnName LIKE :oldValue2;";
@@ -566,7 +700,8 @@ class Queries {
      * @param boolean $refreshVideos - the flag to be set to either true or false 
      * @return boolean - true if successful, false if failure
      */
-    public static function UpdateVideoSourceRefreshVideos($refreshVideos = false) {
+    public static function UpdateVideoSourceRefreshVideos($refreshVideos = false)
+    {
         //if the param was not zero, then we will use a 1
         $refreshVideos = $refreshVideos != false ? true : false;
         $pdo = DbManager::getPdo();
@@ -583,7 +718,8 @@ class Queries {
      * @param string $location - the location used as the primary key to identify the video source to delete
      * @return boolean - true if successful, false if failure
      */
-    public static function DeleteVideoSource($videoSourceId) {
+    public static function DeleteVideoSource($videoSourceId)
+    {
         $totalSuccess = true;
         $success = Queries::DeleteVideosInSource($videoSourceId);
         $totalSuccess = $totalSuccess && $success;
@@ -593,7 +729,8 @@ class Queries {
         return $totalSuccess;
     }
 
-    public static function DeleteVideosInSource($videoSourceId) {
+    public static function DeleteVideosInSource($videoSourceId)
+    {
         $path = Dbmanager::SingleColumnQuery('select location from video_source where id=?', $videoSourceId);
         $path = $path[0];
         //delete all videos that are referenced in this video source
@@ -602,7 +739,8 @@ class Queries {
         return $success;
     }
 
-    public static function GetVideoCounts() {
+    public static function GetVideoCounts()
+    {
         if (Queries::$stmtVideoCount == null) {
             $sql = "select count(*) from video where media_type=:mediaType";
             $pdo = DbManager::getPdo();
@@ -641,18 +779,19 @@ class Queries {
         $tvEpisodeCount = $stmt->fetch();
         $tvEpisodeCount = ($tvEpisodeCount != null) ? $tvEpisodeCount[0] : 0;
 
-        $counts = (object) array("movieCount" => $movieCount, "tvShowCount" => $tvShowCount, "tvEpisodeCount" => $tvEpisodeCount);
+        $counts = (object)array("movieCount" => $movieCount, "tvShowCount" => $tvShowCount, "tvEpisodeCount" => $tvEpisodeCount);
         return $counts;
     }
 
-    public static function InsertWatchVideo($username, $videoId, $timeInSeconds) {
+    public static function InsertWatchVideo($userId, $videoId, $timeInSeconds)
+    {
         $dateWatched = date("Y-m-d H:i:s");
         $pdo = DbManager::getPdo();
-        $sql = "insert into watch_video (username, video_id, time_in_seconds, date_watched)
-                        values(:username, :videoId, :timeInSeconds, :dateWatched) 
+        $sql = "insert into watch_video (user_id, video_id, time_in_seconds, date_watched)
+                        values(:userId, :videoId, :timeInSeconds, :dateWatched) 
                         on duplicate key update time_in_seconds=:timeInSeconds,date_watched=:dateWatched";
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":userId", $userId);
         $stmt->bindParam(":videoId", $videoId);
         $stmt->bindParam(":timeInSeconds", $timeInSeconds);
         $stmt->bindParam(":dateWatched", $dateWatched);
@@ -665,7 +804,8 @@ class Queries {
      * Returns an array of all videoIds that are of the specified media type
      * @param type $mediaType
      */
-    public static function GetVideoIds($mediaType) {
+    public static function GetVideoIds($mediaType)
+    {
         if (Queries::$stmtGetVideoIds == null) {
             $sql = "select video_id from video where media_type=:mediaType order by title asc";
             $pdo = DbManager::getPdo();
@@ -685,23 +825,24 @@ class Queries {
         return $videoIds;
     }
 
-    public static function GetLastEpisodeWatched($username, $tvShowVideoId) {
+    public static function GetLastEpisodeWatched($userId, $tvShowVideoId)
+    {
         $pdo = DbManager::getPdo();
         $sql = "select w.video_id, w.time_in_seconds
                             from watch_video w, tv_episode e
                             where w.video_id = e.video_id
                             and e.tv_show_video_id = :tvShowVideoId
-                            and w.username = :username
+                            and w.user_id = :userId
                             and w.date_watched = (
                               select max(sw.date_watched) 
                               from watch_video sw, tv_episode se
                               where sw.video_id = se.video_id
                               and se.tv_show_video_id = :tvShowVideoId
-                              and sw.username = :username
+                              and sw.user_id = :userId
                             )";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(":tvShowVideoId", $tvShowVideoId);
-        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":userId", $userId);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
 
@@ -718,7 +859,8 @@ class Queries {
      * Returns a list of videoIds pointing to episodes in the specified tv show
      */
 
-    public static function GetTvEpisodeVideoIdsForShow($tvShowVideoId) {
+    public static function GetTvEpisodeVideoIdsForShow($tvShowVideoId)
+    {
         if (Queries::$stmtGetTvEpisodeVideoIdsForShow == null) {
             $pdo = DbManager::getPdo();
             $sql = "select video_id from tv_episode
@@ -735,7 +877,8 @@ class Queries {
         return DbManager::FetchAllClass($stmt);
     }
 
-    public static function GetVideoPathsBySourcePath($videoSourcePath, $mediaType) {
+    public static function GetVideoPathsBySourcePath($videoSourcePath, $mediaType)
+    {
         $pdo = DbManager::getPdo();
         $sql = "select path from video where media_type = :mediaType and video_source_path = :videoSourcePath";
         $stmt = $pdo->prepare($sql);
@@ -752,7 +895,8 @@ class Queries {
      * @param type $showPath - the path of the tv show
      * @return array - an array of tv episode paths
      */
-    public static function GetEpisodePathsByShowPath($showPath) {
+    public static function GetEpisodePathsByShowPath($showPath)
+    {
 
         $pdo = DbManager::getPdo();
         if (Queries::$stmtGetEpisodePathsByShowPath == null) {
@@ -772,7 +916,8 @@ class Queries {
         return $result;
     }
 
-    public static function GetVideos($videoIdList) {
+    public static function GetVideos($videoIdList)
+    {
         $videoIds = join(",", $videoIdList);
         if (Queries::$stmtGetVideos == null) {
             $pdo = DbManager::getPdo();
@@ -796,7 +941,8 @@ class Queries {
         return false;
     }
 
-    public static function GetVideosById($videoIds, $columns) {
+    public static function GetVideosById($videoIds, $columns)
+    {
         $pdo = DbManager::getPdo();
         if (count($columns) > 0) {
             $columnString = implode(",", $columns);
@@ -820,7 +966,8 @@ class Queries {
         return false;
     }
 
-    public static function GetVideo($videoId) {
+    public static function GetVideo($videoId)
+    {
         if (Queries::$stmtGetVideo == null) {
             $pdo = DbManager::getPdo();
             $sql = "select * from video 
@@ -843,7 +990,8 @@ class Queries {
         return false;
     }
 
-    public static function GetTvEpisode($videoId) {
+    public static function GetTvEpisode($videoId)
+    {
         if (Queries::$stmtGetTvEpisode == null) {
             $pdo = DbManager::getPdo();
             $sql = "select * from video v, tv_episode e
@@ -867,7 +1015,8 @@ class Queries {
         return false;
     }
 
-    public static function GetEpisodesInTvShow($tvShowVideoId) {
+    public static function GetEpisodesInTvShow($tvShowVideoId)
+    {
         if (Queries::$stmtGetEpisodesInTvShow == null) {
             $pdo = DbManager::getPdo();
             $sql = "select * from video v, tv_episode e
@@ -896,19 +1045,20 @@ class Queries {
      * @param int $videoId - the videoId of the video to get the video progress of
      * @return int - the number of seconds the video was last played until, or 
      */
-    public static function GetVideoProgress($username, $videoId) {
+    public static function GetVideoProgress($userId, $videoId)
+    {
         if (Queries::$stmtGetVideoProgress == null) {
             $pdo = DbManager::getPdo();
             $sql = "select time_in_seconds
                                 from watch_video
                                 where video_id = :videoId
-                                and username = :username";
+                                and user_id = :userId";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtGetVideoProgress = $stmt;
         }
         $stmt = Queries::$stmtGetVideoProgress;
         $stmt->bindParam(":videoId", $videoId);
-        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":userId", $userId);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
         if ($success === true) {
@@ -923,7 +1073,8 @@ class Queries {
         return 0;
     }
 
-    private static function FetchAll($stmt) {
+    private static function FetchAll($stmt)
+    {
         $result = [];
         $val = $stmt->fetch(PDO::FETCH_ASSOC);
         while ($val != null) {
@@ -933,7 +1084,8 @@ class Queries {
         return $result;
     }
 
-    private static function FetchAllSingleColumn($stmt, $colName) {
+    private static function FetchAllSingleColumn($stmt, $colName)
+    {
         $result = [];
         $list = DbManager::FetchAllAssociative($stmt);
         foreach ($list as $item) {
@@ -942,7 +1094,8 @@ class Queries {
         return $result;
     }
 
-    private static function FetchAllKeyValuePair($stmt, $keyColName, $valueColName) {
+    private static function FetchAllKeyValuePair($stmt, $keyColName, $valueColName)
+    {
         $result = [];
         $list = DbManager::FetchAllAssociative($stmt);
         foreach ($list as $item) {
@@ -951,13 +1104,15 @@ class Queries {
         return $result;
     }
 
-    private static function LogSql($sql, $bSuccess) {
+    private static function LogSql($sql, $bSuccess)
+    {
         if (config::$logQueries == true) {
             $success = ($bSuccess == true) ? "<span style='color: green;font-weight:bold;'>Success</span>" : "<span style='color:red;font-weight:bold;'>Failure</span>";
         }
     }
 
-    private static function LogStmt($stmt, $bSuccess) {
+    private static function LogStmt($stmt, $bSuccess)
+    {
         if (config::$logQueries == true) {
 
             ob_start();
@@ -966,23 +1121,34 @@ class Queries {
             ob_end_clean();
         }
     }
-   
-    public static function InsertRecentlyWatched($username, $videoId) {
+
+    public static function InsertRecentlyWatched($userId, $videoId)
+    {
         $dateWatched = date("Y-m-d H:i:s");
 
         $pdo = DbManager::getPdo();
         $sql = "
-            INSERT INTO recently_watched (username, video_id, date_watched) 
-                VALUES(:username, :videoId, :dateWatched ) 
-                ON DUPLICATE KEY UPDATE username=:username, video_id=:videoId, date_watched=:dateWatched";
+            INSERT INTO recently_watched (userId, video_id, date_watched) 
+                VALUES(:userId, :videoId, :dateWatched ) 
+                ON DUPLICATE KEY UPDATE user_id=:userId, video_id=:videoId, date_watched=:dateWatched";
 
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":userId", $userId);
         $stmt->bindParam(":videoId", $videoId);
         $stmt->bindParam(":dateWatched", $dateWatched);
         $success = $stmt->execute();
         return $success;
     }
-}
 
-?>
+    /**
+     * Generate a statement, or get a cached statement if it already exists
+     */
+    private static function GetOrAddStatement($key, $callback)
+    {
+        if (!isset(Queries::$statements[$key])) {
+            $stmt = $callback();
+            Queries::$statements[$key]  = $stmt;
+        }
+        return Queries::$statements[$key];
+    }
+}

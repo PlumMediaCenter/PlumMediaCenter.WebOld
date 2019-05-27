@@ -5,7 +5,7 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
             controller: ['$scope', 'Video', Controller],
             controllerAs: 'vm',
             bindToController: true,
-            templateUrl: 'categoryScroller.html',
+            templateUrl: '/categoryScroller.html',
             scope: {
                 category: '=?',
                 categoryName: '=?'

@@ -3,10 +3,25 @@
     <div class="row " style="margin-top:5px;">
         <div class="col-md-3 text-center">
             <div id="videoInfoPosterColumn">
+
                 <a ng-attr-href="{{vm.video.posterUrl}}">
                     <img ng-attr-src="{{vm.video.hdPosterUrl}}" class="full-width">
                 </a>
                 <progressbar title="progress" class="margin" style="background-color: grey;margin-top:5px;" type="{{vm.getProgressPercentType()}}" value="vm.progressPercent < 15? 15: vm.progressPercent " max="100"><span>{{vm.progressPercent}}%</progressbar>
+                <a ui-sref="play(vm.nextEpisode || vm.video)" ng-disabled="vm.playIsDisabled()" class="btn btn-primary full-width margin">
+                    <span class="glyphicon glyphicon-play"></span>&nbsp;Play
+                </a>
+                <button class="btn btn-default full-width pointer" ng-click="vm.toggleMyList()">
+                    <span ng-if="vm.isInMyList">
+                        <span class="glyphicon glyphicon-minus"></span>&nbsp;Remove From My List
+                    </span>
+                    <span ng-if="!vm.isInMyList">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp; Add to My List
+                    </span>
+                </button>
+                <a class="btn btn-default full-width margin" href="{{vm.video.url}}">
+                    <span class="glyphicon glyphicon-download"></span>&nbsp;Download
+                </a>
                 <a class="btn btn-default full-width margin" ui-sref="metadataFetcher({videoId: vm.video.videoId})">Fetch Metadata</a>
                 <a class="btn btn-default full-width margin" ng-click="vm.scanForNewMedia()">
                     <span class="glyphicon glyphicon-refresh"></span>
@@ -17,22 +32,20 @@
                 </a>
                 <load-message message="'Processing video'" ng-if="vm.isProcessingVideo"></load-message>
                 <load-message message="vm.loadMessage"></load-message>
-                <a ui-sref="play(vm.nextEpisode || vm.video)" ng-disabled="vm.playIsDisabled()" class="btn btn-primary full-width margin">
-                    <span class="glyphicon glyphicon-play"></span>&nbsp;Play
-                </a>
+
             </div>
         </div>
         <div class="col-md-9">
             <h1 class="text-center">{{vm.video.title}}</h1>
             <div class="text-center full-width">
-                <b>{{vm.video.mpaa}}</b>&nbsp;&nbsp;               
+                <b>{{vm.video.mpaa}}</b>&nbsp;&nbsp;
                 <b>{{vm.video.year}}</b>
                 <b ng-if="vm.runtimeMinutes()">&nbsp;&nbsp;{{vm.runtimeMinutes()}} min</b>
 
             </div>
-            <br/> <br/>{{vm.video.plot}}
+            <br /> <br />{{vm.video.plot}}
             <div ng-if="vm.nextEpisode">
-                <br/>
+                <br />
                 <h2>Next Episode</h2>
                 <div>
                     <episode episode="vm.nextEpisode" ng-if="vm.nextEpisode"></episode>
@@ -41,7 +54,7 @@
         </div>
     </div>
 </div>
-<div class="row" ng-if="vm.episodes"> 
+<div class="row" ng-if="vm.episodes">
     <div class="col-xs-12">
         <h1>Episodes</h1>
         <episode episode="episode" ng-repeat="episode in vm.episodes" selected="episode.videoId === vm.nextEpisode.videoId"></episode>
@@ -101,4 +114,3 @@
             </div>
         </div>
     </div>-->
-

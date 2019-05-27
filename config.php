@@ -16,7 +16,7 @@ class config {
     public static $tmdbUrl = 'http://api.themoviedb.org/3';
     public static $repoOwner = 'TwitchBronBron';
     public static $repoName = 'PlumMediaCenter';
-    public static $globalUsername= 'plumuser';
+    public static $defaultUserId= 1;
     //if a video is within this amount of time of the next video, play the next one instead (or restart it)
     public static $playNextVideoBufferInSeconds = 90;
 

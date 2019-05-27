@@ -5,25 +5,25 @@ require_once(dirname(__FILE__) . '/../../code/Playlist.class.php');
 
 class TestPlaylist extends UnitTestCase {
 
-    private $username = "TestUser";
+    private $userId = "TestUser";
     private $playlistName = "My Test Playlist";
 
     function setUp() {
-        Queries::clearPlaylist($this->username, $this->playlistName);
+        Queries::clearPlaylist($this->userId, $this->playlistName);
     }
 
     function tearDown() {
-        Queries::clearPlaylist($this->username, $this->playlistName);
+        Queries::clearPlaylist($this->userId, $this->playlistName);
     }
 
     function testConstruct() {
-        $p = new Playlist($this->username, $this->playlistName);
-        $this->assertEqual($this->username, $p->GetUsername());
+        $p = new Playlist($this->userId, $this->playlistName);
+        $this->assertEqual($this->userId, $p->GetUsername());
         $this->assertEqual($this->playlistName, $p->getPlaylistName());
     }
 
     function testAdd() {
-        $p = new Playlist($this->username, $this->playlistName);
+        $p = new Playlist($this->userId, $this->playlistName);
         $p->add(12345);
         $list = $p->getPlaylistItems();
         $this->assertEqual(1, count($list));
@@ -38,7 +38,7 @@ class TestPlaylist extends UnitTestCase {
     }
 
     function testAddAtIndex() {
-        $p = new Playlist($this->username, $this->playlistName);
+        $p = new Playlist($this->userId, $this->playlistName);
         $p->add(1);
         $p->add(3);
 
@@ -55,18 +55,18 @@ class TestPlaylist extends UnitTestCase {
     }
 
     function testWriteToDatabase() {
-        $p = new Playlist($this->username, $this->playlistName);
+        $p = new Playlist($this->userId, $this->playlistName);
         $p->add(5);
         $p->add(7);
         //make sure that the object successfully writes to the database
         $this->assertTrue($p->writeToDb());
-        $results = DbManager::query("select username, name, idx, video_id from playlist where username='$this->username' and name = '$this->playlistName'  order by idx asc");
-        $this->assertEqual($results[0]->username, $this->username);
+        $results = DbManager::query("select username, name, idx, video_id from playlist where username='$this->userId' and name = '$this->playlistName'  order by idx asc");
+        $this->assertEqual($results[0]->userId, $this->userId);
         $this->assertEqual($results[0]->name, $this->playlistName);
         $this->assertEqual($results[0]->idx, 0);
         $this->assertEqual($results[0]->video_id, 5);
 
-        $this->assertEqual($results[1]->username, $this->username);
+        $this->assertEqual($results[1]->userId, $this->userId);
         $this->assertEqual($results[1]->name, $this->playlistName);
         $this->assertEqual($results[1]->idx, 1);
         $this->assertEqual($results[1]->video_id, 7);
@@ -74,25 +74,25 @@ class TestPlaylist extends UnitTestCase {
         //add an element in the middle and make sure the database gets the new value and updates the order
         $p->add(6, 1);
         $this->assertTrue($p->writeToDb());
-        $results = DbManager::query("select username, name, idx, video_id from playlist where username='$this->username' and name = '$this->playlistName' order by idx asc");
-        $this->assertEqual($results[0]->username, $this->username);
+        $results = DbManager::query("select username, name, idx, video_id from playlist where username='$this->userId' and name = '$this->playlistName' order by idx asc");
+        $this->assertEqual($results[0]->userId, $this->userId);
         $this->assertEqual($results[0]->name, $this->playlistName);
         $this->assertEqual($results[0]->idx, 0);
         $this->assertEqual($results[0]->video_id, 5);
 
-        $this->assertEqual($results[1]->username, $this->username);
+        $this->assertEqual($results[1]->userId, $this->userId);
         $this->assertEqual($results[1]->name, $this->playlistName);
         $this->assertEqual($results[1]->idx, 1);
         $this->assertEqual($results[1]->video_id, 6);
 
-        $this->assertEqual($results[2]->username, $this->username);
+        $this->assertEqual($results[2]->userId, $this->userId);
         $this->assertEqual($results[2]->name, $this->playlistName);
         $this->assertEqual($results[2]->idx, 2);
         $this->assertEqual($results[2]->video_id, 7);
     }
 
     function testClear() {
-        $p = new Playlist($this->username, $this->playlistName);
+        $p = new Playlist($this->userId, $this->playlistName);
         $p->addRange(array(5, 6, 7));
         $vals = $p->getPlaylistItems();
         $this->assertEqual(3, count($vals));
@@ -103,7 +103,7 @@ class TestPlaylist extends UnitTestCase {
     }
 
     function testRemove() {
-        $p = new Playlist($this->username, $this->playlistName);
+        $p = new Playlist($this->userId, $this->playlistName);
         $p->addRange(array(5, 6, 7));
         $vals = $p->getPlaylistItems();
         $this->assertEqual(3, count($vals));
@@ -151,7 +151,7 @@ class TestPlaylist extends UnitTestCase {
     }
 
     function testRemoveFromDb() {
-        $p = new Playlist($this->username, $this->playlistName);
+        $p = new Playlist($this->userId, $this->playlistName);
         $p->addRange(array(5, 6, 7));
         //save this to the database
         $p->writeToDb();
@@ -164,14 +164,14 @@ class TestPlaylist extends UnitTestCase {
         $this->assertTrue($p->remove(2));
         $p->writeToDb();
         //get the data from the database. make sure it has what we put there
-        $results = DbManager::query("select username, name, idx, video_id from playlist where username='$this->username' and name = '$this->playlistName'  order by idx asc");
+        $results = DbManager::query("select username, name, idx, video_id from playlist where username='$this->userId' and name = '$this->playlistName'  order by idx asc");
         $this->assertEqual(2, count($results));
-        $this->assertEqual($results[0]->username, $this->username);
+        $this->assertEqual($results[0]->userId, $this->userId);
         $this->assertEqual($results[0]->name, $this->playlistName);
         $this->assertEqual($results[0]->idx, 0);
         $this->assertEqual($results[0]->video_id, 5);
 
-        $this->assertEqual($results[1]->username, $this->username);
+        $this->assertEqual($results[1]->userId, $this->userId);
         $this->assertEqual($results[1]->name, $this->playlistName);
         $this->assertEqual($results[1]->idx, 1);
         $this->assertEqual($results[1]->video_id, 6);
@@ -184,14 +184,14 @@ class TestPlaylist extends UnitTestCase {
         $this->assertTrue($p->remove(1));
         $p->writeToDb();
         //get the data from the database. make sure it has what we put there
-        $results = DbManager::query("select username, name, idx, video_id from playlist where username='$this->username' and name = '$this->playlistName'  order by idx asc");
+        $results = DbManager::query("select username, name, idx, video_id from playlist where username='$this->userId' and name = '$this->playlistName'  order by idx asc");
         $this->assertEqual(2, count($results));
-        $this->assertEqual($results[0]->username, $this->username);
+        $this->assertEqual($results[0]->userId, $this->userId);
         $this->assertEqual($results[0]->name, $this->playlistName);
         $this->assertEqual($results[0]->idx, 0);
         $this->assertEqual($results[0]->video_id, 5);
 
-        $this->assertEqual($results[1]->username, $this->username);
+        $this->assertEqual($results[1]->userId, $this->userId);
         $this->assertEqual($results[1]->name, $this->playlistName);
         $this->assertEqual($results[1]->idx, 1);
         $this->assertEqual($results[1]->video_id, 7);
@@ -204,14 +204,14 @@ class TestPlaylist extends UnitTestCase {
         $this->assertTrue($p->remove(0));
         $p->writeToDb();
         //get the data from the database. make sure it has what we put there
-        $results = DbManager::query("select username, name, idx, video_id from playlist where username='$this->username' and name = '$this->playlistName'  order by idx asc");
+        $results = DbManager::query("select username, name, idx, video_id from playlist where username='$this->userId' and name = '$this->playlistName'  order by idx asc");
         $this->assertEqual(2, count($results));
-        $this->assertEqual($results[0]->username, $this->username);
+        $this->assertEqual($results[0]->userId, $this->userId);
         $this->assertEqual($results[0]->name, $this->playlistName);
         $this->assertEqual($results[0]->idx, 0);
         $this->assertEqual($results[0]->video_id, 6);
 
-        $this->assertEqual($results[1]->username, $this->username);
+        $this->assertEqual($results[1]->userId, $this->userId);
         $this->assertEqual($results[1]->name, $this->playlistName);
         $this->assertEqual($results[1]->idx, 1);
         $this->assertEqual($results[1]->video_id, 7);
@@ -223,11 +223,11 @@ class TestPlaylist extends UnitTestCase {
     }
 
     function testLoadFromDb() {
-        $p = new Playlist($this->username, $this->playlistName);
+        $p = new Playlist($this->userId, $this->playlistName);
         $p->addRange(array(7, 8, 9));
         $p->writeToDb();
         //make sure that it loads correctly using the object
-        $p = new Playlist($this->username, $this->playlistName);
+        $p = new Playlist($this->userId, $this->playlistName);
         $p->loadFromDb();
         $list = $p->getPlaylistItems();
         $this->assertEqual($list[0], 7);
@@ -239,13 +239,13 @@ class TestPlaylist extends UnitTestCase {
         $p->writeToDb();
 
         //make sure that it loads correctly using the object
-        $p = new Playlist($this->username, $this->playlistName);
+        $p = new Playlist($this->userId, $this->playlistName);
         $p->loadFromDb();
         $list = $p->getPlaylistItems();
         $this->assertEqual($list[0], 8);
         $this->assertEqual($list[1], 9);
 
-        $p = new Playlist($this->username, $this->playlistName);
+        $p = new Playlist($this->userId, $this->playlistName);
         $p->addRange(array(7, 8, 9));
         $p->writeToDb();
 
@@ -257,7 +257,7 @@ class TestPlaylist extends UnitTestCase {
         $this->assertEqual($list[0], 7);
         $this->assertEqual($list[1], 9);
 
-        $p = new Playlist($this->username, $this->playlistName);
+        $p = new Playlist($this->userId, $this->playlistName);
         $p->addRange(array(7, 8, 9));
         $p->writeToDb();
 

@@ -4,7 +4,7 @@ angular.module('app').directive('navbar', ['$state', function ($state) {
         controller: ['$state', Controller],
         controllerAs: 'vm',
         bindToController: true,
-        templateUrl: 'navbar.html',
+        templateUrl: '/navbar.html',
         scope: {
         }
     };

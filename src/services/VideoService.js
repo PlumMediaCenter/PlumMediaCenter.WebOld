@@ -269,5 +269,19 @@ angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q,
             }
         });
     };
+
+    Video.addToList = function (listName, videoIds) {
+        return $http.get('api/AddToList.php', { params: { videoIds: videoIds, listName: listName } });
+    };
+
+    Video.removeFromList = function (listName, videoIds) {
+        return $http.get('api/RemoveFromList.php', { params: { videoIds: videoIds, listName: listName } });
+    };
+
+    Video.isInList = function (listName, videoId) {
+        return $http.get('api/IsInList.php', { params: { videoId: videoId, listName: listName } }).then(function (response) {
+            return response.data;
+        });
+    };
     return Video;
 }]);

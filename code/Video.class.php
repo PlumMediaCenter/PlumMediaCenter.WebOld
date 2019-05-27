@@ -11,13 +11,15 @@ include_once("TvEpisode.class.php");
 include_once(dirname(__FILE__) . "/../config.php");
 include_once(dirname(__FILE__) . "/functions.php");
 
-abstract class Video {
+abstract class Video
+{
 
     abstract function fetchMetadata();
 
     abstract function getMetadataFetcherClass();
 
-    public static function GetVideoMetadataFetcherClass($mediaType) {
+    public static function GetVideoMetadataFetcherClass($mediaType)
+    {
         if ($mediaType === Enumerations::MediaType_Movie) {
             $fetcher = new MovieMetadataFetcher();
             $fetcher->setLanguage(config::$language);
@@ -58,7 +60,8 @@ abstract class Video {
     public $runtime = 0;
     protected $nfoReader = null;
 
-    function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
+    function __construct($videoSourceUrl, $videoSourcePath, $fullPath)
+    {
         //save the important stuff
         $this->videoSourceUrl = $videoSourceUrl;
         $this->videoSourcePath = str_replace("\\", "/", realpath($videoSourcePath)) . "/";
@@ -77,7 +80,8 @@ abstract class Video {
         $this->posterModifiedDate = $this->getPosterLastModifiedDate();
     }
 
-    public function getFullPath() {
+    public function getFullPath()
+    {
         return $this->fullPath;
     }
 
@@ -85,15 +89,18 @@ abstract class Video {
      * Returns the media type of this video. It could be Movie, Tv Show, or Tv Episode
      * @return Enumerations::MediaType - the media type of the video
      */
-    public function getMediaType() {
+    public function getMediaType()
+    {
         return $this->mediaType;
     }
 
-    public function getVideoSourceUrl() {
+    public function getVideoSourceUrl()
+    {
         return $this->videoSourceUrl;
     }
 
-    public function getVideoSourcePath() {
+    public function getVideoSourcePath()
+    {
         return $this->videoSourcePath;
     }
 
@@ -103,7 +110,8 @@ abstract class Video {
      * @param int $videoId
      * @return Movie|TvShow|TvEpisode $video
      */
-    public static function GetVideo($videoId) {
+    public static function GetVideo($videoId)
+    {
         try {
             $v = Queries::getVideo($videoId);
             //if no video was found, nothing more can be done
@@ -139,7 +147,8 @@ abstract class Video {
     /**
      * Determines if this is a new video
      */
-    public function isNew() {
+    public function isNew()
+    {
         //if this video does NOT have a video id, then it does not exist in the database. It is new.
         if ($this->getVideoId() === -1) {
             return true;
@@ -152,21 +161,23 @@ abstract class Video {
      * Gets the percent of the video that has already been watched
      * @return int - the percent complete this video is from being watched
      */
-    public function progressPercent() {
+    public function progressPercent()
+    {
         $current = Video::GetVideoStartSeconds($this->videoId);
         $totalLength = $this->getLengthInSeconds();
         //if we don't have numbers avaiable that will give us a percent, assume the percent is zero
         if ($totalLength === false || $totalLength === 0 || $current === 0) {
             return 0;
         } else {
-            $percent = intval(($current / $totalLength ) * 100);
+            $percent = intval(($current / $totalLength) * 100);
             return $percent;
         }
     }
 
     protected $lengthInSeconds = false;
 
-    public function getLengthInSeconds($force = false) {
+    public function getLengthInSeconds($force = false)
+    {
         //if the lengthInSeconds has not yet been calculated, calculate it
         if ($this->lengthInSeconds == false && $force !== true) {
             //first, try to read the file, since it knows how long the video ACTUALLY is
@@ -193,7 +204,8 @@ abstract class Video {
      * Parses the mp4 video's metadata to find the full length of the video in seconds
      * @return int|boolean - the number of seconds if successful, false if unsuccessful
      */
-    private function getLengthInSecondsFromFile() {
+    private function getLengthInSecondsFromFile()
+    {
         //the mp4info class likes to spit out random crap. hide it with an output buffer
         ob_start();
         $result = @MP4Info::getInfo($this->fullPath);
@@ -210,7 +222,8 @@ abstract class Video {
      * @param int $videoId - the videoId of the video in question
      * @return int - the number of seconds into the video that the video was stopped at
      */
-    public static function GetVideoStartSeconds($videoId, $finishedBuffer = null) {
+    public static function GetVideoStartSeconds($videoId, $finishedBuffer = null)
+    {
         $v = Video::GetVideo($videoId);
         if ($v == false) {
             return 0;
@@ -223,8 +236,9 @@ abstract class Video {
      * @param int $videoId - the videoId of the video in question
      * @return int - the number of seconds into the video that the video was stopped at
      */
-    public function videoStartSeconds($finishedBuffer = 45) {
-        $progress = Queries::getVideoProgress(Security::GetUsername(), $this->videoId);
+    public function videoStartSeconds($finishedBuffer = 45)
+    {
+        $progress = Queries::getVideoProgress(Security::GetUserId(), $this->videoId);
         $totalVideoLength = $this->getLengthInSeconds();
 
         //if the user has watched enough of the video for it to be consiered 'complete', return 0 which means to start video over
@@ -240,7 +254,8 @@ abstract class Video {
      * @param type $posterUrl
      * @return boolean - true if successful, false if there was a problem
      */
-    function downloadPoster($posterUrl) {
+    function downloadPoster($posterUrl)
+    {
         $posterPath = $this->getPosterPath();
         $success = saveImageFromUrl($posterUrl, $posterPath);
         if ($success === true) {
@@ -254,7 +269,8 @@ abstract class Video {
      * Generates the sd and hd images for this video's poster based on the generate posters method. (if none, no poster is generated, if missing, only missing posters
      * are generated. if all, then all posters are re-generated
      */
-    function generatePosters() {
+    function generatePosters()
+    {
         $this->generateSdPoster();
         $this->generateHdPoster();
     }
@@ -263,15 +279,18 @@ abstract class Video {
      * Determine if there is a poster for this video
      * @return boolean - true if the poster exists, false if it does not
      */
-    public function posterExists() {
+    public function posterExists()
+    {
         return file_exists($this->getPosterPath());
     }
 
-    public function getVideoName() {
+    public function getVideoName()
+    {
         return self::CalculateTitle($this->fullPath);
     }
 
-    protected function getUrl() {
+    protected function getUrl()
+    {
         $relativePath = str_replace($this->videoSourcePath, "", $this->fullPath);
         $url = $this->videoSourceUrl . $relativePath;
         $url = Video::EncodeUrl($url);
@@ -279,11 +298,13 @@ abstract class Video {
         return $url;
     }
 
-    protected function getFullPathToContainingFolder() {
+    protected function getFullPathToContainingFolder()
+    {
         return pathinfo($this->fullPath, PATHINFO_DIRNAME) . "/";
     }
 
-    protected function getFullUrlToContainingFolder() {
+    protected function getFullUrlToContainingFolder()
+    {
         $dirname = pathinfo($this->url, PATHINFO_DIRNAME);
         return $dirname . "/";
     }
@@ -291,7 +312,8 @@ abstract class Video {
     /**
      * Replace common invalid characters that appear in the url with the urlencoded alternatives (like space and singlequote)
      */
-    public static function EncodeUrl($url) {
+    public static function EncodeUrl($url)
+    {
         $url = str_replace(" ", "%20", $url);
         $url = str_replace("'", "%27", $url);
         return $url;
@@ -302,7 +324,8 @@ abstract class Video {
      * Returns the path for an nfo file named the same as the video file. i.e. MyTvEpisode.avi, MyTvEpisode.nfo
      * @return type
      */
-    public function getNfoPath() {
+    public function getNfoPath()
+    {
         return Video::GetVideoNfoPath($this->fullPath);
     }
 
@@ -310,7 +333,8 @@ abstract class Video {
      * Get the path to the nfo file based on the filename
      * @param string $path
      */
-    static function GetVideoNfoPath($path) {
+    static function GetVideoNfoPath($path)
+    {
         $nfoPath = pathinfo($path, PATHINFO_DIRNAME) . "/" . pathinfo($path, PATHINFO_FILENAME) . ".nfo";
         return $nfoPath;
     }
@@ -319,7 +343,8 @@ abstract class Video {
      * Determines if this video HAS a metadata file (nfo file).
      * @return boolean - true if the nfo file was found, false if it was not found
      */
-    public function nfoFileExists() {
+    public function nfoFileExists()
+    {
         //get the path to the nfo file
         $nfoPath = $this->getNfoPath();
         //verify that the file exists
@@ -333,7 +358,8 @@ abstract class Video {
     /**
      * Determines whether or not the SD poster exists on disk
      */
-    function sdPosterExists() {
+    function sdPosterExists()
+    {
         if (file_exists($this->getSdPosterPath())) {
             return true;
         } else {
@@ -344,7 +370,8 @@ abstract class Video {
     /**
      * Determines whether or not the HD poster exists on disk
      */
-    function hdPosterExists() {
+    function hdPosterExists()
+    {
         if (file_exists($this->getHdPosterPath())) {
             return true;
         } else {
@@ -352,32 +379,39 @@ abstract class Video {
         }
     }
 
-    function getPosterPath() {
+    function getPosterPath()
+    {
         return $this->getFullPathToContainingFolder() . "folder.jpg";
     }
 
-    function getSdPosterPath() {
+    function getSdPosterPath()
+    {
         return $this->getFullPathToContainingFolder() . "folder.sd.jpg";
     }
 
-    function getHdPosterPath() {
+    function getHdPosterPath()
+    {
         return $this->getFullPathToContainingFolder() . "folder.hd.jpg";
     }
 
-    function getPosterUrl() {
+    function getPosterUrl()
+    {
         return Video::EncodeUrl($this->getFullUrlToContainingFolder() . "folder.jpg");
     }
 
-    function getSdPosterUrl() {
+    function getSdPosterUrl()
+    {
         return Video::EncodeUrl($this->getFullUrlToContainingFolder() . "folder.sd.jpg");
     }
 
-    function getHdPosterUrl() {
+    function getHdPosterUrl()
+    {
         $hdPosterUrl = $this->getFullUrlToContainingFolder() . "folder.hd.jpg";
         return Video::EncodeUrl($hdPosterUrl);
     }
 
-    function getActualHdPosterUrl() {
+    function getActualHdPosterUrl()
+    {
         if ($this->hdPosterExists() == true) {
             return Video::EncodeUrl($this->getHdPosterUrl());
         } else {
@@ -387,7 +421,8 @@ abstract class Video {
         }
     }
 
-    function getActualSdPosterUrl() {
+    function getActualSdPosterUrl()
+    {
         if ($this->sdPosterExists() == true) {
             return Video::EncodeUrl($this->getSdPosterUrl());
         } else {
@@ -397,7 +432,8 @@ abstract class Video {
         }
     }
 
-    function getActualPosterUrl() {
+    function getActualPosterUrl()
+    {
         if ($this->PosterExists() == true) {
             return Video::EncodeUrl($this->getPosterUrl());
         } else {
@@ -407,7 +443,8 @@ abstract class Video {
         }
     }
 
-    function getBlankPosterName() {
+    function getBlankPosterName()
+    {
         return "BlankPoster";
     }
 
@@ -416,19 +453,23 @@ abstract class Video {
      * @param string $path
      * @return string
      */
-    static function GetVideoFullPathToContainingFolder($videoPath) {
+    static function GetVideoFullPathToContainingFolder($videoPath)
+    {
         return pathinfo($videoPath, PATHINFO_DIRNAME) . "/";
     }
 
-    public static function GetVideoSdPosterPath($videoPath) {
+    public static function GetVideoSdPosterPath($videoPath)
+    {
         return Video::GetVideoFullPathToContainingFolder($videoPath) . "folder.sd.jpg";
     }
 
-    public static function GetVideoHdPosterPath($videoPath) {
+    public static function GetVideoHdPosterPath($videoPath)
+    {
         return GetVideoFullPathToContainingFolder($path) . "folder.hd.jpg";
     }
 
-    public static function GeneratePoster($sourcePath, $destinationPath, $width) {
+    public static function GeneratePoster($sourcePath, $destinationPath, $width)
+    {
         if (file_exists($sourcePath)) {
             $image = new SimpleImage();
             //load the image
@@ -454,7 +495,8 @@ abstract class Video {
      * @return boolean - true if successful, false if file doesn't exist or failure
 
      */
-    public function generateSdPoster($width = Video::SdImageWidth) {
+    public function generateSdPoster($width = Video::SdImageWidth)
+    {
         return Video::GeneratePoster($this->getPosterPath(), $this->getSdPosterPath(), $width);
     }
 
@@ -464,7 +506,8 @@ abstract class Video {
      * @param type $width - optional width to override the standard. 
      * @return boolean - true if successful, false if file doesn't exist or failure
      */
-    function generateHdPoster($width = Video::HdImageWidth) {
+    function generateHdPoster($width = Video::HdImageWidth)
+    {
         $posterPath = $this->getPosterPath();
         if (file_exists($posterPath)) {
             $image = new SimpleImage();
@@ -489,7 +532,8 @@ abstract class Video {
      *  Returns the filetype of the video based on the extension of the file
      * @return string - the filetype of the video based on its extension
      */
-    public function getFiletype() {
+    public function getFiletype()
+    {
         //if the filetype has not yet been determined, determine it
         if ($this->filetype === null) {
             $this->filetype = Video::CalculateFileType($this->fullPath);
@@ -501,7 +545,8 @@ abstract class Video {
      * Writes this video to the database. If it has not yet been added to the database, an insert is performed.
      * If it already exists, an update is performed.
      */
-    public function writeToDb() {
+    public function writeToDb()
+    {
         $success = false;
         //make sure this video has the latest metadata loaded
         $this->loadMetadata();
@@ -527,7 +572,8 @@ abstract class Video {
     /**
      * Modifies the public variables in this class in order to only write the necessary variables to the json file. 
      */
-    public function prepForJsonification() {
+    public function prepForJsonification()
+    {
         $this->hdPosterUrl = $this->getActualHdPosterUrl();
         $this->sdPosterUrl = $this->getActualSdPosterUrl();
         $this->runtime = $this->getLengthInSeconds();
@@ -535,7 +581,8 @@ abstract class Video {
         unset($this->_runtime);
     }
 
-    protected function deleteMetadata() {
+    protected function deleteMetadata()
+    {
         $metadataDestination = $this->getNfoPath();
         //if an old metadata file already exists, delete it.
         if (is_file($metadataDestination) == true) {
@@ -549,7 +596,8 @@ abstract class Video {
      * last modified time of the metadata that was added to the db. 
      * @return boolean - true if the metadata dates of the db and the file are equal, false if they are not
      */
-    public function metadataInDatabaseIsUpToDate() {
+    public function metadataInDatabaseIsUpToDate()
+    {
         $nfoLastModifiedTime = $this->getNfoLastModifiedDate();
 
         $videoId = $this->getVideoId();
@@ -567,14 +615,16 @@ abstract class Video {
         return false;
     }
 
-    public function getVideoId($bForce = false) {
+    public function getVideoId($bForce = false)
+    {
         if ($this->videoId === null || $bForce === true) {
             $this->videoId = Queries::getVideoIdByVideoPath($this->fullPath);
         }
         return $this->videoId;
     }
 
-    protected function getNfoLastModifiedDate() {
+    protected function getNfoLastModifiedDate()
+    {
         //if this movie has metadata
         if ($this->nfoFileExists()) {
             //get the path to the metadata
@@ -587,7 +637,8 @@ abstract class Video {
         }
     }
 
-    protected function getPosterLastModifiedDate() {
+    protected function getPosterLastModifiedDate()
+    {
         if ($this->posterExists()) {
             $posterPath = $this->getPosterPath();
             return getLastModifiedDate($posterPath);
@@ -601,7 +652,8 @@ abstract class Video {
      * @param bool $force -- optional. forces metadata to be loaded, even if it has already been loaded
      * @return boolean
      */
-    public function loadMetadata($force = false) {
+    public function loadMetadata($force = false)
+    {
         //if the metadata hasn't been loaded yet, or force is true (saying do it anyway), load the metadata
         if ($this->metadataLoaded === false || $force === true) {
             //get the path to the nfo file
@@ -638,17 +690,19 @@ abstract class Video {
      * 
      * Returns true if successful, returns false and echoes error if failure
      */
-    public function fetchPoster() {
+    public function fetchPoster()
+    {
         $adapter = $this->getMetadataFetcher();
         $posterUrl = $adapter->posterUrl();
-        if($posterUrl) {
+        if ($posterUrl) {
             return $this->downloadPoster($adapter->posterUrl());
         } else {
             return false;
         }
     }
 
-    public function setOnlineVideoDatabaseId($id) {
+    public function setOnlineVideoDatabaseId($id)
+    {
         $this->onlineVideoDatabaseId = $id;
     }
 
@@ -659,7 +713,8 @@ abstract class Video {
      *                                     If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
      * @return MovieMetadataFetcher|TvShowMetadataFetcher 
      */
-    protected function getMetadataFetcher($refresh = false, $onlineVideoDatabaseId = null) {
+    protected function getMetadataFetcher($refresh = false, $onlineVideoDatabaseId = null)
+    {
         //If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
         $id = $this->onlineVideoDatabaseId;
         $id = $onlineVideoDatabaseId != null ? $onlineVideoDatabaseId : $id;
@@ -679,11 +734,13 @@ abstract class Video {
      * compares two videos to sort them by title alphabetically
      * @param Video $video
      */
-    public static function CompareTo($video1, $video2) {
+    public static function CompareTo($video1, $video2)
+    {
         return strcmp($video1->title, $video2->title);
     }
 
-    public static function DeleteMissingVideos() {
+    public static function DeleteMissingVideos()
+    {
         $deletedVideoIds = [];
 
         //delete all videos that have a source that is no longer in the video_source table
@@ -704,18 +761,21 @@ abstract class Video {
         Queries::DeleteVideos($deletedVideoIds);
     }
 
-    public static function CalculateFileType($path) {
+    public static function CalculateFileType($path)
+    {
         return strtolower(pathinfo($path, PATHINFO_EXTENSION));
     }
 
-    public static function CalculateTitle($path) {
+    public static function CalculateTitle($path)
+    {
         return pathinfo($path, PATHINFO_FILENAME);
     }
 
     /**
      * Get the url for a given movie
      */
-    static function CalculateUrl($videoSourcePath, $videoSourceUrl, $videoPath) {
+    static function CalculateUrl($videoSourcePath, $videoSourceUrl, $videoPath)
+    {
         $relativePath = str_replace($videoSourcePath, "", $videoPath);
         $len = strlen($videoSourceUrl);
         //remove the trailing slash from video source url
@@ -729,10 +789,14 @@ abstract class Video {
         return $url;
     }
 
-    public static function GetVideoProgressPercent($videoId) {
+    public static function GetVideoProgressPercent($videoId)
+    {
         $percent = 0;
         $video = Video::GetVideo($videoId);
-        if ($video->mediaType === Enumerations::MediaType_TvShow) {
+        if (!$video) {
+            throw new Exception("Unable to find video with id '$videoId'");
+        }
+        if ($video->mediaType  === Enumerations::MediaType_TvShow) {
             //get the next episode
             $nextEpisode = TvShow::GetNextEpisodeToWatch($videoId);
             //load the episodes
@@ -742,8 +806,10 @@ abstract class Video {
             $episodeIndex = 0;
             for ($i = 0; $i < $episodeCount; $i++) {
                 $episode = $episodes[$i];
-                if ($episode->seasonNumber === $nextEpisode->seasonNumber &&
-                        $episode->episodeNumber === $nextEpisode->episodeNumber) {
+                if (
+                    $episode->seasonNumber === $nextEpisode->seasonNumber &&
+                    $episode->episodeNumber === $nextEpisode->episodeNumber
+                ) {
                     $episodeIndex = $i;
                     break;
                 }
@@ -770,7 +836,8 @@ abstract class Video {
         return $percent;
     }
 
-    function fetchMetadataIfMissing(){
+    function fetchMetadataIfMissing()
+    {
         if ($this->nfoFileExists() == false) {
             $this->fetchMetadata();
         }
@@ -781,7 +848,4 @@ abstract class Video {
             $this->generatePosters();
         }
     }
-
 }
-
-?>

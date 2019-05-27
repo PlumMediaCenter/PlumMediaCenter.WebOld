@@ -5,7 +5,7 @@ include_once(dirname(__FILE__) . "/../code/Video.class.php");
 
 include_once(dirname(__FILE__) . "/../config.php");
 
-//$username = $_GET["username"];
+//$userId = $_GET["userId"];
 $videoId = isset($_GET["videoId"]) ? $_GET["videoId"] : -1;
 $timeInSeconds = isset($_GET["seconds"]) ? $_GET["seconds"] : 0;
 $finished = isset($_GET["finished"]) ? $_GET["finished"] : false;
@@ -23,7 +23,7 @@ if ($finished === "true") {
     }
 }
 //insert into the watch_video table
-$success = Queries::InsertWatchVideo(config::$globalUsername, $videoId, $timeInSeconds);
+$success = Queries::InsertWatchVideo(config::$defaultUserId, $videoId, $timeInSeconds);
 
 //if this is a tv episode, retrieve its show videoId
 if ($v->mediaType == Enumerations::MediaType_TvEpisode) {
@@ -31,7 +31,7 @@ if ($v->mediaType == Enumerations::MediaType_TvEpisode) {
 }
 
 //insert into the recently_watched table so we don't have to calculate recently watched
-Queries::InsertRecentlyWatched(config::$globalUsername, $videoId);
+Queries::InsertRecentlyWatched(config::$defaultUserId, $videoId);
 
 $result = (object) [];
 $result->success = $success;

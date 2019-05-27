@@ -8,13 +8,15 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
             videoId: $stateParams.videoId,
             loadMessage: undefined,
             isProcessingVideo: false,
+            isInMyList: undefined,
             //api
             getProgressPercentType: getProgressPercentType,
             runtimeMinutes: runtimeMinutes,
             navigateToShow: navigateToShow,
             scanForNewMedia: scanForNewMedia,
             playIsDisabled: playIsDisabled,
-            processVideo: processVideo
+            processVideo: processVideo,
+            toggleMyList: toggleMyList
         });
         globals.title = 'VideoInfo';
 
@@ -47,6 +49,11 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
             Video.getProgressPercent(vm.video.videoId).then(function (percent) {
                 vm.progressPercent = percent;
             });
+
+            //load the list status of the video
+            return Video.isInList('My List', vm.videoId).then(function (isInList) {
+                vm.isInMyList = isInList;
+            }, console.error);
         });
 
         function processVideo() {
@@ -55,7 +62,7 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
                 notify('Video was processed', 'success');
             }, function () {
                 notify('There was a problem processing the video', 'error');
-            }).finally(function(){
+            }).finally(function () {
                 vm.isProcessingVideo = false;
             });
         }
@@ -134,4 +141,22 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
                 $state.go('videoInfo', { videoId: show.videoId });
             });
         }
-    }]);
+
+        function toggleMyList() {
+            debugger;
+            var promise;
+            if (this.isInMyList) {
+                promise = Video.removeFromList('My List', vm.videoId);
+            } else {
+                promise = Video.addToList('My List', vm.videoId);
+            }
+            return promise.then(function () {
+                return Video.isInList('My List', vm.videoId);
+            }).then(function (isInList) {
+                vm.isInMyList = isInList;
+            }, function (err) { 
+                debugger;
+            });
+        }
+    }
+]);
