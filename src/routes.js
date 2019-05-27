@@ -19,7 +19,7 @@ angular.module('app')
                         .state('admin', {
                             url: '/admin',
                             templateUrl: '/admin.html',
-                            controller: '/AdminController',
+                            controller: 'AdminController',
                             controllerAs: 'vm'
                         })
                         .state('videoInfo', {
