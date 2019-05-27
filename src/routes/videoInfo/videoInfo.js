@@ -113,7 +113,6 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
         function scanForNewMedia() {
             vm.loadMessage = 'Scanning for new media';
             Video.scanForNewMedia(vm.videoId).then(function (result) {
-                debugger;
                 if (!result || result.success !== true) {
                     throw new Error('An error occurred' + JSON.stringify(result));
                 }
@@ -143,7 +142,6 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
         }
 
         function toggleMyList() {
-            debugger;
             var promise;
             if (this.isInMyList) {
                 promise = Video.removeFromList('My List', vm.videoId);
@@ -154,9 +152,7 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
                 return Video.isInList('My List', vm.videoId);
             }).then(function (isInList) {
                 vm.isInMyList = isInList;
-            }, function (err) { 
-                debugger;
-            });
+            }, console.error);
         }
     }
 ]);

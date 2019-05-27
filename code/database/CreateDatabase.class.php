@@ -15,28 +15,28 @@ class CreateDatabase
     private $dbHost;
     //this is a list of all db upgrade functions that are callable, in order. 
     private static $versions = [
-        '0.1.0',
-        '0.1.1',
-        '0.1.2',
-        '0.1.3',
-        '0.1.4',
-        '0.1.5',
-        '0.1.6',
-        '0.1.7',
-        '0.1.8',
-        '0.2.0',
-        '0.2.1',
-        '0.2.2',
-        '0.3.0',
-        '0.3.1',
-        '0.3.2',
-        '0.3.3',
-        '0.3.4',
-        '0.3.5',
-        '0.3.6',
-        '0.3.7',
-        '0.3.8',
-        '0.3.9',
+        '0.1.00',
+        '0.1.01',
+        '0.1.02',
+        '0.1.03',
+        '0.1.04',
+        '0.1.05',
+        '0.1.06',
+        '0.1.07',
+        '0.1.08',
+        '0.2.00',
+        '0.2.01',
+        '0.2.02',
+        '0.3.00',
+        '0.3.01',
+        '0.3.02',
+        '0.3.03',
+        '0.3.04',
+        '0.3.05',
+        '0.3.06',
+        '0.3.07',
+        '0.3.08',
+        '0.3.09',
         '0.3.10',
         '0.3.11',
         '0.3.12',
@@ -183,7 +183,7 @@ class CreateDatabase
         return strcmp($versionNumbers[0], $versionNumbers[1]);
     }
 
-    function db0_1_0()
+    function db0_1_00()
     {
         //log on as root and create the database
         $this->createVideoDatabase($this->rootUsername, $this->rootPassword, $this->dbHost);
@@ -264,7 +264,7 @@ class CreateDatabase
                 WHERE v.video_id = t.video_id");
     }
 
-    function db0_2_0()
+    function db0_2_00()
     {
         include_once(dirname(__FILE__) . "/../Video.class.php");
         //delete any videos that are no longer on the filesystem but are still in the database
@@ -282,18 +282,18 @@ class CreateDatabase
         DbManager::NonQuery('alter table video modify column url varchar(767) unique not null');
     }
 
-    function db0_2_2()
+    function db0_2_02()
     {
         DbManager::NonQuery('alter table video drop index sd_poster_url');
         DbManager::NonQuery('alter table video drop index hd_poster_url');
     }
 
-    function db0_3_0()
+    function db0_3_00()
     {
         DbManager::NonQuery('alter table video_source drop primary key, add column id int not null auto_increment primary key');
     }
 
-    function db0_3_9()
+    function db0_3_09()
     {
         DbManager::nonQuery("CREATE OR REPLACE VIEW tv_episode_v
             AS

@@ -17,7 +17,6 @@ angular.module('app').controller('AddNewMediaItemController', ['Video', 'globals
         function addNewMediaItem() {
             vm.loadMessage = 'Scanning for new media';
             Video.addNewMediaItem(vm.newMediaItem.videoSourceId, vm.newMediaItem.path).then(function (result) {
-                debugger;
                 if (!result || result.success !== true) {
                     throw new Error('An error occurred' + JSON.stringify(result));
                 }
