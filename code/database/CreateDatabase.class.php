@@ -364,6 +364,10 @@ class CreateDatabase
         //remove the username in favor of user id
         DbManager::nonQuery("alter table recently_watched drop username;");
         DbManager::nonQuery("alter table recently_watched add user_id int;");
+
+        DbManager::nonQuery("alter table watch_video drop username;");
+        DbManager::nonQuery("alter table watch_video add user_id int;");
+
         //prepopulate with user_id 1 (default user)
         DbManager::nonQuery("update recently_watched set user_id = 1;");
         //enforce non null user_id
@@ -372,12 +376,12 @@ class CreateDatabase
             add constraint constraint_unique_user_id unique(user_id);
         ");
 
+
         //add foreign key constraint for user_id
         DbManager::nonQuery("
             alter table recently_watched 
             add constraint fk_user_id foreign key(user_id) references user(user_id);
         ");
-
 
         DbManager::nonQuery("
             create table list(
