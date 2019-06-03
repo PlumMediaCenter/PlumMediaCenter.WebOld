@@ -253,6 +253,13 @@ angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q,
     Video.getCategories = function (names) {
         names = typeof names !== 'string' && typeof names.length === 'number' ? names : [];
         return $http.get('api/GetCategories.php', { params: { names: names.join(',') } }).then(function (result) {
+            for (var i = 0; i < result.data.length; i++) {
+                var category = result.data[i];
+                //throw out any falsey values
+                category.videos = category.videos.filter(function (x) {
+                    return !!x;
+                });
+            }
             return result.data;
         }, function (error) {
             return error;

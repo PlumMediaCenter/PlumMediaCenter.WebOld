@@ -364,9 +364,12 @@ class CreateDatabase
         //remove the username in favor of user id
         DbManager::nonQuery("alter table recently_watched drop username;");
         DbManager::nonQuery("alter table recently_watched add user_id int;");
-
+        //prepopulate with user_id 1 (default user)
+        DbManager::nonQuery("update recently_watched set user_id = 1;");
+        
         DbManager::nonQuery("alter table watch_video drop username;");
         DbManager::nonQuery("alter table watch_video add user_id int;");
+        DbManager::nonQuery("update watch_video set user_id = 1;");
 
         //prepopulate with user_id 1 (default user)
         DbManager::nonQuery("update recently_watched set user_id = 1;");
