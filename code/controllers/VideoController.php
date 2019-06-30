@@ -258,7 +258,7 @@ class VideoController {
             if (strpos($aName, 'the') === 0) {
                 $aName = substr($aName, 4);
             }
-            if (strpos($bName, 'the' === 0)) {
+            if (strpos($bName, 'the') === 0) {
                 $bName = substr($bName, 4);
             }
 
