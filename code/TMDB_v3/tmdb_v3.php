@@ -103,8 +103,7 @@ class TMDBv3 {
         //Get Configuration
         $conf = $this->getConfig();
         if (empty($conf)) {
-            echo "Unable to read configuration, verify that the API key is valid";
-            exit;
+            throw new Exception("Unable to read configuration, verify that the API key is valid");
         }
 
         //set Images URL contain in config
@@ -366,6 +365,13 @@ class TMDBv3 {
         // header('Content-Type: text/html; charset=iso-8859-1');
         //echo"<pre>";print_r(($results));echo"</pre>";
         $results = json_decode(($results), true);
+        //if we ran into the "too many requests" error, wait a few seconds and try again
+        if(strpos(strtolower($error_message), 'too many requests') !== false){
+            //wait a few seconds and try again
+            echo "<br/>Sleeping because we were rate limited: $url";
+            sleep(3);
+            return $this->_call($action, $text, $lang);
+        }
         return (array) $results;
     }
 
