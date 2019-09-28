@@ -368,7 +368,6 @@ class TMDBv3 {
         //if we ran into the "too many requests" error, wait a few seconds and try again
         if(strpos(strtolower($error_message), 'too many requests') !== false){
             //wait a few seconds and try again
-            echo "<br/>Sleeping because we were rate limited: $url";
             sleep(3);
             return $this->_call($action, $text, $lang);
         }

@@ -14,25 +14,25 @@ foreach ($l->videos as $video) {
     if (is_object($video) == false) {
         continue;
     }
-    try {
-        $changesWereMade = false;
-        if ($video->nfoFileExists() == false) {
-            $video->fetchMetadata();
-            $changesWereMade = true;
+
+    if ($video->fetchMetadataIfMissing() === true) {
+        //force the video to load metadata from the FS
+        $video->loadMetadata(true);
+        //write the video to the database
+        $video->writeToDb();
+    }
+
+    
+    //if this is a tv show, write all of its children
+    if ($video->mediaType === Enumerations::MediaType_TvShow) {
+        $video->loadTvEpisodesFromFilesystem();
+        $episodes = $video->getEpisodes();
+        foreach ($episodes as $episode) {
+            if ($episode->fetchMetadataIfMissing()) {
+                $episode->loadMetadata(true);
+                $episode->writeToDb();
+            }
         }
-        if ($video->posterExists() == false) {
-            $video->fetchPoster();
-            $changesWereMade = true;
-        }
-        if ($video->sdPosterExists() == false || $video->hdPosterExists() == false) {
-            $video->generatePosters();
-            $changesWereMade = true;
-        }
-        if ($changesWereMade) {
-            $video->writeToDb();
-        }
-    } catch (Exception $e) {
-        
     }
 }
 
