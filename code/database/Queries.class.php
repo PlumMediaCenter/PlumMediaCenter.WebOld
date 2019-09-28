@@ -83,6 +83,9 @@ class Queries
         $success = DbManager::NonQuery("delete from recently_watched where video_id $inStmt");
         $finalSuccess = $finalSuccess === true && $success === true;
 
+        $success = DbManager::NonQuery("delete from list_item where video_id $inStmt");
+        $finalSuccess = $finalSuccess === true && $success === true;
+
         $success = DbManager::NonQuery("delete from video where video_id $inStmt");
         $finalSuccess = $finalSuccess === true && $success === true;
 
@@ -163,6 +166,7 @@ class Queries
                     from list
                     where name = :listName
                 )
+				order by display_order asc
             ";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtGetVideoIdsForListName = $stmt;
@@ -735,6 +739,7 @@ class Queries
         $path = $path[0];
         //delete all videos that are referenced in this video source
         $videoIds = DbManager::SingleColumnQuery("select video_id from video where video_source_path like ?", $path);
+
         $success = Queries::DeleteVideos($videoIds);
         return $success;
     }
