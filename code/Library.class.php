@@ -289,7 +289,7 @@ class Library
     public static function GetCategoryNames()
     {
         //get the full list of categories for this user
-        $userCategoryNames = DbManager::Query("
+        $userCategoryNames = DbManager::SingleColumnQuery("
             select name 
             from list 
             where user_id = " . Security::GetUserId() . "
@@ -297,7 +297,7 @@ class Library
         ");
 
         //ignore 'Recently Updated' for now because the library generator auto-saves every video by default
-        return ['Recently Watched', 'My List', 'Recently Added', 'TV Shows', 'Movies'];
+        return array_merge(['Recently Watched', 'My List'], $userCategoryNames, ['Recently Added', 'TV Shows', 'Movies']);
     }
 
     public static function GetCategories($categoryNames = null)
