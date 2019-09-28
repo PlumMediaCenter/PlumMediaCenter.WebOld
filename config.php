@@ -14,8 +14,8 @@ class config {
     public static $tvdbApiKey = '21974976C0C3A041';
     public static $tmdbApiKey = '90dbc17887e30eae3095d213fa803190';
     public static $tmdbUrl = 'http://api.themoviedb.org/3';
-    public static $repoOwner = 'TwitchBronBron';
-    public static $repoName = 'PlumMediaCenter';
+    public static $repoOwner = 'PlumMediaCenter';
+    public static $repoName = 'PlumMediaCenter.WebOld';
     public static $defaultUserId= 1;
     //if a video is within this amount of time of the next video, play the next one instead (or restart it)
     public static $playNextVideoBufferInSeconds = 90;
