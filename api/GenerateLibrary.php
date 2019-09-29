@@ -10,14 +10,9 @@ require_once(dirname(__FILE__) . '/../code/Library.class.php');
 
 $l = new Library();
 $result->successLoadingFromDatabase = $l->loadFromFilesystem();
-//try{
-//    $l->fetchMissingMetadataAndPosters();
-//    $l->loadFromFilesystem();
-//} catch(Exception $e){
-//
-//}
 $result->successWritingToDb = $l->writeToDb();
 $result->success = $result->successLoadingFromDatabase && $result->successWritingToDb;
+Library::ClearCache();
 header('Content-Type: application/json');
 
 echo json_encode($result);

@@ -388,7 +388,8 @@ class Library
         file_put_contents($cachePath, json_encode($obj));
     }
 
-    public static function ClearCache() {
+    public static function ClearCache()
+    {
         $dir = dirname(__FILE__) . '/../cache/';
         foreach (glob($dir . '/*') as $file) {
             if (is_dir($file)) {
