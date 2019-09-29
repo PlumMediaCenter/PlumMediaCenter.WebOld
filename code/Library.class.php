@@ -171,10 +171,16 @@ class Library
                     strpos(strtolower($fullPathToFile), ".extra.") !== false ||
                     strpos(strtolower($fullPathToFile), ".trailer.") !== false ||
                     strpos(strtolower($fullPathToFile), ".preview.") !== false ||
-                    strpos(strtolower($fullPathToFile), ".recap.") !== false
+                    strpos(strtolower($fullPathToFile), ".recap.") !== false ||
+                    strpos(strtolower($fullPathToFile), '/extras/') !== false ||
+                    strpos(strtolower($fullPathToFile), '\\extras\\') !== false
                 ) {
+                    echo "<br/>Skipping video: " . $fullPathToFile;
+
                     continue;
                 }
+                echo "<br/>Processing video file: " . $fullPathToFile;
+
                 //create a new Movie object
                 $video = new Movie($source->base_url, $source->location, $fullPathToFile);
                 $this->movies[] = $video;
@@ -250,7 +256,7 @@ class Library
      */
     public static function GetVideoCounts()
     {
-        $stats = (object)[];
+        $stats = (object) [];
         $stats->videoCount = null;
         $stats->movieCount = null;
         $stats->tvShowCount = null;

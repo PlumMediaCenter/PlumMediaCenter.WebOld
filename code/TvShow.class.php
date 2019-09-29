@@ -182,7 +182,11 @@ class TvShow extends Video {
         
         //spin through every folder in the source location
         foreach ($videosList as $fullPathToFile) {
-            if (strpos(strtolower($fullPathToFile), ".extra.") !== false) {
+            if (
+                strpos(strtolower($fullPathToFile), ".extra.") !== false ||
+                strpos(strtolower($fullPathToFile), '/extras/') !== false ||
+                strpos(strtolower($fullPathToFile), '\\extras\\') !== false
+                ) {
                 continue;
             }
             //create a new Episode object
@@ -710,5 +714,3 @@ class TvShow extends Video {
     }
 
 }
-
-?>

@@ -30,14 +30,32 @@ class MovieMetadataFetcher extends MetadataFetcher {
      * will be fetched.
      * @param type $id - the tmdb id
      */
-    function searchByTitle($title) {
+    function searchByTitle($title, $year = null)
+    {
         $this->fetchSuccess = false;
 
         $searchResults = $this->tmdb->searchMovie($title, 1, false);
+        // echo "search results: " . json_encode($searchResults);
         if ($searchResults["total_results"] > 0) {
-            $firstItemId = $searchResults["results"][0]["id"];
-            $this->tmdbId = $firstItemId;
-            $this->fetchSuccess = true;
+            //if we have a year, keep the first result that matches the year
+            if ($year !== null) {
+                foreach ($searchResults["results"] as $searchResult) {
+                    if (isset($searchResult['release_date'])) {
+                        $searchResultYear = intval(substr($searchResult['release_date'], 0, 4));
+                        if ($searchResultYear === $year) {
+                            $this->tmdbId = $searchResult['id'];
+                            $this->fetchSuccess = true;
+                            return $this->fetchSuccess;
+                        }
+                    }
+                }
+            } else {
+                echo "a year was not provided. keeping first result";
+                //there is no year provided, keep the first result
+                $firstItemId = $searchResults["results"][0]["id"];
+                $this->tmdbId = $firstItemId;
+                $this->fetchSuccess = true;
+            }
         }
 
         return $this->fetchSuccess;

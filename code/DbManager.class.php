@@ -152,7 +152,6 @@ class DbManager {
     /**
      * @param type $sql
      * @param args  - any additional arguments passed to this function will be bound to the statement
-     * @return type
      */
     public static function SingleColumnQuery($sql) {
         $pdo = DbManager::getPdo();

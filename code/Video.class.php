@@ -289,6 +289,24 @@ abstract class Video
         return self::CalculateTitle($this->fullPath);
     }
 
+    /**
+     * Get the name and year from the video, separately. This is used mainly for metadata fetching
+     */
+    public function getVideoNameAndYear()
+    {
+        $name = $this->getVideoName();
+        preg_match('/(.*)(?:\\((\\d{4})\\))/', $name, $matches);
+        $result = [];
+        if (count($matches) > 0) {
+            $result['name'] = trim($matches[1]);
+            $result['year'] = intval($matches[2]);
+        } else {
+            $result['name'] = $name;
+            $result['year'] = null;
+        }
+        return (object) $result;
+    }
+
     protected function getUrl()
     {
         $relativePath = str_replace($this->videoSourcePath, "", $this->fullPath);
@@ -724,7 +742,8 @@ abstract class Video
             if ($id != null) {
                 $this->metadataFetcher->searchById($id);
             } else {
-                $this->metadataFetcher->searchByTitle($this->getVideoName());
+                $videoNameAndYear = $this->getVideoNameAndYear();
+                $this->metadataFetcher->searchByTitle($videoNameAndYear->name, $videoNameAndYear->year);
             }
         }
         return $this->metadataFetcher;
@@ -743,6 +762,9 @@ abstract class Video
     {
         $deletedVideoIds = [];
 
+        //delete all orphaned tv episodes
+        Queries::DeleteOrphanedTvEpisodes();
+
         //delete all videos that have a source that is no longer in the video_source table
         $sourcelessVideos = DbManager::SingleColumnQuery('select video_id from video where video_source_path not in (select location from video_source)');
 
@@ -753,7 +775,10 @@ abstract class Video
         foreach ($minimalVideos as $minimalVideo) {
             //if this file path no longer exists, delete it
             if (!file_exists($minimalVideo->path)) {
+                echo "<br/>video does not exist. Adding to delete list: " . $minimalVideo->path;
                 $deletedVideoIds[] = $minimalVideo->video_id;
+            } else {
+                echo "<br/>video exists: " . $minimalVideo->path;
             }
         }
 
