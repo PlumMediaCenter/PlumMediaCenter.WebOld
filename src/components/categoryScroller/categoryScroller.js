@@ -18,9 +18,7 @@ angular.module('app').directive('categoryScroller', ['$window', '$timeout', 'deb
                 });
 
                 function calculateElementWidth() {
-                    console.log('debouncing ' + myId);
                     debounce(myId, function () {
-                        console.log('calling ' + myId);
                         if(element) {
                             var rect = element[0].getBoundingClientRect();
                             vm.width = rect.width;

@@ -2,7 +2,7 @@ var concat = require('gulp-concat');
 var flatten = require('gulp-flatten');
 var gulp = require('gulp');
 var livereload = require('gulp-livereload');
-var minifyCss = require('gulp-minify-css');
+var cleanCss = require('gulp-clean-css');
 var sourcemaps = require('gulp-sourcemaps');
 var templateCache = require('gulp-angular-templatecache');
 var uglify = require('gulp-uglify');
@@ -32,7 +32,7 @@ function css() {
     return gulp.src(paths.css)
         .pipe(sourcemaps.init())
         .pipe(concat('app.min.css'))
-        .pipe(minifyCss())
+        .pipe(cleanCss({compatibility: 'ie8'}))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('dist'));
 
