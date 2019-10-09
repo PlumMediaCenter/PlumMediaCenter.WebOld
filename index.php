@@ -33,7 +33,8 @@
 
         <script type="text/javascript" src="lib/jquery/jquery-1.11.2.min.js"></script>       
         <script type="text/javascript" src="lib/lodash/lodash.min.js"></script>
-        <script type="text/javascript" src="lib/pnotify/pnotify.custom.min.js"></script>
+        <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
 
         <script type="text/javascript" src="lib/angular/angular.min.js"></script>
         <script type="text/javascript" src="lib/angular/angular-touch.min.js"></script>    

@@ -236,6 +236,33 @@ class Queries
         }
     }
 
+    public static function GetVideoListInfo($userId, $videoId)
+    {
+        $stmt = DbManager::getPdo()->prepare("  
+            select 
+                list.name,
+                list_item.video_id is not null as is_in_list
+            from list
+            left join list_item
+                on list.list_id = list_item.list_id
+                and list_item.video_id = 51
+            where list.user_id = 1
+            order by list.name asc;
+        ");
+
+        $stmt->bindParam(":userId", $userId);
+        $stmt->bindParam(":videoId", $videoId);
+        $success = $stmt->execute();
+        Queries::LogStmt($stmt, $success);
+        $rows = Queries::FetchAll($stmt);
+        $result = [];
+
+        foreach ($rows as $row) {
+            $result[$row['name']] = boolval($row['is_in_list']);
+        }
+        return $result;
+    }
+
     public static function IsInList($listName, $videoId, $userId)
     {
         $listId = Queries::GetListId($listName, $userId);
@@ -784,7 +811,7 @@ class Queries
         $tvEpisodeCount = $stmt->fetch();
         $tvEpisodeCount = ($tvEpisodeCount != null) ? $tvEpisodeCount[0] : 0;
 
-        $counts = (object)array("movieCount" => $movieCount, "tvShowCount" => $tvShowCount, "tvEpisodeCount" => $tvEpisodeCount);
+        $counts = (object) array("movieCount" => $movieCount, "tvShowCount" => $tvShowCount, "tvEpisodeCount" => $tvEpisodeCount);
         return $counts;
     }
 

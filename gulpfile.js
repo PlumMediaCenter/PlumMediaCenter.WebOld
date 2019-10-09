@@ -2,13 +2,14 @@ var concat = require('gulp-concat');
 var flatten = require('gulp-flatten');
 var gulp = require('gulp');
 var livereload = require('gulp-livereload');
+var less = require('gulp-less');
 var cleanCss = require('gulp-clean-css');
 var sourcemaps = require('gulp-sourcemaps');
 var templateCache = require('gulp-angular-templatecache');
 var uglify = require('gulp-uglify');
 
 var paths = {
-    css: ['src/app.css', 'src/**/*.css'],
+    css: ['src/app.less', 'src/**/*.less'],
     scripts: ['src/app.js', 'src/**/*.js'],
     templates: ['src/**/*.html']
 };
@@ -31,6 +32,7 @@ function templates() {
 function css() {
     return gulp.src(paths.css)
         .pipe(sourcemaps.init())
+        .pipe(less())
         .pipe(concat('app.min.css'))
         .pipe(cleanCss({compatibility: 'ie8'}))
         .pipe(sourcemaps.write('./'))

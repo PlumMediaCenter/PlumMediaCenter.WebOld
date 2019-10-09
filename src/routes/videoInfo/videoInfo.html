@@ -1,116 +1,89 @@
-<div class="container">
-    <a ng-if="vm.video.mediaType === enums.mediaType.episode" ng-click="vm.navigateToShow()">&lt;Back to Show</a>
-    <div class="row " style="margin-top:5px;">
-        <div class="col-md-3 text-center">
-            <div id="videoInfoPosterColumn">
+<div class="video-info">
+    <div class="container">
+        <a ng-if="vm.video.mediaType === enums.mediaType.episode" ng-click="vm.navigateToShow()">&lt;Back to Show</a>
+        <div class="row " style="margin-top:5px;">
+            <div class="col-md-3 text-center">
+                <div id="videoInfoPosterColumn">
 
-                <a ng-attr-href="{{vm.video.posterUrl}}">
-                    <img ng-attr-src="{{vm.video.hdPosterUrl}}" class="full-width">
-                </a>
-                <progressbar title="progress" class="margin" style="background-color: grey;margin-top:5px;" type="{{vm.getProgressPercentType()}}" value="vm.progressPercent < 15? 15: vm.progressPercent " max="100"><span>{{vm.progressPercent}}%</progressbar>
-                <a ui-sref="play(vm.nextEpisode || vm.video)" ng-disabled="vm.playIsDisabled()" class="btn btn-primary full-width margin">
-                    <span class="glyphicon glyphicon-play"></span>&nbsp;Play
-                </a>
-                <button class="btn btn-default full-width pointer" ng-click="vm.toggleMyList()">
-                    <span ng-if="vm.isInMyList">
-                        <span class="glyphicon glyphicon-minus"></span>&nbsp;Remove From My List
-                    </span>
-                    <span ng-if="!vm.isInMyList">
-                        <span class="glyphicon glyphicon-plus"></span>&nbsp; Add to My List
-                    </span>
-                </button>
-                <a class="btn btn-default full-width margin" href="{{vm.video.url}}">
-                    <span class="glyphicon glyphicon-download"></span>&nbsp;Download
-                </a>
-                <a class="btn btn-default full-width margin" ui-sref="metadataFetcher({videoId: vm.video.videoId})">Fetch Metadata</a>
-                <a class="btn btn-default full-width margin" ng-click="vm.scanForNewMedia()">
-                    <span class="glyphicon glyphicon-refresh"></span>
-                    Scan for New Media
-                </a>
-                <a ng-if="!vm.isProcessingVideo" class="btn btn-warning full-width margin" title="Runs the library generation process for just this video" ng-click="vm.processVideo()">
-                    Process
-                </a>
-                <load-message message="'Processing video'" ng-if="vm.isProcessingVideo"></load-message>
-                <load-message message="vm.loadMessage"></load-message>
+                    <a ng-attr-href="{{vm.video.posterUrl}}">
+                        <img ng-attr-src="{{vm.video.hdPosterUrl}}" class="full-width">
+                    </a>
+                    <progressbar title="progress" class="margin" style="background-color: grey;margin-top:5px;" type="{{vm.getProgressPercentType()}}" value="vm.progressPercent < 15? 15: vm.progressPercent " max="100"><span>{{vm.progressPercent}}%</progressbar>
+                    <a ui-sref="play(vm.nextEpisode || vm.video)" ng-disabled="vm.playIsDisabled()" class="btn btn-primary full-width margin">
+                        <span class="glyphicon glyphicon-play"></span>&nbsp;Play
+                    </a>
+                    <button class="btn btn-default full-width pointer" ng-click="vm.toggleList('My List')">
+                        <span ng-if="vm.listInfo['My List']">
+                            <span class="glyphicon glyphicon-minus"></span>&nbsp;Remove From My List
+                        </span>
+                        <span ng-if="!vm.listInfo['My List']">
+                            <span class="glyphicon glyphicon-plus"></span>&nbsp; Add to My List
+                        </span>
+                    </button>
+                    <button class="btn btn-default full-width margin" data-toggle="modal" data-target="#myModal">
+                        <span class="glyphicon glyphicon-th-list"></span>&nbsp;Add to list
+                    </button>
+                    <a class="btn btn-default full-width margin" href="{{vm.video.url}}">
+                        <span class="glyphicon glyphicon-download"></span>&nbsp;Download
+                    </a>
+                    <a class="btn btn-default full-width margin" ui-sref="metadataFetcher({videoId: vm.video.videoId})">Fetch Metadata</a>
+                    <a class="btn btn-default full-width margin" ng-click="vm.scanForNewMedia()">
+                        <span class="glyphicon glyphicon-refresh"></span>
+                        Scan for New Media
+                    </a>
+                    <a ng-if="!vm.isProcessingVideo" class="btn btn-warning full-width margin" title="Runs the library generation process for just this video" ng-click="vm.processVideo()">
+                        Process
+                    </a>
+                    <load-message message="'Processing video'" ng-if="vm.isProcessingVideo"></load-message>
+                    <load-message message="vm.loadMessage"></load-message>
 
+                </div>
             </div>
-        </div>
-        <div class="col-md-9">
-            <h1 class="text-center">{{vm.video.title}}</h1>
-            <div class="text-center full-width">
-                <b>{{vm.video.mpaa}}</b>&nbsp;&nbsp;
-                <b>{{vm.video.year}}</b>
-                <b ng-if="vm.runtimeMinutes()">&nbsp;&nbsp;{{vm.runtimeMinutes()}} min</b>
+            <div class="col-md-9">
+                <h1 class="text-center">{{vm.video.title}}</h1>
+                <div class="text-center full-width">
+                    <b>{{vm.video.mpaa}}</b>&nbsp;&nbsp;
+                    <b>{{vm.video.year}}</b>
+                    <b ng-if="vm.runtimeMinutes()">&nbsp;&nbsp;{{vm.runtimeMinutes()}} min</b>
 
-            </div>
-            <br /> <br />{{vm.video.plot}}
-            <div ng-if="vm.nextEpisode">
-                <br />
-                <h2>Next Episode</h2>
-                <div>
-                    <episode episode="vm.nextEpisode" ng-if="vm.nextEpisode"></episode>
+                </div>
+                <br /> <br />{{vm.video.plot}}
+                <div ng-if="vm.nextEpisode">
+                    <br />
+                    <h2>Next Episode</h2>
+                    <div>
+                        <episode episode="vm.nextEpisode" ng-if="vm.nextEpisode"></episode>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="row" ng-if="vm.episodes">
-    <div class="col-xs-12">
-        <h1>Episodes</h1>
-        <episode episode="episode" ng-repeat="episode in vm.episodes" selected="episode.videoId === vm.nextEpisode.videoId"></episode>
+    <div class="row" ng-if="vm.episodes">
+        <div class="col-xs-12">
+            <h1>Episodes</h1>
+            <episode episode="episode" ng-repeat="episode in vm.episodes" selected="episode.videoId === vm.nextEpisode.videoId"></episode>
+        </div>
     </div>
 </div>
-<!--    <div class="row " ng-if="vm.episodes">
-        <div class="col-md-5" style="border:0px solid red;">
-            <table class='table'> 
-                <tr>
-                    <th>Episode</th>
-                    <th style='display:none;'>VID</th>
-                    <th></th>
-                    <th style='display:none;'>Add To Playlist</th>
-                    <th>Title</th>
-                    <th>Progress</th>
-                </tr>
-                <tr ng-repeat="episode in vm.episodes" 
-                    ng-class="{
-                            'nextEpisodeRow'
-                            : episode.videoId === vm.nextEpisode.videoId, 'selected': vm.selectedEpisode.videoId === episode.videoId}" 
-                    ng-click="vm.selectedEpisode = episode"
-                    class="episodeRow"
-                    style="border:1px solid black;">
-                    <td class="transparent">{{episode.episodeNumber}}</td>
-                    <td class="transparent" style='display:none;'>{{episode.videoId}}</td>
-                    <td class="transparent">
-                        <a class="btn btn-primary btn-sm" style="display:block;" ui-sref="play({videoId: episode.videoId, showVideoId: vm.videoId})" title="Play">  
-                            <span class="glyphicon glyphicon-play"></span>
-                        </a>
-                    </td>
-                    <td class="transparent">{{episode.title}}</td>
-                    <td class="transparent">
-                        <div class="progressbar" ng-if="episode.percentWatched !== undefined">
-                            <div class="percentWatched" ng-attr-style="{{'width:' + episode.percentWatched + '%'}}">
-                            </div>
-                            <div class="percentWatchedText">{{episode.percentWatched}}
-                            </div>
-                        </div>
-                        <div ng-if="episode.percentWatched === undefined">
 
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-md-7" style="border:0px solid red;">
-            <div id="episodeInfo" class="shadow" ng-class="{
-                    'hide'
-                    : !vm.selectedEpisode}">
-                <h1 id="title" style="text-align:center;"></h1>
-                <img align="right" id="episodePoster" ng-attr-src="{{vm.selectedEpisode.sdPosterUrl}}"/>
-                <p>Season {{vm.selectedEpisode.seasonNumber}} Episode {{vm.selectedEpisode.episodeNumber}}
-                    <br/><b>Rating: {{vm.selectedEpisode.mpaa}} </b>
-                    <br/><b>Release Date: {{vm.selectedEpisode.releaseDate}}
-                </p>
-                <span style="font-weight:normal;">{{vm.selectedEpisode.plot}}</span>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add Video to Lists</h4>
+            </div>
+            <div class="modal-body">
+                <div ng-repeat="(listName, isChecked) in vm.listInfo">
+                    <label class="form-control">
+                        <input type="checkbox" ng-checked="isChecked" ng-click="vm.toggleList(listName)"/>
+                        {{listName}}
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
-    </div>-->
+    </div>
+</div>

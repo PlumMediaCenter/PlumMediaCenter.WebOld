@@ -290,5 +290,11 @@ angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q,
             return response.data;
         });
     };
+
+    Video.getListInfo = function (listName, videoId) {
+        return $http.get('api/GetVideoListInfo.php', { params: { videoId: videoId, listName: listName } }).then(function (response) {
+            return response.data;
+        });
+    };
     return Video;
 }]);
