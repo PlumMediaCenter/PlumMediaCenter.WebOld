@@ -241,7 +241,7 @@ class Queries
         $stmt = DbManager::getPdo()->prepare("  
             select 
                 list.name,
-                list_item.video_id is not null as is_in_list
+                list_item.video_id
             from list
             left join list_item
                 on list.list_id = list_item.list_id
@@ -249,16 +249,17 @@ class Queries
             where list.user_id = :userId
             order by list.name asc;
         ");
-
-        $stmt->bindParam(":userId", $userId);
         $stmt->bindParam(":videoId", $videoId);
+        $stmt->bindParam(":userId", $userId);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
         $rows = Queries::FetchAll($stmt);
         $result = [];
 
         foreach ($rows as $row) {
-            $result[$row['name']] = intval($row['is_in_list']) === 0 ? false : true;
+            $listName = $row['name'];
+            $isInList = $row['video_id'] == null ? false : true;
+            $result[$listName] = $isInList;
         }
         return $result;
     }
