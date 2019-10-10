@@ -245,8 +245,8 @@ class Queries
             from list
             left join list_item
                 on list.list_id = list_item.list_id
-                and list_item.video_id = 51
-            where list.user_id = 1
+                and list_item.video_id = :videoId
+            where list.user_id = :userId
             order by list.name asc;
         ");
 
