@@ -258,7 +258,7 @@ class Queries
         $result = [];
 
         foreach ($rows as $row) {
-            $result[$row['name']] = boolval($row['is_in_list']);
+            $result[$row['name']] = intval($row['is_in_list']) === 0 ? false : true;
         }
         return $result;
     }
