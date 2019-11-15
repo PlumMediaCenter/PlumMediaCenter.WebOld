@@ -1,7 +1,7 @@
 <?php
 
 include_once(dirname(__FILE__) . "/MetadataFetcher.class.php");
-include_once(dirname(__FILE__) . "/../TMDB_v3/tmdb_v3.php");
+include_once(dirname(__FILE__) . "/../lib/tmdb_v3/0.0.2/tmdb_v3.php");
 include_once(dirname(__FILE__) . "/../../config.php");
 
 /**
