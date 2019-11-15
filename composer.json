@@ -1,0 +1,12 @@
+{
+    "name": "plummediacenter/plummediacenter",
+    "authors": [
+        {
+            "name": "Bronley Plumb",
+            "email": "bronley@gmail.com"
+        }
+    ],
+    "require": {
+        "php-tmdb/api": "^2.1"
+    }
+}
