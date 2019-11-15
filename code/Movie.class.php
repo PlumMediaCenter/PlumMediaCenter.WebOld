@@ -452,7 +452,7 @@ class Movie extends Video {
         $videoSourcePath = movie::CleansePath($videoSourcePath);
         $mediaType = Enumerations::MediaType_Movie;
         $hdPosterUrl = "assets/img/posters/BlankPoster.jpg";
-        $pageSize = $pageSize === null ? LibraryGeneratorNew::PAGE_SIZE : $pageSize;
+        $pageSize = $pageSize === null ? LibraryGenerator::ADD_PAGE_SIZE : $pageSize;
         $total = count($videoPaths);
         $pageCount = ceil($total / $pageSize);
 
