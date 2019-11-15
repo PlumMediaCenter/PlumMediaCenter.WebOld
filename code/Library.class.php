@@ -175,11 +175,11 @@ class Library
                     strpos(strtolower($fullPathToFile), '/extras/') !== false ||
                     strpos(strtolower($fullPathToFile), '\\extras\\') !== false
                 ) {
-                    echo "<br/>Skipping video: " . $fullPathToFile;
+                    // echo "<br/>Skipping video: " . $fullPathToFile;
 
                     continue;
                 }
-                echo "<br/>Processing video file: " . $fullPathToFile;
+                // echo "<br/>Processing video file: " . $fullPathToFile;
 
                 //create a new Movie object
                 $video = new Movie($source->base_url, $source->location, $fullPathToFile);

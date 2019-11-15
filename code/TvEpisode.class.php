@@ -4,7 +4,8 @@ include_once(dirname(__FILE__) . "/Video.class.php");
 include_once(dirname(__FILE__) . "/MetadataFetcher/TvEpisodeMetadataFetcher.class.php");
 include_once(dirname(__FILE__) . "/NfoReader/TvEpisodeNfoReader.class.php");
 
-class TvEpisode extends Video {
+class TvEpisode extends Video
+{
 
     const EpisodeSdImageWidth = 140; //140x94
     const EpisodeHdImageWidth = 210; // 210x158
@@ -15,7 +16,8 @@ class TvEpisode extends Video {
     public $showFilePath;
     public $tvShow;
 
-    function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
+    function __construct($videoSourceUrl, $videoSourcePath, $fullPath)
+    {
         parent::__construct($videoSourceUrl, $videoSourcePath, $fullPath);
         $this->mediaType = Enumerations::MediaType_TvEpisode;
         $this->seasonNumber = $this->getSeasonNumber();
@@ -24,11 +26,13 @@ class TvEpisode extends Video {
         $this->showFilePath = str_replace("\\", "/", realpath("$this->videoSourcePath/$this->showName/")) . "/";
     }
 
-    function getBlankPosterName() {
+    function getBlankPosterName()
+    {
         return "BlankEpisode";
     }
 
-    function getFullEpisodeName() {
+    function getFullEpisodeName()
+    {
         return $this->showName . ' S' . $this->seasonNumber . ':E' . $this->episodeNumber . ' ' . $this->title;
     }
 
@@ -37,7 +41,8 @@ class TvEpisode extends Video {
      * this function provides a way to load the tv show from within this tv episode if it has not already been set by the owning tv show
      * when this episode object was loaded
      */
-    public function getTvShowObject() {
+    public function getTvShowObject()
+    {
         $this->tvShow = isset($this->tvShow) ? $this->tvShow : null;
         if ($this->tvShow == null) {
             $this->tvShow = new TvShow($this->videoSourceUrl, $this->videoSourcePath, $this->showFilePath);
@@ -55,12 +60,14 @@ class TvEpisode extends Video {
         return $tvShow->_runtime;
     }
 
-    function getShowName() {
-       return TvEpisode::GetTvShowName($this->videoSourcePath, $this->fullPath);
+    function getShowName()
+    {
+        return TvEpisode::GetTvShowName($this->videoSourcePath, $this->fullPath);
     }
-    
-    static function GetTvShowName($videoSourcePath, $fullPath){
-         $str = str_replace($videoSourcePath, "", $fullPath);
+
+    static function GetTvShowName($videoSourcePath, $fullPath)
+    {
+        $str = str_replace($videoSourcePath, "", $fullPath);
         //if the first character is a slash, remove it
         if (strpos($str, "/") === 0) {
             $str = substr($str, 1);
@@ -69,23 +76,27 @@ class TvEpisode extends Video {
         return $arr[0];
     }
 
-    function getTvShowVideoIdFromVideoTable() {
+    function getTvShowVideoIdFromVideoTable()
+    {
         return Queries::getVideoIdByVideoPath($this->showFilePath);
     }
 
-    function getTvShowVideoIdFromTvEpisodeTable() {
+    function getTvShowVideoIdFromTvEpisodeTable()
+    {
         return Queries::getTvShowVideoIdFromEpisodeTable($this->videoId);
     }
 
     /**
      * Overrides the parent function in order to generate the standard size for tv episode tiles
      */
-    function generatePosters() {
+    function generatePosters()
+    {
         $this->generateSdPoster(TvEpisode::EpisodeSdImageWidth);
         $this->generateHdPoster(TvEpisode::EpisodeHdImageWidth);
     }
 
-    function getPosterUrl($imgExt = "jpg") {
+    function getPosterUrl($imgExt = "jpg")
+    {
         //the poster is located in the same directory as the file, named the same except for the extension
         $url = $this->getUrl();
         $filename = pathinfo($this->fullPath, PATHINFO_FILENAME);
@@ -98,7 +109,8 @@ class TvEpisode extends Video {
         return Video::EncodeUrl($url);
     }
 
-    function getPosterPath($imgExt = "jpg") {
+    function getPosterPath($imgExt = "jpg")
+    {
         //the poster is located in the same directory as the file, named the same except for the extension
         $filename = pathinfo($this->fullPath, PATHINFO_FILENAME);
         $ext = pathinfo($this->fullPath, PATHINFO_EXTENSION);
@@ -107,41 +119,39 @@ class TvEpisode extends Video {
         return str_replace($filenameAndExt, "$filename.$imgExt", $this->fullPath);
     }
 
-    function getSdPosterPath() {
+    function getSdPosterPath()
+    {
         return $this->getPosterPath("sd.jpg");
     }
 
-    function getHdPosterPath() {
+    function getHdPosterPath()
+    {
         return $this->getPosterPath("hd.jpg");
     }
 
-    function getSdPosterUrl() {
+    function getSdPosterUrl()
+    {
         return Video::EncodeUrl($this->getPosterUrl("sd.jpg"));
     }
 
-    function getHdPosterUrl() {
+    function getHdPosterUrl()
+    {
         return Video::EncodeUrl($this->getPosterUrl("hd.jpg"));
     }
 
-    function getEpisodeNumber() {
-        $episodeRegexPatterns = array(
-            '/(?<=s\d{2}e)\d{2}(?=\.)/', // foo.s01e01.*
-            '/(?<=s\d{2}\.e)\d{2}(?=\.)/', //foo.s01.e01.*
-            '/(?<=\.s\d{2}_e)\d\d(?=\.)/', //foo.s01_e01.*
-            '/(?<=_\[s\d\d\]_\[e)\d\d(?=\]_)/' // foo_[s01]_[e01]_*
-        );
-        //spin through each of the possible episode regex values. if we find a match using one of them, we are done
-        foreach ($episodeRegexPatterns as $pattern) {
-            $results = null;
-            //preg_match($pattern, $this->pathToVideo, $results);
-            preg_match($pattern, $this->fullPath, $results);
-            if ($results != null) {
-                if (count($results) > 0) {
-                    return intval($results[0]);
-                }
+    function getSeasonEpisodeNumber()
+    {
+        $pattern = '/[\._]?(\d+)[\._]?e(\d+)/'; // foo.s01e01*  foo.s01_e01*  foo.s01.e01*
+        $results = null;
+        //preg_match($pattern, $this->pathToVideo, $results);
+        preg_match($pattern, $this->fullPath, $results);
+        if ($results != null) {
+            if (count($results) > 0) {
+                return [intval($results[1]), intval($results[2])];
             }
+        } else {
+            return [-1, -1];
         }
-        return -1;
     }
 
     /**
@@ -149,37 +159,25 @@ class TvEpisode extends Video {
      * foo.s01e01.* 
      * foo.s01.e01.*  
      * foo.s01_e01.*  
-     * foo_[s01]_[e01]_*  
-     * foo.1x01.* //ignored
-     * foo.101.* //ignored
      */
-    function getSeasonNumber() {
-        $regexPatterns = array(
-            '/(?<=\.s)\d{2}(?=e\d{2})/', // foo.s01e01.*
-            '/(?<=\.s)\d{2}(?=\.e\d{2})/', //foo.s01.e01.*
-            '/(?<=\.s)\d{2}(?=_e\d{2})/', //foo.s01_e01.*
-            '/(?<=_\[s)\d{2}(?=\]_\[e\d{2})/' // foo_[s01]_[e01]_*
-        );
-        //spin through each of the possible season regex values. if we find a match using one of them, we are done
-        foreach ($regexPatterns as $pattern) {
-            $results = null;
-            //preg_match($pattern, $this->pathToVideo, $results);
-            preg_match($pattern, $this->fullPath, $results);
-            if ($results != null) {
-                if (count($results) > 0) {
-                    return intval($results[0]);
-                }
-            }
-        }
-        return -1;
+    function getSeasonNumber()
+    {
+        return $this->getSeasonEpisodeNumber()[0];
     }
 
-    function prepForJsonification() {
+    function getEpisodeNumber()
+    {
+        return $this->getSeasonEpisodeNumber()[1];
+    }
+
+    function prepForJsonification()
+    {
         parent::prepForJsonification();
         unset($this->tvShow);
     }
 
-    function writeToDb() {
+    function writeToDb()
+    {
         $success = parent::writeToDb();
         $videoId = $this->getVideoId();
         $tvShowVideoId = $this->getTvShowVideoIdFromVideoTable();
@@ -193,14 +191,16 @@ class TvEpisode extends Video {
     /**
      * Load any TvEpisode specific metadata here. It will be called from the parent loadMetadata function
      */
-    protected function loadCustomMetadata() {
+    protected function loadCustomMetadata()
+    {
         //we are assuming that the reader has already been loaded with the metadata file, since this function should only be called from 
         $reader = $this->getNfoReader();
         $this->year = strlen($reader->aired) >= 4 ? substr($reader->aired, 0, 4) : null;
         return null;
     }
 
-    function getNfoReader() {
+    function getNfoReader()
+    {
         if ($this->nfoReader == null) {
             $this->nfoReader = new TvEpisodeNfoReader();
         }
@@ -210,7 +210,8 @@ class TvEpisode extends Video {
     /**
      * Returns a new instance of the metadata fetcher for this video type. 
      */
-    public function getMetadataFetcherClass() {
+    public function getMetadataFetcherClass()
+    {
         $m = new TvEpisodeMetadataFetcher();
         $m->setEpisodeNumber($this->episodeNumber);
         $m->setSeasonNumber($this->seasonNumber);
@@ -224,7 +225,8 @@ class TvEpisode extends Video {
      *                                     If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
      * @return TvEpisodeMetadataFetcher
      */
-    protected function getMetadataFetcher($refresh = false, $onlineVideoDatabaseId = null) {
+    protected function getMetadataFetcher($refresh = false, $onlineVideoDatabaseId = null)
+    {
         //If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
         $id = $this->onlineVideoDatabaseId;
         $id = $onlineVideoDatabaseId != null ? $onlineVideoDatabaseId : $id;
@@ -245,7 +247,8 @@ class TvEpisode extends Video {
      * Returns the path for an nfo file named the same as the video file. i.e. MyTvEpisode.avi, MyTvEpisode.nfo
      * @return type
      */
-    function getNfoPath() {
+    function getNfoPath()
+    {
         $p = $this->fullPath;
         $nfoPath = pathinfo($p, PATHINFO_DIRNAME) . "/" . pathinfo($p, PATHINFO_FILENAME) . ".nfo";
         return $nfoPath;
@@ -256,8 +259,9 @@ class TvEpisode extends Video {
      * It then stores that information into an .nfo file named the same as the video file name .
      * Deletes any previous metadata files that exist, BEFORE anything else. 
      */
-    function fetchMetadata($showTvdbId=null) {
-        if($showTvdbId === null){
+    function fetchMetadata($showTvdbId = null)
+    {
+        if ($showTvdbId === null) {
             $showTvdbId = $this->onlineVideoDatabaseId;
         }
         //this tv episode shouldn't take longer than 3 minutes to run. if it does, then php will cancel the running of this script.
@@ -281,8 +285,8 @@ class TvEpisode extends Video {
         $directorList = '';
         $actorList = array();
         $firstAired = '';
-        
-        if($e->hasData()){
+
+        if ($e->hasData()) {
             $title = $e->title();
             $rating = $e->rating();
             $seasonNumber = $e->season();
@@ -293,7 +297,7 @@ class TvEpisode extends Video {
             $writers = implode(",", $e->writers());
             $directorList = implode(",", $e->directors());
             $actorList = $e->actors();
-            $firstAired = $e->firstAired();
+            $firstAired = $e->firstAired() != null ? $e->firstAired()->format("Y-m-d") : '';
         }
 
 
@@ -518,7 +522,4 @@ class TvEpisode extends Video {
         $success = $bytesWritten !== false;
         return $success;
     }
-
 }
-
-?>

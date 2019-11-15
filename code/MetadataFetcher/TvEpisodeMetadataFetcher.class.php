@@ -1,12 +1,24 @@
 <?php
 
+include_once(dirname(__FILE__) . '/../../vendor/autoload.php');
+include_once(dirname(__FILE__) . '/../../config.php');
 include_once(dirname(__FILE__) . "/MetadataFetcher.class.php");
 include_once(dirname(__FILE__) . "/TvShowMetadataFetcher.class.php");
-include_once(dirname(__FILE__) . "/../TVDB/TVDB.class.php");
 
-class TvEpisodeMetadataFetcher extends MetadataFetcher {
+class TvEpisodeMetadataFetcher extends MetadataFetcher
+{
 
+    /**
+     * @var \Tmdb\Repository\TvRepository
+     */
     private $tvShowObject = null;
+    /**
+     * @var TvShowMetadataFetcher
+     */
+    private $showFetcher = null;
+    /**
+     * @var \Tmdb\Model\Tv\Episode
+     */
     private $episodeObject = null;
     private $episodeNumber = null;
     private $seasonNumber = null;
@@ -15,7 +27,8 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher {
      * Search by season name and by preset season and episode numbers. you MUST set the episode and season numbers before calling this
      * @param string $title - the show title
      */
-    function searchByTitle($title) {
+    function searchByTitle($title)
+    {
         $this->searchByShowNameAndSeasonAndEpisodeNumber($title, $this->seasonNumber, $this->episodeNumber);
     }
 
@@ -23,40 +36,55 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher {
      * Search by show id and by preset season and episode numbers. you MUST set the episode and season numbers before calling this
      * @param string $id - the id of the show that this episode belongs to
      */
-    function searchById($id) {
+    function searchById($id)
+    {
         $this->searchByShowIdAndSeasonAndEpisodeNumber($id, $this->seasonNumber, $this->episodeNumber);
     }
 
-    public function searchByShowNameAndEpisodeId($showName, $id) {
+    public function searchByShowNameAndEpisodeId($showName, $id)
+    {
         //query the TvDb to find a tv show that matches this folder's title. 
         $this->tvShowObject = TvShowMetadataFetcher::GetSearchByTitle($showName);
         $this->episodeObject = $this->tvShowObject->getEpisodeById($id);
     }
 
-    public function searchByShowNameAndSeasonAndEpisodeNumber($showName, $seasonNumber, $episodeNumber) {
-        //query the TvDb to find a tv show that matches this folder's title. 
-        $this->tvShowObject = TvShowMetadataFetcher::GetSearchByTitle($showName);
-        if(isset($this->tvShowObject)){
-            $this->episodeObject = $this->tvShowObject->getEpisode($seasonNumber, $episodeNumber);
+    public function searchByShowNameAndSeasonAndEpisodeNumber($showName, $seasonNumber, $episodeNumber)
+    {
+        $this->showFetcher = new TvShowMetadataFetcher();
+        $this->showFetcher->searchByTitle($showName);
+        $this->tvShowObject = $this->showFetcher->tvShowObject;
+
+        if (isset($this->tvShowObject)) {
+            $season = new \Tmdb\Model\Tv\Season();
+            $season->setSeasonNumber($seasonNumber);
+
+            $episode = new \Tmdb\Model\Tv\Episode();
+            $episode->setEpisodeNumber($episodeNumber);
+
+            $repo = new \Tmdb\Repository\TvEpisodeRepository($this->showFetcher->getClient());
+            $this->episodeObject = $repo->load($this->tvShowObject, $season, $episode);
         }
     }
 
-    public function searchByShowIdAndEpisodeId($showId, $id) {
+    public function searchByShowIdAndEpisodeId($showId, $id)
+    {
         //query the TvDb to find a tv show that matches this folder's title. 
         $this->tvShowObject = TvShowMetadataFetcher::GetSearchById($showId);
         $this->episodeObject = $this->tvShowObject->getEpisodeById($id);
     }
 
-    public function searchByShowIdAndSeasonAndEpisodeNumber($showId, $seasonNumber, $episodeNumber) {
+    public function searchByShowIdAndSeasonAndEpisodeNumber($showId, $seasonNumber, $episodeNumber)
+    {
         //query the TvDb to find a tv show that matches this folder's title. 
         $this->tvShowObject = TvShowMetadataFetcher::GetSearchById($showId);
         $this->episodeObject = $this->tvShowObject->getEpisode($seasonNumber, $episodeNumber);
     }
 
-    public function hasData(){
-        if(isset($this->tvShowObject) && isset($this->episodeObject)){
+    public function hasData()
+    {
+        if (isset($this->tvShowObject) && isset($this->episodeObject)) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -65,7 +93,8 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher {
      * Set the episode number of the episode to be fetched
      * @param int $eNum
      */
-    public function setEpisodeNumber($eNum) {
+    public function setEpisodeNumber($eNum)
+    {
         $this->episodeNumber = $eNum;
     }
 
@@ -73,90 +102,116 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher {
      * Set the season number of the episode to be fetched
      * @param int $sNum
      */
-    public function setSeasonNumber($sNum) {
+    public function setSeasonNumber($sNum)
+    {
         $this->seasonNumber = $sNum;
     }
 
-    public function actors() {
-        return $this->tvShowObject->actors;
+    public function actors()
+    {
+        //TODO we don't care about this info right now...
+        return [];
     }
 
-    public function directors() {
-        return $this->episodeObject->directors;
+    public function directors()
+    {
+        //TODO we don't care about this info right now...
+        return [];
     }
 
-    public function dayOfTheWeek() {
+    public function dayOfTheWeek()
+    {
         return $this->tvShowObject->dayOfWeek;
     }
 
-    public function episode() {
-        return $this->episodeObject->episode;
+    public function episode()
+    {
+        return $this->episodeObject->getEpisodeNumber();
     }
 
-    public function firstAired() {
-        return $this->episodeObject->firstAired;
+    /**
+     * @var Date
+     */
+    public function firstAired()
+    {
+        return $this->episodeObject->getAirDate();
     }
 
-    public function genres() {
+    public function genres()
+    {
         return $this->tvShowObject->genres;
     }
 
-    public function guestStars() {
+    public function guestStars()
+    {
         return $this->episodeObject->guestStars;
     }
 
-    public function id() {
+    public function id()
+    {
         return $this->episodeObject->id;
     }
-    
-    public function onlineVideoId(){
+
+    public function onlineVideoId()
+    {
         return $this->id();
     }
 
-    public function imdbId() {
+    public function imdbId()
+    {
         return $this->episodeObject->imdbId;
     }
 
-    public function mpaa() {
-        return $this->tvShowObject->contentRating;
+    public function mpaa()
+    {
+        return $this->showFetcher->mpaa();
     }
 
-    public function plot() {
-        return $this->episodeObject->overview;
+    public function plot()
+    {
+        return $this->episodeObject->getOverview();
     }
 
-    public function posterUrl() {
-        if(isset($this->episodeObject) && isset($this->episodeObject->thumbnail)) {
-            return $this->episodeObject->thumbnail;
-        } else {
+    public function posterUrl()
+    {
+        try {
+            $firstImagePath = array_values($this->episodeObject->getImages()->getAll())[0]->getFilePath();
+
+            $imageUrl = $this->showFetcher->getFullUrl($firstImagePath);
+            return $imageUrl;
+        } catch (Exception $e) {
             return null;
         }
     }
 
-    public function rating() {
-        return $this->tvShowObject->rating;
+    public function rating()
+    {
+        return $this->tvShowObject->getVoteAverage();
     }
 
-    public function season() {
-        return $this->episodeObject->season;
+    public function season()
+    {
+        return $this->episodeObject->getSeasonNumber();
     }
 
-    public function showName() {
+    public function showName()
+    {
         return $this->tvShowObject->seriesName;
     }
 
-    public function showId() {
+    public function showId()
+    {
         return $this->tvShowObject->id;
     }
 
-    public function title() {
-        return $this->episodeObject->name;
+    public function title()
+    {
+        return $this->episodeObject->getName();
     }
 
-    public function writers() {
-        return $this->episodeObject->writers;
+    public function writers()
+    {
+        //TODO we don't care about this info right now...
+        return [];
     }
-
 }
-
-?>

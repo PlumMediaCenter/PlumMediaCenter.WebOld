@@ -775,10 +775,10 @@ abstract class Video
         foreach ($minimalVideos as $minimalVideo) {
             //if this file path no longer exists, delete it
             if (!file_exists($minimalVideo->path)) {
-                echo "<br/>video does not exist. Adding to delete list: " . $minimalVideo->path;
+                // echo "<br/>video does not exist. Adding to delete list: " . $minimalVideo->path;
                 $deletedVideoIds[] = $minimalVideo->video_id;
             } else {
-                echo "<br/>video exists: " . $minimalVideo->path;
+                // echo "<br/>video exists: " . $minimalVideo->path;
             }
         }
 
@@ -869,6 +869,7 @@ abstract class Video
         if ($this->posterExists() == false) {
             $this->fetchPoster();
         }
+
         if ($this->sdPosterExists() == false || $this->hdPosterExists() == false) {
             $this->generatePosters();
         }

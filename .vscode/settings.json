@@ -2,7 +2,7 @@
     "search.exclude": {
         "**/node_modules": true,
         "**/bower_components": true,
-        "**/lib": true,
+        "lib": true,
         "**/dist": true,
         "**/test/simpletest": true
     }

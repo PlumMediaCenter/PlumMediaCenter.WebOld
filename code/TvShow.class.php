@@ -414,7 +414,7 @@ class TvShow extends Video {
     }
 
     /**
-     * Goes to TheTvDb and retrieves all available information about this tv episode. 
+     * Goes to Tmdb and retrieves all available information about this tv series. 
      * It then stores that information into an .nfo file named the same as the video file name .
      * Deletes any previous metadata files that exist, BEFORE anything else. 
      * @param int $onlineVideoDatabaseId - the id of the online video database used to reference this video. 
@@ -426,6 +426,7 @@ class TvShow extends Video {
         $this->deleteMetadata();
 
         $s = $this->getMetadataFetcher(true, $onlineVideoDatabaseId);
+
 
         //if the metadata fetcher was not able to find a show, nothing more can be done. quit.
         if ($s->getFetchSuccess() == false) {
