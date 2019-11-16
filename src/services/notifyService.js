@@ -11,6 +11,9 @@ angular.module('app').service('notify', function() {
             title: '',
             text: message,
             styling: 'bootstrap3',
-            type: type
+            type: type,
+            buttons: {
+                closer: true
+            }
         });
     }

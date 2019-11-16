@@ -85,7 +85,7 @@ class VideoController {
     /**
      * Get a single movie with the specified videoId
      * @param type $videoId
-     * @return type
+     * @return []
      */
     static function GetTvShows($videoIds = []) {
         if (count($videoIds) === 0) {

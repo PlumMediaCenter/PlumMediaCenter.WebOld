@@ -89,7 +89,6 @@ class TvShowMetadataFetcher extends MetadataFetcher
             } else {
                 //there is no year provided, keep the first result
                 $firstItemId = $searchResults["results"][0]["id"];
-                var_dump($firstItemId);
                 return TvShowMetadataFetcher::GetSearchById($firstItemId);
             }
         }
