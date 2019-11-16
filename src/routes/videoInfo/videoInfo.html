@@ -57,13 +57,14 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row" ng-if="vm.episodes">
-        <div class="col-xs-12">
-            <h1>Episodes</h1>
-            <episode episode="episode" ng-repeat="episode in vm.episodes" selected="episode.videoId === vm.nextEpisode.videoId"></episode>
+        <div class="row" ng-if="vm.episodes">
+            <div class="col-xs-12">
+                <h1>Episodes</h1>
+                <episode episode="episode" ng-repeat="episode in vm.episodes" selected="episode.videoId === vm.nextEpisode.videoId"></episode>
+            </div>
         </div>
     </div>
+
 </div>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -76,7 +77,7 @@
             <div class="modal-body">
                 <div ng-repeat="(listName, isChecked) in vm.listInfo">
                     <label class="form-control">
-                        <input type="checkbox" ng-checked="isChecked" ng-click="vm.toggleList(listName)"/>
+                        <input type="checkbox" ng-checked="isChecked" ng-click="vm.toggleList(listName)" />
                         {{listName}}
                     </label>
                 </div>
