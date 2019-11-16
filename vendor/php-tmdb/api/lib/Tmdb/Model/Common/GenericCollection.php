@@ -372,6 +372,9 @@ class GenericCollection implements \ArrayAccess, \IteratorAggregate, \Countable
     {
         return $this->filter(
             function ($key, $value) use ($language) {
+                if ($value instanceof LanguageFilter ){
+                    var_dump($value->getIso6391());
+                }
                 if ($value instanceof LanguageFilter && $value->getIso6391() == $language) {
                     return true;
                 }

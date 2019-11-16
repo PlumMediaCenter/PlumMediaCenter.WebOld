@@ -27,9 +27,22 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher
      * Search by season name and by preset season and episode numbers. you MUST set the episode and season numbers before calling this
      * @param string $title - the show title
      */
-    function searchByTitle($title)
+    function searchByTitle($showName, $year = null)
     {
-        $this->searchByShowNameAndSeasonAndEpisodeNumber($title, $this->seasonNumber, $this->episodeNumber);
+        $this->showFetcher = new TvShowMetadataFetcher();
+        $this->showFetcher->searchByTitle($showName, $year);
+        $this->tvShowObject = $this->showFetcher->tvShowObject;
+
+        if (isset($this->tvShowObject)) {
+            $season = new \Tmdb\Model\Tv\Season();
+            $season->setSeasonNumber($this->seasonNumber);
+
+            $episode = new \Tmdb\Model\Tv\Episode();
+            $episode->setEpisodeNumber($this->episodeNumber);
+
+            $repo = new \Tmdb\Repository\TvEpisodeRepository($this->showFetcher->getClient());
+            $this->episodeObject = $repo->load($this->tvShowObject, $season, $episode);
+        }
     }
 
     /**
@@ -39,31 +52,6 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher
     function searchById($id)
     {
         $this->searchByShowIdAndSeasonAndEpisodeNumber($id, $this->seasonNumber, $this->episodeNumber);
-    }
-
-    public function searchByShowNameAndEpisodeId($showName, $id)
-    {
-        //query the TvDb to find a tv show that matches this folder's title. 
-        $this->tvShowObject = TvShowMetadataFetcher::GetSearchByTitle($showName);
-        $this->episodeObject = $this->tvShowObject->getEpisodeById($id);
-    }
-
-    public function searchByShowNameAndSeasonAndEpisodeNumber($showName, $seasonNumber, $episodeNumber)
-    {
-        $this->showFetcher = new TvShowMetadataFetcher();
-        $this->showFetcher->searchByTitle($showName);
-        $this->tvShowObject = $this->showFetcher->tvShowObject;
-
-        if (isset($this->tvShowObject)) {
-            $season = new \Tmdb\Model\Tv\Season();
-            $season->setSeasonNumber($seasonNumber);
-
-            $episode = new \Tmdb\Model\Tv\Episode();
-            $episode->setEpisodeNumber($episodeNumber);
-
-            $repo = new \Tmdb\Repository\TvEpisodeRepository($this->showFetcher->getClient());
-            $this->episodeObject = $repo->load($this->tvShowObject, $season, $episode);
-        }
     }
 
     public function searchByShowIdAndEpisodeId($showId, $id)
@@ -152,7 +140,7 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher
         return $this->episodeObject->id;
     }
 
-    public function onlineVideoId()
+    public function tmdbId()
     {
         return $this->id();
     }
@@ -179,6 +167,8 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher
 
             $imageUrl = $this->showFetcher->getFullUrl($firstImagePath);
             return $imageUrl;
+        } catch (Error $e) {
+            return null;
         } catch (Exception $e) {
             return null;
         }

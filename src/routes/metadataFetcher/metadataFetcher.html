@@ -1,6 +1,6 @@
 <div class="container">
     <a ui-sref="videoInfo({videoId: vm.videoId})">&lt; Back to video</a>
-    <br/>
+    <br />
     <div class="row">
         <div class="col-sm-2"><b>Path: </b></div>
         <div class="col-sm-10">{{vm.video.path}}</div>
@@ -14,7 +14,7 @@
         <div class="col-sm-2"><b>Media Type: </b></div>
         <div class="col-sm-10">{{vm.video.mediaType}}</div>
     </div>
-    <br/>   
+    <br />
     <!-- "Search By" row -->
     <div id="searchByRow" class="row">
         <div class="col-sm-2">
@@ -22,57 +22,59 @@
         </div>
         <div class="col-sm-10">
             <label class="non-bold">
-                <input type="radio" 
-                       name="searchBy"  
-                       ng-model="vm.searchBy" 
-                       value="title" 
+                <input type="radio"
+                       name="searchBy"
+                       ng-model="vm.searchBy"
+                       value="title"
                        ng-init="vm.searchBy = 'title'">
                 Title
             </label>
             <label class="non-bold">
-                <input type="radio" 
-                       name="searchBy" 
-                       ng-model="vm.searchBy" 
-                       value="onlineVideoId">
+                <input type="radio"
+                       name="searchBy"
+                       ng-model="vm.searchBy"
+                       value="tmdbId">
                 {{vm.video.mediaType === enums.mediaType.movie?'TMDB ID': 'TVDB ID'}}
-            </label>        
-        </div>       
+            </label>
+        </div>
     </div>
     <form ng-submit="vm.search()">
         <div class="row">
             <div class="col-sm-2">
                 <b>{{vm.textboxLabel}}: </b>
-            </div>       
+            </div>
             <div class="col-sm-8">
                 <label>
                     <input class="form-control" type="text" ng-model="vm.searchValue" />
                 </label>
-            </div>    
+            </div>
             <div class="col-sm-2 text-center">
                 <label>
                     <button type="submit" ng-if="!vm.isSearching" class="btn btn-primary form-control">Search</button>
                 </label>
-            </div>   
+            </div>
         </div>
     </form>
-    <div class="row"  ng-if="vm.isSearching">
+    <div class="row" ng-if="vm.isSearching">
         <div class="col-sm-12">
             <span class="loading"></span>&nbsp;Fetching video metadata
         </div>
     </div>
-    <br/>
+    <br />
     <!-- Search results -->
     <div id="metadataSearchResults">
-        <div class="loading-metadata"  ng-show="vm.metadataIsBeingFetched">
+        <div class="loading-metadata" ng-show="vm.metadataIsBeingFetched">
             <h3>
                 <span class="loading"></span>
                 Updating video with selected metadata
             </h3>
         </div>
         <div ng-hide="vm.metadataIsBeingFetched">
-            <div ng-if="vm.metadataResults"><h2>Select the correct video from the results below</h2></div>
+            <div ng-if="vm.metadataResults">
+                <h2>Select the correct video from the results below</h2>
+            </div>
             <div ng-if="vm.metadataResults.length === 0">No results found</div>
-            <div ng-repeat="video in vm.metadataResults" class="metadata-tile" ng-click="vm.fetchMetadataByOnlineVideoId(video.onlineVideoId);">
+            <div ng-repeat="video in vm.metadataResults" class="metadata-tile" ng-click="vm.fetchMetadataBytmdbId(video.tmdbId);">
                 <div class="row">
                     <div class="col-sm-3">
                         <div class="video-tile">
@@ -81,32 +83,27 @@
                     </div>
                     <div class="col-sm-9">
                         <div class="text-area">
-                            <b>Title: </b>{{video.title}}<br/>
-                            <b>MPAA: </b>{{video.mpaa}}<br/>
-                            <span ng-if="video.mediaType === enums.mediaType.movie">
+                            <b>Title: </b>{{video.title}}<br />
+                            <b>Year: </b>{{video.year}}<br/>
+                            <b>MPAA: </b>{{video.mpaa}}<br />
+                            <span>
                                 <b>TMDB ID: </b>
-                                <a target="_blank" href="https://www.themoviedb.org/movie/{{video.onlineVideoId}}">
-                                    {{video.onlineVideoId}}
+                                <a ng-if="video.mediaType === enums.mediaType.movie" target="_blank" href="https://www.themoviedb.org/movie/{{video.tmdbId}}">
+                                    {{video.tmdbId}}
+                                </a>
+                                <a ng-if="video.mediaType === enums.mediaType.show" target="_blank" href="https://www.themoviedb.org/tv/{{video.tmdbId}}">
+                                    {{video.tmdbId}}
+                                </a>
+                                <a ng-if="video.mediaType === enums.mediaType.episode" target="_blank" href="https://www.themoviedb.org/tv/{{video.tmdbId}}/season/{{video.seasonNumber}}/episode/{{video.episodeNumber}}">
+                                    {{video.tmdbId}}
                                 </a>
                             </span>
-                            <span ng-if="video.mediaType === enums.mediaType.show">
-                                <b>TVDB ID: </b>
-                                <a target="_blank" href="http://thetvdb.com/?tab=series&id={{video.onlineVideoId}}">
-                                    {{video.onlineVideoId}}
-                                </a>
-                            </span>
-                            <span ng-if="video.mediaType === enums.mediaType.episode">
-                                <b>TVDB ID: </b>
-                                <a target="_blank" href="http://thetvdb.com/?tab=episode&id={{video.onlineVideoId}}">
-                                    {{video.onlineVideoId}}
-                                </a>
-                            </span>
-                            <br/>
+                            <br />
                             <b>Plot: </b>
                             {{video.plot| limitTo: 500}}<span ng-if="video.plot.length > 500">...</span>
-                        </div>        
-                    </div>      
-                </div>        
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

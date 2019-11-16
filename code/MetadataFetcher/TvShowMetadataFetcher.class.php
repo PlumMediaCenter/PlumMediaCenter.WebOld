@@ -26,9 +26,9 @@ class TvShowMetadataFetcher extends MetadataFetcher
         return $this->client;
     }
 
-    function searchByTitle($title)
+    function searchByTitle($title, $year = null)
     {
-        $this->tvShowObject = TvShowMetadataFetcher::GetSearchByTitle($title);
+        $this->tvShowObject = TvShowMetadataFetcher::GetSearchByTitle($title, $year);
         $this->fetchSuccess = $this->tvShowObject != null;
         return $this->fetchSuccess;
     }
@@ -44,11 +44,15 @@ class TvShowMetadataFetcher extends MetadataFetcher
     {
         $this->fetchSuccess = false;
         $fetchers = [];
-        $searchResults = TV_Shows::search($title);
-        $resultCount = count($searchResults);
-        for ($i = 0; $i < $resultCount; $i++) {
-            $result = $searchResults[$i];
-            $id = $result->id;
+        $client = (new TvShowMetadataFetcher())->getClient();
+        $api = $client->getSearchApi();
+        $searchResults = $api->searchTv($title);
+        if ($searchResults['total_results'] < 1) {
+            //throw new Exception("No tv shows found for '$title'");
+            return null;
+        }
+        foreach ($searchResults["results"] as $result) {
+            $id = $result['id'];
             $fetcher = new TvShowMetadataFetcher();
             $fetcher->setLanguage($this->language);
             $fetcher->searchById($id);
@@ -58,20 +62,39 @@ class TvShowMetadataFetcher extends MetadataFetcher
         return $fetchers;
     }
 
-    static function GetSearchByTitle($title)
+    static function GetSearchByTitle($title, $year)
     {
+        "White Collar";
         $client = (new TvShowMetadataFetcher())->getClient();
         $api = $client->getSearchApi();
-        $response = $api->searchTv($title);
-
-        if ($response['total_results'] < 1) {
+        $searchResults = $api->searchTv($title);
+        if ($searchResults['total_results'] < 1) {
             //throw new Exception("No tv shows found for '$title'");
             return null;
-        } else {
-            //just assume that the first search result is the one that we want.
-            $id = $response['results'][0]['id'];
-            return TvShowMetadataFetcher::GetSearchById($id);
         }
+
+
+        if ($searchResults["total_results"] > 0) {
+            //if we have a year, keep the first result that matches the year
+            if ($year !== null) {
+                foreach ($searchResults["results"] as $searchResult) {
+                    if (isset($searchResult['first_air_date'])) {
+                        $searchResultYear = intval(substr($searchResult['first_air_date'], 0, 4));
+                        if ($searchResultYear === $year) {
+                            $tmdbId = $searchResult['id'];
+                            return TvShowMetadataFetcher::GetSearchById($tmdbId);
+                        }
+                    }
+                }
+            } else {
+                //there is no year provided, keep the first result
+                $firstItemId = $searchResults["results"][0]["id"];
+                var_dump($firstItemId);
+                return TvShowMetadataFetcher::GetSearchById($firstItemId);
+            }
+        }
+
+        return null;
     }
 
     static function GetSearchById($id)
@@ -140,7 +163,8 @@ class TvShowMetadataFetcher extends MetadataFetcher
     function mpaa()
     {
         try {
-            return filterLanguageOrFirst($this->tvShowObject->getContentRatings())->getRating();
+            $mpaa = filterLanguageOrFirst($this->tvShowObject->getContentRatings())->getRating();
+            return $mpaa;
         } catch (Exception $e) {
             return null;
         }
@@ -204,18 +228,13 @@ class TvShowMetadataFetcher extends MetadataFetcher
 
     function tmdbId()
     {
-        return $this->fetchSuccess ? $this->tvShowObject->id : null;
-    }
-
-    function onlineVideoId()
-    {
-        return $this->tmdbId();
+        return $this->fetchSuccess ? $this->tvShowObject->getId() : null;
     }
 }
 
 function filterLanguageOrFirst($items)
 {
-    $filteredItems = $items->filterLanguage('en');
+    $filteredItems = $items->filterCountry('US');
     if ($filteredItems->count() > 0) {
         return array_values($filteredItems->getAll())[0];
     } else {

@@ -301,18 +301,18 @@ class VideoController {
         return $success;
     }
 
-    public static function FetchMetadata($videoId, $onlineVideoId) {
+    public static function FetchMetadata($videoId, $tmdbId) {
         $success = true;
 
         //load the video
         $video = Video::GetVideo($videoId);
-        $video->setOnlineVideoDatabaseId($onlineVideoId);
+        $video->setOnlineVideoDatabaseId($tmdbId);
 
-        if (!$onlineVideoId) {
-            throw new Exception('onlineVideoId is required');
+        if (!$tmdbId) {
+            throw new Exception('tmdbId is required');
         }
         try {
-            $video->fetchMetadata($onlineVideoId);
+            $video->fetchMetadata($tmdbId);
             $video->loadMetadata(true);
         } catch (Exception $e) {
             $success = false;
@@ -331,7 +331,7 @@ class VideoController {
             //fetch metadata for EVERY tv episode
             $video->loadEpisodesFromDatabase();
             foreach ($video->episodes as $episode) {
-                $episodeSuccess = VideoController::FetchMetadata($episode->videoId, $onlineVideoId);
+                $episodeSuccess = VideoController::FetchMetadata($episode->videoId, $tmdbId);
                 $success = $success && $episodeSuccess;
             }
         }

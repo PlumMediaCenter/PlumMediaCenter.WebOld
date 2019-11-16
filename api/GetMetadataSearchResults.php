@@ -4,29 +4,30 @@ include_once(dirname(__FILE__) . "/../code/Video.class.php");
 include_once(dirname(__FILE__) . "/../code/Enumerations.class.php");
 include_once(dirname(__FILE__) . "/../config.php");
 
-class Metadata {
-
-    public function __construct($mediaType, $metadataFetcher) {
+class Metadata
+{
+    public function __construct($mediaType, $metadataFetcher)
+    {
         $this->mediaType = $mediaType;
         $this->title = $metadataFetcher->title();
         $this->plot = $metadataFetcher->plot();
         $this->mpaa = $metadataFetcher->mpaa();
         $this->posterUrl = $metadataFetcher->posterUrl();
-        $this->onlineVideoId = intval($metadataFetcher->onlineVideoId());
+        $this->tmdbId = intval($metadataFetcher->tmdbId());
+        $this->year = $metadataFetcher->firstAired() !== null ? intval($metadataFetcher->firstAired()->format('Y')) : null;
     }
-
 }
-  
+
 $mediaType = isset($_GET['mediaType']) ? $_GET['mediaType'] : null;
-$onlineVideoId = isset($_GET['onlineVideoId']) ? intval($_GET['onlineVideoId']) : null;
+$tmdbId = isset($_GET['tmdbId']) ? intval($_GET['tmdbId']) : null;
 $title = isset($_GET['title']) ? $_GET['title'] : null;
 $results = [];
 
 //load the video
 
 $metadataFetcherClass = Video::GetVideoMetadataFetcherClass($mediaType);
-if ($onlineVideoId !== null) {
-    $metadataFetcherClass->searchById($onlineVideoId);
+if ($tmdbId !== null) {
+    $metadataFetcherClass->searchById($tmdbId);
     $results[] = new Metadata($mediaType, $metadataFetcherClass);
 } else if ($title !== null) {
     $fetchers = $metadataFetcherClass->getFetchersByTitle($title);
@@ -41,4 +42,3 @@ if ($onlineVideoId !== null) {
 
 header('Content-Type: application/json');
 echo json_encode($results);
-?>

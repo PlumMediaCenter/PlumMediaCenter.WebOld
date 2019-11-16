@@ -48,7 +48,7 @@ class TvShow extends Video {
 
     /**
      *  Get the array of all tv episodes
-     * @return type
+     * @return TvEpisode
      */
     function getEpisodes() {
         return $this->episodes;

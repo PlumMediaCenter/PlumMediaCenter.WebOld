@@ -10,7 +10,7 @@ abstract class MetadataFetcher {
 
     abstract function mpaa();
 
-    abstract function onlineVideoId();
+    abstract function tmdbId();
 
     abstract function posterUrl();
 

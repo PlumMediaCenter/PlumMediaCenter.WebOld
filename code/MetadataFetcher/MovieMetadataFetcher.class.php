@@ -196,7 +196,7 @@ class MovieMetadataFetcher extends MetadataFetcher {
         return 10.0;
     }
 
-    function onlineVideoId() {
+    function tmdbId() {
         return $this->tmdbId;
     }
 

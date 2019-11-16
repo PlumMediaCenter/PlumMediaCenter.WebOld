@@ -221,22 +221,22 @@ class TvEpisode extends Video
     /**
      * Returns a Video Metadata Fetcher. If we have the Online Video Database ID, use that. Otherwise, use the folder name.
      * @param boolean $refresh - if set to true, the metadata fetcher is recreated. otehrwise, a cached one is used if present
-     * @param int $onlineVideoDatabaseId - the id of the online video database used to reference this video. 
+     * @param int $tmdbId - the id of the online video database used to reference this video. 
      *                                     If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
      * @return TvEpisodeMetadataFetcher
      */
-    protected function getMetadataFetcher($refresh = false, $onlineVideoDatabaseId = null)
+    protected function getMetadataFetcher($refresh = false, $tmdbId = null)
     {
         //If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
-        $id = $this->onlineVideoDatabaseId;
-        $id = $onlineVideoDatabaseId != null ? $onlineVideoDatabaseId : $id;
+        $id = $tmdbId != null ? $tmdbId : $this->onlineVideoDatabaseId;
         if ($this->metadataFetcher == null || $refresh == true) {
             include_once(dirname(__FILE__) . "/MetadataFetcher/MovieMetadataFetcher.class.php");
             $this->metadataFetcher = $this->getMetadataFetcherClass();
             if ($id != null) {
                 $this->metadataFetcher->searchById($id);
             } else {
-                $this->metadataFetcher->searchByTitle($this->getShowName());
+                $nameAndYear = $this->getVideoNameAndYear($this->getShowName());
+                $this->metadataFetcher->searchByTitle($nameAndYear->name, $nameAndYear->year);
             }
         }
         return $this->metadataFetcher;
@@ -255,7 +255,7 @@ class TvEpisode extends Video
     }
 
     /**
-     * Goes to TheTvDb and retrieves all available information about this tv episode. 
+     * Goes to Tmdb and retrieves all available information about this tv episode. 
      * It then stores that information into an .nfo file named the same as the video file name .
      * Deletes any previous metadata files that exist, BEFORE anything else. 
      */

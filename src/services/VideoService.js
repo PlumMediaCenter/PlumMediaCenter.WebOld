@@ -139,9 +139,9 @@ angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q,
         return deferred.promise;
     };
 
-    Video.fetchMetadata = function (videoId, onlineVideoId) {
+    Video.fetchMetadata = function (videoId, tmdbId) {
         var deferred = $q.defer();
-        $http.get('api/FetchVideoMetadata.php', { params: { videoId: videoId, onlineVideoId: onlineVideoId } }).success(function (data) {
+        $http.get('api/FetchVideoMetadata.php', { params: { videoId: videoId, tmdbId: tmdbId } }).success(function (data) {
             deferred.resolve(data);
         }).error(function () {
             deferred.reject();
@@ -178,12 +178,12 @@ angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q,
         return deferred.promise;
     }
 
-    Video.getMetadataSearchResultsByOnlineVideoId = function (mediaType, onlineVideoId) {
+    Video.getMetadataSearchResultsBytmdbId = function (mediaType, tmdbId) {
         var deferred = $q.defer();
         $http.get('api/GetMetadataSearchResults.php', {
             params: {
                 mediaType: mediaType,
-                onlineVideoId: onlineVideoId
+                tmdbId: tmdbId
             }
         }).success(function (data) {
             deferred.resolve(data);

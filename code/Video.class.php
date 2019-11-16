@@ -291,10 +291,10 @@ abstract class Video
 
     /**
      * Get the name and year from the video, separately. This is used mainly for metadata fetching
+     * @param $name - the name of the video
      */
-    public function getVideoNameAndYear()
+    public function getVideoNameAndYear($name)
     {
-        $name = $this->getVideoName();
         preg_match('/(.*)(?:\\((\\d{4})\\))/', $name, $matches);
         $result = [];
         if (count($matches) > 0) {
@@ -727,22 +727,21 @@ abstract class Video
     /**
      * Returns a Video Metadata Fetcher. If we have the Online Video Database ID, use that. Otherwise, use the folder name.
      * @param boolean $refresh - if set to true, the metadata fetcher is recreated. otehrwise, a cached one is used if present
-     * @param int $onlineVideoDatabaseId - the id of the online video database used to reference this video. 
-     *                                     If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
+     * @param int $tmdbId - the tmdb id. if use it. If not, see if there is a global one for the class. if not, search by title
      * @return MovieMetadataFetcher|TvShowMetadataFetcher 
      */
-    protected function getMetadataFetcher($refresh = false, $onlineVideoDatabaseId = null)
+    protected function getMetadataFetcher($refresh = false, $tmdbId = null)
     {
         //If an id was present, use it. If not, see if there is a global one for the class. if not, search by title
         $id = $this->onlineVideoDatabaseId;
-        $id = $onlineVideoDatabaseId != null ? $onlineVideoDatabaseId : $id;
+        $id = $tmdbId != null ? $tmdbId : $id;
         if ($this->metadataFetcher == null || $refresh == true) {
             include_once(dirname(__FILE__) . "/MetadataFetcher/MovieMetadataFetcher.class.php");
             $this->metadataFetcher = $this->getMetadataFetcherClass();
             if ($id != null) {
                 $this->metadataFetcher->searchById($id);
             } else {
-                $videoNameAndYear = $this->getVideoNameAndYear();
+                $videoNameAndYear = $this->getVideoNameAndYear($this->getVideoName());
                 $this->metadataFetcher->searchByTitle($videoNameAndYear->name, $videoNameAndYear->year);
             }
         }

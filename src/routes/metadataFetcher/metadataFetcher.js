@@ -1,29 +1,43 @@
 angular.module('app').controller('MetadataFetcherController', ['$scope', '$q', 'globals', 'refreshImage', 'Video', '$state', '$stateParams', 'notify', 'enums',
-    function($scope, $q, globals, refreshImage, Video, $state, $stateParams, notify, enums) {
+    function ($scope, $q, globals, refreshImage, Video, $state, $stateParams, notify, enums) {
         globals.title = 'Fetch Metadata';
         var vm = angular.extend(this, {
             searchByOptions: {
-                onlineVideoId: 'onlineVideoId',
+                tmdbId: 'tmdbId',
                 title: 'title'
             },
             videoId: $stateParams.videoId,
-            searchBy: 'onlineVideoId',
+            searchBy: 'tmdbId',
             isSearching: false,
             metadataIsBeingFetched: false,
             textboxLabel: undefined,
-            //this is the value (title, onlineVideoId) to use to search for the metadata
+            //this is the value (title, tmdbId) to use to search for the metadata
             searchValue: undefined,
             searchResults: undefined,
             video: {},
             //api
             search: search,
             calculateTextboxLabel: calculateTextboxLabel,
-            fetchMetadataByOnlineVideoId: fetchMetadataByOnlineVideoId
+            fetchMetadataBytmdbId: fetchMetadataBytmdbId
         });
 
-        $scope.$watch('vm.searchBy', searchByChanged);
+        function constructor() {
+            //load the video
+            Video.getById(vm.videoId).then(function (video) {
+                angular.extend(vm.video, video);
+                searchByChanged()
+                //run the first search right away, since that's probably what the user wants to do anyway...
+                search();
+            });
 
-        $scope.$watch('vm.video', vm.calculateTextboxLabel);
+            Video.getPathInfo(vm.videoId).then(function (video) {
+                angular.extend(vm.video, video);
+            });
+
+            $scope.$watch('vm.searchBy', searchByChanged);
+
+            $scope.$watch('vm.video', vm.calculateTextboxLabel);
+        }
 
         function searchByChanged() {
             vm.calculateTextboxLabel();
@@ -47,59 +61,50 @@ angular.module('app').controller('MetadataFetcherController', ['$scope', '$q', '
             }
         }
 
-        //load the video
-        Video.getById(vm.videoId).then(function(video) {
-            angular.extend(vm.video, video);
-            searchByChanged()
-        });
-
-        Video.getPathInfo(vm.videoId).then(function(video) {
-            angular.extend(vm.video, video);
-        });
-
         function search() {
             vm.isSearching = true;
             var promise;
             if (vm.searchBy === vm.searchByOptions.title) {
                 promise = Video.getMetadataSearchResultsByTitle(vm.video.mediaType, vm.searchValue);
             } else {
-                promise = Video.getMetadataSearchResultsByOnlineVideoId(vm.video.mediaType, vm.searchValue);
+                promise = Video.getMetadataSearchResultsBytmdbId(vm.video.mediaType, vm.searchValue);
             }
-            promise.then(function(searchResults) {
+            promise.then(function (searchResults) {
                 vm.metadataResults = searchResults;
                 vm.isSearching = false;
             });
         }
 
-        function fetchMetadataByOnlineVideoId(onlineVideoId) {
+        function fetchMetadataBytmdbId(tmdbId) {
             vm.metadataIsBeingFetched = true;
-            Video.fetchMetadata(vm.video.videoId, onlineVideoId).then(function() {
+            Video.fetchMetadata(vm.video.videoId, tmdbId).then(function () {
                 return Video.getById(vm.video.videoId);
-            }).then(function(video) {
+            }).then(function (video) {
                 //refresh the posters so that when we go back to videoInfo, the poster cache has been cleared
-                return refreshImage(video.sdPosterUrl).then(function() {
+                return refreshImage(video.sdPosterUrl).then(function () {
                     return refreshImage(video.hdPosterUrl);
-                }).then(function(){
+                }).then(function () {
                     //there was an issue getting the browser to refresh the cached images. try reloading the page (after we have 
                     //navigated to the videoInfo page)
-                    setTimeout(function(){
+                    setTimeout(function () {
                         window.location.reload();
                     }, 200);
                     return undefined;
-                }, function(err){
+                }, function (err) {
                     return $q.reject(err);
                 });
-            }).then(function() {
+            }).then(function () {
                 vm.metadataResults = undefined;
                 vm.metadataIsBeingFetched = false;
 
                 notify('Updated video with selected metadata', 'success');
-                $state.go('videoInfo', {videoId: vm.videoId});
-            })['catch'](function(err) {
+                $state.go('videoInfo', { videoId: vm.videoId });
+            })['catch'](function (err) {
                 vm.metadataIsBeingFetched = false;
                 notify('There was an error fetching metadata for the video you selected: ' + err, 'error');
             })
         }
 
-
-    }]);
+        constructor();
+    }
+]);
