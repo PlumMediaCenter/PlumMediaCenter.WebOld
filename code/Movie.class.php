@@ -15,7 +15,11 @@ class Movie extends Video {
         //make sure the metadata has been loaded
         $this->loadMetadata();
         //runtime is in minutes
-        return $this->_runtime * 60;
+        if($this->_runtime !== null){
+            return $this->_runtime * 60;
+        } else {
+            return -1;
+        }
     }
 
     function getNfoReader() {
@@ -53,7 +57,9 @@ class Movie extends Video {
                 $this->year = null;
             }
         }
-        $this->_runtime = $reader->runtime;
+        if ($reader->runtime !== null && trim($reader->runtime) !== "") {
+            $this->_runtime = intval($reader->runtime);
+        }
     }
 
     /**

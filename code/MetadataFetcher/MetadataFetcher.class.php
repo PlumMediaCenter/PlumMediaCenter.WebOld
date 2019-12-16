@@ -18,6 +18,8 @@ abstract class MetadataFetcher {
 
     abstract function searchById($id);
 
+    abstract function year();
+
     public $language;
 
     function setLanguage($language) {

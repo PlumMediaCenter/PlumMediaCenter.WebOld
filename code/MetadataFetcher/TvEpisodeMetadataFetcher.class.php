@@ -199,6 +199,10 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher
         return $this->episodeObject->getName();
     }
 
+    public function year() {
+        return $this->tvShowObject->year();
+    }
+
     public function writers()
     {
         //TODO we don't care about this info right now...

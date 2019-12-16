@@ -46,17 +46,23 @@ class TvShowMetadataFetcher extends MetadataFetcher
         $fetchers = [];
         $client = (new TvShowMetadataFetcher())->getClient();
         $api = $client->getSearchApi();
-        $searchResults = $api->searchTv($title);
+        $videoNameAndYear = Video::GetVideoNameAndYear($title);
+
+        $searchResults = $api->searchTv($videoNameAndYear->name);
         if ($searchResults['total_results'] < 1) {
-            //throw new Exception("No tv shows found for '$title'");
-            return null;
+            return [];
         }
         foreach ($searchResults["results"] as $result) {
-            $id = $result['id'];
-            $fetcher = new TvShowMetadataFetcher();
-            $fetcher->setLanguage($this->language);
-            $fetcher->searchById($id);
-            $fetchers[] = $fetcher;
+            $searchResultYear = isset($result['first_air_date'])?  intval(substr($result['first_air_date'], 0, 4)): null;
+            
+            //if year is specified, filter this result based on its release date
+            if ($videoNameAndYear->year === null || $searchResultYear === $videoNameAndYear->year) {
+                $id = $result['id'];
+                $fetcher = new TvShowMetadataFetcher();
+                $fetcher->setLanguage($this->language);
+                $fetcher->searchById($id);
+                $fetchers[] = $fetcher;
+            }
         }
 
         return $fetchers;
@@ -136,6 +142,15 @@ class TvShowMetadataFetcher extends MetadataFetcher
     function firstAired()
     {
         return $this->fetchSuccess ? $this->tvShowObject->getFirstAirDate() : null;
+    }
+
+    function year(){
+        $firstAired = $this->fetchSuccess ? $this->tvShowObject->getFirstAirDate() : null;
+        if ($firstAired !== null) {
+            return intval($firstAired->format('Y'));
+        } else {
+            return null;
+        }
     }
 
     function genres()

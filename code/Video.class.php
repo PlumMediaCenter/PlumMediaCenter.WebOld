@@ -293,7 +293,7 @@ abstract class Video
      * Get the name and year from the video, separately. This is used mainly for metadata fetching
      * @param $name - the name of the video
      */
-    public function getVideoNameAndYear($name)
+    public static function GetVideoNameAndYear($name)
     {
         preg_match('/(.*)(?:\\((\\d{4})\\))/', $name, $matches);
         $result = [];
@@ -741,7 +741,7 @@ abstract class Video
             if ($id != null) {
                 $this->metadataFetcher->searchById($id);
             } else {
-                $videoNameAndYear = $this->getVideoNameAndYear($this->getVideoName());
+                $videoNameAndYear = Video::GetVideoNameAndYear($this->getVideoName());
                 $this->metadataFetcher->searchByTitle($videoNameAndYear->name, $videoNameAndYear->year);
             }
         }

@@ -235,7 +235,7 @@ class TvEpisode extends Video
             if ($id != null) {
                 $this->metadataFetcher->searchById($id);
             } else {
-                $nameAndYear = $this->getVideoNameAndYear($this->getShowName());
+                $nameAndYear = Video::GetVideoNameAndYear($this->getShowName());
                 $this->metadataFetcher->searchByTitle($nameAndYear->name, $nameAndYear->year);
             }
         }

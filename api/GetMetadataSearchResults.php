@@ -14,7 +14,7 @@ class Metadata
         $this->mpaa = $metadataFetcher->mpaa();
         $this->posterUrl = $metadataFetcher->posterUrl();
         $this->tmdbId = intval($metadataFetcher->tmdbId());
-        $this->year = $metadataFetcher->firstAired() !== null ? intval($metadataFetcher->firstAired()->format('Y')) : null;
+        $this->year = $metadataFetcher->year() !== null ? $metadataFetcher->year() : null;
     }
 }
 

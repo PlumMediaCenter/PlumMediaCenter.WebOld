@@ -64,16 +64,22 @@ class MovieMetadataFetcher extends MetadataFetcher {
     function getFetchersByTitle($title) {
         $this->fetchSuccess = false;
         $fetchers = [];
-        $searchResults = $this->tmdb->searchMovie($title, 1, false);
+        $videoNameAndYear = Video::GetVideoNameAndYear($title);
+        $searchResults = $this->tmdb->searchMovie($videoNameAndYear->name, 1, false);
         $results = $searchResults["results"];
         $resultCount = count($results);
         for ($i = 0; $i < $resultCount; $i++) {
             $result = $results[$i];
-            $id = $result["id"];
-            $fetcher = new MovieMetadataFetcher();
-            $fetcher->setLanguage($this->language);
-            $fetcher->searchById($id);
-            $fetchers[] = $fetcher;
+            $searchResultYear = isset($result['release_date'])?  intval(substr($result['release_date'], 0, 4)): null;
+            
+            //if year is specified, filter this result based on its release date
+            if ($videoNameAndYear->year === null || $searchResultYear === $videoNameAndYear->year) {
+                $id = $result["id"];
+                $fetcher = new MovieMetadataFetcher();
+                $fetcher->setLanguage($this->language);
+                $fetcher->searchById($id);
+                $fetchers[] = $fetcher;
+            }
         }
 
         return $fetchers;
@@ -202,7 +208,12 @@ class MovieMetadataFetcher extends MetadataFetcher {
 
     function year() {
         $this->fetchRelease();
-        return count($this->info) > 0 ? $this->info["release_date"] : null;
+        $releaseDate = count($this->info) > 0 ? $this->info["release_date"] : null;
+        if ($releaseDate !== null && strlen($releaseDate) > 0) {
+            return intval(substr($releaseDate, 0, 4));
+        } else {
+            return null;
+        }
     }
 
     function votes() {
