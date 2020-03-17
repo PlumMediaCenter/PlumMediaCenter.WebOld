@@ -1161,7 +1161,7 @@ class Queries
 
         $pdo = DbManager::getPdo();
         $sql = "
-            INSERT INTO recently_watched (userId, video_id, date_watched) 
+            INSERT INTO recently_watched (user_id, video_id, date_watched) 
                 VALUES(:userId, :videoId, :dateWatched ) 
                 ON DUPLICATE KEY UPDATE user_id=:userId, video_id=:videoId, date_watched=:dateWatched";
 
