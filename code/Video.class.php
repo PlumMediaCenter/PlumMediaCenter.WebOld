@@ -49,6 +49,8 @@ abstract class Video
     public $hdPosterUrl;
     public $posterModifiedDate;
     public $mpaa = "N/A";
+    public $genres = [];
+    public $keywords = [];
     public $actorList = [];
     public $videoId = null;
     protected $metadata;
@@ -483,7 +485,7 @@ abstract class Video
 
     public static function GetVideoHdPosterPath($videoPath)
     {
-        return GetVideoFullPathToContainingFolder($path) . "folder.hd.jpg";
+        return Video::GetVideoFullPathToContainingFolder($videoPath) . "folder.hd.jpg";
     }
 
     public static function GeneratePoster($sourcePath, $destinationPath, $width)
@@ -569,9 +571,7 @@ abstract class Video
         //make sure this video has the latest metadata loaded
         $this->loadMetadata();
         $videoId = $this->getVideoId();
-        if ($this->year === 0 || $this->year === null) {
-            $k = 2;
-        }
+
         //if this is a video that does not yet exist in the database, create a new video
         if ($videoId === -1) {
             $success = Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->getUrl(), $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->getPosterLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->getActualSdPosterUrl(), $this->getActualHdPosterUrl());
@@ -580,6 +580,11 @@ abstract class Video
             $success = Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->getUrl(), $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->getPosterLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->getActualSdPosterUrl(), $this->getActualHdPosterUrl());
         }
         $this->videoId = $this->getVideoId(true);
+        //clear the tags for this video
+        Queries::DeleteVideoKeywords($this->videoId);
+        Queries::InsertVideoKeywords($this->videoId, $this->keywords);
+        Queries::InsertVideoKeywords($this->videoId, $this->genres);
+
         if ($this->videoId != -1 && $success === true) {
             return true;
         } else {
@@ -688,6 +693,8 @@ abstract class Video
                 $this->title = $reader->title !== null ? $reader->title : $this->title;
                 $this->plot = $reader->plot !== null ? $reader->plot : "";
                 $this->mpaa = $reader->mpaa !== null ? $reader->mpaa : $this->mpaa;
+                $this->genres = isset($reader->genres) ? $reader->genres : [];
+                $this->keywords = isset($reader->keywords) ? $reader->keywords : [];
                 //$this->actorList = $reader->actors;
 
                 $success = $this->loadCustomMetadata();

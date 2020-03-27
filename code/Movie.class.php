@@ -100,7 +100,8 @@ class Movie extends Video {
         $id = $adapter->imdbId();
         $filenameAndPath = $this->fullPath;
         $trailer = $adapter->trailerUrl();
-        $genreList = $adapter->genreList();
+        $genres = $adapter->genres();
+        $keywords = $adapter->keywords();
         $credits = "";
         $directorList = $adapter->directorList();
         $actorList = $adapter->cast();
@@ -220,13 +221,22 @@ class Movie extends Video {
         //      </filenameandpath>
         $movieNode->appendChild($trailerNode);
 
-        foreach ($genreList as $genre) {
+        foreach ($genres as $genre) {
             //  <genre>
             $genreNode = $doc->createElement("genre");
             $genreNodeText = $doc->createTextNode($genre);
             $genreNode->appendChild($genreNodeText);
             //  </genre>
             $movieNode->appendChild($genreNode);
+        }
+
+        foreach ($keywords as $keyword) {
+            //  <tag>
+            $tagNode = $doc->createElement("tag");
+            $tagNodeText = $doc->createTextNode($keyword);
+            $tagNode->appendChild($tagNodeText);
+            //  </tag>
+            $movieNode->appendChild($tagNode);
         }
         //      <credits>
         $creditsNode = $doc->createElement("credits");
@@ -453,45 +463,6 @@ class Movie extends Video {
     static function CleansePath($path) {
         return str_replace("\\", "/", realpath($path));
     }
-
-    static function InsertMany($videoSourceUrl, $videoSourcePath, $videoPaths, $pageSize = null) {
-        $videoSourcePath = movie::CleansePath($videoSourcePath);
-        $mediaType = Enumerations::MediaType_Movie;
-        $hdPosterUrl = "assets/img/posters/BlankPoster.jpg";
-        $pageSize = $pageSize === null ? LibraryGenerator::ADD_PAGE_SIZE : $pageSize;
-        $total = count($videoPaths);
-        $pageCount = ceil($total / $pageSize);
-
-        for ($pageIdx = 0; $pageIdx < $pageCount; $pageIdx++) {
-            $sql = 'insert into video(title, path, url, filetype, media_type, video_source_path, video_source_url)';
-            $startIdx = $pageIdx * $pageSize;
-            $stopIdx = ($pageIdx + 1) * $pageSize;
-            if($stopIdx > $total){
-                $stopIdx = $total;
-            }
-            for ($i = $startIdx; $i < $stopIdx; $i++) {
-                if (!isset($videoPaths[$i])) {
-                    $k = 2;
-                }
-                $videoPath = Movie::CleansePath($videoPaths[$i]);
-                $url = Video::CalculateUrl($videoSourcePath, $videoSourceUrl, $videoPath);
-                $fileType = Video::CalculateFileType($videoPath);
-                $title = Video::CalculateTitle($videoPath);
-                $sql .= " values('$title', '$videoPath','$url','$fileType','$mediaType','$videoSourcePath','$videoSourceUrl')";
-            }
-            try {
-                $success = DbManager::NonQuery($sql);
-                if ($success === false) {
-                    throw new Exception('Unable to insert videos');
-                    //maybe the sql was too long. try splitting this list in half
-                    //Movie::InsertMany($videoSourceUrl, $videoSourcePath, array_slice($videoPaths, $startIdx, $stopIdx - $startIdx, false), $pageSize / 2);
-                }
-            } catch (Exception $e) {
-                throw new Exception('Unable to insert videos');
-            }
-        }
-    }
-
 }
 
 ?>

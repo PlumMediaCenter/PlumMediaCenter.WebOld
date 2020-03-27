@@ -256,7 +256,7 @@ class MovieMetadataFetcher extends MetadataFetcher {
         return strlen($this->trailer) > 0 ? $this->trailer : null;
     }
 
-    function genreList() {
+    function genres() {
         $this->fetchInfo();
         $genres = [];
         if (count($this->info) > 0) {
@@ -265,6 +265,18 @@ class MovieMetadataFetcher extends MetadataFetcher {
             }
         }
         return $genres;
+    }
+
+    function tags() {
+        $this->fetchInfo();
+        $tags = [];
+        echo json_encode($this->info);
+        if (count($this->info) > 0) {
+            foreach ($this->info["keywords"] as $keyword) {
+                $keyword[] = $keyword["name"];
+            }
+        }
+        return $tags;
     }
 
     function directorList() {

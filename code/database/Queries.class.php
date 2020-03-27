@@ -72,7 +72,8 @@ class Queries
                 //delete all of the episodes for this show
                 Queries::DeleteVideos($episodeIds);
             }
-        } catch (Exception $e) { }
+        } catch (Exception $e) {
+        }
         //delete all references to this video from related tables
         $success = DbManager::NonQuery("delete from watch_video where video_id $inStmt");
         $finalSuccess = $finalSuccess === true && $success === true;
@@ -586,9 +587,9 @@ class Queries
         $stmt->bindParam(":videoPath", $videoPath);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
-        $videoId = $stmt->fetch();
-        if ($success === true) {
-            $videoId = $videoId["video_id"];
+        $row = $stmt->fetch();
+        if ($success === true && $row) {
+            $videoId = $row["video_id"];
             //if the videoId is null, return -1. otherwise, return the videoId found
             $videoId = $videoId === null ? -1 : $videoId;
         } else {
@@ -1183,5 +1184,39 @@ class Queries
             Queries::$statements[$key]  = $stmt;
         }
         return Queries::$statements[$key];
+    }
+
+    /**
+     * Delete all keywords associated with a video
+     */
+    public static function DeleteVideoKeywords($videoId)
+    {
+        return DbManager::NonQuery("delete from keywords where video_id = ?", $videoId);
+    }
+
+    public static function InsertVideoKeywords($videoId, $keywords)
+    {
+        //skip insert if no keywords were provided
+        if (count($keywords) == 0) {
+            return true;
+        }
+
+        $pdo = DbManager::getPdo();
+        $sql = "insert into video_keyword (video_id, keyword) values ";
+        $i = 0;
+        foreach ($keywords as $keyword) {
+            $comma = $i > 0 ? ',' : '';
+            $sql .= "$comma (:videoId" . $i . ", :keyword" . $i++ . ")";
+        }
+        echo json_encode($sql);
+        echo json_encode($keywords);
+        $stmt = $pdo->prepare($sql);
+        for ($j = 0; $j < $i; $j++) {
+            $stmt->bindParam(":videoId" . $j, $videoId);
+            $stmt->bindParam(":keyword" . $j, $keywords[$j]);
+        }
+
+        $stmt->execute();
+        return true;
     }
 }

@@ -30,6 +30,11 @@ class MovieNfoReader extends NfoReader {
         foreach ($genreNodeList as $genre) {
             $this->genres[] = $genre->nodeValue;
         }
+        $this->tags = [];
+        $tagNodeList = $this->doc->getElementsByTagName("tag");
+        foreach ($tagNodeList as $tag) {
+            $this->tags[] = $tag->nodeValue;
+        }
         $this->credits = $this->val("credits");
 
         //create the skeleton fileinfo object
@@ -120,11 +125,9 @@ class MovieNfoReader extends NfoReader {
     public $filenameAndPath;
     public $trailer;
     public $genres;
+    public $tags;
     public $credits;
     public $fileInfo;
     public $directors;
     public $actors;
-
 }
-
-?>

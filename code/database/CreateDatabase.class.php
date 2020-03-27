@@ -70,7 +70,8 @@ class CreateDatabase
         '0.3.41',
         '0.3.42',
         '0.3.43',
-        '0.3.44'
+        '0.3.44',
+        '0.3.45'
     ];
 
     function __construct($rootUsername, $rootPassword, $dbHost)
@@ -133,7 +134,8 @@ class CreateDatabase
         $version = '0.0.0';
         $tableExists = DbManager::TableExists("app_version");
         //see if the version table exists. If it doesn't, then we start at the beginning.
-        if ($tableExists === false) { } else {
+        if ($tableExists === false) {
+        } else {
             $version = DbManager::GetSingleItem("select * from app_version", $dbHost, $dbUsername, $dbPassword, config::$dbName);
             //handle the first version number, which was not following semantic versioning
             if ($version === "001.000") {
@@ -376,7 +378,7 @@ class CreateDatabase
         DbManager::nonQuery("alter table recently_watched add user_id int;");
         //prepopulate with user_id 1 (default user)
         DbManager::nonQuery("update recently_watched set user_id = 1;");
-        
+
         DbManager::nonQuery("alter table watch_video drop username;");
         DbManager::nonQuery("alter table watch_video add user_id int;");
         DbManager::nonQuery("update watch_video set user_id = 1;");
@@ -421,6 +423,19 @@ class CreateDatabase
                 display_order int not null,
 
                 date_created datetime default now()
+            );
+        ");
+    }
+
+    function db0_3_35()
+    {
+        DbManager::NonQuery("
+            create table video_keyword (
+                video_id int not null,
+                keyword varchar(100) not null,
+                foreign key(video_id) references video(video_id),
+                primary key(video_id, keyword),
+                index (keyword)
             );
         ");
     }

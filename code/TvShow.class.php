@@ -444,7 +444,7 @@ class TvShow extends Video {
         $runtime = $s->runtime();
         $thumb = $s->posterUrl();
         $mpaa = $s->mpaa();
-        $genreList = $s->genres();
+        $genres = $s->genres();
         $status = $s->status();
         $trailer = "";
         $actorList = $s->actors();
@@ -587,7 +587,7 @@ class TvShow extends Video {
         //  </id>
         $tvShowNode->appendChild($idNode);
         //  <genre>
-        foreach ($genreList as $genre) {
+        foreach ($genres as $genre) {
             //get rid of extra space
             $genre = trim($genre);
             $genreNode = $doc->createElement("genre");
