@@ -8,6 +8,7 @@ require_once(dirname(__FILE__) . '/../code/Library.class.php');
 
 $l = new Library();
 $result->successLoadingFromDatabase = $l->loadFromDatabase();
+
 /* @var $video Video   */
 foreach ($l->videos as $video) {
     //skip this video if it's not an object
@@ -37,7 +38,7 @@ foreach ($l->videos as $video) {
 }
 
 $result->success = $result->successLoadingFromDatabase && true;
-header('Content-Type: application/json');
+// header('Content-Type: application/json');
 
 echo json_encode($result);
 

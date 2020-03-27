@@ -267,16 +267,18 @@ class MovieMetadataFetcher extends MetadataFetcher {
         return $genres;
     }
 
-    function tags() {
-        $this->fetchInfo();
-        $tags = [];
-        echo json_encode($this->info);
-        if (count($this->info) > 0) {
-            foreach ($this->info["keywords"] as $keyword) {
-                $keyword[] = $keyword["name"];
-            }
-        }
-        return $tags;
+    function keywords() {
+        //TODO
+        // $this->fetchInfo();
+        // $tags = [];
+        // echo json_encode($this->info,JSON_PRETTY_PRINT);
+        // if (count($this->info) > 0) {
+        //     foreach ($this->info["keywords"] as $keyword) {
+        //         $keyword[] = $keyword["name"];
+        //     }
+        // }
+        // return $tags;
+        return [];
     }
 
     function directorList() {
@@ -349,5 +351,3 @@ class MovieMetadataFetcher extends MetadataFetcher {
     }
 
 }
-
-?>

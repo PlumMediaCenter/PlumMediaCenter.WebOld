@@ -176,7 +176,7 @@ class Queries
         $stmt->bindParam(":listName", $listName);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
-        return Queries::FetchAllSingleColumn($stmt, "video_id");
+        return Queries::FetchAllSingleColumn($stmt, "video_id", 'int');
     }
 
     /**
@@ -975,7 +975,7 @@ class Queries
         return false;
     }
 
-    public static function GetVideosById($videoIds, $columns)
+    public static function GetVideosById($videoIds, $columns = [])
     {
         $pdo = DbManager::getPdo();
         if (count($columns) > 0) {
@@ -984,17 +984,14 @@ class Queries
             $columnString = "*";
         }
         $inStmt = DbManager::GenerateInStatement($videoIds, false);
-        $sql = "select $columnString from video where $inStmt";
+        $sql = "select $columnString from video where video_id $inStmt";
         $stmt = $pdo->prepare($sql);
         Queries::$stmtGetVideo = $stmt;
 
         $success = $stmt->execute();
         if ($success === true) {
-            $v = Dbmanager::FetchAllClass($stmt);
-            if (count($v) > 0) {
-                $v = $v[0];
-                return $v;
-            }
+            $rows = Dbmanager::FetchAllClass($stmt);
+            return $rows;
         }
         //return false if no videos were found or an error occurred.
         return false;
@@ -1118,12 +1115,16 @@ class Queries
         return $result;
     }
 
-    private static function FetchAllSingleColumn($stmt, $colName)
+    private static function FetchAllSingleColumn($stmt, $colName, $cast = null)
     {
         $result = [];
         $list = DbManager::FetchAllAssociative($stmt);
         foreach ($list as $item) {
-            $result[] = $item[$colName];
+            $value =  $item[$colName];
+            if ($cast == 'int') {
+                $value = (int) $value;
+            }
+            $result[] = $value;
         }
         return $result;
     }
@@ -1189,34 +1190,42 @@ class Queries
     /**
      * Delete all keywords associated with a video
      */
-    public static function DeleteVideoKeywords($videoId)
+    public static function DeleteVideoGenres($videoId)
     {
-        return DbManager::NonQuery("delete from keywords where video_id = ?", $videoId);
+        return DbManager::NonQuery("delete from video_genre where video_id = ?", $videoId);
     }
 
-    public static function InsertVideoKeywords($videoId, $keywords)
+    public static function InsertVideoGenres($videoId, $genres)
     {
-        //skip insert if no keywords were provided
-        if (count($keywords) == 0) {
+        //skip insert if no genres were provided
+        if (count($genres) == 0) {
             return true;
         }
 
         $pdo = DbManager::getPdo();
-        $sql = "insert into video_keyword (video_id, keyword) values ";
+        $sql = "insert into video_genre (video_id, genre) values ";
         $i = 0;
-        foreach ($keywords as $keyword) {
+        foreach ($genres as $genre) {
             $comma = $i > 0 ? ',' : '';
-            $sql .= "$comma (:videoId" . $i . ", :keyword" . $i++ . ")";
+            $sql .= "$comma (:videoId" . $i . ", :genre" . $i++ . ")";
         }
-        echo json_encode($sql);
-        echo json_encode($keywords);
         $stmt = $pdo->prepare($sql);
         for ($j = 0; $j < $i; $j++) {
             $stmt->bindParam(":videoId" . $j, $videoId);
-            $stmt->bindParam(":keyword" . $j, $keywords[$j]);
+            $stmt->bindParam(":genre" . $j, $genres[$j]);
         }
 
         $stmt->execute();
         return true;
+    }
+
+    public static function GetVideoIdsForGenre($genre)
+    {
+        $videoIds = DbManager::SingleColumnQuery("
+            select video_id
+            from video_genre
+            where genre = ?
+        ", $genre);
+        return arrayToInt($videoIds);
     }
 }

@@ -1,15 +1,16 @@
 <?php
 
-class Category {
+class Category
+{
 
-    public $videos = [];
-    public $count = 0;
+    public $videoIds = [];
     public $name;
+    public $title;
 
-    function __construct($name, $videos) {
+    function __construct($name, $videoIds, $title = null)
+    {
         $this->name = $name;
-        $this->videos = $videos;
-        $this->count = count($this->videos);
+        $this->title = $title ? $title : $name;
+        $this->videoIds = $videoIds;
     }
-
 }

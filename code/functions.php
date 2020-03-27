@@ -395,4 +395,65 @@ function getLastModifiedDate($file)
     }
     return $modifiedDate;
 }
+
+/**
+ * Filter out unwanted properties from an array of items
+ */
+function filterProperties($array, $propertiesToKeep)
+{
+    $result = [];
+    foreach ($array as $key => $item) {
+        if (is_object($item)) {
+            $item = (array) $item;
+        }
+        $filteredItem = [];
+        foreach ($propertiesToKeep as $property) {
+            $filteredItem[$property] = $item[$property];
+        }
+        $result[$key] = $filteredItem;
+    }
+    return $result;
+}
+
+/**
+ * Given an array and property name, get an array
+ * with just the values of that property
+ */
+function pickProp($array, $propName, $cast = null)
+{
+    $values = [];
+    foreach ($array as $item) {
+        $value =  $item->{$propName};
+        if ($cast == 'int') {
+            $value = (int) $value;
+        }
+        $values[] = $value;
+    }
+    return $values;
+}
+
+function arrayToInt($array)
+{
+    $result = [];
+    foreach ($array as $item) {
+        $result[] = (int)$item;
+    }
+    return $result;
+}
+
+/**
+ * Get a distinct list of values from a primative array
+ */
+function distinct($array)
+{
+    $result = [];
+    $lookup = [];
+    foreach ($array as $item) {
+        if (isset($lookup[$item]) == false) {
+            $lookup[$item] = true;
+            $result[] = $item;
+        }
+    }
+    return $result;
+}
 ?>

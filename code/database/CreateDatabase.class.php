@@ -430,12 +430,12 @@ class CreateDatabase
     function db0_3_35()
     {
         DbManager::NonQuery("
-            create table video_keyword (
+            create table video_genre (
                 video_id int not null,
-                keyword varchar(100) not null,
+                genre varchar(100) not null,
                 foreign key(video_id) references video(video_id),
-                primary key(video_id, keyword),
-                index (keyword)
+                primary key(video_id, genre),
+                index (genre)
             );
         ");
     }

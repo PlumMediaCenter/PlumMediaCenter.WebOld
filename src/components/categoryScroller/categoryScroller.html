@@ -1,7 +1,7 @@
 <div>
     <h1>
         <a ui-sref="categories({categoryName: vm.category.name})">
-            {{::vm.category.name}} {{vm.getLocationText()}}
+            {{::vm.category.title}} {{vm.getLocationText()}}
         </a>
     </h1>
     <div ng-if="vm.category.videos.length === 0">

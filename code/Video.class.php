@@ -114,12 +114,23 @@ abstract class Video
      */
     public static function GetVideo($videoId)
     {
-        try {
-            $v = Queries::getVideo($videoId);
-            //if no video was found, nothing more can be done
-            if ($v === false) {
-                return false;
-            }
+        $videos = Video::GetVideos([$videoId]);
+        if ($videos == false) {
+            return false;
+        } else {
+            return $videos[0];
+        }
+    }
+
+    public static function GetVideos($videoIds)
+    {
+        $rows = Queries::GetVideosById($videoIds);
+        //if no video was found, nothing more can be done
+        if ($rows === false) {
+            return false;
+        }
+        $videos = [];
+        foreach ($rows as $v) {
             switch ($v->media_type) {
                 case Enumerations::MediaType_Movie:
                     $video = new Movie($v->video_source_url, $v->video_source_path, $v->path);
@@ -140,10 +151,9 @@ abstract class Video
             if ($video->year === 0) {
                 $video->year = null;
             }
-            return $video;
-        } catch (Exception $e) {
-            return false;
+            $videos[] = $video;
         }
+        return $videos;
     }
 
     /**
@@ -581,9 +591,10 @@ abstract class Video
         }
         $this->videoId = $this->getVideoId(true);
         //clear the tags for this video
-        Queries::DeleteVideoKeywords($this->videoId);
-        Queries::InsertVideoKeywords($this->videoId, $this->keywords);
-        Queries::InsertVideoKeywords($this->videoId, $this->genres);
+        Queries::DeleteVideoGenres($this->videoId);
+        Queries::InsertVideoGenres($this->videoId, $this->genres);
+        //TODO store the keywords somehow, perhaps for more fine-grained categories
+        // Queries::InsertVideoKeywords($this->videoId, $this->keywords);
 
         if ($this->videoId != -1 && $success === true) {
             return true;

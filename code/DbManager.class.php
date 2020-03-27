@@ -6,7 +6,8 @@ require_once(dirname(__FILE__) . "/Security.class.php");
 /**
  * This is a Singleton class. You may only get an instance of this db class by calling getInstance()
  */
-class DbManager {
+class DbManager
+{
 
     private static $instance;
     private $host;
@@ -15,7 +16,8 @@ class DbManager {
     private $dbName;
     private $pdo;
 
-    private function __construct() {
+    private function __construct()
+    {
         $this->host = config::$dbHost;
         $this->username = config::$dbUsername;
         $this->password = config::$dbPassword;
@@ -23,7 +25,6 @@ class DbManager {
         try {
             $this->pdo = DbManager::getPdoInstance($this->host, $this->username, $this->password, $this->dbName);
         } catch (Exception $e) {
-            
         }
     }
 
@@ -35,7 +36,8 @@ class DbManager {
      * @param string $dbName - the name of the database
      * @return \PDO
      */
-    private static function getPdoInstance($host, $userId, $password, $dbName = null) {
+    private static function getPdoInstance($host, $userId, $password, $dbName = null)
+    {
         $dbNameParam = ($dbName == null) ? "" : ";dbname=$dbName";
         return new PDO("mysql:host=$host" . $dbNameParam, $userId, $password, array(
             PDO::ATTR_PERSISTENT => true
@@ -46,7 +48,8 @@ class DbManager {
      * Returns the singleton instance of the DatabaseManager
      * @return DatabaseManager - DatabaseManager Singleton
      */
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (!self::$instance) {
             self::$instance = new DbManager();
         }
@@ -62,7 +65,8 @@ class DbManager {
      * @param string $dbName - the name of the database
      * @return PDO
      */
-    public static function GetPdo($host = null, $userId = null, $password = null, $dbName = null) {
+    public static function GetPdo($host = null, $userId = null, $password = null, $dbName = null)
+    {
         if ($host == null || $userId == null) {
             //if the parameters were provided, return a one time pdo that is not the singleton
             if (!self::$instance) {
@@ -83,7 +87,8 @@ class DbManager {
      * @param string $dbName - the name of the database
      * @return boolean - true if the table exists, false if the table does not exist
      */
-    public static function TableExists($tableName, $host = null, $userId = null, $password = null, $dbName = null) {
+    public static function TableExists($tableName, $host = null, $userId = null, $password = null, $dbName = null)
+    {
         try {
             $results = DbManager::query("show tables like '$tableName'", $host, $userId, $password, $dbName);
             if (count($results) > 0) {
@@ -101,7 +106,8 @@ class DbManager {
      * @param type $sql
      * @param args  - any additional arguments passed to this function will be bound to the statement
      */
-    public static function NonQuery($sql) {
+    public static function NonQuery($sql)
+    {
         $pdo = DbManager::getPdo();
         $stmt = $pdo->prepare($sql);
         $args = func_get_args();
@@ -123,7 +129,8 @@ class DbManager {
      * @param args  - any additional arguments passed to this function will be bound to the statement
      * @return type
      */
-    public static function GetAllClassQuery($sql, $recordCount = null) {
+    public static function GetAllClassQuery($sql, $recordCount = null)
+    {
         $pdo = DbManager::getPdo();
         $stmt = $pdo->prepare($sql);
         $args = func_get_args();
@@ -133,7 +140,8 @@ class DbManager {
         return DbManager::FetchAllClass($stmt, $recordCount);
     }
 
-    public static function Query($sql, $host = null, $userId = null, $password = null, $dbName = null) {
+    public static function Query($sql, $host = null, $userId = null, $password = null, $dbName = null)
+    {
         $pdo = DbManager::getPdo($host, $userId, $password, $dbName);
         //if the pdo object could not be found, cancel the query gracefully
         if ($pdo == null) {
@@ -153,7 +161,8 @@ class DbManager {
      * @param type $sql
      * @param args  - any additional arguments passed to this function will be bound to the statement
      */
-    public static function SingleColumnQuery($sql) {
+    public static function SingleColumnQuery($sql)
+    {
         $pdo = DbManager::getPdo();
         $stmt = $pdo->prepare($sql);
         $args = func_get_args();
@@ -182,7 +191,8 @@ class DbManager {
      * @param string $sql - the query to execute
      * @return array|boolean - the first and only row in a single row query, or false if rownum <> 1
      */
-    public static function QueryGetSingleRow($sql, $host = null, $userId = null, $password = null, $dbName = null) {
+    public static function QueryGetSingleRow($sql, $host = null, $userId = null, $password = null, $dbName = null)
+    {
         $results = DbManager::query($sql, $host, $userId, $password, $dbName);
         if (count($results) === 1) {
             return $results[0];
@@ -196,7 +206,8 @@ class DbManager {
      * @param obj $stmt - the pdo handler for the statement. This MUST have already been executed
      * @return array of arrays
      */
-    public static function FetchAllAssociative($stmt) {
+    public static function FetchAllAssociative($stmt)
+    {
         $result = [];
         $val = $stmt->fetch(PDO::FETCH_ASSOC);
         while ($val != null) {
@@ -211,7 +222,8 @@ class DbManager {
      * @param obj $stmt -the pdo handler for the statement. This MUST have already been executed
      * @return array of arrays
      */
-    public static function FetchAllClass($stmt, $recordCount = null) {
+    public static function FetchAllClass($stmt, $recordCount = null)
+    {
         if (!$recordCount) {
             $result = $stmt->fetchAll(PDO::FETCH_CLASS);
             return $result;
@@ -225,12 +237,14 @@ class DbManager {
         }
     }
 
-    public static function FetchAllColumn($stmt, $colNum) {
+    public static function FetchAllColumn($stmt, $colNum)
+    {
         $result = $stmt->fetchAll(PDO::FETCH_COLUMN, $colNum);
         return $result;
     }
 
-    public static function GetSingleItem($sql, $host = null, $userId = null, $password = null, $dbName = null) {
+    public static function GetSingleItem($sql, $host = null, $userId = null, $password = null, $dbName = null)
+    {
         $result = DbManager::query($sql, $host, $userId, $password, $dbName);
         if ($result !== null && count($result) > 0) {
             $result = $result[0];
@@ -242,7 +256,8 @@ class DbManager {
         }
     }
 
-    public static function fetchSingleItem($stmt) {
+    public static function fetchSingleItem($stmt)
+    {
         $result = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
         if (count($result) === 1) {
             return $result[0];
@@ -259,7 +274,8 @@ class DbManager {
      * @param type $object
      * @return boolean
      */
-    public static function WriteObjectToTable($tableName, $keyName, $object) {
+    public static function WriteObjectToTable($tableName, $keyName, $object)
+    {
         $sql = "update $tableName set ";
         $comma = '';
         foreach ($object as $key => $value) {
@@ -284,7 +300,8 @@ class DbManager {
      * @param type $list
      * @return type
      */
-    public static function GenerateInStatement($list, $wrapInQuotes = true) {
+    public static function GenerateInStatement($list, $wrapInQuotes = true)
+    {
         return DbManager::InOrNotIn($list, true, true, $wrapInQuotes);
     }
 
@@ -295,11 +312,13 @@ class DbManager {
      * @param type $inLength
      * @return boolean|string - false if failure, the in stmt if success
      */
-    public static function GenerateNotInStatement($list, $wrapInQuotes = null, $inLength = 1000) {
+    public static function GenerateNotInStatement($list, $wrapInQuotes = null, $inLength = 1000)
+    {
         return DbManager::InOrNotIn($list, false, false, $wrapInQuotes, $inLength);
     }
 
-    public static function InOrNotIn($list, $useInInsteadOfNotIn = true, $useOrInsteadOfAnd = true, $wrapInQuotes = false, $inLength = 1000) {
+    public static function InOrNotIn($list, $useInInsteadOfNotIn = true, $useOrInsteadOfAnd = true, $wrapInQuotes = false, $inLength = 1000)
+    {
         if (count($list) == 0) {
             return false;
         }
@@ -340,7 +359,8 @@ class DbManager {
      * @param array $params The array of substitution parameters
      * @return string The interpolated query
      */
-    public static function InterpolateQuery($query, $params) {
+    public static function InterpolateQuery($query, $params)
+    {
         $keys = array();
         $values = $params;
 
@@ -365,7 +385,4 @@ class DbManager {
 
         return $query;
     }
-
 }
-
-?>
