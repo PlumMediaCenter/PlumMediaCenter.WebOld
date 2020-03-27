@@ -124,6 +124,9 @@ abstract class Video
 
     public static function GetVideos($videoIds)
     {
+        if (count($videoIds) === 0) {
+            return [];
+        }
         $rows = Queries::GetVideosById($videoIds);
         //if no video was found, nothing more can be done
         if ($rows === false) {

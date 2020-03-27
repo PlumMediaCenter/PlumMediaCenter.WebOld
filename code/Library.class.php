@@ -367,7 +367,7 @@ class Library
             //create the new category
             $categories[$categoryName] = new Category($categoryName, $videoIds, $categoryTitle);
             //merge this category's video IDs into the full list
-            array_merge($allVideoIds, $videoIds);
+            $allVideoIds = array_merge($allVideoIds, $videoIds);
         }
 
         $distinctVideoIds = distinct($allVideoIds);
