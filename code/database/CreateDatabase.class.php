@@ -71,7 +71,8 @@ class CreateDatabase
         '0.3.42',
         '0.3.43',
         '0.3.44',
-        '0.3.45'
+        '0.3.45',
+        '0.3.46'
     ];
 
     function __construct($rootUsername, $rootPassword, $dbHost)
@@ -436,6 +437,15 @@ class CreateDatabase
                 foreign key(video_id) references video(video_id),
                 primary key(video_id, genre),
                 index (genre)
+            );
+        ");
+    }
+
+    function db0_3_46()
+    {
+        DbManager::NonQuery("
+            alter table video add(
+                sort_title varchar(100)
             );
         ");
     }

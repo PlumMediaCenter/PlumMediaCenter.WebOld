@@ -6,7 +6,6 @@ angular.module('app').controller('AdminController', ['$timeout', '$window', 'glo
             //properties
             serverVersionNumber: undefined,
             //api
-            clearCache: clearCache,
             fetchMissingMetadata: fetchMissingMetadata,
             generateLibrary: generateLibrary,
             updateApplication: updateApplication
@@ -15,15 +14,6 @@ angular.module('app').controller('AdminController', ['$timeout', '$window', 'glo
 
         getVideoCounts();
         getServerVersionNumber();
-
-        function clearCache() {
-            var n = notify('Clearing cache', 'info');
-            api.clearCache().then(function(){
-                notify('Cache has been cleared', 'success');
-            }).catch(function(err){
-                notify('There was an error clearing the cache', 'danger');
-            });
-        }
 
         function generateLibrary() {
             var n = notify('Generating library', 'info');

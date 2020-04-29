@@ -1,6 +1,5 @@
 <?php
 //clear the cache
-include 'ClearCache.php';
 header('Content-Type: application/json');
 
 $startSeconds = time();
@@ -13,7 +12,6 @@ $l = new Library();
 $result->successLoadingFromDatabase = $l->loadFromFilesystem();
 $result->successWritingToDb = $l->writeToDb();
 $result->success = $result->successLoadingFromDatabase && $result->successWritingToDb;
-Library::ClearCache();
 
 echo json_encode($result);
 

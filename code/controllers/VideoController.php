@@ -23,21 +23,22 @@ class VideoController {
         return $videos[0];
     }
 
-    static function GetVideos($videoIds = [], $sortByTitle = true) {
+    static function GetVideos($videoIds = []) {
         if (count($videoIds) === 0) {
             return [];
         }
         $inStatement = "video_id " . DbManager::GenerateInStatement($videoIds, false);
-        $videoRows = DbManager::GetAllClassQuery(
-                        "select * from video where $inStatement");
+        $videoRows = DbManager::GetAllClassQuery("
+            select 
+                * 
+            from 
+                video 
+            where 
+                $inStatement
+            order by sort_title asc
+        ");
 
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
-        if ($sortByTitle) {
-            VideoController::SortVideosByTitle($videos);
-        } else {
-            //sort the videos by the provided videoId list
-            $videos = VideoController::SortVideosByVideoId($videos, $videoIds);
-        }
         VideoController::RepairRelativeUrls($videos);
         return $videos;
     }
@@ -61,12 +62,16 @@ class VideoController {
             return [];
         }
         $inStatement = DbManager::GenerateInStatement($videoIds, false);
-        $videoRows = DbManager::GetAllClassQuery(
-                        "select * "
-                        . "from video "
-                        . "where video_id $inStatement and media_type = '" . Enumerations::MediaType_Movie . "'");
+        $videoRows = DbManager::GetAllClassQuery("
+            select 
+                * 
+            from 
+                video 
+            where 
+                video_id $inStatement and media_type = '" . Enumerations::MediaType_Movie . "'
+            order by sort_title asc
+        ");
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
-        VideoController::SortVideosByTitle($videos);
         VideoController::RepairRelativeUrls($videos);
         return $videos;
     }
@@ -92,12 +97,16 @@ class VideoController {
             return [];
         }
         $inStatement = "video_id " . DbManager::GenerateInStatement($videoIds, false) . " and ";
-        $videoRows = DbManager::GetAllClassQuery(
-                        "select * "
-                        . "from video "
-                        . "where $inStatement media_type = '" . Enumerations::MediaType_TvShow . "'");
+        $videoRows = DbManager::GetAllClassQuery("
+            select 
+                * 
+            from 
+                video 
+            where 
+                $inStatement media_type = '" . Enumerations::MediaType_TvShow . "'
+            order by sort_title asc
+        ");
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
-        VideoController::SortVideosByTitle($videos);
         VideoController::RepairRelativeUrls($videos);
         return $videos;
     }
@@ -123,16 +132,20 @@ class VideoController {
      * @return type
      */
     static function GetTvEpisodes($videoIds) {
-        $inStatement = "video_id " . DbManager::GenerateInStatement($videoIds, false) . " and ";
+        $inStatement = "video.video_id " . DbManager::GenerateInStatement($videoIds, false) . " and ";
 
         //get all movies and tv shows from the db
-        $videoRows = DbManager::GetAllClassQuery(
-                        "select * "
-                        . " from video, tv_episode "
-                        . " where video.video_id = tv_episode.video_id "
-                        . " and video.video_id $inStatement"
-                        . " and tv_show_video_id = $tvShowVideoId "
-                        . " and video.media_type = '" . Enumerations::MediaType_TvEpisode . "'");
+        $videoRows = DbManager::GetAllClassQuery("
+            select * 
+            from 
+                video join
+                tv_episode on tv_episode.video_id = video.videoId
+            where
+                video.video_id $inStatement
+                tv_episode.tv_show_video_id = $tvShowVideoId 
+                v.media_type = '" . Enumerations::MediaType_TvEpisode . "'
+            
+        ");
         $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
         $videos = PropertyMappings::MapMany($videos, PropertyMappings::$episodeMapping);
         VideoController::SortEpisodes($videos);
@@ -228,10 +241,6 @@ class VideoController {
         return $videos;
     }
 
-    static function SortVideosByTitle(&$videos) {
-        usort($videos, array("VideoController", 'CmpByName'));
-    }
-
     static function SortVideosByVideoId($videos, $videoIds) {
         $result = [];
         foreach ($videoIds as $videoId) {
@@ -247,25 +256,6 @@ class VideoController {
 
     static function SortEpisodes($videos) {
         usort($videos, array("VideoController", 'CmpEpisodes'));
-    }
-
-    static function CmpByName($a, $b) {
-        if (isset($a) && isset($b) && isset($a->title) && isset($b->title)) {
-            //remove 'The' from the front
-            $aName = trim(strtolower($a->title));
-            $bName = trim(strtolower($b->title));
-
-            if (strpos($aName, 'the') === 0) {
-                $aName = substr($aName, 4);
-            }
-            if (strpos($bName, 'the') === 0) {
-                $bName = substr($bName, 4);
-            }
-
-            return strcmp($aName, $bName);
-        } else {
-            return true;
-        }
     }
 
     static function CmpEpisodes($a, $b) {

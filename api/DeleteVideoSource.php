@@ -12,8 +12,5 @@ $id = isset($data["id"]) ? $data["id"] : "";
 //delete the source
 $result = Queries::DeleteVideoSource($id);
 
-//clear the cache
-Library::ClearCache();
-
 echo json_encode($result);
 ?>

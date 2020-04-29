@@ -304,6 +304,30 @@ abstract class Video
         return self::CalculateTitle($this->fullPath);
     }
 
+    public function getSortTitle()
+    {
+        $sortTitle = $this->title;
+
+        //remove all quotemarks
+        $sortTitle = preg_replace('/\'/', '', $sortTitle);
+        //remove any leading "the"
+        $sortTitle = preg_replace('/^the\\s/i', '', $sortTitle);
+        //remove consecutive spaces with single
+        $sortTitle = preg_replace('/\\s{2,}/i', ' ', $sortTitle);
+
+        //pad and standardize leading numbers
+        if (preg_match('/^(\\d+(?:[\\.,]?\\d+)?)/', $sortTitle, $match)) {
+            $leadingNumber = $match[1];
+            //remove periods and commas
+            $leadingNumber = preg_replace('/,|\./', '', $leadingNumber);
+            //pad the number to 
+            $leadingNumber = str_pad($leadingNumber, 6, '0', STR_PAD_LEFT);
+            $sortTitle = $leadingNumber . substr($sortTitle, strlen($match[1]));
+        }
+
+        return $sortTitle;
+    }
+
     /**
      * Get the name and year from the video, separately. This is used mainly for metadata fetching
      * @param $name - the name of the video
@@ -587,10 +611,10 @@ abstract class Video
 
         //if this is a video that does not yet exist in the database, create a new video
         if ($videoId === -1) {
-            $success = Queries::insertVideo($this->title, $this->plot, $this->mpaa, $this->year, $this->getUrl(), $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->getPosterLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->getActualSdPosterUrl(), $this->getActualHdPosterUrl());
+            $success = Queries::insertVideo($this->title, $this->getSortTitle(), $this->plot, $this->mpaa, $this->year, $this->getUrl(), $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->getPosterLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->getActualSdPosterUrl(), $this->getActualHdPosterUrl());
         } else {
             //this is an existing video that needs to be updated. update it
-            $success = Queries::updateVideo($videoId, $this->title, $this->plot, $this->mpaa, $this->year, $this->getUrl(), $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->getPosterLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->getActualSdPosterUrl(), $this->getActualHdPosterUrl());
+            $success = Queries::updateVideo($videoId, $this->title, $this->getSortTitle(), $this->plot, $this->mpaa, $this->year, $this->getUrl(), $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->getPosterLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->getActualSdPosterUrl(), $this->getActualHdPosterUrl());
         }
         $this->videoId = $this->getVideoId(true);
         //clear the tags for this video
