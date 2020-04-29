@@ -320,28 +320,12 @@ class Library
             $categoryNames = Library::GetCategoryNames();
         }
 
-        $nonCacheCategories = ['Recently Watched'];
-        $disableCache = true;
         $lib = new Library();
         $allVideoIds = [];
 
         $categories = [];
         foreach ($categoryNames as $categoryName) {
-            $cacheName = str_replace(':', '-', "category-$categoryName");
             $categoryTitle = $categoryName;
-            if (
-                $disableCache === false &&
-                Library::CacheExists($cacheName) &&
-                in_array($categoryName, $nonCacheCategories) === false
-            ) {
-                $categories[$categoryName] = Library::GetFromCache($cacheName);
-            }
-
-            // if we already have this category in the list, don't get it again
-            if (isset($categories[$categoryName])) {
-                continue;
-            }
-
             $videoIds = [];
 
             if ($categoryName === 'Recently Watched') {
@@ -384,41 +368,6 @@ class Library
         }
         return $result;
     }
-
-    public static function CacheExists($cacheName)
-    {
-        $cachePath = dirname(__FILE__) . '/../cache/' . $cacheName;
-        return file_exists($cachePath);
-    }
-
-    public static function GetFromCache($cacheName)
-    {
-        $cachePath = dirname(__FILE__) . '/../cache/' . $cacheName;
-        return json_decode(file_get_contents($cachePath));
-    }
-
-    public static function PutCache($cacheName, $obj)
-    {
-        if (!file_exists(dirname(__FILE__) . '/../cache/')) {
-            mkdir(dirname(__FILE__) . '/../cache/', 0777, true);
-        }
-        $cachePath = dirname(__FILE__) . '/../cache/' . $cacheName;
-        file_put_contents($cachePath, json_encode($obj));
-    }
-
-    public static function ClearCache()
-    {
-        $dir = dirname(__FILE__) . '/../cache/';
-        foreach (glob($dir . '/*') as $file) {
-            if (is_dir($file)) {
-                rrmdir($file);
-            } else {
-                unlink($file);
-            }
-        }
-    }
-
-
 
     /**
      * Takes a list of videoIDs and reduces them to tv show and movie ids (converts the episode ids to a single tv show id

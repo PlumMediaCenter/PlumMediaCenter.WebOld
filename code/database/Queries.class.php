@@ -155,19 +155,19 @@ class Queries
         }
     }
 
-    public static function GetVideoIdsForListName($listName)
+    public static function GetVideoIdsForListName($listName, $sortMethod = 'title')
     {
+        $sortColumn = $sortMethod === 'title' ? 'v.title' : 'li.display_order';
         $pdo = DbManager::getPdo();
         if (Queries::$stmtGetVideoIdsForListName == null) {
             $sql = "  
-                select video_id
-                from list_item
-                where list_id in (
-                    select list_id
-                    from list
-                    where name = :listName
-                )
-				order by display_order asc
+                select li.video_id
+                from 
+                    list_item li join
+                    list l on l.list_id = li.list_id join
+                    video v on v.video_id = li.video_id
+                where l.name = :listName
+				order by $sortColumn asc
             ";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtGetVideoIdsForListName = $stmt;
@@ -1222,9 +1222,12 @@ class Queries
     public static function GetVideoIdsForGenre($genre)
     {
         $videoIds = DbManager::SingleColumnQuery("
-            select video_id
-            from video_genre
-            where genre = ?
+            select g.video_id
+            from 
+                video_genre g join 
+                video v on v.video_id = g.video_id
+            where genre = 'Documentary'
+            order by lower(v.title) asc
         ", $genre);
         return arrayToInt($videoIds);
     }
