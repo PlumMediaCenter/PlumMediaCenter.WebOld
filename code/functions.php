@@ -243,68 +243,46 @@ function getVideoMetadataRow($v)
     return $row;
 }
 
-function getBaseUrl()
+/**
+ * Replace placeholders in a url
+ */
+function hydrateUrl($url)
 {
-    return BASE_URL;
-    $context = trim($context);
-    $pos = strpos($context, "/");
-
-    //if the first character of $context is the slash, remove it
-    if ($pos !== false && $pos === 0) {
-        $context = substr($context, 1);
-    }
-
-    //if the url was not provided, use the current url
-    if ($url === null) {
-        $url = url();
-    }
-    //context should be a series of folder names with slashes in between and a slash at the end. 
-    //The actual url may have a filename at the end of it. if this is the case, remove the filename
-    $endingSlashPos = strrpos($url, "/");
-    //if the ending slash position is NOT at the end of the string, then there is a filename at the end of this url. remove it.
-    if ($endingSlashPos === false || $endingSlashPos + 1 !== strlen($url)) {
-        $url = dirname($url) . "/";
-    }
-
-    //if the context has a filename in front of it, remove the filename
-    //context should be a series of folder names with slashes in between and a slash at the end. 
-    //The actual url may have a filename at the end of it. if this is the case, remove the filename
-    $endingSlashPos = strrpos($context, "/");
-    //if the ending slash position is NOT at the end of the string, then there is a filename at the end of this url. remove it.
-    if ($endingSlashPos === false || $endingSlashPos + 1 !== strlen($context)) {
-        $context = dirname($context) . "/";
-    }
-    //$url =str_replace($context, '', $url);
-    //now walk backwards in each portion of the context, piece by piece. This allows us to provide a context that may be more detailed than 
-    //the url requires (such as going to a root directory insted of rootDirectory/FileName
-    $contexts = explode("/", $context);
-    foreach ($contexts as $c) {
-        $c = "$c/";
-        $len = strlen($c);
-        $pos = strpos($url, $c);
-        //if the current context portion is at the end of the url, rip it off
-        if ($pos + $len === strlen($url)) {
-            $url = substr($url, 0, $pos);
-        }
+    if (strpos($url, '${host}') !== false) {
+        $baseUrl = hostUrl();
+        $url = str_replace('${host}', $baseUrl, $url);
     }
     return $url;
 }
 
+$__BASE_URL = null;
+function getBaseUrl()
+{
+    global $__BASE_URL;
+    if ($__BASE_URL == null) {
+        $baseUrl = hostUrl();
+        $folderName =  basename(dirname(__DIR__));
+        //get the name of the folder for this application. Assumes the site is not hosted multiple folders deep
+        $__BASE_URL =  "$baseUrl/$folderName/";
+    }
+    return $__BASE_URL;
+}
+
 /**
- *  Returns the current url
+ *  Returns the url to the current host (including port if applicable
  * @return string - the url of the current page
  */
-function url()
+function hostUrl()
 {
     $pageURL = 'http';
-    if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
-        $pageURL .= "s";
+    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+        $pageURL .= 's';
     }
-    $pageURL .= "://";
-    if ($_SERVER["SERVER_PORT"] != "80") {
-        $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
+    $pageURL .= '://';
+    if ($_SERVER['SERVER_PORT'] != '80' && $_SERVER['SERVER_PORT'] != '443') {
+        $pageURL .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'];
     } else {
-        $pageURL .= $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
+        $pageURL .= $_SERVER['SERVER_NAME'];
     }
     return $pageURL;
 }
@@ -317,6 +295,24 @@ function fileUrl($fullFilePath)
 {
     $realpath = str_replace('\\', '/', dirname($fullFilePath));
     return str_replace($_SERVER['DOCUMENT_ROOT'], '', $realpath);
+}
+
+/**
+ * Given a path, replace all slashes with unix slashes
+ */
+function standardizePath($path)
+{
+    return str_replace("\\", "/", realpath($path)) . "/";
+}
+
+/**
+ * Replace common invalid characters that appear in the url with the urlencoded alternatives (like space and singlequote)
+ */
+function EncodeUrl($url)
+{
+    $url = str_replace(" ", "%20", $url);
+    $url = str_replace("'", "%27", $url);
+    return $url;
 }
 
 //used from http://nadeausoftware.com/node/79
@@ -436,7 +432,7 @@ function arrayToInt($array)
 {
     $result = [];
     foreach ($array as $item) {
-        $result[] = (int)$item;
+        $result[] = (int) $item;
     }
     return $result;
 }

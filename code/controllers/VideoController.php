@@ -331,7 +331,7 @@ class VideoController {
 
     static function RepairRelativeUrls($videos) {
         $bUrl = getBaseUrl();
-        //for each poster url, if its a relative url, append the server url to the beginning of it
+        //for each poster url, if its a relative url, prepend the base url
         foreach ($videos as $video) {
             if (strpos($video->sdPosterUrl, "http") === false && $video->sdPosterUrl !== null) {
                 $video->sdPosterUrl = $bUrl . $video->sdPosterUrl;

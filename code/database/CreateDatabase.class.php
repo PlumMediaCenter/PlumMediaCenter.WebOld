@@ -448,5 +448,10 @@ class CreateDatabase
                 sort_title varchar(100)
             );
         ");
+
+        DbManager::NonQuery("
+            alter table video drop column video_source_path;
+            alter table video drop column video_source_url;
+        ");
     }
 }
