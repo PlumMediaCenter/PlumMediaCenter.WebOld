@@ -13,81 +13,6 @@ include_once(dirname(__FILE__) . "/functions.php");
 
 abstract class Video
 {
-    function __construct($sourceUrl, $sourcePath, $videoPath)
-    {
-        $this->sourceUrl = $sourceUrl;
-        //sanitize the sourcePath
-        $this->sourcePath = standardizePath($sourcePath);
-        //sanitize video path
-        $this->videoPath = standardizePath($videoPath);
-
-        $this->folderPath = pathinfo($this->videoPath, PATHINFO_DIRNAME);
-        $this->folderPathRelative = dirname(
-            str_replace($sourcePath, '', $this->folderPath)
-        );
-
-        //store the RELATIVE url for the video (based on its source url)
-        $this->url = encodeUrl($this->folderPathRelative);
-
-        $this->url = Video::GetRelativeVideoUrl($sourcePath, $this->fullPath);
-        $this->sdPosterUrl = $this->getRelativeSdPosterUrl();
-        $this->hdPosterUrl = $this->getActualHdPosterUrl();
-        $this->getActualSdPosterUrl();
-        $this->title = $this->getVideoName();
-        $this->posterModifiedDate = $this->getPosterLastModifiedDate();
-    }
-
-    /**
-     * The absolute url to the root of the video source
-     */
-    public $sourceUrl;
-    /**
-     * The absolute fs path to the root of the video source
-     */
-    public $sourcePath;
-    /**
-     * The absolute fs path to the video file for videos (movies/episodes) and the show folder for tv shows
-     */
-    public $videoPath;
-    /**
-     * The absolute path to the parent folder for the video
-     */
-    public $folderPath;
-    /**
-     * The path to the video's containing folder, relative to the video source
-     */
-    public $folderPathRelative;
-
-    public $mediaType;
-    public $title;
-    public $plot = "";
-    public $year;
-    /**
-     * Relative URL to the video file
-     */
-    public $url;
-    /**
-     * Relative URL to the SD poster
-     */
-    public $sdPosterUrl;
-    /**
-     * Relative URL to the HD poster
-     */
-    public $hdPosterUrl;
-    public $posterModifiedDate;
-    public $mpaa = "N/A";
-    public $genres = [];
-    public $keywords = [];
-    public $actorList = [];
-    public $videoId = null;
-    protected $metadata;
-    protected $onlineVideoDatabaseId;
-    protected $metadataFetcher;
-    protected $filetype = null;
-    protected $metadataLoaded = false;
-    public $_runtime = -1;
-    public $runtime = 0;
-    protected $nfoReader = null;
 
     abstract function fetchMetadata();
 
@@ -111,6 +36,51 @@ abstract class Video
     const NoMetadata = "0000-00-00 00:00:00"; //this will never be a date found in the metadata, so use it for invalid metadata dates
     const SdImageWidth = 110; //110x150 
     const HdImageWidth = 210; // 210x270
+
+    protected $videoSourceUrl;
+    protected $videoSourcePath;
+    protected $fullPath;
+    public $mediaType;
+    public $title;
+    public $plot = "";
+    public $year;
+    public $url;
+    public $sdPosterUrl;
+    public $hdPosterUrl;
+    public $posterModifiedDate;
+    public $mpaa = "N/A";
+    public $genres = [];
+    public $keywords = [];
+    public $actorList = [];
+    public $videoId = null;
+    protected $metadata;
+    protected $onlineVideoDatabaseId;
+    protected $metadataFetcher;
+    protected $filetype = null;
+    protected $metadataLoaded = false;
+    public $_runtime = -1;
+    public $runtime = 0;
+    protected $nfoReader = null;
+
+    function __construct($videoSourceUrl, $videoSourcePath, $fullPath)
+    {
+        //save the important stuff
+        $this->videoSourceUrl = $videoSourceUrl;
+        $this->videoSourcePath = str_replace("\\", "/", realpath($videoSourcePath)) . "/";
+        $this->fullPath = str_replace("\\", "/", realpath($fullPath));
+
+        //if this video does not exist, throw a new exception
+        if (file_exists($this->fullPath) === false) {
+            throw new Exception("Video file does not exist at path $this->fullPath");
+        }
+
+        //calculate anything extra that is needed
+        $this->url = encodeUrl($this->getUrl());
+        $this->sdPosterUrl = $this->getActualSdPosterUrl();
+        $this->hdPosterUrl = $this->getActualHdPosterUrl();
+        $this->title = $this->getVideoName();
+        $this->posterModifiedDate = $this->getPosterLastModifiedDate();
+    }
 
     public function getFullPath()
     {
@@ -385,16 +355,16 @@ abstract class Video
         return $url;
     }
 
-    /**
-     * Get the relative URL to this video file, relative to its source's base url
-     */
-    public static function GetRelativeVideoUrl($videoSourcePathAbsolute, $videoPathAbsolute)
+    protected function getFullPathToContainingFolder()
     {
-        $relativePath = str_replace($videoSourcePathAbsolute, "", $videoPathAbsolute);
-        $url = encodeUrl($relativePath);
-        return $url;
+        return pathinfo($this->fullPath, PATHINFO_DIRNAME) . "/";
     }
 
+    protected function getFullUrlToContainingFolder()
+    {
+        $dirname = pathinfo($this->url, PATHINFO_DIRNAME);
+        return $dirname . "/";
+    }
 
     /**
      * Determines the nfo file path. Does NOT check to make sure the file exists.
@@ -458,33 +428,66 @@ abstract class Video
 
     function getPosterPath()
     {
-        return $this->folderPath . "folder.jpg";
+        return $this->getFullPathToContainingFolder() . "folder.jpg";
     }
 
     function getSdPosterPath()
     {
-        return $this->folderPath . "folder.sd.jpg";
+        return $this->getFullPathToContainingFolder() . "folder.sd.jpg";
     }
 
     function getHdPosterPath()
     {
-        return $this->folderPath . "folder.hd.jpg";
+        return $this->getFullPathToContainingFolder() . "folder.hd.jpg";
     }
 
     function getPosterUrl()
     {
-        return encodeUrl($this->folderPath . "folder.jpg");
+        return encodeUrl($this->getFullUrlToContainingFolder() . "folder.jpg");
     }
 
-    function getRelativeSdPosterUrl()
+    function getSdPosterUrl()
     {
-        return encodeUrl($this->relativeFolderPath . "folder.sd.jpg");
+        return encodeUrl($this->getFullUrlToContainingFolder() . "folder.sd.jpg");
     }
 
     function getHdPosterUrl()
     {
-        $hdPosterUrl = $this->folderPath . "folder.hd.jpg";
+        $hdPosterUrl = $this->getFullUrlToContainingFolder() . "folder.hd.jpg";
         return encodeUrl($hdPosterUrl);
+    }
+
+    function getActualHdPosterUrl()
+    {
+        if ($this->hdPosterExists() == true) {
+            return encodeUrl($this->getHdPosterUrl());
+        } else {
+            $url = 'assets/img/posters/' . $this->getBlankPosterName() . ".hd.jpg";
+            $url = url_remove_dot_segments($url);
+            return encodeUrl($url);
+        }
+    }
+
+    function getActualSdPosterUrl()
+    {
+        if ($this->sdPosterExists() == true) {
+            return encodeUrl($this->getSdPosterUrl());
+        } else {
+            $url = "assets/img/posters/" . $this->getBlankPosterName() . ".sd.jpg";
+            $url = url_remove_dot_segments($url);
+            return encodeUrl($url);
+        }
+    }
+
+    function getActualPosterUrl()
+    {
+        if ($this->PosterExists() == true) {
+            return encodeUrl($this->getPosterUrl());
+        } else {
+            $url = "assets/img/posters/" . $this->getBlankPosterName() . ".jpg";
+            $url = url_remove_dot_segments($url);
+            return encodeUrl($url);
+        }
     }
 
     function getBlankPosterName()
@@ -598,45 +601,10 @@ abstract class Video
 
         //if this is a video that does not yet exist in the database, create a new video
         if ($videoId === -1) {
-            $success = Queries::insertVideo(
-                $this->title,
-                $this->getSortTitle(),
-                $this->plot,
-                $this->mpaa,
-                $this->year,
-                $this->getRelativeVideoUrl(),
-                $this->fullPath,
-                $this->getFiletype(),
-                $this->mediaType,
-                $this->getNfoLastModifiedDate(),
-                $this->getPosterLastModifiedDate(),
-                $this->videoSourcePath,
-                $this->videoSourceUrl,
-                $this->getLengthInSeconds(),
-                $this->getActualSdPosterUrl(),
-                $this->getActualHdPosterUrl()
-            );
+            $success = Queries::insertVideo($this->title, $this->getSortTitle(), $this->plot, $this->mpaa, $this->year, $this->getUrl(), $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->getPosterLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->getActualSdPosterUrl(), $this->getActualHdPosterUrl());
         } else {
             //this is an existing video that needs to be updated. update it
-            $success = Queries::updateVideo(
-                $videoId,
-                $this->title,
-                $this->getSortTitle(),
-                $this->plot,
-                $this->mpaa,
-                $this->year,
-                $this->getRelativeVideoUrl(),
-                $this->fullPath,
-                $this->getFiletype(),
-                $this->mediaType,
-                $this->getNfoLastModifiedDate(),
-                $this->getPosterLastModifiedDate(),
-                $this->videoSourcePath,
-                $this->videoSourceUrl,
-                $this->getLengthInSeconds(),
-                $this->sdPosterExists()? $this->sdPosterUrl: null,
-                $this->hdPosterExists()? $this->hdPosterUrl: null,
-            );
+            $success = Queries::updateVideo($videoId, $this->title, $this->getSortTitle(), $this->plot, $this->mpaa, $this->year, $this->getUrl(), $this->fullPath, $this->getFiletype(), $this->mediaType, $this->getNfoLastModifiedDate(), $this->getPosterLastModifiedDate(), $this->videoSourcePath, $this->videoSourceUrl, $this->getLengthInSeconds(), $this->getActualSdPosterUrl(), $this->getActualHdPosterUrl());
         }
         $this->videoId = $this->getVideoId(true);
         //clear the tags for this video

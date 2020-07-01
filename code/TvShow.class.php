@@ -1,15 +1,12 @@
 <?php
 
 include_once(dirname(__FILE__) . "/../config.php");
-
 include_once("MetadataFetcher/TvShowMetadataFetcher.class.php");
 include_once("NfoReader/TvShowNfoReader.class.php");
-
 include_once(dirname(__FILE__) . "/../lib/php-mp4info/MP4Info.php");
-
-
 include_once("Video.class.php");
 include_once("TvEpisode.class.php");
+include_once("functions.php");
 
 class TvShow extends Video {
 
@@ -33,7 +30,7 @@ class TvShow extends Video {
         if (substr($url, -1) != "/") {
             $url .= "/";
         }
-        return Video::encodeUrl($url);
+        return encodeUrl($url);
     }
 
     /**
@@ -100,7 +97,7 @@ class TvShow extends Video {
 
     protected function getFullUrlToContainingFolder() {
         $url = $this->getUrl();
-        return Video::encodeUrl($url);
+        return encodeUrl($url);
     }
 
     /**

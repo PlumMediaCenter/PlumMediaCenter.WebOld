@@ -3,6 +3,7 @@
 include_once(dirname(__FILE__) . "/Video.class.php");
 include_once(dirname(__FILE__) . "/MetadataFetcher/TvEpisodeMetadataFetcher.class.php");
 include_once(dirname(__FILE__) . "/NfoReader/TvEpisodeNfoReader.class.php");
+require_once(dirname(__FILE__) . '/functions.php');
 
 class TvEpisode extends Video
 {
@@ -105,8 +106,8 @@ class TvEpisode extends Video
         //replace the video file name and extension with the image one.
         $url = str_replace($filenameAndExt, "$filename.$imgExt", $url);
         //replace the url encoded filename and extension with the image one
-        $url = str_replace(Video::EncodeUrl($filenameAndExt), "$filename.$imgExt", $url);
-        return Video::EncodeUrl($url);
+        $url = str_replace(encodeUrl($filenameAndExt), "$filename.$imgExt", $url);
+        return encodeUrl($url);
     }
 
     function getPosterPath($imgExt = "jpg")
@@ -131,12 +132,12 @@ class TvEpisode extends Video
 
     function getSdPosterUrl()
     {
-        return Video::EncodeUrl($this->getPosterUrl("sd.jpg"));
+        return encodeUrl($this->getPosterUrl("sd.jpg"));
     }
 
     function getHdPosterUrl()
     {
-        return Video::EncodeUrl($this->getPosterUrl("hd.jpg"));
+        return encodeUrl($this->getPosterUrl("hd.jpg"));
     }
 
     function getSeasonEpisodeNumber()

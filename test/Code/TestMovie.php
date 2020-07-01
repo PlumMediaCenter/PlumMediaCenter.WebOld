@@ -2,6 +2,7 @@
 
 require_once(dirname(__FILE__) . '/../simpletest/autorun.php');
 require_once(dirname(__FILE__) . '/../../code/Video.class.php');
+require_once(dirname(__FILE__) . '/../../code/functions.php');
 
 class TestMovie extends UnitTestCase {
 
@@ -63,7 +64,7 @@ class TestMovie extends UnitTestCase {
      */
     function testEncodeUrl() {
         $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
-        $this->assertEqual(Video::EncodeUrl("http://domain.com/Hello World"), "http://domain.com/Hello%20World");
+        $this->assertEqual(encodeUrl("http://domain.com/Hello World"), "http://domain.com/Hello%20World");
     }
 
     function testPosters() {
