@@ -6,8 +6,8 @@ include_once("MetadataFetcher/MovieMetadataFetcher.class.php");
 
 class Movie extends Video {
 
-    function __construct($videoSourceUrl, $videoSourcePath, $fullPath) {
-        parent::__construct($videoSourceUrl, $videoSourcePath, $fullPath);
+    function __construct($videoSourceId, $videoSourceUrl, $videoSourcePath, $fullPath) {
+        parent::__construct($videoSourceId, $videoSourceUrl, $videoSourcePath, $fullPath);
         $this->mediaType = Enumerations::MediaType_Movie;
     }
 

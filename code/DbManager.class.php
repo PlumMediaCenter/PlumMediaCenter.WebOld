@@ -123,6 +123,17 @@ class DbManager
         }
     }
 
+    public static function QueryManyObject($sql)
+    {
+        $pdo = DbManager::getPdo();
+        $stmt = $pdo->prepare($sql);
+        $args = func_get_args();
+        //remove the first argument, which is the $sql stmt
+        array_shift($args);
+        $stmt->execute($args);
+        return DbManager::FetchAllClass($stmt);
+    }
+
     /**
      * Assume that each row is a class. return the results as an array of classes
      * @param type $sql

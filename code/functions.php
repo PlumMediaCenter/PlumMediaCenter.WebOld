@@ -24,6 +24,18 @@ function getLibrary()
 }
 
 /**
+ * Ensure the provided text ends with a trailing forward slash
+ */
+function ensureTrailingSlash($text)
+{
+    if (endsWith($text, '/') === false) {
+        return $text . '/';
+    } else {
+        return $text;
+    }
+}
+
+/**
  *  Gets a list of all directories found within the $baseDirectory provided
  * @param type $baseDirectory - the full path to the directory that will be searched
  * @return array - list of full paths to each directory found in the provided base directory
@@ -51,8 +63,12 @@ function getFoldersFromDirectory($baseDirectory)
 
 function endsWith($haystack, $needle)
 {
-    // search forward starting from end minus needle length characters
-    return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
+    $length = strlen($needle);
+    if ($length == 0) {
+        return true;
+    }
+
+    return (substr($haystack, -$length) === $needle);
 }
 
 /**
@@ -399,12 +415,17 @@ function filterProperties($array, $propertiesToKeep)
 {
     $result = [];
     foreach ($array as $key => $item) {
+        $wasObject = false;
         if (is_object($item)) {
+            $wasObject = true;
             $item = (array) $item;
         }
         $filteredItem = [];
         foreach ($propertiesToKeep as $property) {
             $filteredItem[$property] = $item[$property];
+        }
+        if ($wasObject) {
+            $filteredItem = (object) $filteredItem;
         }
         $result[$key] = $filteredItem;
     }

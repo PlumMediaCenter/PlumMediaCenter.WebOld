@@ -463,6 +463,8 @@ class CreateDatabase
         DbManager::NonQuery("
             alter table video modify sd_poster_url varchar(767);
             alter table video modify hd_poster_url varchar(767);
+            alter table video add video_source_id int;
+            alter table video add foreign key(video_source_id) references video_source(id);
         ");
     }
 }

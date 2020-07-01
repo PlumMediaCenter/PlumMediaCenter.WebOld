@@ -1,7 +1,7 @@
 <?php
-include_once(dirname(__FILE__) . '/../code/Library.class.php');
+include_once(dirname(__FILE__) . '/../code/managers/VideoCategoryManager.php');
 
-$categoryNames = Library::GetCategoryNames();
+$categoryNames = VideoCategoryManager::GetCategoryNames();
 
 header('Content-Type: application/json');
 

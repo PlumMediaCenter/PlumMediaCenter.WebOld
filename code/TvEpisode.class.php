@@ -17,9 +17,9 @@ class TvEpisode extends Video
     public $showFilePath;
     public $tvShow;
 
-    function __construct($videoSourceUrl, $videoSourcePath, $fullPath)
+    function __construct($videoSourceId, $videoSourceUrl, $videoSourcePath, $fullPath)
     {
-        parent::__construct($videoSourceUrl, $videoSourcePath, $fullPath);
+        parent::__construct($videoSourceId, $videoSourceUrl, $videoSourcePath, $fullPath);
         $this->mediaType = Enumerations::MediaType_TvEpisode;
         $this->seasonNumber = $this->getSeasonNumber();
         $this->episodeNumber = $this->getEpisodeNumber();
@@ -46,7 +46,7 @@ class TvEpisode extends Video
     {
         $this->tvShow = isset($this->tvShow) ? $this->tvShow : null;
         if ($this->tvShow == null) {
-            $this->tvShow = new TvShow($this->videoSourceUrl, $this->videoSourcePath, $this->showFilePath);
+            $this->tvShow = new TvShow($this->videoSourceId, $this->videoSourceUrl, $this->videoSourcePath, $this->showFilePath);
         }
         return $this->tvShow;
     }
@@ -96,18 +96,11 @@ class TvEpisode extends Video
         $this->generateHdPoster(TvEpisode::EpisodeHdImageWidth);
     }
 
-    function getPosterUrl($imgExt = "jpg")
+    function getRelativePosterUrl($imgExt = "jpg")
     {
         //the poster is located in the same directory as the file, named the same except for the extension
-        $url = $this->getUrl();
-        $filename = pathinfo($this->fullPath, PATHINFO_FILENAME);
-        $ext = pathinfo($this->fullPath, PATHINFO_EXTENSION);
-        $filenameAndExt = "$filename.$ext";
-        //replace the video file name and extension with the image one.
-        $url = str_replace($filenameAndExt, "$filename.$imgExt", $url);
-        //replace the url encoded filename and extension with the image one
-        $url = str_replace(encodeUrl($filenameAndExt), "$filename.$imgExt", $url);
-        return encodeUrl($url);
+        $relativePosterPath = str_replace($this->videoSourcePath, "", $this->getPosterPath($imgExt));
+        return encodeUrl($relativePosterPath);
     }
 
     function getPosterPath($imgExt = "jpg")
@@ -130,14 +123,14 @@ class TvEpisode extends Video
         return $this->getPosterPath("hd.jpg");
     }
 
-    function getSdPosterUrl()
+    function getRelativeSdPosterUrl()
     {
-        return encodeUrl($this->getPosterUrl("sd.jpg"));
+        return $this->getRelativePosterUrl("sd.jpg");
     }
 
-    function getHdPosterUrl()
+    function getRelativeHdPosterUrl()
     {
-        return encodeUrl($this->getPosterUrl("hd.jpg"));
+        return $this->getRelativePosterUrl("hd.jpg");
     }
 
     function getSeasonEpisodeNumber()
