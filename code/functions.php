@@ -308,7 +308,7 @@ function standardizePath($path)
 /**
  * Replace common invalid characters that appear in the url with the urlencoded alternatives (like space and singlequote)
  */
-function EncodeUrl($url)
+function encodeUrl($url)
 {
     $url = str_replace(" ", "%20", $url);
     $url = str_replace("'", "%27", $url);

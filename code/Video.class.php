@@ -15,13 +15,9 @@ abstract class Video
 {
     function __construct($sourceUrl, $sourcePath, $videoPath)
     {
-        //throw if this video does not exist
-        if (file_exists($videoPath) === false) {
-            throw new Exception("Video does not exist at path $videoPath");
-        }
-
+        $this->sourceUrl = $sourceUrl;
         //sanitize the sourcePath
-        $sourcePath = standardizePath($sourcePath);
+        $this->sourcePath = standardizePath($sourcePath);
         //sanitize video path
         $this->videoPath = standardizePath($videoPath);
 
@@ -30,42 +26,27 @@ abstract class Video
             str_replace($sourcePath, '', $this->folderPath)
         );
 
-        $this->url = encodeUrl($this->folderPathRelative
+        //store the RELATIVE url for the video (based on its source url)
+        $this->url = encodeUrl($this->folderPathRelative);
 
-
-        $this->url = Video::GetRelativeVideoUrl($videoSourcePath, $this->fullPath);
-        $this->sdPosterUrl = Video::GetRelativeSdPosterUrl();
-        $this->getActualSdPosterUrl();
+        $this->url = Video::GetRelativeVideoUrl($sourcePath, $this->fullPath);
+        $this->sdPosterUrl = $this->getRelativeSdPosterUrl();
         $this->hdPosterUrl = $this->getActualHdPosterUrl();
+        $this->getActualSdPosterUrl();
         $this->title = $this->getVideoName();
         $this->posterModifiedDate = $this->getPosterLastModifiedDate();
     }
 
-    abstract function fetchMetadata();
-
-    abstract function getMetadataFetcherClass();
-
-    public static function GetVideoMetadataFetcherClass($mediaType)
-    {
-        if ($mediaType === Enumerations::MediaType_Movie) {
-            $fetcher = new MovieMetadataFetcher();
-            $fetcher->setLanguage(config::$language);
-        } else {
-            $fetcher = new TvShowMetadataFetcher();
-        }
-        return $fetcher;
-    }
-
-    abstract protected function loadCustomMetadata();
-
-    abstract function getNfoReader();
-
-    const NoMetadata = "0000-00-00 00:00:00"; //this will never be a date found in the metadata, so use it for invalid metadata dates
-    const SdImageWidth = 110; //110x150 
-    const HdImageWidth = 210; // 210x270
-
     /**
-     * The absolute path to the video file
+     * The absolute url to the root of the video source
+     */
+    public $sourceUrl;
+    /**
+     * The absolute fs path to the root of the video source
+     */
+    public $sourcePath;
+    /**
+     * The absolute fs path to the video file for videos (movies/episodes) and the show folder for tv shows
      */
     public $videoPath;
     /**
@@ -73,14 +54,10 @@ abstract class Video
      */
     public $folderPath;
     /**
-     * The relative path for the parent folder for the video, relative to the video source
+     * The path to the video's containing folder, relative to the video source
      */
-    public $relativeFolderPath;
+    public $folderPathRelative;
 
-
-
-
-    protected $fullPath;
     public $mediaType;
     public $title;
     public $plot = "";
@@ -112,7 +89,28 @@ abstract class Video
     public $runtime = 0;
     protected $nfoReader = null;
 
+    abstract function fetchMetadata();
 
+    abstract function getMetadataFetcherClass();
+
+    public static function GetVideoMetadataFetcherClass($mediaType)
+    {
+        if ($mediaType === Enumerations::MediaType_Movie) {
+            $fetcher = new MovieMetadataFetcher();
+            $fetcher->setLanguage(config::$language);
+        } else {
+            $fetcher = new TvShowMetadataFetcher();
+        }
+        return $fetcher;
+    }
+
+    abstract protected function loadCustomMetadata();
+
+    abstract function getNfoReader();
+
+    const NoMetadata = "0000-00-00 00:00:00"; //this will never be a date found in the metadata, so use it for invalid metadata dates
+    const SdImageWidth = 110; //110x150 
+    const HdImageWidth = 210; // 210x270
 
     public function getFullPath()
     {
@@ -382,7 +380,7 @@ abstract class Video
     {
         $relativePath = str_replace($this->videoSourcePath, "", $this->fullPath);
         $url = $this->videoSourceUrl . $relativePath;
-        $url = Video::EncodeUrl($url);
+        $url = encodeUrl($url);
         //encode the url and then restore the forward slashes and colons
         return $url;
     }
@@ -393,7 +391,7 @@ abstract class Video
     public static function GetRelativeVideoUrl($videoSourcePathAbsolute, $videoPathAbsolute)
     {
         $relativePath = str_replace($videoSourcePathAbsolute, "", $videoPathAbsolute);
-        $url = Video::EncodeUrl($relativePath);
+        $url = encodeUrl($relativePath);
         return $url;
     }
 
@@ -460,55 +458,33 @@ abstract class Video
 
     function getPosterPath()
     {
-        return $this->getFullPathToContainingFolder() . "folder.jpg";
+        return $this->folderPath . "folder.jpg";
     }
 
     function getSdPosterPath()
     {
-        return $this->getFullPathToContainingFolder() . "folder.sd.jpg";
+        return $this->folderPath . "folder.sd.jpg";
     }
 
     function getHdPosterPath()
     {
-        return $this->getFullPathToContainingFolder() . "folder.hd.jpg";
+        return $this->folderPath . "folder.hd.jpg";
     }
 
     function getPosterUrl()
     {
-        return Video::EncodeUrl($this->getFullUrlToContainingFolder() . "folder.jpg");
+        return encodeUrl($this->folderPath . "folder.jpg");
     }
 
     function getRelativeSdPosterUrl()
     {
-        return Video::EncodeUrl($this->getRelativeFolderUrl() . "folder.sd.jpg");
+        return encodeUrl($this->relativeFolderPath . "folder.sd.jpg");
     }
 
     function getHdPosterUrl()
     {
-        $hdPosterUrl = $this->getFullUrlToContainingFolder() . "folder.hd.jpg";
-        return Video::EncodeUrl($hdPosterUrl);
-    }
-
-    function getActualHdPosterUrl()
-    {
-        if ($this->hdPosterExists() == true) {
-            return Video::EncodeUrl($this->getHdPosterUrl());
-        } else {
-            $url = 'assets/img/posters/' . $this->getBlankPosterName() . ".hd.jpg";
-            $url = url_remove_dot_segments($url);
-            return Video::EncodeUrl($url);
-        }
-    }
-
-    function getActualPosterUrl()
-    {
-        if ($this->PosterExists() == true) {
-            return Video::EncodeUrl($this->getPosterUrl());
-        } else {
-            $url = "assets/img/posters/" . $this->getBlankPosterName() . ".jpg";
-            $url = url_remove_dot_segments($url);
-            return Video::EncodeUrl($url);
-        }
+        $hdPosterUrl = $this->folderPath . "folder.hd.jpg";
+        return encodeUrl($hdPosterUrl);
     }
 
     function getBlankPosterName()
@@ -658,8 +634,8 @@ abstract class Video
                 $this->videoSourcePath,
                 $this->videoSourceUrl,
                 $this->getLengthInSeconds(),
-                $this->getActualSdPosterUrl(),
-                $this->getActualHdPosterUrl()
+                $this->sdPosterExists()? $this->sdPosterUrl: null,
+                $this->hdPosterExists()? $this->hdPosterUrl: null,
             );
         }
         $this->videoId = $this->getVideoId(true);
@@ -899,7 +875,7 @@ abstract class Video
         }
         $url = $videoSourceUrl . $relativePath;
 
-        $url = Video::EncodeUrl($url);
+        $url = encodeUrl($url);
         //encode the url and then restore the forward slashes and colons
         return $url;
     }

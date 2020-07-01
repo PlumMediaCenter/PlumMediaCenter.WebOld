@@ -72,7 +72,8 @@ class CreateDatabase
         '0.3.43',
         '0.3.44',
         '0.3.45',
-        '0.3.46'
+        '0.3.46',
+        '0.3.47'
     ];
 
     function __construct($rootUsername, $rootPassword, $dbHost)
@@ -452,6 +453,16 @@ class CreateDatabase
         DbManager::NonQuery("
             alter table video drop column video_source_path;
             alter table video drop column video_source_url;
+        ");
+    }
+
+
+    function db0_3_47()
+    {
+        //make the poster urls nullable (we will supplement with relative url if missing)
+        DbManager::NonQuery("
+            alter table video modify sd_poster_url varchar(767);
+            alter table video modify hd_poster_url varchar(767);
         ");
     }
 }
