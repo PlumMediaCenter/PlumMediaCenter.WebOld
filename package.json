@@ -1,6 +1,6 @@
 {
   "name": "node-angular-seed",
-  "version": "0.3.35",
+  "version": "0.3.46",
   "description": "A Node.js angular seed project",
   "main": "server.js",
   "scripts": {
