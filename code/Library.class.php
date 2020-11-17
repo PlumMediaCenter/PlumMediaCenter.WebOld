@@ -329,6 +329,7 @@ class Library
 
         $resultVideoIds = [];
         $videoIdLookup = [];
+        $videoId = null;
         foreach ($videoRecords as $videoRecord) {
             if ($videoRecord->media_type === Enumerations::MediaType_Movie || $videoRecord->media_type === Enumerations::MediaType_TvShow) {
                 $videoId = $videoRecord->video_id;
@@ -349,12 +350,13 @@ class Library
         return $resultVideoIds;
     }
 
-     /**
+    /**
      * Add a new media item to the library
      * @param int $videoSourceId - if null, attempt to auto-detect it
      * @param string $path
      */
-    public static function AddNewMediaItem($videoSourceId, $path) {
+    public static function AddNewMediaItem($videoSourceId, $path)
+    {
         $newVideoIds = [];
         $realpath = realpath($path);
         //get a video source somehow
