@@ -126,33 +126,6 @@ class VideoController {
         return $video;
     }
 
-    /**
-     * Get a single movie with the specified videoId
-     * @param type $videoId
-     * @return type
-     */
-    static function GetTvEpisodes($videoIds) {
-        $inStatement = "video.video_id " . DbManager::GenerateInStatement($videoIds, false) . " and ";
-
-        //get all movies and tv shows from the db
-        $videoRows = DbManager::GetAllClassQuery("
-            select * 
-            from 
-                video join
-                tv_episode on tv_episode.video_id = video.videoId
-            where
-                video.video_id $inStatement
-                tv_episode.tv_show_video_id = $tvShowVideoId 
-                v.media_type = '" . Enumerations::MediaType_TvEpisode . "'
-            
-        ");
-        $videos = PropertyMappings::MapMany($videoRows, PropertyMappings::$videoMapping);
-        $videos = PropertyMappings::MapMany($videos, PropertyMappings::$episodeMapping);
-        VideoController::SortEpisodes($videos);
-        VideoController::RepairRelativeUrls($videos);
-        return $videos;
-    }
-
     public static function GetSearchSuggestions($search) {
         $results = [];
         $title = strtolower($search);
