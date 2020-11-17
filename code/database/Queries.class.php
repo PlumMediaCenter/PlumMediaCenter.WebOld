@@ -1226,7 +1226,7 @@ class Queries
             from 
                 video_genre g join 
                 video v on v.video_id = g.video_id
-            where genre = 'Documentary'
+            where genre = ?
             order by lower(v.title) asc
         ", $genre);
         return arrayToInt($videoIds);
