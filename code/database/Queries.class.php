@@ -1118,7 +1118,7 @@ class Queries
     private static function FetchAllSingleColumn($stmt, $colName, $cast = null)
     {
         $result = [];
-        $list = DbManager::FetchAllAssociative($stmt);
+        $list = DbManager::FetchAllAA($stmt);
         foreach ($list as $item) {
             $value =  $item[$colName];
             if ($cast == 'int') {
@@ -1132,7 +1132,7 @@ class Queries
     private static function FetchAllKeyValuePair($stmt, $keyColName, $valueColName)
     {
         $result = [];
-        $list = DbManager::FetchAllAssociative($stmt);
+        $list = DbManager::FetchAllAA($stmt);
         foreach ($list as $item) {
             $result[$item[$keyColName]] = $item[$valueColName];
         }

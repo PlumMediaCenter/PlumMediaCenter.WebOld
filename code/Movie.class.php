@@ -407,62 +407,6 @@ class Movie extends Video {
             return Video::GetVideoNfoPath($path);
         }
     }
-
-    /**
-     * Get the last modified date of the nfo file for this video, if one exists
-     * @param string $path
-     * @return type
-     */
-    static function GetMovieNfoLastModifiedDate($path) {
-        $nfoPath = Movie::GetMovieNfopath($path);
-        return getLastModifiedDate($nfoPath);
-    }
-
-    static function GenerateMoviePosters($videoPath) {
-        $posterPath = Movie::GetMoviePosterPath($videoPath);
-        $sdPosterPath = Video::GetVideoSdPosterPath($videoPath);
-        $hdPosterPath = Video::GetVideoHdPosterPath($videoPath);
-        Video::GeneratePoster($posterPath, $sdPosterPath, Video::SdImageWidth);
-        Video::GeneratePoster($posterPath, $hdPosterPath, Video::HdImageWidth);
-    }
-
-    public static function UpdateDbPosterDate($videoId, $videoPath) {
-        $movie = (object) [];
-        $movie->video_id = $videoId;
-        $posterPath = Movie::GetMoviePosterPath($videoPath);
-        $movie->poster_last_modified_date = getLastModifiedDate($posterPath);
-        DbManager::WriteObjectToTable('video', 'video_id', $movie);
-    }
-
-    static function SaveMovieNfoToDb($videoId, $path) {
-        $nfoPath = Movie::GetMovieNfoPath($path);
-        $movie = (object) [];
-        $reader = new MovieNfoReader();
-
-        $loadSuccess = $reader->loadFromFile($nfoPath);
-        //if the nfo reader loaded successfully, pull the important information into this class
-        if ($loadSuccess) {
-            //if the title was found, use it. otherwise, keep the filename tile that was loaded during the constructor
-            $movie->video_id = $videoId;
-            $movie->title = $reader->title;
-            $movie->plot = $reader->plot;
-            $movie->mpaa = $reader->mpaa;
-            $movie->metadata_last_modified_date = Movie::GetMovieNfoLastModifiedDate($path);
-            $movie->release_date = $reader->year;
-            $movie->running_time_seconds = $reader->runtime;
-
-            //update the movie record
-            $success = DbManager::WriteObjectToTable('video', 'video_id', $movie);
-
-            return $movie;
-        } else {
-            return false;
-        }
-    }
-
-    static function CleansePath($path) {
-        return str_replace("\\", "/", realpath($path));
-    }
 }
 
 ?>

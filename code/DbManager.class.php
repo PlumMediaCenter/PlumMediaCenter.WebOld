@@ -168,6 +168,23 @@ class DbManager
         }
     }
 
+    public static function QueryAA($sql, $host = null, $userId = null, $password = null, $dbName = null)
+    {
+        $pdo = DbManager::getPdo($host, $userId, $password, $dbName);
+        //if the pdo object could not be found, cancel the query gracefully
+        if ($pdo == null) {
+            return [];
+        }
+        $stmt = $pdo->prepare($sql);
+        $success = $stmt->execute();
+        //if the stmt failed execution, exit failure
+        if ($success === true) {
+            return DbManager::FetchAllAA($stmt);
+        } else {
+            return [];
+        }
+    }
+
     /**
      * @param type $sql
      * @param args  - any additional arguments passed to this function will be bound to the statement
@@ -217,7 +234,7 @@ class DbManager
      * @param obj $stmt - the pdo handler for the statement. This MUST have already been executed
      * @return array of arrays
      */
-    public static function FetchAllAssociative($stmt)
+    public static function FetchAllAA($stmt)
     {
         $result = [];
         $val = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -275,35 +292,6 @@ class DbManager
         } else {
             return false;
         }
-    }
-
-    /**
-     * Writes an object to the specified table. Assumes that each key in object is tableName 
-     * @param type $tableName
-     * @param type $keyName
-     * @param type $keyValue
-     * @param type $object
-     * @return boolean
-     */
-    public static function WriteObjectToTable($tableName, $keyName, $object)
-    {
-        $sql = "update $tableName set ";
-        $comma = '';
-        foreach ($object as $key => $value) {
-            $sql = "$sql $comma $key=:$value";
-            $comma = ',';
-        }
-        //if no properties are actually being updated, fail
-        if ($comma === '') {
-            return false;
-        }
-        $sql .= " where $keyName = :key";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(":key", $object[$keyName]);
-        foreach ($object as $key => $value) {
-            $stmt->bindParam(":$key", $value);
-        }
-        return $stmt->execute();
     }
 
     /**

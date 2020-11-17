@@ -1,6 +1,7 @@
 <?php
 
 include_once(dirname(__FILE__) . '/../functions.php');
+include_once(dirname(__FILE__) . '/../../vendor/autoload.php');
 
 
 /**
@@ -136,7 +137,6 @@ class VideoManager
         ", $tvShowVideoId);
 
         $videos = VideoManager::GetTvEpisodes($episodeIds);
-        // VideoController::SortEpisodes($videos);
         return $videos;
     }
 
@@ -205,5 +205,56 @@ class VideoManager
                 media_type = ?
         ", Enumerations::MediaType_TvShow);
         return $ids;
+    }
+
+
+    /**
+     * Get movie/show search suggestions for the given title, ordered in most-likely to least-likely.
+     */
+    public static function GetSearchSuggestions($title)
+    {
+        //get every show and movie name (exclude tv episodes)
+        $videos = DbManager::QueryAA("
+            select
+                video_id as videoId,
+                title
+            from 
+                video
+            where
+                media_type in('" . Enumerations::MediaType_TvShow . "', '" . Enumerations::MediaType_Movie . "')
+        ");
+
+        $fuse = new Fuse\Fuse($videos, [
+            'keys' => ['title'],
+            'threshold' => 0.04,
+            'tokenize' => true
+        ]);
+        $filteredVideos = $fuse->search($title);
+        $result = [];
+        foreach ($filteredVideos as $video) {
+            $result[] = (object)$video;
+        }
+        return $result;
+    }
+
+    /**
+     * Search for movies and shows by title
+     */
+    public static function SearchByTitle($title)
+    {
+        $suggestions = VideoManager::GetSearchSuggestions($title);
+        $videoIds = [];
+        $indexByVideoId = [];
+        foreach ($suggestions as $index => $suggestion) {
+            $videoIds[] = $suggestion->videoId;
+            $indexByVideoId[$suggestion->videoId] = $index;
+        }
+
+        $videos = VideoManager::GetVideos($videoIds);
+        //sort the videos based on the suggestion ID order
+        usort($videos, function ($a, $b) use ($indexByVideoId) {
+            return $indexByVideoId[$a->videoId] - $indexByVideoId[$b->videoId];
+        });
+        return $videos;
     }
 }
