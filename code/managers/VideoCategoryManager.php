@@ -41,7 +41,7 @@ class VideoCategoryManager
                 $videoIds = Queries::GetVideoIdsForGenre($categoryTitle);
             }
 
-        //create the new category
+            //create the new category
             $categories[$categoryName] = new Category($categoryName, $videoIds, $categoryTitle);
             //merge this category's video IDs into the full list
             $allVideoIds = array_merge($allVideoIds, $videoIds);
