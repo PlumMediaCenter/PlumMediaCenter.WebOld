@@ -2,10 +2,12 @@
 
 require_once(dirname(__FILE__) . '/../simpletest/autorun.php');
 require_once(dirname(__FILE__) . '/../../code/Video.class.php');
+require_once(dirname(__FILE__) . '/../../code/functions.php');
 
 class TestMovie extends UnitTestCase {
 
     private $video;
+    private $videoSourceId;
     private $videoSourceUrl;
     private $videoSourcePath;
     private $fullPath;
@@ -15,7 +17,7 @@ class TestMovie extends UnitTestCase {
     }
 
     function loadVideo() {
-        $this->video = new Movie($this->videoSourceUrl, $this->videoSourcePath, $this->fullPath);
+        $this->video = new Movie($this->videoSourceId, $this->videoSourceUrl, $this->videoSourcePath, $this->fullPath);
     }
 
     function loadMovie($halfPath) {
@@ -63,7 +65,7 @@ class TestMovie extends UnitTestCase {
      */
     function testEncodeUrl() {
         $v = $this->loadMovie("FakeMovie1/FakeMovie1.mp4");
-        $this->assertEqual(Video::EncodeUrl("http://domain.com/Hello World"), "http://domain.com/Hello%20World");
+        $this->assertEqual(encodeUrl("http://domain.com/Hello World"), "http://domain.com/Hello%20World");
     }
 
     function testPosters() {
@@ -74,10 +76,6 @@ class TestMovie extends UnitTestCase {
         $this->assertEqual($v->getPosterPath(), "$folder/folder.jpg");
         $this->assertEqual($v->getSdPosterPath(), "$folder/folder.sd.jpg");
         $this->assertEqual($v->getHdPosterPath(), "$folder/folder.hd.jpg");
-        //test poster urls
-        $this->assertEqual($v->getPosterUrl(), "$folderUrl/folder.jpg");
-        $this->assertEqual($v->getSdPosterUrl(), "$folderUrl/folder.sd.jpg");
-        $this->assertEqual($v->getHdPosterUrl(), "$folderUrl/folder.hd.jpg");
     }
 
     /**

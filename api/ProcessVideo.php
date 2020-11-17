@@ -1,6 +1,6 @@
 <?php
+include_once(dirname(__FILE__) . '/../code/Video.class.php');
 
-require_once(dirname(__FILE__) . '/../code/LibraryGenerator.class.php');
 $videoId = isset($_GET['videoId']) ? $_GET['videoId'] : null;
 if ($videoId == null) {
     throw new Exception('no videoId provided');

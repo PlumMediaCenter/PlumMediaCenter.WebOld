@@ -11,6 +11,14 @@ class ComposerStaticInit94a20b696b5a93c65721a66c7a21fa87
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '5a6c01c6b890a6f9e22f6a75f33535c3' => __DIR__ . '/..' . '/loilo/fuse/src/Bitap/matched_indices.php',
+        'cb0217d87bec02191ba2d2597c16f1a7' => __DIR__ . '/..' . '/loilo/fuse/src/Bitap/pattern_alphabet.php',
+        '07e8a1a5effbc28d6b452bec2948bb65' => __DIR__ . '/..' . '/loilo/fuse/src/Bitap/regex_search.php',
+        'd28900056f66e13fa4e269caa8a4cd1c' => __DIR__ . '/..' . '/loilo/fuse/src/Bitap/score.php',
+        '7679d68ce06dec48d343f560108145d2' => __DIR__ . '/..' . '/loilo/fuse/src/Bitap/search.php',
+        'ae18f0d7f1399203de0fc444e860fdd9' => __DIR__ . '/..' . '/loilo/fuse/src/Helpers/deep_value.php',
+        'ea2171ac7e455f713fa8445ea3919da7' => __DIR__ . '/..' . '/loilo/fuse/src/Helpers/get.php',
+        '59ff57762b50378bb54688b7561c609b' => __DIR__ . '/..' . '/loilo/fuse/src/Helpers/is_list.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -38,6 +46,10 @@ class ComposerStaticInit94a20b696b5a93c65721a66c7a21fa87
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
+        ),
+        'F' => 
+        array (
+            'Fuse\\' => 5,
         ),
         'D' => 
         array (
@@ -90,6 +102,10 @@ class ComposerStaticInit94a20b696b5a93c65721a66c7a21fa87
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
+        'Fuse\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/loilo/fuse/src',
+        ),
         'Doctrine\\Common\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
@@ -100,11 +116,16 @@ class ComposerStaticInit94a20b696b5a93c65721a66c7a21fa87
         ),
     );
 
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit94a20b696b5a93c65721a66c7a21fa87::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit94a20b696b5a93c65721a66c7a21fa87::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit94a20b696b5a93c65721a66c7a21fa87::$classMap;
 
         }, null, ClassLoader::class);
     }

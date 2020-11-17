@@ -1,6 +1,6 @@
 angular.module('app').controller('EditVideoSourceController', [
     '$scope', 'globals', 'VideoSource', '$state', '$stateParams', 'enums',
-    function($scope, globals, VideoSource, $state, $stateParams, enums) {
+    function ($scope, globals, VideoSource, $state, $stateParams, enums) {
         var vm = angular.extend(this, {
             isLoading: false,
             isSaving: false,
@@ -12,8 +12,11 @@ angular.module('app').controller('EditVideoSourceController', [
             //api
             reset: reset,
             save: save,
-            sayHi: function() {
+            sayHi: function () {
                 alert('hi');
+            },
+            isValidatingUrl: () => {
+                return vm.form.baseUrl.$pending && vm.form.baseUrl.$pending.urlExists;
             }
         });
 
@@ -25,10 +28,10 @@ angular.module('app').controller('EditVideoSourceController', [
             //if an id was provided, go look up the settings for that videoSource
             if ($stateParams.id && $stateParams.id > 0) {
                 vm.isLoading = true;
-                VideoSource.getById($stateParams.id).then(function(videoSource) {
+                VideoSource.getById($stateParams.id).then(function (videoSource) {
                     vm.videoSource = videoSource;
                     vm.originalVideoSource = angular.copy(videoSource);
-                }).finally(function() {
+                }).finally(function () {
                     vm.isLoading = false;
                 });
             }
@@ -41,12 +44,12 @@ angular.module('app').controller('EditVideoSourceController', [
 
         function save() {
             vm.isSaving = true;
-            VideoSource.save(vm.videoSource).then(function(videoSource) {
+            VideoSource.save(vm.videoSource).then(function (videoSource) {
                 vm.isSaving = false;
                 loadVideoSource();
                 notify('Saved video source', 'success');
-                $state.go('videoSources', {}, {reload: true});
-            }, function() {
+                $state.go('videoSources', {}, { reload: true });
+            }, function () {
                 //handle the error
                 vm.isSaving = false;
             });

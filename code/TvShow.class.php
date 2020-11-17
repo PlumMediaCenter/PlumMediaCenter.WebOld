@@ -1,25 +1,24 @@
 <?php
 
 include_once(dirname(__FILE__) . "/../config.php");
-
 include_once("MetadataFetcher/TvShowMetadataFetcher.class.php");
 include_once("NfoReader/TvShowNfoReader.class.php");
-
 include_once(dirname(__FILE__) . "/../lib/php-mp4info/MP4Info.php");
-
-
 include_once("Video.class.php");
 include_once("TvEpisode.class.php");
+include_once("functions.php");
 
-class TvShow extends Video {
+class TvShow extends Video
+{
 
     public $seasons = [];
     //holds each episode in a list instead of grouped by seasons
     public $episodes = [];
     public $episodeCount = 0;
 
-    function __construct($baseUrl, $basePath, $fullPath) {
-        parent::__construct($baseUrl, $basePath, $fullPath);
+    function __construct($videoSourceId, $baseUrl, $basePath, $fullPath)
+    {
+        parent::__construct($videoSourceId, $baseUrl, $basePath, $fullPath);
         //the full path for this video needs to have a slash at the end of it. if it doesn't, then append it
         if (substr($this->fullPath, -1) != "/") {
             $this->fullPath .= "/";
@@ -27,19 +26,18 @@ class TvShow extends Video {
         $this->mediaType = Enumerations::MediaType_TvShow;
     }
 
-    function getUrl() {
-        $url = parent::getUrl();
-        //the url path for this video needs to have a slash at the end of it. if it doesn't, then append it
-        if (substr($url, -1) != "/") {
-            $url .= "/";
-        }
-        return Video::encodeUrl($url);
+    function getRelativeFolderPath()
+    {
+        return ensureTrailingSlash(
+            str_replace($this->videoSourcePath, "", $this->fullPath)
+        );
     }
 
     /**
      * Forces this show and every episode to retrieve its videoId from the database
      */
-    function retrieveVideoIds() {
+    function retrieveVideoIds()
+    {
         $this->getVideoId();
         foreach ($this->episodes as $episode) {
             $episode->getVideoId();
@@ -50,7 +48,8 @@ class TvShow extends Video {
      *  Get the array of all tv episodes
      * @return TvEpisode
      */
-    function getEpisodes() {
+    function getEpisodes()
+    {
         return $this->episodes;
     }
 
@@ -59,7 +58,8 @@ class TvShow extends Video {
      * in this class
      * @param type $episode
      */
-    function addEpisode($episode) {
+    function addEpisode($episode)
+    {
         if (isset($this->seasons[$episode->seasonNumber]) === false) {
             $this->seasons[$episode->seasonNumber] = [];
         }
@@ -71,12 +71,13 @@ class TvShow extends Video {
      * Set the list of tv episodes for this show based on
      * @param array of objects - $seasons - arrays of episodes grouped  into seasons
      */
-    function setSeasons($seasons) {
+    function setSeasons($seasons)
+    {
         foreach ($seasons as $season) {
             $s = [];
             //look at each episode in this season
             foreach ($season as $episode) {
-                $e = new TvEpisode($episode->videoSourceUrl, $episode->videoSourcePath, $episode->fullPath);
+                $e = new TvEpisode($episode->videoSourceId, $episode->videoSourceUrl, $episode->videoSourcePath, $episode->fullPath);
                 $s[$episode->episodeNumber] = $e;
                 $this->episodes[] = $e;
             }
@@ -88,7 +89,8 @@ class TvShow extends Video {
      * For tv Series, there is no file, it's just the folder itself. So for this class, return the folder to itself as the containing folder.
      * @return type
      */
-    protected function getFullPathToContainingFolder() {
+    protected function getFullPathToContainingFolder()
+    {
         $slash = "";
         //the full path for this video needs to have a slash at the end of it. if it doesn't, then append it
         if (substr($this->fullPath, -1) != "/") {
@@ -98,20 +100,17 @@ class TvShow extends Video {
         return $path;
     }
 
-    protected function getFullUrlToContainingFolder() {
-        $url = $this->getUrl();
-        return Video::encodeUrl($url);
-    }
-
     /**
      * Override this function since no tv show will ever have a file to scan.
      * @return boolean - always will be false for tv shows
      */
-    public function getLengthInSecondsFromFile() {
+    public function getLengthInSecondsFromFile()
+    {
         return false;
     }
 
-    protected function getLengthInSecondsFromMetadata() {
+    protected function getLengthInSecondsFromMetadata()
+    {
         //make sure the metadata has been loaded
         $this->loadMetadata();
         if ($this->runtime != null) {
@@ -125,7 +124,8 @@ class TvShow extends Video {
     /**
      * Loads the episodes associated with this tv show into this tv show based on information found in the db
      */
-    function loadEpisodesFromDatabase() {
+    function loadEpisodesFromDatabase()
+    {
         $this->seasons = [];
         $episodeInfoList = Queries::GetTvEpisodeVideoIdsForShow($this->getVideoId());
         foreach ($episodeInfoList as $info) {
@@ -149,7 +149,8 @@ class TvShow extends Video {
      * @param TvEpisode $tvEpisode
      * @return TvEpisode
      */
-    function remainingEpisodes($tvEpisode) {
+    function remainingEpisodes($tvEpisode)
+    {
         //load all tv episodes
         if (count($this->episodes) == 0) {
             $this->loadEpisodesFromDatabase();
@@ -173,24 +174,25 @@ class TvShow extends Video {
     /**
      * Loads episodes for this tv show from within the folder designated as this tv show's root path
      */
-    function loadTvEpisodesFromFilesystem() {
+    function loadTvEpisodesFromFilesystem()
+    {
         $seasonList = [];
         //get the list of videos from this tv series 
         $videosList = getVideosFromDir($this->fullPath);
 
         $this->episodeCount = isset($this->episodeCount) ? $this->episodeCount : 0;
-        
+
         //spin through every folder in the source location
         foreach ($videosList as $fullPathToFile) {
             if (
                 strpos(strtolower($fullPathToFile), ".extra.") !== false ||
                 strpos(strtolower($fullPathToFile), '/extras/') !== false ||
                 strpos(strtolower($fullPathToFile), '\\extras\\') !== false
-                ) {
+            ) {
                 continue;
             }
             //create a new Episode object
-            $episode = new TvEpisode($this->videoSourceUrl, $this->videoSourcePath, $fullPathToFile, Enumerations::MediaType_Movie);
+            $episode = new TvEpisode($this->videoSourceId, $this->videoSourceUrl, $this->videoSourcePath, $fullPathToFile, Enumerations::MediaType_Movie);
 
             $episode->runtime = $this->getLengthInSeconds();
             //give the video the show's file path
@@ -230,7 +232,8 @@ class TvShow extends Video {
      * Load any TvShow specific metadata here. It will be called from the parent loadMetadata function
      * ***DO NOT CALL THIS FUNCTION UNLESS YOU PRELOAD THE NfoReader object with metadata
      */
-    protected function loadCustomMetadata() {
+    protected function loadCustomMetadata()
+    {
         //we are assuming that the reader has already been loaded with the metadata file, since this function should only be called from 
         $reader = $this->getNfoReader();
         $this->year = $reader->year !== null ? $reader->year : "";
@@ -241,19 +244,22 @@ class TvShow extends Video {
      * Determines the nfo file path. Does NOT check to make sure the file exists.
      * @return type
      */
-    function getNfoPath() {
+    function getNfoPath()
+    {
         $nfoPath = "$this->fullPath/tvshow.nfo";
         return $nfoPath;
     }
 
-    function getNfoReader() {
+    function getNfoReader()
+    {
         if ($this->nfoReader == null) {
             $this->nfoReader = new TvShowNfoReader();
         }
         return $this->nfoReader;
     }
 
-    function prepForJsonification() {
+    function prepForJsonification()
+    {
         parent::prepForJsonification();
         foreach ($this->episodes as $episode) {
             $episode->prepForJsonification();
@@ -266,7 +272,8 @@ class TvShow extends Video {
      * @param int $finishedBuffer - the number of seconds that a video must be near to the end of the video in order to retrieve the next episode
      * @return video - false if failure, the next episode if success
      */
-    function nextEpisode($finishedBuffer = 45) {
+    function nextEpisode($finishedBuffer = 45)
+    {
         $episode = TvShow::GetNextEpisodeToWatch($this->videoId);
         return $episode;
     }
@@ -277,7 +284,8 @@ class TvShow extends Video {
      * @param int $finishedBuffer - the number of seconds that a video must be near to the end of the video in order to retrieve the next episode
      * @return video - false if failure, the next episode if success
      */
-    static function GetNextEpisodeToWatch($videoId, $finishedBuffer = 45) {
+    static function GetNextEpisodeToWatch($videoId, $finishedBuffer = 45)
+    {
         $videoId = TvShow::GetNextEpisodeIdToWatch($videoId, $finishedBuffer);
         return Video::GetVideo($videoId);
     }
@@ -288,20 +296,21 @@ class TvShow extends Video {
      * @param int $finishedBuffer - the number of seconds that a video must be near to the end of the video in order to retrieve the next episode
      * @return int  - negative 1 if failure, the video id of the next video if success
      */
-    static function GetNextEpisodeIdToWatch($videoId, $finishedBuffer = 45) {
+    static function GetNextEpisodeIdToWatch($videoId, $finishedBuffer = 45)
+    {
         //load this video
         $v = Video::GetVideo($videoId);
         //the video is a tv episode, get the tv show for that episode
         if ($v->mediaType == Enumerations::MediaType_TvEpisode) {
             $tvShowVideoId = $v->getTvShowVideoIdFromVideoTable();
         } else
-        //the video is a tv show. use this video id
-        if ($v->mediaType == Enumerations::MediaType_TvShow) {
-            $tvShowVideoId = $videoId;
-        } else {
-            //the video associated with the videoId provided is not a tv episode or tv show, nothing more can be done
-            return -1;
-        }
+            //the video is a tv show. use this video id
+            if ($v->mediaType == Enumerations::MediaType_TvShow) {
+                $tvShowVideoId = $videoId;
+            } else {
+                //the video associated with the videoId provided is not a tv episode or tv show, nothing more can be done
+                return -1;
+            }
         $result = Queries::getLastEpisodeWatched(config::$defaultUserId, $tvShowVideoId);
         $lastVideoIdWatched = $result === false ? -1 : $result->video_id;
         $lastWatchedSecondsProgress = $result === false ? 0 : $result->time_in_seconds;
@@ -317,7 +326,7 @@ class TvShow extends Video {
             $videoLengthInSeconds = $lastEpisodeWatched->getLengthInSeconds();
             if ($videoLengthInSeconds === false) {
                 //we couldn't determine the lengh of the video from its metadata. 
-            } else if($videoLengthInSeconds === -1 && intval($lastWatchedSecondsProgress) !== -1){
+            } else if ($videoLengthInSeconds === -1 && intval($lastWatchedSecondsProgress) !== -1) {
                 return $lastVideoIdWatched;
             }
             //if the $lastWatchedSecondsProgress is farther than $finishedBuffer away from the end, return THIS videoId
@@ -382,7 +391,8 @@ class TvShow extends Video {
      * @param int $tvShowVideoId - the videoId of the tv show
      * @return Video
      */
-    public static function GetFirstEpisode($tvShowVideoId) {
+    public static function GetFirstEpisode($tvShowVideoId)
+    {
         //get the list of all tv episodes in this tv show.
         $e = Queries::GetEpisodesInTvShow($tvShowVideoId);
         $videoId = ($e != false) ? $e[0]->video_id : -1;
@@ -394,7 +404,8 @@ class TvShow extends Video {
      * @param int $tvShowVideoId - the videoId of the tv show
      * @return Video
      */
-    public static function GetLastEpisode($tvShowVideoId) {
+    public static function GetLastEpisode($tvShowVideoId)
+    {
         //get the list of all tv episodes in this tv show.
         $e = Queries::GetEpisodesInTvShow($tvShowVideoId);
         $idx = count($e);
@@ -402,14 +413,16 @@ class TvShow extends Video {
         return Video::GetVideo($videoId);
     }
 
-    function getFolderName() {
+    function getFolderName()
+    {
         return pathinfo($this->fullPath, PATHINFO_FILENAME);
     }
 
     /**
      * Returns a new instance of the metadata fetcher for this video type. 
      */
-    public function getMetadataFetcherClass() {
+    public function getMetadataFetcherClass()
+    {
         return new TvShowMetadataFetcher();
     }
 
@@ -420,7 +433,8 @@ class TvShow extends Video {
      * @param int $onlineVideoDatabaseId - the id of the online video database used to reference this video. 
      * @return boolean - true if totally successful, false if unsuccessful
      */
-    function fetchMetadata($onlineVideoDatabaseId = null) {
+    function fetchMetadata($onlineVideoDatabaseId = null)
+    {
 
         //delete the existing metadata file before starting
         $this->deleteMetadata();
@@ -713,5 +727,4 @@ class TvShow extends Video {
         $success = $bytesWritten !== false;
         return $success;
     }
-
 }

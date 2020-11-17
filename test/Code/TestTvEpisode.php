@@ -6,6 +6,7 @@ require_once(dirname(__FILE__) . '/../../code/Video.class.php');
 class TestTvEpisode extends UnitTestCase {
 
     private $video;
+    private $videoSourceId;
     private $videoSourceUrl;
     private $videoSourcePath;
     private $fullPath;
@@ -15,7 +16,7 @@ class TestTvEpisode extends UnitTestCase {
     }
 
     function loadVideo() {
-        $this->video = new TvEpisode($this->videoSourceUrl, $this->videoSourcePath, $this->fullPath);
+        $this->video = new TvEpisode($this->videoSourceId, $this->videoSourceUrl, $this->videoSourcePath, $this->fullPath);
     }
 
     function loadTvShow($halfPath) {

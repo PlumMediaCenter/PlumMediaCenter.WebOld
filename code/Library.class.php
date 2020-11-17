@@ -181,7 +181,7 @@ class Library
                 // echo "<br/>Processing video file: " . $fullPathToFile;
 
                 //create a new Movie object
-                $video = new Movie($source->base_url, $source->location, $fullPathToFile);
+                $video = new Movie($source->id, $source->base_url, $source->location, $fullPathToFile);
                 $this->movies[] = $video;
                 $this->videos[] = $video;
                 $this->movieCount++;
@@ -212,7 +212,7 @@ class Library
             foreach ($listOfAllFilesInSource as $fullPathToFile) {
                 //if the current file is a video file that we can add to our library
                 //create a new Movie object
-                $tvShow = new TvShow($source->base_url, $source->location, $fullPathToFile);
+                $tvShow = new TvShow($source->id, $source->base_url, $source->location, $fullPathToFile);
 
                 //tell the tv show to scan subdirectories for tv episodes
                 $tvShow->loadTvEpisodesFromFilesystem();
@@ -291,82 +291,6 @@ class Library
         return $totalSuccess;
     }
 
-    public static function GetCategoryNames()
-    {
-        //get the full list of categories for this user
-        $userCategoryNames = DbManager::SingleColumnQuery("
-            select concat('list:', name)
-            from list 
-            where user_id = " . Security::GetUserId() . "
-                and name <> 'My List'
-        ");
-
-        //get the distinct list of keywords
-        $keywordNames = DbManager::SingleColumnQuery("
-            select distinct concat('genre:', genre)
-            from video_genre
-            order by genre asc
-        ");
-
-        //ignore 'Recently Updated' for now because the library generator auto-saves every video by default
-        return array_merge(['Recently Watched', 'list:My List'], $userCategoryNames, ['Recently Added', 'TV Shows', 'Movies'], $keywordNames);
-    }
-
-    public static function GetCategories($categoryNames = null)
-    {
-        if ($categoryNames === null) {
-            $categoryNames = Library::GetCategoryNames();
-        }
-
-        $lib = new Library();
-        $allVideoIds = [];
-
-        $categories = [];
-        foreach ($categoryNames as $categoryName) {
-            $categoryTitle = $categoryName;
-            $videoIds = [];
-
-            if ($categoryName === 'Recently Watched') {
-                $videoIds = Library::GetRecentlyWatchedVideoIds();
-            } else if ($categoryName === 'Recently Added') {
-                $videoIds = Library::GetRecentlyAddedVideoIds(30);
-            } else if ($categoryName === 'Recently Updated') {
-                $videoIds = Library::GetRecentlyUpdatedVideoIds(30);
-            } else if ($categoryName === "TV Shows") {
-                $lib->loadTvShowsFromDatabase(false);
-                $videoIds = pickProp($lib->tvShows, 'videoId', 'int');
-            } else if ($categoryName === "Movies") {
-                $lib->loadMoviesFromDatabase();
-                $videoIds = pickProp($lib->movies, 'videoId', 'int');
-            } else if (strpos($categoryName, 'list:') === 0) {
-                $categoryTitle = substr($categoryName, strlen('list:'));
-                $videoIds = Queries::GetVideoIdsForListName($categoryTitle);
-            } else if (strpos($categoryName, 'genre:') === 0) {
-                $categoryTitle = substr($categoryName, strlen('genre:'));
-                $videoIds = Queries::GetVideoIdsForGenre($categoryTitle);
-            }
-
-            //create the new category
-            $categories[$categoryName] = new Category($categoryName, $videoIds, $categoryTitle);
-            //merge this category's video IDs into the full list
-            $allVideoIds = array_merge($allVideoIds, $videoIds);
-        }
-
-        $distinctVideoIds = distinct($allVideoIds);
-        $result = (object) [];
-        $videos = Video::GetVideos($distinctVideoIds);
-        //make a map of videos indexed by videoId
-        $result->videos = [];
-        foreach ($videos as $video) {
-            $result->videos[$video->videoId]  = $video;
-        }
-        $result->categories = [];
-        foreach ($categoryNames as $categoryName) {
-            $result->categories[] = $categories[$categoryName];
-        }
-        return $result;
-    }
-
     /**
      * Takes a list of videoIDs and reduces them to tv show and movie ids (converts the episode ids to a single tv show id
      */
@@ -425,44 +349,112 @@ class Library
         return $resultVideoIds;
     }
 
-    public static function GetRecentlyAddedVideoIds($numberOfDays)
-    {
-        $recentVideoIds = DbManager::SingleColumnQuery("
-            select 
-                video_id 
-            from 
-                video 
-            where 
-                date_added between DATE_SUB(NOW(), INTERVAL $numberOfDays DAY) AND NOW() 
-            order by date_added desc 
-            limit 50
-        ");
-        $videoIds = Library::ReduceVideoIds($recentVideoIds);
-        return $videoIds;
-    }
+     /**
+     * Add a new media item to the library
+     * @param int $videoSourceId - if null, attempt to auto-detect it
+     * @param string $path
+     */
+    public static function AddNewMediaItem($videoSourceId, $path) {
+        $newVideoIds = [];
+        $realpath = realpath($path);
+        //get a video source somehow
+        $videoSource = null;
+        if ($videoSourceId === null) {
+            //get all of the video sources
+            $videoSources = Queries::GetVideoSources();
+            foreach ($videoSources as $source) {
+                if (strpos($realpath, realpath($source->location)) !== false) {
+                    //this video source was found in the path    
+                    if ($videoSource === null) {
+                        $videoSource = $source;
+                    } else {
+                        throw new Exception('Cannot auto-detect new media item video source: multiple source matches were found');
+                    }
+                }
+            }
+            if ($videoSource === null) {
+                throw new Exception('Cannot auto-detect new media item video source: no source matches were found');
+            }
+        } else {
+            $videoSourceResults = Queries::GetVideoSourcesById([$videoSourceId]);
+            if (count($videoSourceResults) === 1) {
+                $videoSource = $videoSourceResults[0];
+            } else {
+                throw new Exception('Unable to find video source with that id');
+            }
+        }
+        $pathIsFile = false;
+        if (fileIsValidVideo($path)) {
+            $pathIsFile = true;
+        }
 
-    public static function GetRecentlyUpdatedVideoIds($numberOfDays)
-    {
-        $recentVideoIds = DbManager::SingleColumnQuery("
-            select video_id 
-            from video 
-            where date_modified between DATE_SUB(NOW(), INTERVAL $numberOfDays DAY) AND NOW() 
-            and date_modified > date_added
-            order by date_added desc
-            limit 50
-        ");
-        $videoIds = Library::ReduceVideoIds($recentVideoIds);
-        return $videoIds;
-    }
+        if ($videoSource->media_type === Enumerations::MediaType_Movie) {
+            $movies = [];
+            $paths = [];
+            if ($pathIsFile === true) {
+                $paths = [$path];
+            } else {
+                //find all movies beneath this path
+                $paths = getVideosFromDir($path);
+            }
 
-    public static function GetRecentlyWatchedVideoIds()
-    {
-        $videoIds = DbManager::SingleColumnQuery("
-                        select video_id 
-                        from recently_watched 
-                        where user_id = '" . config::$defaultUserId . "' 
-                        order by date_watched desc
-                        limit 20");
-        return arrayToInt($videoIds);
+            foreach ($paths as $path) {
+                if (strpos(strtolower($path), ".extra.") !== false) {
+                    continue;
+                }
+                $movie = new Movie($videoSource->id, $videoSource->base_url, $videoSource->location, $path);
+                $movies[] = $movie;
+            }
+            foreach ($movies as $movie) {
+                if ($movie->isNew()) {
+                    $newVideoIds[] = $movie->getVideoId();
+                }
+                $movie->writeToDb();
+            }
+        } else if ($videoSource->media_type === Enumerations::MediaType_TvShow) {
+            //for now, assume any file or folder found under a tv show folder will just re-import the entire tv show folder
+            $paths = [];
+            if ($pathIsFile === true) {
+                $paths = [$path];
+            } else {
+                $paths = getVideosFromDir($path);
+            }
+
+            $shows = [];
+            foreach ($paths as $path) {
+                if (strpos(strtolower($path), ".extra.") !== false) {
+                    continue;
+                }
+                $episode = new TvEpisode($videoSource->id, $videoSource->base_url, $videoSource->location, $path);
+                if ($episode->isNew()) {
+                    $newVideoIds[] = $episode->getVideoId();
+                }
+                //get the name of the tv show for this episode
+                $showName = $episode->getShowName();
+                $show = null;
+                if (isset($shows[$showName]) === false) {
+                    $showPath = $videoSource->location . '/' . $showName;
+                    $show = new TvShow($videoSource->id, $videoSource->base_url, $videoSource->location, $showPath);
+                    $shows[$showName] = $show;
+                } else {
+                    $show = $shows[$showName];
+                }
+                //set the tv show object for this episode;
+                $episode->tvShow = $show;
+                $show->addEpisode($episode);
+            }
+
+            //at this point we have all of the episodes loaded into the tv shows that we care about
+            foreach ($shows as $show) {
+                if ($show->isNew()) {
+                    $newVideoIds[] = $show->getVideoId();
+                }
+                $show->writeToDb();
+                foreach ($show->episodes as $episode) {
+                    $episode->writeToDb();
+                }
+            }
+        }
+        return $newVideoIds;
     }
 }
