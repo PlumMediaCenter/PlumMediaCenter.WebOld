@@ -101,9 +101,12 @@ class Library
         $videoIds = Queries::GetVideoIds(Enumerations::MediaType_Movie);
         foreach ($videoIds as $videoId) {
             $movie = Video::GetVideo($videoId);
-            $this->movies[] = $movie;
-            $this->videos[] = $movie;
-            $this->movieCount++;
+            //only include movies that actually exist on disk (i.e. haven't been renamed or deleted since the last library scan)
+            if ($movie->exists()) {
+                $this->movies[] = $movie;
+                $this->videos[] = $movie;
+                $this->movieCount++;
+            }
         }
         return $this->movies;
     }

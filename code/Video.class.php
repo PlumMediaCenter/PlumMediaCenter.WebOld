@@ -68,12 +68,6 @@ abstract class Video
         $this->videoSourcePath = str_replace("\\", "/", realpath($videoSourcePath)) . "/";
         $this->fullPath = str_replace("\\", "/", realpath($fullPath));
 
-        //if this video does not exist, throw a new exception
-        if (file_exists($this->fullPath) === false) {
-            echo json_encode($this);
-            throw new Exception("Video file does not exist at path $this->fullPath");
-        }
-
         //calculate anything extra that is needed
         $this->title = $this->getVideoName();
         $this->posterModifiedDate = $this->getPosterLastModifiedDate();
@@ -292,6 +286,15 @@ abstract class Video
     {
         $this->generateSdPoster();
         $this->generateHdPoster();
+    }
+
+    /**
+     * Does the video (mp4) file exist
+     */
+    public function exists()
+    {
+        //if this video does not exist, throw a new exception
+        return file_exists($this->fullPath);
     }
 
     /**
