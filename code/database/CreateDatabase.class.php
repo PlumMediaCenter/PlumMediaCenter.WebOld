@@ -73,7 +73,8 @@ class CreateDatabase
         '0.3.44',
         '0.3.45',
         '0.3.46',
-        '0.3.47'
+        '0.3.47',
+        '0.3.48'
     ];
 
     function __construct($rootUsername, $rootPassword, $dbHost)
