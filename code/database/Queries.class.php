@@ -412,13 +412,45 @@ class Queries
     {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtInsertVideo == null) {
-            $sql = "insert into video("
-                . "title, sort_title, plot, mpaa, year, url, path, filetype, media_type, "
-                . "metadata_last_modified_date, poster_last_modified_date, "
-                . "running_time_seconds, sd_poster_url, hd_poster_url, video_source_id, date_added, date_modified)"
-                . " values(:title, :sortTitle, :plot, :mpaa, :year, :url, :path, :fileType, :mediaType, "
-                . ":metadataModifiedDate, :posterModifiedDate, :videoSourcePath, :videoSourceUrl, "
-                . ":runningTimeSeconds, :sdPosterUrl, :hdPosterUrl, :videoSourceId, CURDATE(), CURDATE())";
+            $sql = "
+                insert into video(
+                    title, 
+                    sort_title, 
+                    plot, 
+                    mpaa,
+                    year, 
+                    url,
+                    path, 
+                    filetype,
+                    media_type,
+                    metadata_last_modified_date, 
+                    poster_last_modified_date,
+                    running_time_seconds,
+                    sd_poster_url,
+                    hd_poster_url,
+                    video_source_id, 
+                    date_added, 
+                    date_modified
+                ) values(
+                    :title,
+                    :sortTitle,
+                    :plot, 
+                    :mpaa, 
+                    :year,
+                    :url,
+                    :path,
+                    :fileType,
+                    :mediaType,
+                    :metadataModifiedDate,
+                    :posterModifiedDate, 
+                    :runningTimeSeconds,
+                    :sdPosterUrl,
+                    :hdPosterUrl,
+                    :videoSourceId,
+                    CURDATE(),
+                    CURDATE()
+                )
+            ";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtInsertVideo = $stmt;
         }
