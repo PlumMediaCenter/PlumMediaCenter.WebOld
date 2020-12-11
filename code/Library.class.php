@@ -148,10 +148,11 @@ class Library
      */
     public function loadFromFilesystem()
     {
-        //for each movie
-        $success = $this->loadMoviesFromFilesystem();
-        $success = $success && $this->loadTvShowsFromFilesystem();
-        return $success;
+        $errors =  array_merge(
+            $this->loadMoviesFromFilesystem(),
+            $this->loadTvShowsFromFilesystem()
+        );
+        return $errors;
     }
 
     /**
@@ -190,7 +191,7 @@ class Library
                 $this->movieCount++;
             }
         }
-        return true;
+        return [];
     }
 
     /**
@@ -233,7 +234,7 @@ class Library
                 }
             }
         }
-        return true;
+        return [];
     }
 
     public function sort()
@@ -273,25 +274,43 @@ class Library
         return $stats;
     }
 
+    public function generate()
+    {
+        $result = [
+            'errors' => []
+        ];
+        //delete any videos that don't exist anymore
+        Video::DeleteMissingVideos();
+        return [
+            'errors' => array_merge(
+                $this->loadFromFilesystem(),
+                $this->writeToDb()
+            )
+        ];
+        return $result;
+    }
+
     /**
      * Forces every video loaded into memory in this library object to be written to the database. 
      * Then any videos that are no longer in this library are removed from the database
      */
     public function writeToDb()
     {
+
         //writes every video to the database. If it is a new video, it will automatically be added. If it is an existing
         //video, it will be updated
-        $totalSuccess = true;
+        $errors = [];
         foreach ($this->videos as $video) {
-            $thisVideoSuccess = $video->writeToDb();
-            $totalSuccess = $totalSuccess && $thisVideoSuccess;
+            $errors = $video->writeToDb();
+            if (count($errors) > 0) {
+                $errors[] = "Failed to write $video->mediaType to db: \"$video->fullPath\": " . $errors[0];
+                break;
+                continue;
+            }
         }
 
-        //delete any videos that don't exist anymore
-        Video::DeleteMissingVideos();
-
         //return success or failure. If at least one item failed, this will be returned as a failure
-        return $totalSuccess;
+        return $errors;
     }
 
     /**

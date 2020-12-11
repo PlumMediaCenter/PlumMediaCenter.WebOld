@@ -43,7 +43,7 @@ class VideoManager
                 v.sd_poster_url as sdPosterUrl,
                 v.hd_poster_url as hdPosterUrl,
                 s.base_url as baseUrl
-            from 
+            from
                 video v JOIN
                 video_source s on s.id = v.video_source_id
             where video_id in (" . implode(",", $videoIds) . ")
@@ -75,6 +75,15 @@ class VideoManager
             $videos = filterProperties($videos, $propertyNames);
         }
         return $videos;
+    }
+
+    /**
+     * Get a specific TV episode
+     */
+    public static function GetTvEpisode($episodeId, $propertyNames = null)
+    {
+        $episodes = VideoManager::GetTvEpisodes([$episodeId], $propertyNames);
+        return $episodes[0];
     }
 
     /**

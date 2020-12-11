@@ -172,14 +172,17 @@ class TvEpisode extends Video
 
     function writeToDb()
     {
-        $success = parent::writeToDb();
+        $errors = parent::writeToDb();
         $videoId = $this->getVideoId();
         $tvShowVideoId = $this->getTvShowVideoIdFromVideoTable();
         if ($tvShowVideoId == -1) {
             $k = 1;
         }
-        $success = $success && Queries::insertTvEpisode($videoId, $tvShowVideoId, $this->seasonNumber, $this->episodeNumber);
-        return $success;
+        $errors = array_merge(
+            $errors,
+            Queries::InsertTvEpisode($videoId, $tvShowVideoId, $this->seasonNumber, $this->episodeNumber)
+        );
+        return $errors;
     }
 
     /**

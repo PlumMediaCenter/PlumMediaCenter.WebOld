@@ -566,13 +566,12 @@ abstract class Video
      */
     public function writeToDb()
     {
-        $success = false;
         //make sure this video has the latest metadata loaded
         $this->loadMetadata();
         $videoId = $this->getVideoId();
 
         //this is an existing video that needs to be updated. update it
-        $success = Queries::InsertOrUpdateVideo(
+        $errors = Queries::InsertOrUpdateVideo(
             $videoId,
             $this->title,
             $this->getSortTitle(),
@@ -597,10 +596,10 @@ abstract class Video
         //TODO store the keywords somehow, perhaps for more fine-grained categories
         // Queries::InsertVideoKeywords($this->videoId, $this->keywords);
 
-        if ($this->videoId != -1 && $success === true) {
-            return true;
+        if ($this->videoId != -1 && count($errors) === 0) {
+            return [];
         } else {
-            return false;
+            return $errors;
         }
     }
 

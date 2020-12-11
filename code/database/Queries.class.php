@@ -473,7 +473,13 @@ class Queries
 
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
-        return $success;
+        if (!$success) {
+            return [
+                implode(':', $stmt->errorInfo())
+            ];
+        } else {
+            return [];
+        }
     }
 
     /**
@@ -491,11 +497,27 @@ class Queries
         }
         $pdo = DbManager::getPdo();
         if (Queries::$stmtUpdateVideo == null) {
-            $sql = "update video set "
-                . "title = :title, sort_title = :sortTitle, plot=:plot, mpaa=:mpaa, year=:year, url=:url, path=:path, filetype=:fileType, "
-                . "media_type=:mediaType, metadata_last_modified_date= :metadataModifiedDate, poster_last_modified_date = :posterModifiedDate, running_time_seconds=:runningTimeSeconds, "
-                . "sd_poster_url=:sdPosterUrl, hd_poster_url=:hdPosterUrl, video_source_id=:videoSourceId, date_modified=CURDATE()"
-                . "where video_id = :videoId";
+            $sql = "
+                update video set 
+                    title = :title, 
+                    sort_title = :sortTitle, 
+                    plot = :plot, 
+                    mpaa = :mpaa, 
+                    year = :year, 
+                    url = :url, 
+                    path = :path, 
+                    filetype = :fileType,
+                    media_type = :mediaType, 
+                    metadata_last_modified_date = :metadataModifiedDate, 
+                    poster_last_modified_date = :posterModifiedDate, 
+                    running_time_seconds = :runningTimeSeconds,
+                    sd_poster_url = :sdPosterUrl, 
+                    hd_poster_url = :hdPosterUrl, 
+                    video_source_id = :videoSourceId, 
+                    date_modified = CURDATE()
+                where 
+                    video_id = :videoId
+            ";
             $stmt = $pdo->prepare($sql);
             Queries::$stmtUpdateVideo = $stmt;
         }
@@ -519,10 +541,16 @@ class Queries
 
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
-        return $success;
+        if (!$success) {
+            return [
+                implode(':', $stmt->errorInfo())
+            ];
+        } else {
+            return [];
+        }
     }
 
-    public static function insertTvEpisode($videoId, $tvShowVideoId, $seasonNumber, $episodeNumber, $writer = "", $director = "")
+    public static function InsertTvEpisode($videoId, $tvShowVideoId, $seasonNumber, $episodeNumber, $writer = "", $director = "")
     {
         $pdo = DbManager::getPdo();
         if (Queries::$stmtInsertTvEpisode == null) {
@@ -542,7 +570,13 @@ class Queries
         $stmt->bindParam(":director", $director);
         $success = $stmt->execute();
         Queries::LogStmt($stmt, $success);
-        return $success;
+        if (!$success) {
+            return [
+                implode(':', $stmt->errorInfo())
+            ];
+        } else {
+            return [];
+        }
     }
 
     /**
