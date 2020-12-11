@@ -137,6 +137,13 @@ class VideoManager
         ", $tvShowVideoId);
 
         $videos = VideoManager::GetTvEpisodes($episodeIds);
+        //sort the videos by season and episode number
+        usort($videos, function($a, $b){
+            return strcmp(
+                str_pad($a->seasonNumber, 3, "0", STR_PAD_LEFT) . '.' . str_pad($a->episodeNumber, 4, "0", STR_PAD_LEFT),
+                str_pad($b->seasonNumber, 3, "0", STR_PAD_LEFT) . '.' . str_pad($b->episodeNumber, 4, "0", STR_PAD_LEFT)
+            );
+        });
         return $videos;
     }
 
