@@ -74,6 +74,11 @@ class Queries
             }
         } catch (Exception $e) {
         }
+
+        //delete all references to this video from related tables
+        $success = DbManager::NonQuery("delete from video_genre where video_id $inStmt");
+        $finalSuccess = $finalSuccess === true && $success === true;
+        
         //delete all references to this video from related tables
         $success = DbManager::NonQuery("delete from watch_video where video_id $inStmt");
         $finalSuccess = $finalSuccess === true && $success === true;
@@ -830,10 +835,18 @@ class Queries
 
     public static function DeleteVideosInSource($videoSourceId)
     {
-        $path = Dbmanager::SingleColumnQuery('select location from video_source where id=?', $videoSourceId);
-        $path = $path[0];
         //delete all videos that are referenced in this video source
-        $videoIds = DbManager::SingleColumnQuery("select video_id from video where video_source_path like ?", $path);
+        $videoIds = DbManager::SingleColumnQuery(
+            "
+                select 
+                    video_id 
+                from 
+                    video 
+                where 
+                    video_source_id = ?
+            ", 
+            $videoSourceId
+        );
 
         $success = Queries::DeleteVideos($videoIds);
         return $success;
