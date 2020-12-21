@@ -40,7 +40,8 @@ class DbManager
     {
         $dbNameParam = ($dbName == null) ? "" : ";dbname=$dbName";
         return new PDO("mysql:host=$host" . $dbNameParam, $userId, $password, array(
-            PDO::ATTR_PERSISTENT => true
+            PDO::ATTR_PERSISTENT => true,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ));
     }
 
