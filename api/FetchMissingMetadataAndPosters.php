@@ -16,23 +16,20 @@ foreach ($l->videos as $video) {
         continue;
     }
 
-    if ($video->fetchMetadataIfMissing() === true) {
-        //force the video to load metadata from the filesystem
-        $video->loadMetadata(true);
-        //write the video to the database
-        $video->writeToDb();
-    }
+    $video->fetchMetadataIfMissing();
+    //force the video to load metadata from the filesystem
+    $video->loadMetadata(true);
+    //write the video to the database
+    $video->writeToDb();
 
-    
     //if this is a tv show, write all of its children
     if ($video->mediaType === Enumerations::MediaType_TvShow) {
         $video->loadTvEpisodesFromFilesystem();
         $episodes = $video->getEpisodes();
         foreach ($episodes as $episode) {
-            if ($episode->fetchMetadataIfMissing()) {
-                $episode->loadMetadata(true);
-                $episode->writeToDb();
-            }
+            $episode->fetchMetadataIfMissing();
+            $episode->loadMetadata(true);
+            $episode->writeToDb();
         }
     }
 }
