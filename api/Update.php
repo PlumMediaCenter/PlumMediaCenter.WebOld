@@ -1,4 +1,6 @@
 <?php
+//this script must run until completion, even if the user aborts
+ignore_user_abort(true);
 
 require(dirname(__FILE__) . '/../code/functions.php');
 require(dirname(__FILE__) . '/../code/database/Version.class.php');
