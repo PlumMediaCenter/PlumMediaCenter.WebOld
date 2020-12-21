@@ -276,9 +276,6 @@ class Library
 
     public function generate()
     {
-        $result = [
-            'errors' => []
-        ];
         //delete any videos that don't exist anymore
         Video::DeleteMissingVideos();
         return [

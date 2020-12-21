@@ -18,8 +18,12 @@ angular.module('app').controller('AdminController', ['$timeout', '$window', 'glo
         function generateLibrary() {
             var n = notify('Generating library', 'info');
             globals.generateLibraryIsPending = true;
-            api.generateLibrary().then(function () {
-                notify('Library has been generated', 'success');
+            api.generateLibrary().then(function (result) {
+                if (result.errors.length > 0) {
+                    notify('Library was generated, but there were errors: <ul><li>' + result.errors.join('</li><li>')  + '</li></ul>', 'danger');
+                } else {
+                    notify('Library has been generated', 'success');
+                }
             }).catch(function (err) {
                 notify('There was an error generating the library: "' + err.message + '"', 'danger');
             }).finally(function () {
