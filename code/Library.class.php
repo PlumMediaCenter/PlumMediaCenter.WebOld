@@ -338,12 +338,19 @@ class Library
         $showLookup = [];
         // get the tv show video records for all of these episodes
         if (count($tvEpisodeVideoIds) > 0) {
-            $tvShows = DbManager::Query(
-                "select video_id as episode_video_id, tv_show_video_id as video_id, '" . Enumerations::MediaType_TvShow . "' as media_type"
-                    . " from tv_episode_v"
-                    . " where video_id " . DbManager::GenerateInStatement($tvEpisodeVideoIds) . " "
-                    . "order by field(video_id, " . implode(",", $videoIds) . ")"
-            );
+            $tvShows = DbManager::Query("
+                select 
+                    video_id as episode_video_id,
+                    tv_show_video_id as video_id,
+                    '" . Enumerations::MediaType_TvShow . "' as media_type
+                    from
+                        tv_episode_v
+                    where 
+                        video_id " . DbManager::GenerateInStatement($tvEpisodeVideoIds) . "
+                    order by 
+                        field(video_id, " . implode(",", $videoIds) . ")
+            ");
+            
             foreach ($tvShows as $show) {
                 $showLookup[$show->episode_video_id] = $show;
             }
