@@ -74,7 +74,8 @@ class CreateDatabase
         '0.3.45',
         '0.3.46',
         '0.3.47',
-        '0.3.48'
+        '0.3.48',
+        '0.3.49'
     ];
 
     function __construct($rootUsername, $rootPassword, $dbHost)
@@ -469,7 +470,7 @@ class CreateDatabase
         ");
     }
 
-    function db0_3_48(){
+    function db0_3_49(){
         DbManager::nonQuery("CREATE OR REPLACE VIEW tv_episode_v
             AS
                 SELECT 
