@@ -468,4 +468,34 @@ class CreateDatabase
             alter table video add foreign key(video_source_id) references video_source(id);
         ");
     }
+
+    function db0_3_48(){
+        DbManager::nonQuery("CREATE OR REPLACE VIEW tv_episode_v
+            AS
+                SELECT 
+                    v.video_id,
+                    v.title,
+                    t.tv_show_video_id,
+                    t.season_number,
+                    t.episode_number,
+                    v.running_time_seconds,
+                    v.path,
+                    v.url,
+                    v.filetype,
+                    v.metadata_last_modified_date,
+                    v.poster_last_modified_date,
+                    v.mpaa,
+                    v.year,
+                    v.media_type,
+                    v.video_source_id,
+                    t.writer,
+                    t.director,
+                    v.plot
+                FROM 
+                    video v, 
+                    tv_episode t
+                WHERE 
+                    v.video_id = t.video_id
+            ");
+    }
 }
