@@ -17,7 +17,7 @@ foreach ($l->videos as $video) {
     }
 
     if ($video->fetchMetadataIfMissing() === true) {
-        //force the video to load metadata from the FS
+        //force the video to load metadata from the filesystem
         $video->loadMetadata(true);
         //write the video to the database
         $video->writeToDb();

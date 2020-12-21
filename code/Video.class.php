@@ -873,17 +873,26 @@ abstract class Video
         return $percent;
     }
 
+    /**
+     * Fetch any missing metadata.
+     * Returns true if new metadata was downloaded, or false if nothing has changed
+     */
     function fetchMetadataIfMissing()
     {
+        $count = 0;
         if ($this->nfoFileExists() == false) {
             $this->fetchMetadata();
+            $count++;
         }
         if ($this->posterExists() == false) {
             $this->fetchPoster();
+            $count++;
         }
 
         if ($this->sdPosterExists() == false || $this->hdPosterExists() == false) {
             $this->generatePosters();
+            $count++;
         }
+        return $count > 0;
     }
 }
