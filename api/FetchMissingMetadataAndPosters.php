@@ -8,31 +8,7 @@ require_once(dirname(__FILE__) . '/../code/Library.class.php');
 
 $l = new Library();
 $result->successLoadingFromDatabase = $l->loadFromDatabase();
-
-/* @var $video Video   */
-foreach ($l->videos as $video) {
-    //skip this video if it's not an object
-    if (is_object($video) == false) {
-        continue;
-    }
-
-    $video->fetchMetadataIfMissing();
-    //force the video to load metadata from the filesystem
-    $video->loadMetadata(true);
-    //write the video to the database
-    $video->writeToDb();
-
-    //if this is a tv show, write all of its children
-    if ($video->mediaType === Enumerations::MediaType_TvShow) {
-        $video->loadTvEpisodesFromFilesystem();
-        $episodes = $video->getEpisodes();
-        foreach ($episodes as $episode) {
-            $episode->fetchMetadataIfMissing();
-            $episode->loadMetadata(true);
-            $episode->writeToDb();
-        }
-    }
-}
+$l->fetchAndLoadMetadata();
 
 $result->success = $result->successLoadingFromDatabase && true;
 // header('Content-Type: application/json');

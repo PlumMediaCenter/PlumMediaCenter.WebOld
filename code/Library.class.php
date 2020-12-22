@@ -281,10 +281,40 @@ class Library
         return [
             'errors' => array_merge(
                 $this->loadFromFilesystem(),
-                $this->writeToDb()
+                $this->writeToDb(),
+                $this->fetchAndLoadMetadata()
             )
         ];
         return $result;
+    }
+
+    public function fetchAndLoadMetadata(){
+                
+        /* @var $video Video   */
+        foreach ($this->videos as $video) {
+            //skip this video if it's not an object
+            if (is_object($video) == false) {
+                continue;
+            }
+
+            $video->fetchMetadataIfMissing();
+            //force the video to load metadata from the filesystem
+            $video->loadMetadata(true);
+            //write the video to the database
+            $video->writeToDb();
+
+            //if this is a tv show, write all of its children
+            if ($video->mediaType === Enumerations::MediaType_TvShow) {
+                $video->loadTvEpisodesFromFilesystem();
+                $episodes = $video->getEpisodes();
+                foreach ($episodes as $episode) {
+                    $episode->fetchMetadataIfMissing();
+                    $episode->loadMetadata(true);
+                    $episode->writeToDb();
+                }
+            }
+        }
+        return [];
     }
 
     /**
