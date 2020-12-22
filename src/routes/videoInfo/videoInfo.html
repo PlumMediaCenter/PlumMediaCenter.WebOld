@@ -27,10 +27,6 @@
                         <span class="glyphicon glyphicon-download"></span>&nbsp;Download
                     </a>
                     <a class="btn btn-default full-width margin" ui-sref="metadataFetcher({videoId: vm.video.videoId})">Fetch Metadata</a>
-                    <a class="btn btn-default full-width margin" ng-click="vm.scanForNewMedia()">
-                        <span class="glyphicon glyphicon-refresh"></span>
-                        Scan for New Media
-                    </a>
                     <a ng-if="!vm.isProcessingVideo" class="btn btn-warning full-width margin" title="Runs the library generation process for just this video" ng-click="vm.processVideo()">
                         Process
                     </a>

@@ -14,7 +14,6 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
             getProgressPercentType: getProgressPercentType,
             runtimeMinutes: runtimeMinutes,
             navigateToShow: navigateToShow,
-            scanForNewMedia: scanForNewMedia,
             playIsDisabled: playIsDisabled,
             processVideo: processVideo,
             toggleList: toggleList
@@ -106,31 +105,6 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
             } else if (vm.progressPercent < 101) {
                 return 'success';
             }
-        }
-
-        function scanForNewMedia() {
-            vm.loadMessage = 'Scanning for new media';
-            Video.scanForNewMedia(vm.videoId).then(function (result) {
-                if (!result || result.success !== true) {
-                    throw new Error('An error occurred' + JSON.stringify(result));
-                }
-                if (result && result.newVideoIds && result.newVideoIds.length > 0) {
-                    notify(result.newVideoIds.length + ' new media ' + (result.newVideoIds.length === 1 ? 'item was' : 'items were') + ' successfully added', 'success');
-                    vm.loadMessage = 'Refreshing page';
-                    return $timeout(function () {
-                        //reload the current state to get any new videos
-                        $state.reload($state.current.name);
-                        vm.loadMessage = undefined;
-                    }, 1500);
-                } else {
-                    notify('No new media items were found');
-                }
-
-            }, function (error) {
-                notify(error.message, 'danger');
-            }).finally(function () {
-                vm.loadMessage = undefined;
-            });
         }
 
         function navigateToShow() {

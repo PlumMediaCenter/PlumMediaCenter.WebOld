@@ -164,20 +164,6 @@ angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q,
         return deferred.promise;
     }
 
-    Video.scanForNewMedia = function (videoId) {
-        var deferred = $q.defer();
-        $http.get('api/ScanForNewMedia.php', {
-            params: {
-                videoId: videoId
-            }
-        }).then(function (result) {
-            deferred.resolve(result.data);
-        }, function (err) {
-            deferred.reject(err);
-        });
-        return deferred.promise;
-    }
-
     Video.getMetadataSearchResultsBytmdbId = function (mediaType, tmdbId) {
         var deferred = $q.defer();
         $http.get('api/GetMetadataSearchResults.php', {
