@@ -1281,6 +1281,9 @@ class Queries
             return true;
         }
 
+        //remove duplicates
+        $genres = array_unique($genres);
+
         $pdo = DbManager::getPdo();
         $sql = "insert into video_genre (video_id, genre) values ";
         $i = 0;
