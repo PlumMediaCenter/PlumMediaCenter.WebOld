@@ -8,7 +8,7 @@ require_once(dirname(__FILE__) . '/../code/Library.class.php');
 
 $l = new Library();
 $result->successLoadingFromDatabase = $l->loadFromDatabase();
-$l->fetchAndLoadMetadata();
+$l->fetchAndLoadMetadata(true);
 
 $result->success = $result->successLoadingFromDatabase && true;
 // header('Content-Type: application/json');

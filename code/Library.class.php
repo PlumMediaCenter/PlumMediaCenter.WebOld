@@ -288,7 +288,7 @@ class Library
         return $result;
     }
 
-    public function fetchAndLoadMetadata(){
+    public function fetchAndLoadMetadata($forceReload = false){
                 
         /* @var $video Video   */
         foreach ($this->videos as $video) {
@@ -297,20 +297,24 @@ class Library
                 continue;
             }
 
-            $video->fetchMetadataIfMissing();
-            //force the video to load metadata from the filesystem
-            $video->loadMetadata(true);
-            //write the video to the database
-            $video->writeToDb();
+            $didFetchNewItems = $video->fetchMetadataIfMissing();
+            if ($didFetchNewItems || $forceReload === true){
+                //force the video to load metadata from the filesystem
+                $video->loadMetadata(true);
+                //write the video to the database
+                $video->writeToDb();
+            }
 
             //if this is a tv show, write all of its children
             if ($video->mediaType === Enumerations::MediaType_TvShow) {
                 $video->loadTvEpisodesFromFilesystem();
                 $episodes = $video->getEpisodes();
                 foreach ($episodes as $episode) {
-                    $episode->fetchMetadataIfMissing();
-                    $episode->loadMetadata(true);
-                    $episode->writeToDb();
+                    $didFetchNewEpisodeItems = $episode->fetchMetadataIfMissing();
+                    if ($didFetchNewEpisodeItems || $forceReload === true) {
+                        $episode->loadMetadata(true);
+                        $episode->writeToDb();
+                    }
                 }
             }
         }
