@@ -33,7 +33,7 @@ class TvEpisodeMetadataFetcher extends MetadataFetcher
         $this->showFetcher->searchByTitle($showName, $year);
         $this->tvShowObject = $this->showFetcher->tvShowObject;
 
-        if (isset($this->tvShowObject)) {
+        if (isset($this->tvShowObject) && $this->seasonNumber > -1 && $this->episodeNumber > -1) {
             $season = new \Tmdb\Model\Tv\Season();
             $season->setSeasonNumber($this->seasonNumber);
 
