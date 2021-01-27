@@ -383,14 +383,20 @@ class CreateDatabase
             values (1, 'DefaultUser@PlumMediaCenter.com', 'Default', 'User')
         ");
         //remove the username in favor of user id
+        DbManager::nonQuery("alter table recently_watched drop primary key;");
         DbManager::nonQuery("alter table recently_watched drop username;");
         DbManager::nonQuery("alter table recently_watched add user_id int;");
         //prepopulate with user_id 1 (default user)
         DbManager::nonQuery("update recently_watched set user_id = 1;");
+        DbManager::nonQuery("alter table recently_watched add primary key(video_id, user_id)");
 
+        //remove the primary key constraint for username
+        DbManager::nonQuery("alter table watch_video drop primary key");
         DbManager::nonQuery("alter table watch_video drop username;");
         DbManager::nonQuery("alter table watch_video add user_id int;");
         DbManager::nonQuery("update watch_video set user_id = 1;");
+        DbManager::nonQuery("alter table watch_video add primary key(video_id, user_id)");
+        
 
         //prepopulate with user_id 1 (default user)
         DbManager::nonQuery("update recently_watched set user_id = 1;");

@@ -22,6 +22,7 @@ if ($finished === "true") {
         $timeInSeconds = -1;
     }
 }
+echo config::$defaultUserId;
 //insert into the watch_video table
 $success = Queries::InsertWatchVideo(config::$defaultUserId, $videoId, $timeInSeconds);
 

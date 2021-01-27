@@ -186,8 +186,10 @@ class VideoManager
             order by date_added desc 
             limit 50
         ");
-        $videoIds = Library::ReduceVideoIds($recentVideoIds);
-        return $videoIds;
+        if(count($recentVideoIds) > 0){
+            $recentVideoIds = Library::ReduceVideoIds($recentVideoIds);
+        }
+        return $recentVideoIds;
     }
 
     /**

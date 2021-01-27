@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<movie>
+  <title>A Star for Christmas</title>
+  <originaltitle>A Star for Christmas</originaltitle>
+  <sorttitle>A Star for Christmas</sorttitle>
+  <set></set>
+  <rating>10</rating>
+  <year>2013</year>
+  <top250>2013</top250>
+  <votes>2013</votes>
+  <outline>2013</outline>
+  <plot>The only thing that is working in Cassie's world is her small town business. Her Christmas Cupcakery is a huge success, but her love life is a mess. Cassie's whole universe is turned upside down when she falls in love with a co-worker who is revealed to be the famous and notoriously troubled actor Alex Gray. There's no denying that Alex and Cassie are in love, but can their relationship survive the pressure of Hollywood and the holidays?</plot>
+  <tagline>Love happens behind the scenes.</tagline>
+  <runtime>88</runtime>
+  <thumb></thumb>
+  <mpaa></mpaa>
+  <playcount>0</playcount>
+  <id>tt2566858</id>
+  <filenameandpath>/var/www/apache/PlumMediaCenter/api</filenameandpath>
+  <trailer></trailer>
+  <genre>Comedy</genre>
+  <genre>Drama</genre>
+  <genre>Romance</genre>
+  <genre>TV Movie</genre>
+  <credits></credits>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec></codec>
+        <aspect></aspect>
+        <width></width>
+        <height></height>
+      </video>
+      <audio>
+        <codec></codec>
+        <language></language>
+        <channels></channels>
+      </audio>
+      <subtitle>
+        <language></language>
+      </subtitle>
+    </streamdetails>
+  </fileinfo>
+  <director>Michael Feifer</director>
+  <actor>
+    <name>Briana Evigan</name>
+    <role>Cassie</role>
+  </actor>
+  <actor>
+    <name>Corey Sevier</name>
+    <role>Alex Gray</role>
+  </actor>
+  <actor>
+    <name>Brooke Burns</name>
+    <role>Skylar</role>
+  </actor>
+  <actor>
+    <name>Travis Van Winkle</name>
+    <role>Jared</role>
+  </actor>
+  <actor>
+    <name>Karissa Vacker</name>
+    <role>Tricia</role>
+  </actor>
+  <actor>
+    <name>Jeremy Howard</name>
+    <role>Zack</role>
+  </actor>
+  <actor>
+    <name>Sean Stone</name>
+    <role>Nolan Denver</role>
+  </actor>
+  <actor>
+    <name>Shelby Janes</name>
+    <role>Ms. Dailey</role>
+  </actor>
+  <actor>
+    <name>Shirell Ferguson-Coleman</name>
+    <role>Monique</role>
+  </actor>
+  <actor>
+    <name>Keith Dobbins</name>
+    <role>Santa Claus</role>
+  </actor>
+  <actor>
+    <name>Caia Coley</name>
+    <role>Dena</role>
+  </actor>
+</movie>
