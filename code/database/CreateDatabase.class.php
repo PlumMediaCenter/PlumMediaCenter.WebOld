@@ -13,7 +13,7 @@ class CreateDatabase
     private $rootUsername;
     private $rootPassword;
     private $dbHost;
-    //this is a list of all db upgrade functions that are callable, in order. 
+    //this is a list of all db upgrade functions that are callable, in order.
     private static $versions = [
         '0.1.00',
         '0.1.01',
@@ -80,7 +80,8 @@ class CreateDatabase
         '0.3.51',
         '0.3.52',
         '0.3.53',
-        '0.3.54'
+        '0.3.54',
+        '0.3.55'
     ];
 
     function __construct($rootUsername, $rootPassword, $dbHost)
@@ -135,7 +136,7 @@ class CreateDatabase
     }
 
     /**
-     * Returns the current app version in the database. 
+     * Returns the current app version in the database.
      * @return string - the current app version in the database
      */
     static function CurrentDbVersion($dbHost = null, $dbUsername = null, $dbPassword = null)
@@ -215,7 +216,7 @@ class CreateDatabase
                 )");
         DbManager::NonQuery("insert into app_version(version) values('0.1.0')");
 
-        DbManager::NonQuery(" 
+        DbManager::NonQuery("
             create table video(
                 video_id int not null auto_increment primary key,
                 title varchar(100),
@@ -232,7 +233,7 @@ class CreateDatabase
                 video_source_path varchar(2000) not null,
                 video_source_url varchar(2000) not null
             )");
-        DbManager::NonQuery(" 
+        DbManager::NonQuery("
             create table tv_episode(
                video_id int not null primary key,
                tv_show_video_id int not null,
@@ -243,7 +244,7 @@ class CreateDatabase
                foreign key (video_id) references video(video_id),
                foreign key (tv_show_video_id) references video(video_id)
         )");
-        DbManager::NonQuery(" 
+        DbManager::NonQuery("
             create table video_source(
                location varchar(200) not null primary key,
                base_url varchar(2000) not null,
@@ -251,7 +252,7 @@ class CreateDatabase
                security_type varchar(20) not null,
                refresh_videos boolean default 0
         )");
-        DbManager::NonQuery(" 
+        DbManager::NonQuery("
             create table watch_video(
                 username varchar(128) not null,
                 video_id int not null,
@@ -403,7 +404,7 @@ class CreateDatabase
 
         //add foreign key constraint for user_id
         DbManager::nonQuery("
-            alter table recently_watched 
+            alter table recently_watched
             add constraint fk_user_id foreign key(user_id) references user(user_id);
         ");
 
@@ -478,7 +479,7 @@ class CreateDatabase
     function db0_3_49(){
         DbManager::nonQuery("CREATE OR REPLACE VIEW tv_episode_v
             AS
-                SELECT 
+                SELECT
                     v.video_id,
                     v.title,
                     t.tv_show_video_id,
@@ -497,10 +498,10 @@ class CreateDatabase
                     t.writer,
                     t.director,
                     v.plot
-                FROM 
-                    video v, 
+                FROM
+                    video v,
                     tv_episode t
-                WHERE 
+                WHERE
                     v.video_id = t.video_id
             ");
     }

@@ -1,6 +1,6 @@
 {
   "name": "plummediacenter",
-  "version": "0.3.47",
+  "version": "0.3.55",
   "description": "A Node.js angular seed project",
   "main": "server.js",
   "scripts": {
