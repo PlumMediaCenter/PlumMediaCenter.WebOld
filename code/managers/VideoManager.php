@@ -34,6 +34,7 @@ class VideoManager
                 v.sort_title as sortTitle,
                 v.running_time_seconds as runtime,
                 v.poster_last_modified_date as posterModifiedDate,
+                v.path,
                 v.plot,
                 v.mpaa,
                 v.year,
@@ -87,7 +88,7 @@ class VideoManager
     }
 
     /**
-     * Get the list of TV episodes specified. 
+     * Get the list of TV episodes specified.
      */
     public static function GetTvEpisodes($videoIds, $propertyNames = null)
     {
@@ -102,7 +103,7 @@ class VideoManager
                episode_number as episodeNumber,
                writer,
                director
-            from 
+            from
                 tv_episode
             where video_id in (" . implode(",", $videoIds) . ")
         ");
@@ -133,14 +134,14 @@ class VideoManager
     {
         //get all movies and tv shows from the db
         $episodeIds = DbManager::SingleColumnQuery("
-            select 
+            select
                 video.video_id
-            from 
+            from
                 video JOIN
                 tv_episode on video.video_id = tv_episode.video_id
-            where 
+            where
                 tv_episode.tv_show_video_id = ?
-            order by 
+            order by
                 tv_episode.season_number asc,
                 tv_episode.episode_number asc
         ", $tvShowVideoId);
@@ -162,9 +163,9 @@ class VideoManager
     public static function GetRecentlyWatchedVideoIds()
     {
         $videoIds = DbManager::SingleColumnQuery("
-            select video_id 
-            from recently_watched 
-            where user_id = '" . config::$defaultUserId . "' 
+            select video_id
+            from recently_watched
+            where user_id = '" . config::$defaultUserId . "'
             order by date_watched desc
             limit 20
         ");
@@ -177,13 +178,13 @@ class VideoManager
     public static function GetRecentlyAddedVideoIds($numberOfDays)
     {
         $recentVideoIds = DbManager::SingleColumnQuery("
-            select 
-                video_id 
-            from 
-                video 
-            where 
-                date_added between DATE_SUB(NOW(), INTERVAL $numberOfDays DAY) AND NOW() 
-            order by date_added desc 
+            select
+                video_id
+            from
+                video
+            where
+                date_added between DATE_SUB(NOW(), INTERVAL $numberOfDays DAY) AND NOW()
+            order by date_added desc
             limit 50
         ");
         $videoIds = Library::ReduceVideoIds($recentVideoIds);
@@ -196,9 +197,9 @@ class VideoManager
     public static function GetRecentlyUpdatedVideoIds($numberOfDays)
     {
         $recentVideoIds = DbManager::SingleColumnQuery("
-            select video_id 
-            from video 
-            where date_modified between DATE_SUB(NOW(), INTERVAL $numberOfDays DAY) AND NOW() 
+            select video_id
+            from video
+            where date_modified between DATE_SUB(NOW(), INTERVAL $numberOfDays DAY) AND NOW()
             and date_modified > date_added
             order by date_added desc
             limit 50
@@ -234,7 +235,7 @@ class VideoManager
             select
                 video_id as videoId,
                 title
-            from 
+            from
                 video
             where
                 media_type in('" . Enumerations::MediaType_TvShow . "', '" . Enumerations::MediaType_Movie . "')

@@ -30,10 +30,6 @@ angular.module('app').controller('MetadataFetcherController', ['$scope', '$q', '
                 search();
             });
 
-            Video.getPathInfo(vm.videoId).then(function (video) {
-                angular.extend(vm.video, video);
-            });
-
             $scope.$watch('vm.searchBy', searchByChanged);
 
             $scope.$watch('vm.video', vm.calculateTextboxLabel);
@@ -84,7 +80,7 @@ angular.module('app').controller('MetadataFetcherController', ['$scope', '$q', '
                 return refreshImage(video.sdPosterUrl).then(function () {
                     return refreshImage(video.hdPosterUrl);
                 }).then(function () {
-                    //there was an issue getting the browser to refresh the cached images. try reloading the page (after we have 
+                    //there was an issue getting the browser to refresh the cached images. try reloading the page (after we have
                     //navigated to the videoInfo page)
                     setTimeout(function () {
                         window.location.reload();

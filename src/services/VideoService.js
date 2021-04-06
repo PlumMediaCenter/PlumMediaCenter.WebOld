@@ -89,7 +89,7 @@ angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q,
     };
 
     /**
-     * Get the number of seconds into a video the current user is. 
+     * Get the number of seconds into a video the current user is.
      * @param {type} videoId
      * @returns {$q@call;defer.promise}
      */
@@ -176,18 +176,6 @@ angular.module('app').service('Video', ['$http', '$q', '_', function ($http, $q,
         }).error(function () {
             deferred.reject();
         });
-        return deferred.promise;
-    }
-
-    Video.getPathInfo = function (videoId) {
-        var deferred = $q.defer();
-        $http.get('api/GetVideoPathInfo.php?videoId=' + videoId)
-            .success(function (video) {
-                deferred.resolve(video);
-            })
-            .error(function () {
-                deferred.reject();
-            });
         return deferred.promise;
     }
 
