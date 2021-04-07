@@ -1,4 +1,8 @@
-<a ui-sref="videoInfo({videoId: vm.video.videoId})">
+<a ui-sref="videoInfo({videoId: vm.video.videoId})" ng-click="vm.showListPicker? $event.preventDefault() : null; ">
+    <button class="btn btn-default list-button" ng-click="vm.showListPicker = true">
+        <span class="glyphicon glyphicon-th-list"></span>&nbsp;Add to list
+    </button>
     <span ng-if="!vm.video.posterModifiedDate" class="noPosterText">{{vm.video.title}}</span>
     <img class="poster" ng-attr-src="{{vm.video.hdPosterUrl}}">
 </a>
+<list-modal ng-if="vm.showListPicker" video-id="vm.video.videoId" on-hide="vm.showListPicker=false"></list-modal>

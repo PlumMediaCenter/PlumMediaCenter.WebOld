@@ -20,7 +20,7 @@
                             <span class="glyphicon glyphicon-plus"></span>&nbsp; Add to My List
                         </span>
                     </button>
-                    <button class="btn btn-default full-width margin" data-toggle="modal" data-target="#myModal">
+                    <button class="btn btn-default full-width margin" ng-click="vm.showListPicker = true">
                         <span class="glyphicon glyphicon-th-list"></span>&nbsp;Add to list
                     </button>
                     <a class="btn btn-default full-width margin" href="{{vm.video.url}}">
@@ -60,27 +60,5 @@
             </div>
         </div>
     </div>
-
 </div>
-
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Add Video to Lists</h4>
-            </div>
-            <div class="modal-body">
-                <div ng-repeat="(listName, isChecked) in vm.listInfo">
-                    <label class="form-control">
-                        <input type="checkbox" ng-checked="isChecked" ng-click="vm.toggleList(listName)" />
-                        {{listName}}
-                    </label>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+<list-modal video-id="vm.video.videoId" ng-if="vm.showListPicker" on-hide="vm.showListPicker = false"></list-modal>

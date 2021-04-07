@@ -1,5 +1,5 @@
-angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', 'globals', 'Video', '$state', '$stateParams', 'enums', 'notify',
-    function ($scope, $timeout, globals, Video, $state, $stateParams, enums, notify) {
+angular.module('app').controller('VideoInfoController', ['$scope', 'globals', 'Video', '$state', '$stateParams', 'enums', 'notify',
+    function ($scope, globals, Video, $state, $stateParams, enums, notify) {
         var vm = angular.extend(this, {
             listInfo: undefined,
             progressPercent: 0,
@@ -27,6 +27,8 @@ angular.module('app').controller('VideoInfoController', ['$scope', '$timeout', '
         //load the video by id
         Video.getById(vm.videoId).then(function (video) {
             vm.video = video;
+            console.log(vm.video);
+            console.log(vm.video.videoId);
 
             if (vm.video.mediaType === enums.mediaType.show) {
                 //get all of the episodes for this show
