@@ -91,7 +91,7 @@ class Library
     }
 
     /**
-     * Populates the movies array with all movies found in the database. All metadata is loaded into the movies. 
+     * Populates the movies array with all movies found in the database. All metadata is loaded into the movies.
      * @return Movie[] - returns the array of movies loaded from the database
      */
     public function loadMoviesFromDatabase()
@@ -112,7 +112,7 @@ class Library
     }
 
     /**
-     * Loads an array of all tv shows found in the database. All metadata is loaded into the tv show objects. 
+     * Loads an array of all tv shows found in the database. All metadata is loaded into the tv show objects.
      * @return TvShow[] - returns the tv shows in the library that was loaded from the database
      */
     public function loadTvShowsFromDatabase($loadEpisodes = true)
@@ -143,8 +143,8 @@ class Library
     }
 
     /**
-     * Loads this library object totally from the filesystem. This means scanning each video source directory for 
-     * videos. 
+     * Loads this library object totally from the filesystem. This means scanning each video source directory for
+     * videos.
      */
     public function loadFromFilesystem()
     {
@@ -289,7 +289,7 @@ class Library
     }
 
     public function fetchAndLoadMetadata($forceReload = false){
-                
+
         /* @var $video Video   */
         foreach ($this->videos as $video) {
             //skip this video if it's not an object
@@ -322,7 +322,7 @@ class Library
     }
 
     /**
-     * Forces every video loaded into memory in this library object to be written to the database. 
+     * Forces every video loaded into memory in this library object to be written to the database.
      * Then any videos that are no longer in this library are removed from the database
      */
     public function writeToDb()
@@ -349,6 +349,9 @@ class Library
      */
     public static function ReduceVideoIds($videoIds)
     {
+        if ($videoIds == null || count($videoIds) == 0) {
+            return [];
+        }
         $videoRecords = DbManager::Query(
             "select video_id, media_type "
                 . "from video "
@@ -360,7 +363,7 @@ class Library
 
         foreach ($videoRecords as $videoRecord) {
             if ($videoRecord->media_type === Enumerations::MediaType_TvEpisode) {
-                //this is a tv episode. 
+                //this is a tv episode.
                 $tvEpisodeVideoIds[] = $videoRecord->video_id;
             }
         }
@@ -370,18 +373,18 @@ class Library
         // get the tv show video records for all of these episodes
         if (count($tvEpisodeVideoIds) > 0) {
             $tvShows = DbManager::Query("
-                select 
+                select
                     video_id as episode_video_id,
                     tv_show_video_id as video_id,
                     '" . Enumerations::MediaType_TvShow . "' as media_type
                     from
                         tv_episode_v
-                    where 
+                    where
                         video_id " . DbManager::GenerateInStatement($tvEpisodeVideoIds) . "
-                    order by 
+                    order by
                         field(video_id, " . implode(",", $videoIds) . ")
             ");
-            
+
             foreach ($tvShows as $show) {
                 $showLookup[$show->episode_video_id] = $show;
             }
@@ -426,7 +429,7 @@ class Library
             $videoSources = Queries::GetVideoSources();
             foreach ($videoSources as $source) {
                 if (strpos($realpath, realpath($source->location)) !== false) {
-                    //this video source was found in the path    
+                    //this video source was found in the path
                     if ($videoSource === null) {
                         $videoSource = $source;
                     } else {
